@@ -169,14 +169,14 @@ disableHugoGeneratorInject = false
   # See https://utteranc.es/ for documentation
   # Uncomment this to enable Utteranc.es.
   #
-  # [params.utterances]
+  [params.utterances]
   #   Your GitHub repository
   #
-  #   repository = ""
+     repository = "K-Scorpio/scorpiosec"
   #
   #   label used for GitHub issues
   #
-  #   label      = ""
+     label      = "comment"
   # 
   #   Blog Post <-> Issue mapping. This parameter is optional. Possible values are:
   #      - pathname
@@ -186,7 +186,7 @@ disableHugoGeneratorInject = false
   #      - issue number
   #      - specific term
   #
-  #   issueTerm  = ""
+     issueTerm  = "pathname"
   #
   #   Theme used: possible values are:
   #      - github-light
@@ -199,7 +199,7 @@ disableHugoGeneratorInject = false
   #      - boxy-light
   #      - gruvbox-dark
   #
-  #   theme      = ""
+     theme      = "github-dark"
   # 
 
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
