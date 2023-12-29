@@ -146,7 +146,7 @@ disableHugoGeneratorInject = false
   [params.portrait]
   path     = "/redscorpio.jpg"
   alt      = "Portrait"
-  maxWidth = "150px"
+  maxWidth = "200px"
 
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
   # Addon: Commento
