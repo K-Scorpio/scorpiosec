@@ -6,18 +6,19 @@ toc = false
 categories = ['Personal']
 +++
 
-A couple of years ago it seemed unreal that someone like me could learn "techy" things, yet here I am telling you how I went from financial statements to firewalls in one and a half years.
+Il y a quelques années, il me semblait irréel d'apprendre des choses "techniques" (la programmation c'est pour les matheux ou ceux qui l'ont commencé depuis longtemps etc - que de préjugés!) et pourtant, me voici en train de vous raconter comment je suis passé des états financiers aux pare-feux en un an et demi.
 
-After my bachelor's degree in Finance, I just knew that it wasn't the right fit for me. Honestly, I never really thought that much about what I wanted to do and I went for that major as a "default" choice.
+Après mon bachelor en finance, je savais que ce domaine n'était pas fait pour moi. Honnêtement, je n'avais jamais vraiment réfléchi à ce que je voulais faire, et j'ai opté pour cette filière par défaut.
 
-I started to wonder "What else could I do?" The only interesting option for me was to do something in the tech field. There was one significant hurdle though, could someone without a technical background like me succeed in that industry especially for something as complicated as cybersecurity?
+Je me suis mis à me demander quelles sont les autres choses que je pourrais faire. La seule option intéressante pour moi était quelque chose dans le domaine de la technologie. Mais, obstacle majeur: est-ce que quelqu'un sans antécédents techniques comme moi pouvait réussir dans ce domaine, surtout dans un secteur aussi compliqué que la cybersécurité? (satanés préjugés!)
 
-Still I started to do some research and experimented with web development, data analysis, and even game development. I wasn't really putting any effort, it was more like a hobby at this point.
+Malgré mes doutes, j'ai commencé à faire des recherches et à toucher un peu à tout notamment le développement web, l'analyse de données, et même le développement de jeux vidéo. Je n'y mettais pas vraiment d'effort, c'était plus comme un passe-temps à ce stade.
 
-The real defining moment happened when I stumbled upon YouTube channels like David Bombal, NetworkChuck, and John Hammond. Their videos changed my perspective and convinced me that technical knowledge wasn't exclusive to those with traditional IT backgrounds as long as one's willing to put in the work
+Le déclic s'est vraiment produit lorsque je suis tombé sur des chaînes YouTube comme David Bombal, NetworkChuck et John Hammond. Leurs vidéos ont complètement changé ma perspective et m'ont convaincu que les compétences techniques n'était pas exclusives à ceux ayant des antécédents informatiques traditionnels, tant que l'on est prêt à travailler pour y arriver.
 
-With this new inspiration I set out to build a strong foundation first by learning the fundamentals. I studied networking, operating systems, security fundamentals and scripting/programming in Bash and Python. It wasn't easy but I wanted to prove to myself that I could do it so I stuck with it.
+Armé de cette nouvelle inspiration, je me suis d'abord construit une base solide en apprenant les fondamentaux. J'ai étudié les réseaux informatiques, les systèmes d'exploitation, les b.a.-ba de la sécurité, et la programmation en Bash et Python. Ce n'était pas facile, mais je voulais me prouver que je pouvais le faire, alors je m'y suis accroché.
 
-After a few months I wanted to solidify and confirm my knowledge, I looked up the the most popular certifications for the areas that interested me and I successfully passed the CCNA (Cisco Certified Network Associate) and CEH (Certified Ethical Hacker) exams the following year.
+Au bout de quelques mois, voulant solidifier et confirmer mes connaissances, j'ai cherché les certifications les plus populaires pour les domaines qui m'intéressaient et j'ai réussi les examens CCNA (Cisco Certified Network Associate) et CEH (Certified Ethical Hacker) l'année suivante.
 
-This blog is not just about documenting my journey, I want to help any way I can and connect with like-minded people. I will share the challenges I face, the victories I celebrate, the knowledge I pick up along the way and the resources that help me get better. Whether you are a seasoned professional, someone who just started, or thinking about transitioning into the cybersecurity space there is a place for you here.
+Ce blog ne se limite pas qu'à documenter mon parcours, je veux aider de toutes les manières possibles et rencontrer des personnes ayant un intérêt pour la technologie. Je partagerai les défis auxquels je fais face, les victoires que je célèbre, les connaissances que j'acquiers en chemin et les ressources qui m'aident à m'améliorer. Que vous soyez un professionnel chevronné, néophyte, ou que vous envisagiez de vous orienter vers le domaine de la cybersécurité, il y a une place pour vous ici.
+

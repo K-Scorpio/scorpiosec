@@ -12,7 +12,7 @@ After my bachelor's degree in Finance, I just knew that it wasn't the right fit 
 
 I started to wonder "What else could I do?" The only interesting option for me was to do something in the tech field. There was one significant hurdle though, could someone without a technical background like me succeed in that industry especially for something as complicated as cybersecurity?
 
-Still I started to do some research and experimented with web development, data analysis, and even game development. I wasn't really putting any effort, it was more like a hobby at this point.
+Still, I started to do some research and experimented with web development, data analysis, and even game development. I wasn't really putting any effort, it was more like a hobby at this point.
 
 The real defining moment happened when I stumbled upon YouTube channels like David Bombal, NetworkChuck, and John Hammond. Their videos changed my perspective and convinced me that technical knowledge wasn't exclusive to those with traditional IT backgrounds as long as one's willing to put in the work
 
