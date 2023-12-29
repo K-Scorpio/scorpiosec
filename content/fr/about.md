@@ -14,10 +14,12 @@ Certifications que je détiens actuellement: CCNA, CEH
 
 Intérêts: Cybersécurité, Génie logiciel, Machine Learning
 
-X - https://twitter.com/_KScorpio
+### Links
 
-Github - https://github.com/K-Scorpio
+[X](https://twitter.com/_KScorpio)
 
-Email - kscorpiosec@gmail.com
+[Github](https://github.com/K-Scorpio)
 
-LinkedIn - www.linkedin.com/in/darryl-akretchakre
+[Email](kscorpiosec@gmail.com)
+
+[LinkedIn](www.linkedin.com/in/darryl-akretchakre)
