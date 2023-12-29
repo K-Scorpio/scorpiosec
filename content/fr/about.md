@@ -4,15 +4,15 @@ date = 2023-12-18T17:31:29-06:00
 draft = false
 +++
 
-Bienvenue à Scorpiosec, un endroit où l'amour de la technologie et la passion pour l'apprentissage autonome se rencontrent. Je suis un aspirant professionnel de la sécurité et j'étudie la cybersécurité depuis 2022. J'ai décidé de changer domaine après mon Bachelor en finance (je ne me sentais pas à l'aise avec les feuilles de calcul). Mon objectif est d'exercer dans la sécurité offensive ou dans la sécurité du cloud.
+Bienvenue chez Scorpiosec, là où ma passion pour la technologie et ma tendance pour l'apprentissage autodidacte se rencontrent. Professionel de la cybersécurité en devenir, plongé dans le monde de la tech depuis 2022. J'ai troqué les tableaux excel ennuyeux après mon Bachelor en finance (trop de chiffres, pas assez de fun). Mon objectif est d'exercer en tant que hacker (red team) ou dans la sécurité du Cloud.
 
-J'ai créé ce blog pour montrer mes compétences et mes connaissances, c'est aussi un journal pour mon aventure technologique. Ici, vous trouverez mes idées, projets pratiques, articles, critiques de livres, guides d'outils etc... J'essaie toujours d'apprendre de nouvelles choses.
+Ce blog, c'est mon journal technologique. Ici vous découvrirez mes idées, mes projets pratiques (ou pas, on essaie!), des articles qui vous feront dire "ah, j'ai jamais pensé à ça", des critiques de livres (les vrais héros ont des bibliothèques), des guides d'outils etc...
 
-Merci d'avoir consulté mon blog et j'espère que vous y trouverez des informations utiles! Si vous voulez rester en contact, n'hésitez pas à connecter avec moi sur mes réseaux sociaux.
+Merci d'avoir atterri ici, et j'espère que vous trouverez des pépites d'infos entre deux lignes de code. Si vous voulez papoter, me suivre dans mes aventures technologiques ou simplement dire bonjour, trouvez-moi sur mes réseaux sociaux.
 
-Certifications que je détiens actuellement: CCNA, CEH
+Certifications en poche: CCNA, CEH
 
-Intérêts: Cybersécurité, Génie logiciel, Machine Learning
+Mes intérêts incluent la cybersécurité (évidemment, sinon c'est moins drôle), le génie logiciel (c'est limite un super pouvoir) et le machine learning (parce que pourquoi laisser tout le boulot aux humains?). Restez connectés!
 
 ### Links
 
