@@ -87,7 +87,7 @@ disableHugoGeneratorInject = false
   #
   # Enables the global language menu.
   #
-  enableGlobalLanguageMenu = false
+  enableGlobalLanguageMenu = true
 
   # Integrate Javascript files or stylesheets by adding the url to the external assets or by
   # linking local files with their path relative to the static folder, e.g. "css/styles.css"
@@ -231,16 +231,51 @@ disableHugoGeneratorInject = false
   dateformNumTime = "2006-01-02 15:04"
 
 
+defaultContentLanguage = 'en'
+
 [languages]
   [languages.en]
+    languageName = "English"
     weight    = 1
+    contentDir = "content/en"
     copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
   [languages.en.params]
     subtitle  = "Hello Friend NG Theme"
 
   [languages.fr]
+    languageName = "Français"
     weight    = 2
+    contentDir   = "content/fr"
     copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+    
+    [languages.fr.menu]
+  [[languages.fr.menu.main]]
+    
+    identifier   = "about"
+    name         = "About"
+    url          = "/fr/about/"
+    weight       = 1
+  [[languages.fr.menu.main]]
+    identifier   = "posts"
+    name         = "Posts"
+    url          = "/fr/posts/"
+    weight       = 2
+  [[languages.fr.menu.main]]
+    identifier   = "projects"
+    name         = "Projects"
+    url          = "/fr/projects/"
+    weight       = 3
+  [[languages.fr.menu.main]]
+    identifier   = "tags"
+    name         = "Tags"
+    url          = "/fr/tags/"
+    weight       = 4
+  [[languages.fr.menu.main]]
+    identifier   = "categories"
+    name         = "Categories"
+    url          = "/fr/categories/"
+    weight       = 5
+    
   [languages.fr.params]
     subtitle  = "Hello Friend NG Theme"
 
