@@ -8,13 +8,13 @@ categories = ['Personal']
 
 A couple of years ago it seemed unreal that someone like me could learn "techy" things, yet here I am telling you how I went from financial statements to firewalls in one and a half years.
 
-After my bachelor's degree in Finance, I just knew that it wasn't the right fit for me. Honestly, I never really thought that much about what I wanted to do and I went for that major as a "default" choice.
+After my bachelor's degree in Finance, I just knew that it wasn't the right fit for me. Honestly, I never really thought much about what I wanted to do and I went for that major as a "default" choice.
 
-I started to wonder "What else could I do?" The only interesting option for me was to do something in the tech field. There was one significant hurdle though, could someone without a technical background like me succeed in that industry especially for something as complicated as cybersecurity?
+I started to wonder "What else could I do?" The only interesting option for me was something in the tech field. There was one significant mental hurdle  though, I believed that someone without a technical background like me couldn't succeed in that industry especially for something as complicated as cybersecurity?
 
-Still, I started to do some research and experimented with web development, data analysis, and even game development. I wasn't really putting any effort, it was more like a hobby at this point.
+Still, I started doing some research and experimented with web development, data analysis, and even game development. I wasn't really putting any effort, it was more like a hobby at that point.
 
-The real defining moment happened when I stumbled upon YouTube channels like David Bombal, NetworkChuck, and John Hammond. Their videos changed my perspective and convinced me that technical knowledge wasn't exclusive to those with traditional IT backgrounds as long as one's willing to put in the work
+The real defining moment happened when I stumbled upon YouTube channels like David Bombal, NetworkChuck, and John Hammond. Their videos changed my perspective and convinced me that technical knowledge wasn't exclusive to those with traditional IT/CS backgrounds as long as one's willing to put in the work.
 
 With this new inspiration I set out to build a strong foundation first by learning the fundamentals. I studied networking, operating systems, security fundamentals and scripting/programming in Bash and Python. It wasn't easy but I wanted to prove to myself that I could do it so I stuck with it.
 
