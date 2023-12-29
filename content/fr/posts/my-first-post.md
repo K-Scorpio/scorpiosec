@@ -14,7 +14,7 @@ Je me suis mis à me demander quelles sont les autres choses que je pourrais fai
 
 Malgré mes doutes, j'ai commencé à faire des recherches et à toucher un peu à tout notamment le développement web, l'analyse de données, et même le développement de jeux vidéo. Je n'y mettais pas vraiment d'effort, c'était plus comme un passe-temps à ce stade.
 
-Le déclic s'est vraiment produit lorsque je suis tombé sur des chaînes YouTube comme David Bombal, NetworkChuck et John Hammond. Leurs vidéos ont complètement changé ma perspective et m'ont convaincu que les compétences techniques n'était pas exclusives à ceux ayant des antécédents informatiques traditionnels, tant que l'on est prêt à travailler pour y arriver.
+Le déclic s'est vraiment produit lorsque je suis tombé sur des chaînes YouTube comme David Bombal, NetworkChuck et John Hammond. Leurs vidéos ont complètement changé ma perspective et m'ont convaincu que les compétences techniques n'étaient pas exclusives à ceux ayant des antécédents informatiques traditionnels, tant que l'on est prêt à travailler pour y arriver.
 
 Armé de cette nouvelle inspiration, je me suis d'abord construit une base solide en apprenant les fondamentaux. J'ai étudié les réseaux informatiques, les systèmes d'exploitation, les b.a.-ba de la sécurité, et la programmation en Bash et Python. Ce n'était pas facile, mais je voulais me prouver que je pouvais le faire, alors je m'y suis accroché.
 

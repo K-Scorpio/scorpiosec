@@ -252,17 +252,17 @@ defaultContentLanguage = 'en'
   [[languages.fr.menu.main]]
     
     identifier   = "about"
-    name         = "About"
+    name         = "À propos"
     url          = "/fr/about/"
     weight       = 1
   [[languages.fr.menu.main]]
     identifier   = "posts"
-    name         = "Posts"
+    name         = "Postes"
     url          = "/fr/posts/"
     weight       = 2
   [[languages.fr.menu.main]]
     identifier   = "projects"
-    name         = "Projects"
+    name         = "Projets"
     url          = "/fr/projects/"
     weight       = 3
   [[languages.fr.menu.main]]

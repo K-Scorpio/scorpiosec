@@ -8,7 +8,7 @@ Welcome to Scorpiosec, a place where a love of technology and a passion for self
 
 I created this blog because I wanted to showcase my skills and knowledge, it's also a journal for my tech adventure. Here, you will find my insights, hands-on projects, writeups, book reviews, tool guides etc... I'm always trying to learn new things.
 
-Thanks for checking my blog and I hope you will find some useful information here! If you want to stay in touch, don't hesitate to connect with me on social media.
+Thanks for checking my blog and I hope you will find some useful information here! If you want to stay in touch, don't hesitate to connect with me on social media (links at the bottom of the page).
 
 Certifications I currently hold: CCNA, CEH
 
