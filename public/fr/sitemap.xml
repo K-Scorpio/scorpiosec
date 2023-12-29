@@ -2,7 +2,112 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://example.com/fr/posts/2023/12/my-second-post/</loc>
+    <lastmod>2023-12-18T18:36:29-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/posts/2023/12/my-second-post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/posts/2023/12/my-second-post/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/tags/networking/</loc>
+    <lastmod>2023-12-18T18:36:29-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/tags/networking/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/tags/networking/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/posts/</loc>
+    <lastmod>2023-12-18T18:36:29-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/posts/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/</loc>
+    <lastmod>2023-12-18T18:36:29-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/tags/</loc>
+    <lastmod>2023-12-18T18:36:29-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/tags/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/projects/network-scanner/</loc>
+    <lastmod>2023-12-18T18:05:39-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/projects/network-scanner/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/projects/network-scanner/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/projects/</loc>
+    <lastmod>2023-12-18T18:05:39-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/projects/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/projects/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/about/</loc>
+    <lastmod>2023-12-18T17:31:29-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/about/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/about/"
+                />
+  </url><url>
     <loc>https://example.com/fr/categories/</loc>
+    <lastmod>2023-12-18T17:26:43-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -14,16 +119,43 @@
                 href="https://example.com/fr/categories/"
                 />
   </url><url>
-    <loc>https://example.com/fr/</loc>
+    <loc>https://example.com/fr/tags/introduction/</loc>
+    <lastmod>2023-12-18T17:26:43-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/"
+                href="https://example.com/tags/introduction/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/"
+                href="https://example.com/fr/tags/introduction/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/posts/2023/12/my-first-post/</loc>
+    <lastmod>2023-12-18T17:26:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/posts/2023/12/my-first-post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/posts/2023/12/my-first-post/"
+                />
+  </url><url>
+    <loc>https://example.com/fr/categories/personal/</loc>
+    <lastmod>2023-12-18T17:26:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://example.com/categories/personal/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://example.com/fr/categories/personal/"
                 />
   </url><url>
     <loc>https://example.com/fr/series/</loc>
@@ -36,18 +168,6 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://example.com/fr/series/"
-                />
-  </url><url>
-    <loc>https://example.com/fr/tags/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://example.com/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://example.com/fr/tags/"
                 />
   </url>
 </urlset>
