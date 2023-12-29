@@ -1,10 +1,9 @@
 +++
-title = 'My First Post'
+title = "How It All Started"
 date = 2023-12-18T17:26:43-06:00
 draft = false
 toc = false
 categories = ['Personal']
-tags = ['Introduction']
 +++
 
 A couple of years ago it seemed unreal that someone like me could learn "techy" things, yet here I am telling you how I went from financial statements to firewalls in one and a half years.
