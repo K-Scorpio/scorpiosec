@@ -1,7 +1,7 @@
 +++
 title = "Crack the CCNA: A Step-by-Step Guide to Exam Success"
 date = 2024-01-02T20:08:15-06:00
-draft = true
+draft = false
 toc = true
 categories = ['Personal']
 +++
