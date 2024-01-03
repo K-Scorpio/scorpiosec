@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Projects on Scorpiosec</title>
-    <link>https://example.com/projects/</link>
+    <link>https://scorpiosec.com/projects/</link>
     <description>Recent content in Projects on Scorpiosec</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Fri, 29 Dec 2023 14:41:39 -0600</lastBuildDate>
-    <atom:link href="https://example.com/projects/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://scorpiosec.com/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Nothing here, yet!</title>
-      <link>https://example.com/projects/placeholder/</link>
+      <link>https://scorpiosec.com/projects/placeholder/</link>
       <pubDate>Fri, 29 Dec 2023 14:41:39 -0600</pubDate>
-      <guid>https://example.com/projects/placeholder/</guid>
+      <guid>https://scorpiosec.com/projects/placeholder/</guid>
       <description></description>
     </item>
   </channel>

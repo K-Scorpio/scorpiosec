@@ -2,132 +2,132 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://example.com/fr/projects/</loc>
+    <loc>https://scorpiosec.com/fr/projects/</loc>
     <lastmod>2023-12-29T14:41:39-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/projects/"
+                href="https://scorpiosec.com/projects/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/projects/"
+                href="https://scorpiosec.com/fr/projects/"
                 />
   </url><url>
-    <loc>https://example.com/fr/projects/placeholder/</loc>
+    <loc>https://scorpiosec.com/fr/projects/placeholder/</loc>
     <lastmod>2023-12-29T14:41:39-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/projects/placeholder/"
+                href="https://scorpiosec.com/projects/placeholder/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/projects/placeholder/"
+                href="https://scorpiosec.com/fr/projects/placeholder/"
                 />
   </url><url>
-    <loc>https://example.com/fr/</loc>
+    <loc>https://scorpiosec.com/fr/</loc>
     <lastmod>2023-12-29T14:41:39-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/"
+                href="https://scorpiosec.com/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/"
+                href="https://scorpiosec.com/fr/"
                 />
   </url><url>
-    <loc>https://example.com/fr/about/</loc>
+    <loc>https://scorpiosec.com/fr/about/</loc>
     <lastmod>2023-12-18T17:31:29-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/about/"
+                href="https://scorpiosec.com/about/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/about/"
+                href="https://scorpiosec.com/fr/about/"
                 />
   </url><url>
-    <loc>https://example.com/fr/categories/</loc>
+    <loc>https://scorpiosec.com/fr/categories/</loc>
     <lastmod>2023-12-18T17:26:43-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/categories/"
+                href="https://scorpiosec.com/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/categories/"
+                href="https://scorpiosec.com/fr/categories/"
                 />
   </url><url>
-    <loc>https://example.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</loc>
+    <loc>https://scorpiosec.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</loc>
     <lastmod>2023-12-18T17:26:43-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/posts/2023/12/how-it-all-started/"
+                href="https://scorpiosec.com/posts/2023/12/how-it-all-started/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/"
+                href="https://scorpiosec.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/"
                 />
   </url><url>
-    <loc>https://example.com/fr/categories/personal/</loc>
+    <loc>https://scorpiosec.com/fr/categories/personal/</loc>
     <lastmod>2023-12-18T17:26:43-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/categories/personal/"
+                href="https://scorpiosec.com/categories/personal/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/categories/personal/"
+                href="https://scorpiosec.com/fr/categories/personal/"
                 />
   </url><url>
-    <loc>https://example.com/fr/posts/</loc>
+    <loc>https://scorpiosec.com/fr/posts/</loc>
     <lastmod>2023-12-18T17:26:43-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/posts/"
+                href="https://scorpiosec.com/posts/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/posts/"
+                href="https://scorpiosec.com/fr/posts/"
                 />
   </url><url>
-    <loc>https://example.com/fr/series/</loc>
+    <loc>https://scorpiosec.com/fr/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/series/"
+                href="https://scorpiosec.com/series/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/series/"
+                href="https://scorpiosec.com/fr/series/"
                 />
   </url><url>
-    <loc>https://example.com/fr/tags/</loc>
+    <loc>https://scorpiosec.com/fr/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://example.com/tags/"
+                href="https://scorpiosec.com/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
-                href="https://example.com/fr/tags/"
+                href="https://scorpiosec.com/fr/tags/"
                 />
   </url>
 </urlset>

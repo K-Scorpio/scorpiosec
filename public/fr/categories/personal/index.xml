@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Personal on Scorpiosec</title>
-    <link>https://example.com/fr/categories/personal/</link>
+    <link>https://scorpiosec.com/fr/categories/personal/</link>
     <description>Recent content in Personal on Scorpiosec</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
     <lastBuildDate>Mon, 18 Dec 2023 17:26:43 -0600</lastBuildDate>
-    <atom:link href="https://example.com/fr/categories/personal/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://scorpiosec.com/fr/categories/personal/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Le Début de L&#39;aventure</title>
-      <link>https://example.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</link>
+      <link>https://scorpiosec.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</link>
       <pubDate>Mon, 18 Dec 2023 17:26:43 -0600</pubDate>
-      <guid>https://example.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</guid>
+      <guid>https://scorpiosec.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</guid>
       <description>Il y a quelques années, il me semblait irréel d&amp;rsquo;apprendre des choses &amp;ldquo;techniques&amp;rdquo; (la programmation c&amp;rsquo;est pour les matheux ou ceux qui l&amp;rsquo;ont commencé depuis longtemps etc - que de préjugés!) et pourtant, me voici en train de vous raconter comment je suis passé des états financiers aux pare-feux en un an et demi.&#xA;Après mon bachelor en finance, je savais que ce domaine n&amp;rsquo;était pas fait pour moi. Honnêtement, je n&amp;rsquo;avais jamais vraiment réfléchi à ce que je voulais faire, et j&amp;rsquo;ai opté pour cette filière par défaut.</description>
     </item>
   </channel>
