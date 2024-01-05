@@ -20,6 +20,4 @@ Interests: Cybersecurity, Software Engineering, Machine Learning
 
 [Github](https://github.com/K-Scorpio)
 
-[Email](kscorpiosec@gmail.com)
-
-[LinkedIn](www.linkedin.com/in/darryl-akretchakre)
+[Email](mailto:kscorpiosec@gmail.com)

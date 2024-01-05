@@ -1,5 +1,5 @@
 +++
-title = 'About'
+title = 'À propos'
 date = 2023-12-18T17:31:29-06:00
 draft = false
 +++
@@ -20,6 +20,4 @@ Mes intérêts incluent la cybersécurité (évidemment, sinon c'est moins drôl
 
 [Github](https://github.com/K-Scorpio)
 
-[Email](kscorpiosec@gmail.com)
-
-[LinkedIn](www.linkedin.com/in/darryl-akretchakre)
+[Email](mailto:kscorpiosec@gmail.com)

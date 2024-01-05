@@ -6,8 +6,110 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Mon, 18 Dec 2023 17:26:43 -0600</lastBuildDate>
+        <lastBuildDate>Tue, 02 Jan 2024 20:08:15 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Réussir l&#39;Examen CCNA : Guide Étape par Étape pour la Certification Cisco</title>
+            <link>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</link>
+            <pubDate>Tue, 02 Jan 2024 20:08:15 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</guid>
+            <description>Introduction Essayez de résoudre une équation mathématique complexe sans maîtriser les bases de l&amp;rsquo;arithmétique, un vrai défi, n&amp;rsquo;est-ce pas? En matière de &amp;ldquo;hacking&amp;rdquo; éthique, sautez les fondamentaux des réseaux informatiques et s&amp;rsquo;attaquer aux tâches avancées équivaut à essayer de résoudre des équations différentielles sans d&amp;rsquo;abord maîtriser l&amp;rsquo;addition et la soustraction. Vous ne pouvez attaquer ou défendre ce que vous ne comprenez pas.
+Tout comme les cours de mathématiques s&amp;rsquo;appuient les uns sur les autres, la compétence en matière de hacking nécessite une bonne compréhension des réseaux informatiques.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Essayez de résoudre une équation mathématique complexe sans maîtriser les bases de l&rsquo;arithmétique, un vrai défi, n&rsquo;est-ce pas? En matière de &ldquo;hacking&rdquo; éthique, sautez les fondamentaux des réseaux informatiques et s&rsquo;attaquer aux tâches avancées équivaut à essayer de résoudre des équations différentielles sans d&rsquo;abord maîtriser l&rsquo;addition et la soustraction. Vous ne pouvez attaquer ou défendre ce que vous ne comprenez pas.</p>
+<p>Tout comme les cours de mathématiques s&rsquo;appuient les uns sur les autres, la compétence en matière de hacking nécessite une bonne compréhension des réseaux informatiques. Si vous souhaitez vous construire une base solide et obtenir une certification, la certification Cisco Certified Network Associate (CCNA) est idéale. L&rsquo;examen dure 120 minutes, vous pouvez vous attendre à 100-120 questions et il coûte 300 dollars. L&rsquo;examen n&rsquo;est disponible qu&rsquo;en anglais et japonais. Vous n&rsquo;aurez pas la possibilité de revenir sur les questions que vous passez, donc même si vous ne connaissez pas la réponse, choisissez quelque chose.</p>
+<h2 id="aperçu-de-lexamen-ccna">Aperçu de l&rsquo;examen CCNA</h2>
+<p>L&rsquo;examen teste votre maîtrise d&rsquo;un large éventail de concepts de réseau. Vous devez savoir comment effectuer certaines tâches de réseau, de l&rsquo;adressage IP de base à la configuration de routeurs et de commutateurs. Voici un récapitulatif des objectifs de l&rsquo;examen:</p>
+<ul>
+<li>
+<p>Fondamentaux du réseau: Cette section examine votre compréhension des concepts réseau, y compris le modèle OSI, les protocoles TCP/IP et les fondamentaux du routage et de la commutation.</p>
+</li>
+<li>
+<p>Accès au réseau: Plonge dans les détails de l&rsquo;accès au réseau, ce domaine évalue votre compréhension des VLAN, de l&rsquo;Ethernet, des réseaux sans fil, et plus encore.</p>
+</li>
+<li>
+<p>Connectivité IP: Teste votre capacité à configurer et dépanner l&rsquo;adressage IP, le routage et le sous-réseau, ce domaine verifie que vous comprenez les subtilités de la connectivité IP.</p>
+</li>
+<li>
+<p>Services IP: De la traduction d&rsquo;adresse réseau (NAT) au DHCP et au-delà, cette section examine votre compétence concernant les services IP essentiels qui forment les piliers de la fonctionnalité des réseaux.</p>
+</li>
+<li>
+<p>Principes de sécurité: Dans un contexte de cybermenaces croissantes, ce domaine garantit que vous pouvez mettre en œuvre des mesures de sécurité de base, protégeant ainsi les réseaux contre les vulnérabilités potentielles.</p>
+</li>
+<li>
+<p>Automatisation et Programmabilité: En accord avec l&rsquo;évolution du paysage des réseaux, cette section mesure votre connaissance des outils d&rsquo;automatisation et des concepts de programmabilité.</p>
+</li>
+</ul>
+<p>Consultez ce lien pour une analyse plus détaillée des objectifs: <a href="https://learningnetwork.cisco.com/s/ccna-exam-topics" target="_blank" >Sujets de l&rsquo;examen CCNA</a>
+
+</p>
+<h2 id="ressources-pour-la-préparation">Ressources pour la préparation</h2>
+<p>Il existe de nombreux moyens abordables pour se préparer à l&rsquo;examen. Notez que vous n&rsquo;avez besoin que de deux ressources de la liste ci-dessous. Un cours pour assimiler les concepts et des examens blancs.</p>
+<blockquote>
+<p>Comme je l&rsquo;ai mentionné plus haut l&rsquo;examen n&rsquo;est pas disponible en francais, je vous recommande donc de vous preparer avec des resources en anglais. Si vous voulez quand même utiliser une resource en français, qu&rsquo;elle soit secondaire.</p>
+</blockquote>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/playlist?list=PLxbwE86jKRgMpuZuLBivzlM8s2Dk5lXBQ" target="_blank" >Jeremy&rsquo;s IT Lab</a>
+
+ - Ce cours complet de CCNA est <strong>gratuit</strong> sur YouTube. Je n&rsquo;en ai entendu que du bien. Je ne le connaissais pas pendant ma préparation, sinon je l&rsquo;aurais utilisé. Je l&rsquo;ai regardé après avoir passé mon examen et il est excellent!</p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=6TDjSEU9lZI&amp;list=PLbk3pyxYxY-pn6U0yDr_IObXZD6aKs0lC&amp;ab_channel=CITS-TRAINING" target="_blank" >CCNA 200-301 en Français</a>
+
+ et <a href="https://www.youtube.com/watch?v=NZfLJSyAN3g&amp;list=PLkKLSvyEXvvyo-nVa_uYsavNnsEHytImQ&amp;ab_channel=CyberS%C3%A9curit%C3%A92023" target="_blank" >Cours complet gratuit CCNA 200-301</a>
+
+ - Les deux resources en français les plus pertinentes que j&rsquo;ai trouvées.</p>
+</li>
+<li>
+<p><a href="https://www.udemy.com/course/ccna-complete/" target="_blank" >Neil Anderson</a>
+
+ - La formation CCNA la mieux notée sur Udemy, il y a de nombreuses personnes dans le subreddit CCNA qui témoignent de leur réussite grâce à cette formation, elle doit donc être bonne.</p>
+</li>
+<li>
+<p><a href="https://www.udemy.com/course/complete-networking-fundamentals-course-ccna-start/" target="_blank" >David Bombal</a>
+
+ - Voici le cours que j&rsquo;ai utilisé, il contient tout ce dont vous avez besoin pour réussir. David explique chaque concept en termes simples.</p>
+</li>
+</ul>
+<blockquote>
+<p>Vous aurez également besoin d&rsquo;examens préparatoires</p>
+</blockquote>
+<ul>
+<li>
+<p><a href="https://www.boson.com/practice-exam/200-301-cisco-ccna-practice-exam" target="_blank" >Boson Exams</a>
+
+ - Je me suis procuré cette série d&rsquo;examens blancs. C&rsquo;est généralement la plus recommandée sur le subreddit CCNA. Les examens sont suffisamment complexes et chaque réponse est expliquée en détail.</p>
+</li>
+<li>
+<p><a href="https://courses.jeremysitlab.com/" target="_blank" >Jeremy&rsquo;s IT Lab</a>
+
+ - Vous pouvez obtenir deux examens pratiques sur le site de Jeremy pour $20. Je ne les ai pas utilisés, mais à en juger par la qualité de son cours sur YouTube, je parie qu&rsquo;ils sont excellents, et ils sont beaucoup moins chers que Boson.</p>
+</li>
+</ul>
+<h2 id="plan-détude">Plan d&rsquo;étude</h2>
+<p>L&rsquo;examen est à choix multiples mais soyez prêt pour le défi, il est difficile et vous ne le réussirez pas si vous n&rsquo;avez que des connaissances théoriques. Certaines questions vous demanderont d&rsquo;effectuer des tâches réelles de configuration de systèmes, ne négligez donc pas les exercices pratiques et familiarisez-vous avec les commandes (certaines questions ne portent que sur les commandes). Votre plan devrait être d&rsquo;apprendre un concept, puis de faire des exercices pratiques en rapport avec ce concept, puis de répéter le processus. Je ne peux pas vous dire exactement quelles seront les questions que vous verrez, mais voici quelques points sur lesquels vous devez vous concentrer:</p>
+<ul>
+<li>
+<p>Subnetting (découpage de reseau) - C&rsquo;est le concept dont les gens se plaignent le plus sur le subreddit, et à juste titre. Si vous ne pouvez pas faire du subnetting assez rapidement, vous manquerez <strong>beaucoup</strong> de points, alors assurez-vous d&rsquo;en être capable!</p>
+</li>
+<li>
+<p>Numéros de port - Apprenez les numéros de port les plus courants pour SSH, HTTP, HTTPS, etc.</p>
+</li>
+<li>
+<p>Protocoles TCP et UDP - En plus des numéros de port, vous devez connaître la différence entre ces deux protocoles.</p>
+</li>
+<li>
+<p>ACL (listes de contrôle d&rsquo;accès) - Soyez sûr de pouvoir lire et configurer les ACL (je me suis relâché sur ce concept et j&rsquo;en ai fais les frais en manquant quelques questions).</p>
+</li>
+</ul>
+<h2 id="mots-de-fin">Mots de fin</h2>
+<p>Il se peut que vous voyiez ou lisiez des messages décourageant les personnes sans expérience des réseaux de passer l&rsquo;examen, <strong>NE LES ÉCOUTEZ PAS</strong>. Je ne connaissais rien aux réseaux et j&rsquo;ai réussi l&rsquo;examen, et vous pouvez en faire autant. De plus, si vous avez lu mon premier poste, vous savez que je n&rsquo;ai même pas de formation technique; j&rsquo;encourage de tout cœur quiconque souhaite passer l&rsquo;examen CCNA.
+La constance sera votre meilleure amie, vous aurez des jours où vous étudierez pendant de nombreuses heures et d&rsquo;autres où vous n&rsquo;aurez pas autant de temps. Concentrez-vous sur le fait de faire autant que possible chaque jour. Bonne chance, futurs maestros des réseaux! Vous y arriverez!</p>
+]]></content>
+        </item>
         
         <item>
             <title>Le Début de L&#39;aventure</title>

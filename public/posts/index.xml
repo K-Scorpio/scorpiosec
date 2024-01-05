@@ -6,8 +6,102 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Mon, 18 Dec 2023 17:26:43 -0600</lastBuildDate>
+        <lastBuildDate>Tue, 02 Jan 2024 20:08:15 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Crack the CCNA: A Step-by-Step Guide to Exam Success</title>
+            <link>https://scorpiosec.com/posts/2024/01/crack-the-ccna-a-step-by-step-guide-to-exam-success/</link>
+            <pubDate>Tue, 02 Jan 2024 20:08:15 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/01/crack-the-ccna-a-step-by-step-guide-to-exam-success/</guid>
+            <description>Introduction Picture yourself attempting to solve a complex mathematical equation, without a firm grasp of basic arithmetic. In the world of ethical hacking, skipping over the foundational principles of networking before tackling advanced tasks is akin to trying to solve differential equations without first mastering addition and subtraction. You cannot attack or defend what you do not understand.
+The same way math classes build upon each other, proficiency in ethical hacking relies on a strong understanding of networking fundamentals.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Picture yourself attempting to solve a complex mathematical equation, without a firm grasp of basic arithmetic. In the world of ethical hacking, skipping over the foundational principles of networking before tackling advanced tasks is akin to trying to solve differential equations without first mastering addition and subtraction. You cannot attack or defend what you do not understand.</p>
+<p>The same way math classes build upon each other, proficiency in ethical hacking relies on a strong understanding of networking fundamentals. If you want to build a solid foundation and get a certification, look no further than the Cisco Certified Network Associate (CCNA) certification. It will teach you everything you need to start and add more value to your resume. The exam lasts 120 minutes, you can expect 100-120 questions and it costs $300. You won’t be able to backtrack on questions, so even if you don’t know the answer, pick something.</p>
+<p><img src="/images/CCNA-jobs.png" alt="CCNA job postings on Indeed">
+<em>6,395 jobs listing CCNA at the time of writing</em></p>
+<h2 id="overview-of-the-ccna-exam">Overview of the CCNA exam</h2>
+<p>The exam is designed to assess your proficiency in a broad range of networking concepts. You will need to know how to accomplish some networking tasks from basic IP addressing to configuring routers and switches. Here is an overview of the exam objectives:</p>
+<ul>
+<li>
+<p>Network Fundamentals: This section examines your grasp of networking concepts, including the OSI model, TCP/IP protocols, and the fundamentals of routing and switching.</p>
+</li>
+<li>
+<p>Network Access: Delving into the nitty-gritty of network access, this domain assesses your understanding of VLANs, Ethernet, wireless networks, and more.</p>
+</li>
+<li>
+<p>IP Connectivity: Testing your ability to configure and troubleshoot IP addressing, routing, and subnetting, this domain ensures you can navigate the intricacies of IP connectivity.</p>
+</li>
+<li>
+<p>IP Services: From Network Address Translation (NAT) to DHCP and beyond, this section evaluates your proficiency in essential IP services that form the backbone of network functionality.</p>
+</li>
+<li>
+<p>Security Fundamentals: In an era of increasing cyber threats, this domain ensures you can implement basic security measures, protecting networks from potential vulnerabilities.</p>
+</li>
+<li>
+<p>Automation and Programmability: Reflecting the evolving landscape of networking, this section gauges your knowledge of automation tools and programmability concepts.</p>
+</li>
+</ul>
+<p>Check out this link for a more detailed breakdown of the objectives: <a href="https://learningnetwork.cisco.com/s/ccna-exam-topics" target="_blank" >CCNA Exam Topics</a>
+
+</p>
+<h2 id="study-resources">Study Resources</h2>
+<p>There are many affordable resources to prepare for the exam. Keep in mind you only need to use two resources from the list below. One course to learn the concepts and some practice exams.</p>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/playlist?list=PLxbwE86jKRgMpuZuLBivzlM8s2Dk5lXBQ" target="_blank" >Jeremy&rsquo;s IT Lab</a>
+
+ - This is a complete CCNA course <strong>free of charge</strong> on YouTube. I have only heard good things about it. I didn&rsquo;t know of it during my preparation otherwise I would have used it. I went through it after passing my exam and it&rsquo;s great!</p>
+</li>
+<li>
+<p><a href="https://www.udemy.com/course/ccna-complete/" target="_blank" >Neil Anderson</a>
+
+ - This is the highest rated CCNA course on Udemy, there are numerous people in the CCNA subreddit who testify to passing the exam using this course so it has to be good.</p>
+</li>
+<li>
+<p><a href="https://www.udemy.com/course/complete-networking-fundamentals-course-ccna-start/" target="_blank" >David Bombal</a>
+
+ - This is the course I used, it has everything you need to succeed. David explains every concept in simple terms.</p>
+</li>
+</ul>
+<blockquote>
+<p>You will also need some  practice exams</p>
+</blockquote>
+<ul>
+<li>
+<p><a href="https://www.boson.com/practice-exam/200-301-cisco-ccna-practice-exam" target="_blank" >Boson Exams</a>
+
+ - I got this set of practice exams. It is usually the most recommended on the CCNA subreddit. It is challenging enough and they explain every answer in great details.</p>
+</li>
+<li>
+<p><a href="https://courses.jeremysitlab.com/" target="_blank" >Jeremy&rsquo;s IT Lab</a>
+
+ - You can grab two practice exams from Jeremy&rsquo;s website for $20. I didn&rsquo;t use it but judging by the quality of his course on YouTube, I bet they are great, plus they are way less expensive than Boson.</p>
+</li>
+</ul>
+<h2 id="study-plan">Study Plan</h2>
+<p>The exam is multiple choice but don&rsquo;t let that fool you, it is challenging and you won&rsquo;t pass it if you only have theoretical knowledge. Some questions will require you to complete some actual networking tasks by configuring devices so do not neglect the labs and get very familiar with the commands (some questions are just about commands). Your plan should be to learn a concept, then do some lab related to it, rinse and repeat. I can&rsquo;t exactly share what questions you will see but here are a few things you should focus on:</p>
+<ul>
+<li>
+<p>Subnetting - This is the concept people complain the most about on the subreddit, and rightfully so. If you cannot do subnetting relatively quickly you will miss <strong>a lot</strong> of points, so make sure you know it!</p>
+</li>
+<li>
+<p>Port numbers - Learn the most common port numbers for SSH, HTTP, HTTPS etc.</p>
+</li>
+<li>
+<p>TCP vs UDP protocols - In addition to port numbers, you need to know the differences between these two protocols.</p>
+</li>
+<li>
+<p>ACLs (Access Control Lists) - Make sure you can read and configure ACLs (I slacked on this concept and missed a few questions because of it).</p>
+</li>
+</ul>
+<h2 id="closing-words">Closing Words</h2>
+<p>You might see or read posts discouraging people without networking experience from taking the exam, <strong>DO NOT LISTEN TO THEM</strong>. I went from knowing nothing about networking to passing the exam, and you can too. Moreover, if you have read my first blog post you know that I don&rsquo;t even have a technical background so I wholeheartedly encourage anyone who wants to take the CCNA exam.
+Consistency will be your best friend, you will have days when you study for many hours and others when you don’t have as much time. Just focus on doing as much as you can every day. Best of luck, future network maestros! You&rsquo;ve got this!</p>
+]]></content>
+        </item>
         
         <item>
             <title>How It All Started</title>
