@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Certifications on Scorpiosec</title>
+    <link>https://scorpiosec.com/fr/tags/certifications/</link>
+    <description>Recent content in Certifications on Scorpiosec</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>fr</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Tue, 02 Jan 2024 20:08:15 -0600</lastBuildDate>
+    <atom:link href="https://scorpiosec.com/fr/tags/certifications/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Réussir l&#39;Examen CCNA : Guide Étape par Étape pour la Certification Cisco</title>
+      <link>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</link>
+      <pubDate>Tue, 02 Jan 2024 20:08:15 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</guid>
+      <description>Introduction Essayez de résoudre une équation mathématique complexe sans maîtriser les bases de l&amp;rsquo;arithmétique, un vrai défi, n&amp;rsquo;est-ce pas? En matière de &amp;ldquo;hacking&amp;rdquo; éthique, sautez les fondamentaux des réseaux informatiques et s&amp;rsquo;attaquer aux tâches avancées équivaut à essayer de résoudre des équations différentielles sans d&amp;rsquo;abord maîtriser l&amp;rsquo;addition et la soustraction. Vous ne pouvez attaquer ou défendre ce que vous ne comprenez pas.&#xA;Tout comme les cours de mathématiques s&amp;rsquo;appuient les uns sur les autres, la compétence en matière de hacking nécessite une bonne compréhension des réseaux informatiques.</description>
+    </item>
+  </channel>
+</rss>

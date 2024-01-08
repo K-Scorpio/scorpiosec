@@ -15,6 +15,19 @@
                 href="https://scorpiosec.com/categories/"
                 />
   </url><url>
+    <loc>https://scorpiosec.com/tags/certifications/</loc>
+    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/certifications/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/certifications/"
+                />
+  </url><url>
     <loc>https://scorpiosec.com/posts/2024/01/crack-the-ccna-a-step-by-step-guide-to-exam-success/</loc>
     <lastmod>2024-01-02T20:08:15-06:00</lastmod>
     <xhtml:link
@@ -65,6 +78,19 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/</loc>
+    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/projects/placeholder/</loc>
@@ -129,18 +155,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/series/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/tags/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
                 />
   </url>
 </urlset>

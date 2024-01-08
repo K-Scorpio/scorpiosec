@@ -15,6 +15,19 @@
                 href="https://scorpiosec.com/fr/categories/"
                 />
   </url><url>
+    <loc>https://scorpiosec.com/fr/tags/certifications/</loc>
+    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/certifications/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/certifications/"
+                />
+  </url><url>
     <loc>https://scorpiosec.com/fr/categories/personal/</loc>
     <lastmod>2024-01-02T20:08:15-06:00</lastmod>
     <xhtml:link
@@ -65,6 +78,19 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/</loc>
+    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/projects/</loc>
@@ -129,18 +155,6 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/series/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/tags/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
                 />
   </url>
 </urlset>
