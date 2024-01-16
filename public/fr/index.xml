@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 02 Jan 2024 20:08:15 -0600</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jan 2024 20:05:43 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Réussir l&#39;Examen CCNA : Guide Étape par Étape pour la Certification Cisco</title>
+      <title>Comprendre la Structure des Répertoires Linux</title>
+      <link>https://scorpiosec.com/fr/posts/2024/01/comprendre-la-structure-des-r%C3%A9pertoires-linux/</link>
+      <pubDate>Sun, 14 Jan 2024 20:05:43 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/01/comprendre-la-structure-des-r%C3%A9pertoires-linux/</guid>
+      <description>Hiérarchie des fichiers sous Linux La connaissance de Linux est indispensable pour les professionnels de la cybersécurité. Vous remarquerez que Linux est différent de Windows dans la façon dont les fichiers sont organisés. La norme de hiérarchie du système de fichiers (FHS) entretenue par la Fondation Linux établit un modèle pour la structure des répertoires. Bien qu&amp;rsquo;il puisse y avoir quelques variations entre les distributions Linux, elles adhèrent généralement à cette norme.</description>
+    </item>
+    <item>
+      <title>Certification CEH: Analyse Nuancée des certifications de hacking</title>
+      <link>https://scorpiosec.com/fr/posts/2024/01/certification-ceh-analyse-nuanc%C3%A9e-des-certifications-de-hacking/</link>
+      <pubDate>Sun, 07 Jan 2024 21:13:59 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/01/certification-ceh-analyse-nuanc%C3%A9e-des-certifications-de-hacking/</guid>
+      <description>Introduction La certification CEH (Certified Ethical Hacker) fait couler beaucoup d&amp;rsquo;encre dans le domaine de la cybersécurité. L&amp;rsquo;examen fait l&amp;rsquo;objet de nombreuses critiques, principalement du fait de son format à choix multiples. C&amp;rsquo;est l&amp;rsquo;une des premières certifications focalisée sur le hacking, introduit par EC-Coucil en 2003. Cet article a pour objectif de donner honnêtement mon point de vue sur la certification CEH, en abordant les critiques entourant sa méthode d&amp;rsquo;examination tout en mettant en lumière son importance dans le domaine du piratage éthique.</description>
+    </item>
+    <item>
+      <title>Réussir l&#39;Examen CCNA: Guide Étape par Étape pour la Certification Cisco</title>
       <link>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</link>
       <pubDate>Tue, 02 Jan 2024 20:08:15 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</guid>

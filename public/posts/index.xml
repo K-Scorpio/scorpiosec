@@ -6,8 +6,139 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Tue, 02 Jan 2024 20:08:15 -0600</lastBuildDate>
+        <lastBuildDate>Sun, 14 Jan 2024 20:05:43 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Demystifying the Linux File System Hierarchy</title>
+            <link>https://scorpiosec.com/posts/2024/01/demystifying-the-linux-file-system-hierarchy/</link>
+            <pubDate>Sun, 14 Jan 2024 20:05:43 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/01/demystifying-the-linux-file-system-hierarchy/</guid>
+            <description>Linux File Hierarchy Structure Proficiency in Linux is indispensable for cybersecurity professionals, you may have noticed that Linux is different from Windows in the way files are organized. The Filesystem Hierarchy Standard (FHS) maintained by the Linux Foundation provides a model for the directories structure. While there may be some variations across Linux distributions, they typically adhere to this standard. To enhance your Linux skills, a fundamental understanding of the file system is essential.</description>
+            <content type="html"><![CDATA[<h2 id="linux-file-hierarchy-structure">Linux File Hierarchy Structure</h2>
+<p>Proficiency in Linux is indispensable for cybersecurity professionals, you may have noticed that Linux is different from Windows in the way files are organized. The Filesystem Hierarchy Standard (FHS) maintained by the Linux Foundation provides a model for the directories structure. While there may be some variations across Linux distributions, they typically adhere to this standard. To enhance your Linux skills, a fundamental understanding of the file system is essential. In this blog post we will explore the Linux file system.</p>
+<blockquote>
+<p>This is not an exhaustive list but we will look at the most common directories.</p>
+</blockquote>
+<p><img src="/images/Linux-File-Hierarchy-Structure.png" alt="Linux Filesystem Overview">
+<em>Linux Filesystem Overview</em></p>
+<h2 id="-root">/ (Root)</h2>
+<p>At the core of the Linux Filesystem Hierarchy you have the root directory represented by the symbol &ldquo;/&rdquo;. This directory is the starting point for the entire file system.</p>
+<ul>
+<li>Every single file and directory start from the root directory</li>
+<li>Only the root user has write permissions under this directory</li>
+<li>The home directory of the root user is /root</li>
+<li>Executing <code>ls -l /</code> will display the contents of the root directory</li>
+</ul>
+<h2 id="bin--sbin">/bin &amp; /sbin</h2>
+<p>These directories contain essential binaries and system commands. While both directories house binary files, there is a fundamental distinction in the types of binaries they contain.</p>
+<p>The /bin directory, derived from &lsquo;binary,&rsquo; is reserved for storing vital executable binaries crucial to the core functionality of the operating system. These binaries are necessary for user interactions and are often used in single-user mode. Common commands such as ls (list files), cp (copy), and mv (move) find their home in the /bin directory.</p>
+<p>Conversely, the /sbin directory, representing &lsquo;system binary,&rsquo; contains binaries designed exclusively for system administration and maintenance tasks. Unlike the binaries in /bin, those in /sbin are typically intended for use by the system administrator rather than regular users. System binaries essential for tasks like system recovery, repair, and diagnostics are housed here.</p>
+<table>
+<thead>
+<tr>
+<th><strong>/bin</strong></th>
+<th><strong>/sbin</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contains common linux commands used in single-user modes such as ps, ls, ping, grep, cp, etc.</td>
+<td>Contains commands typically used by system administrators such as iptables, reboot, fdisk, ifconfig, swapon, etc.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="boot">/boot</h2>
+<p>The /boot directory houses critical files that are essential for the booting process of the operating system. The boot loader files and the Linux kernel are stored in this directory. The bootloader is responsible for initiating the operating system during the boot process. As the initial phase of a Linux system&rsquo;s startup sequence, the contents of /boot are integral to initiating the kernel and facilitating a smooth boot experience. Corrupting or deleting certain files in this directory can hinder the correct booting of your system.</p>
+<h2 id="dev">/dev</h2>
+<p>The /dev directory serves as a gateway to the device files that represent hardware devices connected to the system. Unlike regular files, these device files act as interfaces, enabling communication between the operating system and hardware components.</p>
+<p>The name &ldquo;/dev&rdquo; is short for &ldquo;device,&rdquo; and this directory acts as a virtual filesystem containing entries for each device or pseudo-device connected to the system. These entries are represented as special files, allowing processes to interact with hardware through standardized input and output operations.</p>
+<p>Inside the /dev directory, you will find various devices files. Here are a few of them:</p>
+<ul>
+<li><em>/dev/fd</em> - Floppy disk devices</li>
+<li><em>/dev/tty</em> - Terminal devices representing console and serial ports</li>
+<li><em>/dev/sda</em> (1,2,3, etc.) - disk devices representing hard drives</li>
+<li><em>/dev/usb</em> (1,2,3, etc.) - USB device entries</li>
+</ul>
+<h2 id="etc">/etc</h2>
+<p>The /etc directory serves as a central hub for configuration files that dictate the behavior of the operating system, system services, and installed applications. These configuration files are often plain text files and serve as a means to customize and fine-tune the settings of different components.</p>
+<p>Linux adheres to the principle of separating configuration data from executables by centralizing configuration files in /etc. This separation allows for easier system administration, as modifications and updates to settings can be made without altering the core functionality of the associated programs. In this directory you can find:</p>
+<ul>
+<li><em>/etc/passwd</em> - Contains user account information, including usernames, user IDs, and home directories (believe it or not, your actual passwords aren&rsquo;t here)</li>
+<li><em>/etc/hosts</em> - Mapping of IP addresses to hostnames, facilitating local hostname resolution</li>
+<li><em>/etc/shadow</em> - Stores user passwords in an encrypted hashed format</li>
+<li><em>/etc/network/</em> - Configuration files for network settings, including interfaces and routing</li>
+</ul>
+<h2 id="home">/home</h2>
+<p>The /home directory functions as a private space for each user, encompassing individual user home directories like Documents, Downloads, Desktop, Pictures, etc. Its primary purpose is to provide a dedicated space for storing the personal files, documents, and settings of individual users. When a new user account is created, a corresponding directory is established within /home, encapsulating their unique environment.</p>
+<h2 id="lib">/lib</h2>
+<p>The /lib directory contains shared libraries and kernel modules. Short for &ldquo;library&rdquo;, this directory ensures the availability of essential resources that support the functioning of various programs and applications on a Linux system such as the binaries in /bin and /sbin.</p>
+<p>Shared libraries, also known as dynamic-link libraries, are compiled code modules that multiple programs can use simultaneously. Placing these shared libraries in /lib ensures that they are readily accessible to the applications that depend on them, promoting efficiency and resource optimization.</p>
+<p>Kernel modules, which extend the functionality of the Linux kernel, are also stored in /lib. These modules can be dynamically loaded or unloaded as needed, enhancing the adaptability and versatility of the operating system.</p>
+<h2 id="media">/media</h2>
+<p>The /media directory is a mount point for removable media devices such as USB drives, external hard disks, and optical discs. Acting as a temporary staging area for these devices, /media allows users to access and interact with their contents seamlessly.</p>
+<p>It plays a crucial role in providing a standardized location for mounting external and removable storage devices. When a user connects a USB drive or inserts an optical disc, the operating system mounts the device to a subdirectory within /media, creating a point of access for users to read, write, and manage the contents.</p>
+<h2 id="mnt">/mnt</h2>
+<p>The /mnt directory act as a generic mount point for temporary filesystems and remote file systems. Unlike the /media directory, which is specifically designed for removable media, /mnt is a flexible and manually managed location that allows users and administrators to mount various filesystems as needed.</p>
+<p>The /mnt directory acts as a staging area for temporarily mounting additional filesystems, whether they are local or remote. This flexibility makes /mnt a versatile location for accessing data from different sources, such as network shares, external drives, or filesystems intended for temporary use.</p>
+<p>While /media is dedicated to automatically mounting removable media devices, /mnt provides a more manual and customizable approach, allowing users to mount and access various filesystems based on their specific requirements.</p>
+<h2 id="opt">/opt</h2>
+<p>The /opt directory is designated for the installation of optional or add-on software packages. Abbreviated from &ldquo;optional,&rdquo; /opt provides a standardized location for third-party applications that are not part of the core system but are added to enhance the functionality of the operating system.</p>
+<p>The /opt directory is a dedicated space for software vendors and developers to install their applications without interfering with the standard system files and directories. This separation ensures that optional software packages do not disrupt the core system components and adhere to a consistent installation structure.</p>
+<p>Applications installed in /opt typically have their own subdirectories, containing the necessary binaries, libraries, documentation, and other resources. This organization simplifies the management and removal of optional software, promoting a clean and modular approach to extending the capabilities of the Linux system.</p>
+<h2 id="tmp">/tmp</h2>
+<p>The /tmp directory is a temporary storage location for files that are required during the course of system operations. Abbreviated from &ldquo;temporary&rdquo;, /tmp is intended for the storage of transient data that may be needed by applications, processes, or users and is automatically cleared upon system reboot.</p>
+<p>This is designed to be a shared space for storing temporary files, facilitating communication between different processes and allowing applications to create and manipulate temporary data as needed. The key characteristics of /tmp include its ephemeral nature and the absence of persistent storage, making it an ideal location for short-term storage requirements.</p>
+<h2 id="usr">/usr</h2>
+<p>The /usr directory is a fundamental component of the Linux filesystem, housing user-related resources, secondary user programs, and data. Abbreviated from &ldquo;Unix System Resources&rdquo;, /usr encompasses a wide range of directories, each contributing to the overall functionality and organization of the Linux operating system.</p>
+<p>The /usr directory is designed to contain user-related resources and secondary user programs that are not essential for system booting and repair. It plays a crucial role in separating the core system binaries in /bin and /sbin from additional programs and resources that enhance the user experience.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This overview is just the tip of the iceberg. You can dive deeper into each directory to further your understanding of the Linux Filesystem Hierarchy. If you are looking for books, I suggest <a href="https://www.amazon.com/How-Linux-Works-Brian-Ward/dp/1718500408" target="_blank" >How Linux Works, What Every Superuser Should Know, 3rd Edition</a>
+
+ and <a href="https://linuxcommand.org/tlcl.php" target="_blank" >The Linux Command Line, 2nd Edition: A Complete Introduction</a>
+
+ (the second book is free).</p>
+<p>I hope this blog post was helpful to you. Keep learning!</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>CEH Exam Insights: A Nuanced Look at Ethical Hacking Certifications</title>
+            <link>https://scorpiosec.com/posts/2024/01/ceh-exam-insights-a-nuanced-look-at-ethical-hacking-certifications/</link>
+            <pubDate>Sun, 07 Jan 2024 21:13:59 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/01/ceh-exam-insights-a-nuanced-look-at-ethical-hacking-certifications/</guid>
+            <description>Introduction In the ever-evolving landscape of cybersecurity, the Certified Ethical Hacker (CEH) certification has long been a topic of discussion and debate. It is actually one of the oldest certifications out there, being introduced in 2003 by EC-Council. The exam has garnered a lot of criticism primarily due to its reliance on the multiple-choice format. This blog post aims to honestly give my perspective of the CEH certification, addressing the skepticism surrounding its examination method while shedding light on its significance in the realm of ethical hacking.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>In the ever-evolving landscape of cybersecurity, the Certified Ethical Hacker (CEH) certification has long been a topic of discussion and debate. It is actually one of the oldest certifications out there, being introduced in 2003 by EC-Council. The exam has garnered a lot of criticism primarily due to its reliance on the multiple-choice format. This blog post aims to honestly give my perspective of the CEH certification, addressing the skepticism surrounding its examination method while shedding light on its significance in the realm of ethical hacking.</p>
+<p><img src="/images/CEH-jobs.png" alt="CEH job postings on LinkedIn">
+<em>8,941 jobs listing CEH at the time of writing on LinkedIn</em></p>
+<h2 id="the-controversy-multiple-choice-and-its-critics">The Controversy: Multiple Choice and its Critics</h2>
+<p>I am sure you have seen it online (YouTube, Reddit, etc.), statetements like &ldquo;The CEH won&rsquo;t teach you anything&rdquo;, &ldquo;CEH is useless!&rdquo; and so on. Critics argue that because hacking is a dynamic field requiring hands-on knowledge traditional exam methods are ineffective. While I agree with the sentiment I also think that we should scrutinize this stance. First, I believe that the CEH does not replicate the hands-on nature of hacking but I agree that it serves its purpose which is to be a standardized measure to evaluate foundational theorical knowledge, ensuring a common baseline for ethical hacking professionals.</p>
+<p>So let&rsquo;s me be honest here, the CEH <strong>did</strong> teach me a lot of things especially as a beginner. Most people &ldquo;memorize&rdquo; the material just to pass the exam and act surprised that they didn&rsquo;t retain anything after. During my preparation I &ldquo;studied&rdquo; and came out with some solid knowledge, I supplemented the theoretical knowledge with some labs to deepen my understanding of the concepts.</p>
+<p>My second point might be biased but hear me out. Apparently HR departments love the CEH, it is listed on most security jobs. I am convinced that finding a job in cybersecurity today is a number game, so you have to work on two fronts which are: how you appear to potential employers and your actual technical skills. Especially, if you are a self-taught cybersecurity individual you need to put as many chances on your side as possible. Nothing is preventing you from getting the CEH as an HR checking certification and actually developing deep technical skills.</p>
+<p>My final point on this whole CEH thing is simple. Get it if you are <strong>not</strong> paying for it (as it costs $950-$1,199). You will learn if you actually apply yourself and it will serve its HR bypass function.</p>
+<h2 id="overview-of-the-ceh-exam">Overview of the CEH exam</h2>
+<p>The exam tests you on 20 areas of ethical hacking ranging from Footprinting and Reconnaissance to Cryptography. You can get a full list of the modules <a href="https://www.eccouncil.org/wp-content/uploads/2022/09/CEH-brochure.pdf" target="_blank" >here</a>
+
+ starting at page 6. The exam has 125 questions and you will have four hours to complete it.</p>
+<p>The official training you get when you purchase your voucher is exactly what you will be tested on, nothing more. A few things I noticed during my exam:</p>
+<ul>
+<li>
+<p>It is very tools focused - You will need to know different tools used for various tasks (scanning, session hijacking, enumeration etc.).</p>
+</li>
+<li>
+<p>You will get a lot of questions about commands - Beyond knowing tools you need to know how they are used to achieve x or y.</p>
+</li>
+<li>
+<p>The cryptography and malware concepts can be hard to grasp at first especially if you are a beginner, put more focus on these modules.</p>
+</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>While I acknowledge that the criticism about the CEH is valid, I think it does provide some value by helping you with HR and teaching about a lot of topics related to ethical hacking and you should go for it if you are getting sponsored. I encourage you to have a balanced view of certifications, and make informed decisions based on your career goals and personal situation. At the end of the day, you know what is best for you. I also recommend complementing that CEH with hands-on experience by doing labs.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Cracking the CCNA: A Step-by-Step Guide to Exam Success</title>

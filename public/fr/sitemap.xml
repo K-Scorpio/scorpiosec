@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://scorpiosec.com/fr/categories/</loc>
-    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -15,8 +15,112 @@
                 href="https://scorpiosec.com/fr/categories/"
                 />
   </url><url>
+    <loc>https://scorpiosec.com/fr/posts/2024/01/comprendre-la-structure-des-r%C3%A9pertoires-linux/</loc>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/01/demystifying-the-linux-file-system-hierarchy/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/01/comprendre-la-structure-des-r%C3%A9pertoires-linux/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/filesystem/</loc>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/filesystem/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/filesystem/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/linux/</loc>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/linux/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/linux/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/categories/operating-systems/</loc>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/categories/operating-systems/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/categories/operating-systems/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/posts/</loc>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/</loc>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/</loc>
+    <lastmod>2024-01-14T20:05:43-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/posts/2024/01/certification-ceh-analyse-nuanc%C3%A9e-des-certifications-de-hacking/</loc>
+    <lastmod>2024-01-07T21:13:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/01/ceh-exam-insights-a-nuanced-look-at-ethical-hacking-certifications/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/01/certification-ceh-analyse-nuanc%C3%A9e-des-certifications-de-hacking/"
+                />
+  </url><url>
     <loc>https://scorpiosec.com/fr/tags/certifications/</loc>
-    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
+    <lastmod>2024-01-07T21:13:59-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -29,7 +133,7 @@
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/categories/personal/</loc>
-    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
+    <lastmod>2024-01-07T21:13:59-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -39,19 +143,6 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/categories/personal/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/posts/</loc>
-    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/posts/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</loc>
@@ -65,32 +156,6 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/</loc>
-    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/tags/</loc>
-    <lastmod>2024-01-02T20:08:15-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/projects/</loc>
