@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction La semaine dernière, nous avons exploré l&amp;rsquo;organisation des fichiers sous Linux, mais comment le système d&amp;rsquo;exploitation sait-il automatiquement où stocker le fichier &amp;ldquo;X&amp;rdquo; ou le fichier &amp;ldquo;Y&amp;rdquo; ? La réponse se trouve dans le type de système de fichiers, ce modèle dicte l&amp;rsquo;organisation et le stockage des données sur les périphériques de stockage d&amp;rsquo;un ordinateur, tels que les disques durs ou les disques durs à semi-conducteurs. Il guide l&amp;rsquo;ordinateur dans la gestion et le suivi des fichiers et des dossiers." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Linux, Filesystem" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/01/exploration-des-types-de-syst%C3%A8mes-de-fichiers-linux-couramment-employ%C3%A9s/" />
+
+
+    <title>
+        
+            Exploration des Types de Systèmes de Fichiers Linux Couramment Employés
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Exploration des Types de Systèmes de Fichiers Linux Couramment Employés">
+<meta itemprop="description" content="Introduction La semaine dernière, nous avons exploré l&rsquo;organisation des fichiers sous Linux, mais comment le système d&rsquo;exploitation sait-il automatiquement où stocker le fichier &ldquo;X&rdquo; ou le fichier &ldquo;Y&rdquo; ? La réponse se trouve dans le type de système de fichiers, ce modèle dicte l&rsquo;organisation et le stockage des données sur les périphériques de stockage d&rsquo;un ordinateur, tels que les disques durs ou les disques durs à semi-conducteurs. Il guide l&rsquo;ordinateur dans la gestion et le suivi des fichiers et des dossiers."><meta itemprop="datePublished" content="2024-01-21T18:33:14-06:00" />
+<meta itemprop="dateModified" content="2024-01-21T18:33:14-06:00" />
+<meta itemprop="wordCount" content="1193"><meta itemprop="image" content="https://scorpiosec.com/" />
+<meta itemprop="keywords" content="Linux,Filesystem," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/" /><meta name="twitter:title" content="Exploration des Types de Systèmes de Fichiers Linux Couramment Employés"/>
+<meta name="twitter:description" content="Introduction La semaine dernière, nous avons exploré l&rsquo;organisation des fichiers sous Linux, mais comment le système d&rsquo;exploitation sait-il automatiquement où stocker le fichier &ldquo;X&rdquo; ou le fichier &ldquo;Y&rdquo; ? La réponse se trouve dans le type de système de fichiers, ce modèle dicte l&rsquo;organisation et le stockage des données sur les périphériques de stockage d&rsquo;un ordinateur, tels que les disques durs ou les disques durs à semi-conducteurs. Il guide l&rsquo;ordinateur dans la gestion et le suivi des fichiers et des dossiers."/>
+
+
+
+    <meta property="og:title" content="Exploration des Types de Systèmes de Fichiers Linux Couramment Employés" />
+<meta property="og:description" content="Introduction La semaine dernière, nous avons exploré l&rsquo;organisation des fichiers sous Linux, mais comment le système d&rsquo;exploitation sait-il automatiquement où stocker le fichier &ldquo;X&rdquo; ou le fichier &ldquo;Y&rdquo; ? La réponse se trouve dans le type de système de fichiers, ce modèle dicte l&rsquo;organisation et le stockage des données sur les périphériques de stockage d&rsquo;un ordinateur, tels que les disques durs ou les disques durs à semi-conducteurs. Il guide l&rsquo;ordinateur dans la gestion et le suivi des fichiers et des dossiers." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/01/exploration-des-types-de-syst%C3%A8mes-de-fichiers-linux-couramment-employ%C3%A9s/" /><meta property="og:image" content="https://scorpiosec.com/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-01-21T18:33:14-06:00" />
+<meta property="article:modified_time" content="2024-01-21T18:33:14-06:00" />
+
+
+
+
+
+    <meta property="article:section" content="Operating Systems" />
+
+
+
+    <meta property="article:published_time" content="2024-01-21 18:33:14 -0600 CST" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/01/overview-of-the-common-linux-file-system-types/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        6 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/01/overview-of-the-common-linux-file-system-types/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/01/exploration-des-types-de-syst%C3%A8mes-de-fichiers-linux-couramment-employ%C3%A9s/">Exploration des Types de Systèmes de Fichiers Linux Couramment Employés</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#ext4-fourth-extended-file-system">Ext4 (Fourth Extended File System)</a></li>
+    <li><a href="#xfs-xfs-file-system">XFS (XFS File System)</a></li>
+    <li><a href="#zfs-z-file-system">ZFS (Z File System)</a></li>
+    <li><a href="#btrfs-b-tree-file-system">Btrfs (B-Tree File System)</a></li>
+    <li><a href="#f2fs-flash-friendly-file-system">F2FS (Flash-Friendly File System)</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>La semaine dernière, nous avons exploré l&rsquo;organisation des fichiers sous Linux, mais comment le système d&rsquo;exploitation sait-il automatiquement où stocker le fichier &ldquo;X&rdquo; ou le fichier &ldquo;Y&rdquo; ? La réponse se trouve dans le type de système de fichiers, ce modèle dicte l&rsquo;organisation et le stockage des données sur les périphériques de stockage d&rsquo;un ordinateur, tels que les disques durs ou les disques durs à semi-conducteurs. Il guide l&rsquo;ordinateur dans la gestion et le suivi des fichiers et des dossiers.</p>
+<p>Pour mieux comprendre ce concept, imaginez le stockage de votre ordinateur comme une penderie, où chaque type de système de fichiers représente une méthode distincte de rangement et de tri de vos vêtements, par couleur, par type, etc. Tout comme chaque méthode de rangement des vêtements a ses points forts et ses limites, les types de systèmes de fichiers sous Linux sont adaptés à des usages spécifiques. Certains sont spécialisés dans le traitement rapide de grandes quantités de données, tandis que d&rsquo;autres donnent la priorité à l&rsquo;intégrité et à la sécurité des données. Linux offre différents types de systèmes de fichiers tels que Ext4, XFS, ZFS, etc., chacun d&rsquo;entre eux ayant été conçu dans un but spécifique. Nous en examinerons cinq aujourd&rsquo;hui.</p>
+<h2 id="ext4-fourth-extended-file-system">Ext4 (Fourth Extended File System)</h2>
+<p>Ext4, ou quatrième système de fichiers étendu, est l&rsquo;un des systèmes de fichiers les plus utilisés dans le monde Linux. Il est l&rsquo;évolution de son prédécesseur, Ext3, et offre des performances améliorées et des fonctionnalités supplémentaires. Ext4 est connu pour sa fiabilité, ses capacités de journalisation et sa capacité à prendre en charge des systèmes de fichiers volumineux. Exécuter la commande <code>df -T -h</code> à partir de votre terminal vous permettra de voir le système de fichiers Ext4 sur votre machine.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Avantages</strong></th>
+<th><strong>Inconvénients</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Performances élevées pour la plupart des charges de travail et rétrocompatibilité avec Ext3</td>
+<td>Possibilité de rencontrer des difficultés avec des systèmes de fichiers extrêmement volumineux en raison de problèmes de &ldquo;scaling&rdquo;</td>
+</tr>
+<tr>
+<td>Un mécanisme robuste de journalisation minimise la perte de données en cas de défaillance inattendue du système</td>
+<td>Ne supporte pas la compression transparente</td>
+</tr>
+<tr>
+<td>Prise en charge de fichiers et de partitions de grande taille</td>
+<td>Ne supporte pas la déduplication des données</td>
+</tr>
+</tbody>
+</table>
+<h2 id="xfs-xfs-file-system">XFS (XFS File System)</h2>
+<p>XFS est un système de fichiers hautement modulable et de haute performance réputé pour sa capacité à gérer efficacement les fichiers volumineux et les volumes de stockage importants. Sa conception est axée sur l&rsquo;optimisation des performances pour le stockage de grande capacité, ce qui le rend adapté à diverses applications avec de vastes ensembles de données. XFS est idéal pour les tâches exigeant des opérations d&rsquo;E/S (pour Entrée/Sortie) de fichiers très performantes; c&rsquo;est un choix populaire pour les systèmes de bases de données. Ses capacités se distinguent dans les scénarios où l&rsquo;accès rapide à de grandes quantités de données est essentiel.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Avantages</strong></th>
+<th><strong>Inconvénients</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Système de fichiers évolutif et performant</td>
+<td>N&rsquo;utilise pas les sommes de contrôle, qui sont essentielles pour vérifier l&rsquo;intégrité des données</td>
+</tr>
+<tr>
+<td>Aucun ralentissement en cas de nombreuses opérations d&rsquo;E/S simultanées</td>
+<td>Bien que XFS utilise la journalisation pour ses structures internes, il n&rsquo;enregistre pas lui-même les modifications apportées aux données utilisateur</td>
+</tr>
+</tbody>
+</table>
+<h2 id="zfs-z-file-system">ZFS (Z File System)</h2>
+<p>Ce système de fichiers n&rsquo;est pas natif de Linux mais a été adapté aux environnements Linux. Le système de fichiers Z se caractérise par ses fonctionnalités avancées, notamment l&rsquo;intégrité des données, les instantanés (snapshots) et la fonction RAID intégrée. Développé à l&rsquo;origine par Sun Microsystems, ZFS a trouvé sa place dans l&rsquo;écosystème Linux. ZFS offre une protection solide des données grâce à des instantanés facilement accessibles, un stockage optimisé des données via leur compression et l&rsquo;élimination des copies de données redondantes.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Avantages</strong></th>
+<th><strong>Inconvénients</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S&rsquo;appuyant sur des sommes de contrôle et des mécanismes d&rsquo;autoréparation, ce système garantit une intégrité exceptionnelle des données en détectant et en corrigeant activement les erreurs</td>
+<td>ZFS est riche en fonctionnalités, mais cette complexité peut le rendre plus difficile à configurer, à gérer et à dépanner comparativement à des systèmes de fichiers plus simples</td>
+</tr>
+<tr>
+<td>Excellent stockage grâce à la compression et à la déduplication des données</td>
+<td>ZFS dépend fortement de la mémoire système (RAM) pour mettre en cache les données et les métadonnées afin d&rsquo;obtenir des performances optimales. Une quantité insuffisante de RAM peut entraîner une dégradation des performances, en particulier dans les grands volumes de stockage ou avec des charges de travail intensives</td>
+</tr>
+</tbody>
+</table>
+<h2 id="btrfs-b-tree-file-system">Btrfs (B-Tree File System)</h2>
+<p>Btrfs, ou Better File System, est un système de fichiers moderne avec copie sur écriture (copy-on-write), conçu pour améliorer la gestion des données et la tolérance aux pannes. Il intègre des fonctionnalités telles que les instantanés, les sommes de contrôle et l&rsquo;allocation efficace de l&rsquo;espace de stockage. Btrfs offre la possibilité de redimensionner dynamiquement les systèmes de fichiers, ce qui permet aux utilisateurs de les étendre ou de les contracter en fonction des besoins, faisant de lui une option polyvalente pour les configurations impliquant à la fois des disques simples et des disques multiples.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Avantages</strong></th>
+<th><strong>Inconvénients</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Système de fichiers moderne, de type &ldquo;copy-on-write&rdquo; (COW) avec des fonctionnalités avancées (défragmentation en ligne, déduplication des données, etc.)</td>
+<td>Bien que Btrfs ait fait des progrès significatifs, il est toujours considéré comme étant en cours de développement et peut ne pas être aussi stable que des systèmes de fichiers plus matures tels que Ext4 ou XFS</td>
+</tr>
+<tr>
+<td>Les instantanés facilitent les sauvegardes directes et simplifient le processus de récupération du système</td>
+<td>Le mécanisme Copy-on-Write (COW) de Btrfs peut entraîner une fragmentation des fichiers au fil du temps, ce qui peut avoir un impact sur les performances</td>
+</tr>
+</tbody>
+</table>
+<h2 id="f2fs-flash-friendly-file-system">F2FS (Flash-Friendly File System)</h2>
+<p>Conçu pour les périphériques de stockage flash tels que les SSD et les eMMC, F2FS vise à réduire les écritures inutiles, à minimiser l&rsquo;amplification de l&rsquo;écriture et à prolonger la durée de vie du stockage flash. Excellant dans des situations où les systèmes de fichiers traditionnels rencontrent des difficultés, F2FS s&rsquo;impose comme un choix de premier ordre pour les appareils intégrés et les smartphones en raison de ses performances supérieures. Son optimisation pour les dispositifs de stockage basés sur la mémoire flash, ainsi que la réduction de la charge d&rsquo;écriture, font de F2FS un système de fichiers favorable pour les dispositifs dotés de mémoire flash.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Avantages</strong></th>
+<th><strong>Inconvénients</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Optimisé pour les périphériques de stockage à mémoire flash (SSD et eMMC)</td>
+<td>F2FS n&rsquo;est pas encore aussi communément utilisé que des systèmes de fichiers plus établis tels que Ext4 ou XFS</td>
+</tr>
+<tr>
+<td>Réduction de la surcharge d&rsquo;écriture, permettant d&rsquo;allonger la durée de vie de la mémoire flash</td>
+<td>F2FS ne dispose pas de certaines fonctions d&rsquo;intégrité des données que l&rsquo;on trouve dans d&rsquo;autres systèmes de fichiers, telles que les sommes de contrôle ou la journalisation étendue</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>Que vous attaquiez ou défendiez des ressources numériques, il vous sera utile de savoir à quel système de fichiers vous avez affaire, car chacun d&rsquo;entre eux présente ses propres vulnérabilités et ses propres atouts. Si vous êtes responsable de la construction d&rsquo;une infrastructure ou d&rsquo;un système de réseaux, une analyse minutieuse de vos besoins vous permettra de décider quel type de système de fichiers est le plus avantageux pour vous. La polyvalence de Linux en fait un choix idéal pour une multitude d&rsquo;applications, qu&rsquo;il s&rsquo;agisse d&rsquo;un usage personnel ou de solutions d&rsquo;entreprise.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/linux/">Linux</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/filesystem/">Filesystem</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/operating-systems/">Operating Systems</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1193 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-01-21 18:33
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s&amp;caption=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f;description=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f&amp;title=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s&amp;summary=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f&amp;resubmit=true&amp;title=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f;title=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f&amp;t=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=Exploration%20des%20Types%20de%20Syst%c3%a8mes%20de%20Fichiers%20Linux%20Couramment%20Employ%c3%a9s&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f01%2fexploration-des-types-de-syst%25C3%25A8mes-de-fichiers-linux-couramment-employ%25C3%25A9s%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/01/comprendre-la-structure-des-r%C3%A9pertoires-linux/">
+                    <span class="button__text">Comprendre la Structure des Répertoires Linux</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.46e438bd2eca7eb6358c700b40f6f56b22ab0b92503ecc11a2d8e4bcc610b8b4da83e5ea3d3e84fdb5f3c3c765744b9f5bbaf43cf5a027910be07ee39a9c12a1.js" integrity="sha512-RuQ4vS7KfrY1jHALQPb1ayKrC5JQPswRotjkvMYQuLTag&#43;XqPT6E/bXzw8dldEufW7r0PPWgJ5EL4H7jmpwSoQ=="></script>
+
+
+
+
+    </body>
+</html>
