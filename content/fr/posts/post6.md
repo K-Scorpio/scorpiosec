@@ -10,7 +10,7 @@ tags = ['Networking']
 
 Comprendre les réseaux informatiques est une compétence indispensable pour la plupart des professionnels évoluant dans le domaine des technologies de l’information. Deux modèles majeurs sont au cœur de cette compréhension : le modèle d’interconnexion des systèmes ouverts (OSI) et le modèle de protocole de contrôle de transmission/protocole Internet (TCP/IP). Ces modèles OSI et TCP/IP servent de références pour la conception, la mise en œuvre et la maintenance des réseaux informatiques. Ils représentent des plans directeurs qui facilitent la communication entre les différents composants d'un réseau. Dans cet article, nous allons examiner ces deux modèles, explorer les différentes couches qui les composent, et comprendre leurs fonctionnalités respectives.
 
-## OSI Model
+## Modèle OSI
 
 ![OSI Model](/images/OSI-7-layers.jpg)
 
@@ -52,7 +52,7 @@ Au sommet du modèle OSI se trouve la couche application, l'interface entre le r
 
 > L'une des caractéristiques du modèle OSI est sa nature hiérarchique. Chaque couche s'appuie sur les fonctionnalités des couches inférieures, créant un système structuré et modulaire pour la conception des réseaux. Cette organisation permet une flexibilité et une évolutivité qui en font une excellente référence pour les architectes et les administrateurs de réseaux. Le modèle OSI fournit une structure universelle pour comprendre et construire des systèmes de communication en réseau, indépendamment des protocoles ou des technologies spécifiques.
 
-## TCP/IP Model
+## Modèle TCP/IP
 
 ![TCP/IP Model Model](/images/The-TCP-IP-five-layer-model.png)
 
