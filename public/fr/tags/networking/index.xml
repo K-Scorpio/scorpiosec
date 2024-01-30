@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Networking on Scorpiosec</title>
-    <link>https://example.com/fr/tags/networking/</link>
+    <link>https://scorpiosec.com/fr/tags/networking/</link>
     <description>Recent content in Networking on Scorpiosec</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 18 Dec 2023 18:36:29 -0600</lastBuildDate>
-    <atom:link href="https://example.com/fr/tags/networking/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 28 Jan 2024 14:23:09 -0600</lastBuildDate>
+    <atom:link href="https://scorpiosec.com/fr/tags/networking/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My Second Post</title>
-      <link>https://example.com/fr/posts/2023/12/my-second-post/</link>
-      <pubDate>Mon, 18 Dec 2023 18:36:29 -0600</pubDate>
-      <guid>https://example.com/fr/posts/2023/12/my-second-post/</guid>
-      <description>In an increasingly connected world, computer networking serves as the backbone that enables seamless communication and data exchange between devices. Understanding the basics of computer networking is crucial, whether you&amp;rsquo;re a tech enthusiast, a professional in the field, or someone just curious about how the internet works. In this blog post, we will delve into fundamental concepts like IP addresses, subnets, routers, and switches, shedding light on their significance and real-world applications.</description>
+      <title>Comparaison des Modèles Réseau: OSI vs. TCP/IP</title>
+      <link>https://scorpiosec.com/fr/posts/2024/01/comparaison-des-mod%C3%A8les-r%C3%A9seau-osi-vs.-tcp/ip/</link>
+      <pubDate>Sun, 28 Jan 2024 14:23:09 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/01/comparaison-des-mod%C3%A8les-r%C3%A9seau-osi-vs.-tcp/ip/</guid>
+      <description>Introduction Comprendre les réseaux informatiques est une compétence indispensable pour la plupart des professionnels évoluant dans le domaine des technologies de l’information. Deux modèles majeurs sont au cœur de cette compréhension : le modèle d’interconnexion des systèmes ouverts (OSI) et le modèle de protocole de contrôle de transmission/protocole Internet (TCP/IP). Ces modèles OSI et TCP/IP servent de références pour la conception, la mise en œuvre et la maintenance des réseaux informatiques.</description>
     </item>
   </channel>
 </rss>

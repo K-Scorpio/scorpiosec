@@ -2,6 +2,71 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://scorpiosec.com/fr/posts/2024/01/comparaison-des-mod%C3%A8les-r%C3%A9seau-osi-vs.-tcp/ip/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/01/comparaison-des-mod%C3%A8les-r%C3%A9seau-osi-vs.-tcp/ip/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/networking/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/networking/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/networking/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/posts/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+  </url><url>
     <loc>https://scorpiosec.com/fr/categories/</loc>
     <lastmod>2024-01-21T18:33:14-06:00</lastmod>
     <xhtml:link
@@ -65,45 +130,6 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/categories/operating-systems/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/posts/</loc>
-    <lastmod>2024-01-21T18:33:14-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/posts/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/</loc>
-    <lastmod>2024-01-21T18:33:14-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/tags/</loc>
-    <lastmod>2024-01-21T18:33:14-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/posts/2024/01/comprendre-la-structure-des-r%C3%A9pertoires-linux/</loc>

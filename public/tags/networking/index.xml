@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Networking on Scorpiosec</title>
-    <link>https://example.com/tags/networking/</link>
+    <link>https://scorpiosec.com/tags/networking/</link>
     <description>Recent content in Networking on Scorpiosec</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 18 Dec 2023 18:36:29 -0600</lastBuildDate>
-    <atom:link href="https://example.com/tags/networking/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 28 Jan 2024 14:23:09 -0600</lastBuildDate>
+    <atom:link href="https://scorpiosec.com/tags/networking/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My Second Post</title>
-      <link>https://example.com/posts/2023/12/my-second-post/</link>
-      <pubDate>Mon, 18 Dec 2023 18:36:29 -0600</pubDate>
-      <guid>https://example.com/posts/2023/12/my-second-post/</guid>
-      <description>In an increasingly connected world, computer networking serves as the backbone that enables seamless communication and data exchange between devices. Understanding the basics of computer networking is crucial, whether you&amp;rsquo;re a tech enthusiast, a professional in the field, or someone just curious about how the internet works. In this blog post, we will delve into fundamental concepts like IP addresses, subnets, routers, and switches, shedding light on their significance and real-world applications.</description>
+      <title>Comparing the Building Blocks: OSI Model vs. TCP/IP Model</title>
+      <link>https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/</link>
+      <pubDate>Sun, 28 Jan 2024 14:23:09 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/</guid>
+      <description>Introduction Networking – a skill that resonates loudly in the realm of technical IT roles. It&amp;rsquo;s a non-negotiable proficiency for anyone navigating the intricate landscapes of information technology. At the heart of this expertise are two pivotal models: the Open Systems Interconnection (OSI) model and the Transmission Control Protocol/Internet Protocol (TCP/IP) model. Serving as foundational blueprints, these models play a crucial role in designing, implementing, and troubleshooting networks. They offer a conceptual framework that streamlines communication between devices.</description>
     </item>
   </channel>
 </rss>

@@ -2,6 +2,71 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/01/comparaison-des-mod%C3%A8les-r%C3%A9seau-osi-vs.-tcp/ip/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/networking/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/networking/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/networking/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/posts/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/</loc>
+    <lastmod>2024-01-28T14:23:09-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+  </url><url>
     <loc>https://scorpiosec.com/categories/</loc>
     <lastmod>2024-01-21T18:33:14-06:00</lastmod>
     <xhtml:link
@@ -65,45 +130,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/posts/2024/01/overview-of-the-common-linux-file-system-types/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/posts/</loc>
-    <lastmod>2024-01-21T18:33:14-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/posts/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/</loc>
-    <lastmod>2024-01-21T18:33:14-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/tags/</loc>
-    <lastmod>2024-01-21T18:33:14-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/posts/2024/01/demystifying-the-linux-file-system-hierarchy/</loc>
