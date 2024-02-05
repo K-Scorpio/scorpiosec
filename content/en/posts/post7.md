@@ -1,5 +1,5 @@
 +++
-title = "Streamlining IT Operations: A Comprehensive Guide to PXE Server Setup and Security"
+title = "Streamlining IT Operations: A Guide to PXE Server Setup and Security"
 date = 2024-02-04T15:42:38-06:00
 draft = false
 toc = true
@@ -115,6 +115,8 @@ While PXE is a convenient and efficient technology, like any networked system, i
 * Man-in-the-Middle Attacks: Attackers might intercept communication between the PXE server and client machines, allowing them to manipulate or eavesdrop on the installation process.
 
 * DHCP Spoofing: If an attacker successfully spoofs the DHCP responses, they could redirect PXE clients to a rogue PXE server, leading to unauthorized OS installations or potential exploitation.
+
+> If you want to read about a real world PXE vulnerability, check [CVE-2020-3284](https://nvd.nist.gov/vuln/detail/CVE-2020-3284)
 
 ### Countermeasures
 
