@@ -8,34 +8,34 @@ tags = []
 
 ## Introduction 
 
-Have you ever wondered how OS installations or system maintenances are handled in large IT infrastructure? Picture this, you work in the IT department and you are asked to prepare laptops for new hires. They will be working in different departments and require different OSs. How would you go about it? Physically interact with each laptop to complete the task? What if it was 10, 20, 30 devices and not just laptops but servers, switches, routers, virtual machines, etc... You can see how it becomes complicated.
+Have you ever wondered how OS installations or system maintenance are handled in large IT infrastructure? Picture this: you work in the IT department and are tasked with preparing laptops for new hires. These individuals will be working in different departments, each requiring a specific OS. How would you approach this task? Would you physically interact with each laptop to complete the process? Now, imagine it's not just 10, 20, or 30 laptops but also servers, switches, routers, virtual machines, and more. The complexity becomes evident.
 
-Enter PXE! PXE, or Preboot Execution Environment, is a standard that allows a computer to boot and load its operating system from a server on a network. It's commonly used in large-scale IT environments for tasks like operating system deployment, system recovery, and network-based installations. PXE enables a computer to obtain its network configuration and necessary files to initiate the boot process without relying on local storage devices.
+Enter PXE! PXE, or Preboot Execution Environment, is a standard that enables a computer to boot and load its operating system from a server on a network. Widely used in large-scale IT environments, PXE simplifies tasks such as operating system deployment, system recovery, and network-based installations. By allowing a computer to obtain its network configuration and necessary files, PXE initiates the boot process without relying on local storage devices.
 
 ![PXE server diagram](/images/PXE-server-topology.png)
 *Credits for the image CC(ChenChih) on medium.com*
 
 ## PXE Server Setup  
 
-PXE is a game-changer for bulk computer setups. It eliminates the need for individual CDs or USB drives by letting you install a single operating system image on multiple machines at once, saving you time and effort. It relies on a DHCP server, a TFTP server and a web server. DHCP to assign an IP address to the computer and provides information about the PXE server, including the location of the TFTP (Trivial File Transfer Protocol) server to transfer the PXE boot files to clients during the boot process.
+PXE is a game-changer for bulk computer setups, eliminating the need for individual CDs or USB drives by enabling the installation of a single operating system image on multiple machines simultaneously, saving you time and effort. It relies on a DHCP server, a TFTP server, and a web server. DHCP assigns an IP address to the computer and provides information about the PXE server, including the location of the TFTP (Trivial File Transfer Protocol) server for transferring PXE boot files to clients during the boot process.
 
-While a web server is not strictly necessary for basic PXE functionality, it becomes essential when dealing with more advanced PXE setups and when deploying operating systems that rely on retrieving files over HTTP during the installation process. The web server is primarily used to store installation files, and it can significantly enhance the capabilities of your PXE server.
+While a web server is not strictly necessary for basic PXE functionality, it becomes essential when dealing with more advanced PXE setups and deploying operating systems that rely on retrieving files over HTTP during the installation process. The web server is primarily used to store installation files, significantly enhancing the capabilities of your PXE server.
 
-For many operating systems, especially modern versions of Windows and various Linux distributions, the installation files are too large to be transferred via TFTP alone. A web server is used to store these large files, making them accessible to PXE clients during the installation process. Now, let's dive into the practical aspects of setting up a PXE server.
+For many operating systems, especially modern versions of Windows and various Linux distributions, the installation files are too large to be transferred via TFTP alone. A web server is used to store these large files, making them accessible to PXE clients during the installation process. Now, let's delve into the practical aspects of setting up a PXE server.
 
 ### Prerequisites
 
 First, ensure you have the following prerequisites in place:
 
-1. Server Infrastructure: 
+1. Server Infrastructure:
 * A dedicated server or virtual machine that will serve as the PXE server.
 
-2. Operating System: 
-* Choose a Linux distribution for the PXE server. Ubuntu Server, CentOS, or Debian are popular choices.
+2. Operating System:
+* Choose a Linux distribution for the PXE server. Popular choices include Ubuntu Server, CentOS, or Debian.
 
-3. Network Configuration: 
-* A stable network with DHCP configured to allocate IP addresses to PXE clients.
-* An isolated network segment or VLAN for PXE-related traffic, enhancing security.
+3. Network Configuration:
+* Ensure a stable network with DHCP configured to allocate IP addresses to PXE clients.
+* Establish an isolated network segment or VLAN dedicated to PXE-related traffic to enhance security.
 
 ### Steps to Set Up a PXE Server
 
@@ -54,7 +54,7 @@ sudo apt-get install tftpd-hpa
 sudo apt-get install apache2
 ```
 
-4. Configure the DHCP Server: Edit the DHCP server configuration file to include PXE-specific settings. For example, in the `/etc/dhcp/dhcpd.conf` file:
+4. Configure the DHCP Server: Edit the DHCP server configuration file to include PXE-specific settings. For example, in the /etc/dhcp/dhcpd.conf file:
 ```
 option domain-name "example.com";
 option domain-name-servers ns1.example.com, ns2.example.com;
@@ -69,7 +69,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 }
 ```
 
-5. Configure the TFTP Server: Edit the TFTP server configuration file (usually located at `/etc/default/tftpd-hpa`) to define the TFTP root directory:
+5. Configure the TFTP Server: Edit the TFTP server configuration file (usually located at /etc/default/tftpd-hpa) to define the TFTP root directory:
 ```
 TFTP_USERNAME="tftp"
 TFTP_DIRECTORY="/var/lib/tftpboot"
@@ -77,7 +77,7 @@ TFTP_ADDRESS="0.0.0.0:69"
 TFTP_OPTIONS="--secure"
 ```
 
-6. Prepare PXE Boot Files: Download PXE boot files, such as PXELinux, from the official website or package repositories. Place these files in the TFTP root directory (`/var/lib/tftpboot`).
+6. Prepare PXE Boot Files: Download PXE boot files, such as PXELinux, from the official website or package repositories. Place these files in the TFTP root directory (/var/lib/tftpboot).
 ```
 sudo mkdir /var/lib/tftpboot
 sudo wget https://www.syslinux.org/wiki/uploads/attachments/syslinux-6.04-pre1.tar.xz
@@ -88,7 +88,7 @@ sudo cp syslinux-6.04-pre1/bios/com32/lib/libcom32.c32 /var/lib/tftpboot
 sudo cp syslinux-6.04-pre1/bios/com32/libutil/libutil.c32 /var/lib/tftpboot
 ```
 
-7. Configure Web Server: Copy the installation files for the desired operating systems (Windows, Linux distributions) to the web server root directory (e.g., `/var/www/html` for Apache).
+7. Configure Web Server: Copy the installation files for the desired operating systems (Windows, Linux distributions) to the web server root directory (e.g., /var/www/html for Apache).
 
 8. Test PXE Boot: 
 * Start the DHCP and TFTP services:
@@ -108,7 +108,7 @@ With these steps, you've transformed a standard server into a PXE powerhouse, re
 
 ### Vulnerabilities
 
-While PXE is a convenient and efficient technology, like any networked system, it comes with potential vulnerabilities. Here are some concerns and countermeasures:
+While PXE is a convenient and efficient technology, like any networked system, it comes with potential vulnerabilities. Here are some concerns and corresponding countermeasures:
 
 * Unauthorized Access: Malicious actors could attempt to gain unauthorized access to the PXE server, potentially injecting or altering boot files to compromise the integrity of the operating system installations.
 
@@ -118,47 +118,46 @@ While PXE is a convenient and efficient technology, like any networked system, i
 
 ### Countermeasures
 
-* Secure the PXE Server: Implement strong authentication and access controls for the PXE server. Regularly update and patch the server's operating system and software to address known vulnerabilities.
+* Secure the PXE Server: Implement robust authentication and access controls for the PXE server. Regularly update and patch the server's operating system and software to address known vulnerabilities.
 
-* Encryption: Use encryption protocols (like HTTPS) to secure communication between the PXE server and clients. This helps protect against man-in-the-middle attacks and ensures the integrity of the boot files.
+* Encryption: Utilize encryption protocols (such as HTTPS) to secure communication between the PXE server and clients. This safeguards against man-in-the-middle attacks and ensures the integrity of the boot files.
 
-* Network Segmentation: Employ network segmentation to isolate the PXE server from untrusted networks. This limits the potential attack surface and reduces the risk of unauthorized access.
+* Network Segmentation: Employ network segmentation to isolate the PXE server from untrusted networks. This strategy limits the potential attack surface, reducing the risk of unauthorized access.
 
-* Digital Signatures: Sign boot files with digital signatures to verify their authenticity. Only allow the installation of signed and verified operating system images, mitigating the risk of injected or altered files.
+* Digital Signatures: Sign boot files with digital signatures to verify their authenticity. Permit the installation of only signed and verified operating system images, thus mitigating the risk of injected or altered files.
 
-* DHCP Security: Implement DHCP snooping and Dynamic ARP Inspection (DAI) to prevent DHCP spoofing attacks. This helps ensure that PXE clients receive valid DHCP responses from legitimate servers.
+* DHCP Security: Implement DHCP snooping and Dynamic ARP Inspection (DAI) to prevent DHCP spoofing attacks. This measure ensures that PXE clients receive valid DHCP responses from legitimate servers.
 
-* Monitoring and Logging: Regularly monitor and log PXE server activities. This allows you to detect unusual or suspicious behavior, providing early indicators of potential security incidents.
+* Monitoring and Logging: Regularly monitor and log PXE server activities to detect unusual or suspicious behavior, providing early indicators of potential security incidents.
 
-* Firmware/BIOS Passwords: Set strong passwords for the firmware/BIOS settings to prevent unauthorized changes. This helps protect against tampering with PXE boot settings on individual machines.
+* Firmware/BIOS Passwords: Set strong passwords for the firmware/BIOS settings to prevent unauthorized changes. This step helps protect against tampering with PXE boot settings on individual machines.
 
-By implementing these countermeasures, you can enhance the security of your PXE deployment and reduce the risk of exploitation by malicious actors.
-If you want to read more on security measures Microsoft has a set of best practices available [here](https://learn.microsoft.com/en-us/mem/configmgr/osd/plan-design/security-and-privacy-for-operating-system-deployment).
+By implementing these countermeasures, you can enhance the security of your PXE deployment and reduce the risk of exploitation by malicious actors. If you're interested in more details on security measures, Microsoft provides a set of best practices available [here](https://learn.microsoft.com/en-us/mem/configmgr/osd/plan-design/security-and-privacy-for-operating-system-deployment).
 
 ## Automation 
 
-A web server allows you to host customized scripts, kickstart files, preseed files, or other configuration files that automate the installation process. This is especially useful for unattended installations and customization.
+A web server enables you to host customized scripts, kickstart files, preseed files, or other configuration files that automate the installation process. This capability is particularly valuable for unattended installations and customization.
 
-Answer files for Windows and preseed files for Ubuntu are configuration files used for unattended installations. They contain settings and parameters that automate the installation process, eliminating the need for user interaction during the installation of the operating system.
+Answer files for Windows and preseed files for Ubuntu are configuration files employed in unattended installations. These files contain settings and parameters that automate the installation process, eliminating the need for user interaction during the installation of the operating system.
 
 ### Answer Files for Windows
 
 1. Unattend.xml (Windows Vista and later):
-* For Windows Vista and later versions, including Windows Server editions, the unattended installation is typically controlled by an XML-based file called Unattend.xml.
-* This file contains settings such as product key, time zone, user accounts, and more.
+* For Windows Vista and subsequent versions, including Windows Server editions, the unattended installation is typically controlled by an XML-based file called Unattend.xml.
+* This file contains settings such as the product key, time zone, user accounts, and more.
 
 2. Sysprep:
 Before capturing an image for deployment, you often use the System Preparation (Sysprep) tool to generalize the Windows installation. During Sysprep, you can specify an answer file that will be used during the next boot to configure the system.
 
 3. Deployment Tools Command Prompt:
-* Use the Deployment Tools Command Prompt (part of the Windows Assessment and Deployment Kit - ADK) to generate and work with answer files.
+* Utilize the Deployment Tools Command Prompt (part of the Windows Assessment and Deployment Kit - ADK) to generate and work with answer files.
 * Common tools include Windows SIM (System Image Manager) for creating and modifying answer files.
 
 ### Preseed Files for Ubuntu
 
 1. Preseed Configuration File:
 * For Ubuntu and Debian-based systems, the preseed file is used to automate the installation process.
-* The file is typically named preseed.cfg or similar and contains instructions on partitioning, package selection, user creation, and other installation options.
+* The file is typically named preseed.cfg or a similar name and contains instructions on partitioning, package selection, user creation, and other installation options.
 
 2. Location of Preseed File:
 * During the PXE boot process, the installer looks for the preseed file in a specific location. For example, it might be located at http://example.com/preseed.cfg on a web server.
@@ -173,9 +172,9 @@ option preseed-url "http://example.com/preseed.cfg";
 
 1. Create Answer/Preseed Files: Use tools like Windows SIM for Windows or manually create a preseed file for Ubuntu. These files define the configuration options for the unattended installation.
 
-2. Place Files on Web Server: Host the answer file (e.g., Unattend.xml for Windows or preseed.cfg for Ubuntu) on a web server accessible to the PXE clients.
+2. Place Files on Web Server: Host the answer file (e.g., Unattend.xml for Windows or preseed.cfg for Ubuntu) on a web server accessible to PXE clients.
 
-3. Configure PXE Server: Modify your PXE server configuration to include the URL or path to the answer file or preseed file. This is typically done in the PXE server's configuration file or DHCP options.For example, in a PXE configuration file, you might specify the location of the Windows answer file like this:
+3. Configure PXE Server: Modify your PXE server configuration to include the URL or path to the answer file or preseed file. This is typically done in the PXE server's configuration file or DHCP options. For example, in a PXE configuration file, you might specify the location of the Windows answer file like this:
 ```
 APPEND  ... inst.ks=http://example.com/Unattend.xml
 ```
@@ -192,4 +191,4 @@ Using answer files or preseed files with PXE allows for efficient and automated 
 
 ## Conclusion
 
-In conclusion, PXE stands as a testament to the evolution of IT solutions, offering a powerful tool for administrators tasked with managing diverse and extensive computing environments. It streamlines the deployment and maintenance of operating systems in a world where adaptability is key. It is used for various purposes such as operating system deployment, system recovery and maintenance, automated deploymnets and imaging. I hope I was able to provide a good overview of this technology, I plan to build a project around it in my homelab. After creating a PXE server network and deploying a few OSs on some VMs, I will attempt to attack the network to showcase its vulnerabilities and then apply countermeasures to make the server more secure. Stay tuned and keep learning!
+In conclusion, PXE stands as a testament to the evolution of IT solutions, offering a powerful tool for administrators tasked with managing diverse and extensive computing environments. It streamlines the deployment and maintenance of operating systems in a world where adaptability is key. PXE is utilized for various purposes, including operating system deployment, system recovery, maintenance, automated deployments, and imaging. I hope I have provided a comprehensive overview of this technology. I plan to build a project around it in my homelab. After creating a PXE server network and deploying several operating systems on virtual machines, I will attempt to assess the network's vulnerabilities and then apply countermeasures to enhance the server's security. Stay tuned and keep learning!
