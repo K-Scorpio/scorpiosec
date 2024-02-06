@@ -6,8 +6,233 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sun, 28 Jan 2024 14:23:09 -0600</lastBuildDate>
+        <lastBuildDate>Sun, 04 Feb 2024 15:42:38 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure</title>
+            <link>https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/</link>
+            <pubDate>Sun, 04 Feb 2024 15:42:38 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/</guid>
+            <description>Introduction Vous êtes-vous déjà demandé comment les installations de systèmes d&amp;rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&amp;rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus?</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Vous êtes-vous déjà demandé comment les installations de systèmes d&rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus? Imaginez maintenant qu&rsquo;il ne s&rsquo;agisse pas seulement de 10, 20 ou 30 ordinateurs, mais aussi de serveurs, de commutateurs, de routeurs, de machines virtuelles, etc. La difficulté devient évidente.</p>
+<p>PXE est une des solutions pour simplifier cette situation. Le processus de démarrage PXE (Pre-boot eXecution Environment) permet le démarrage d&rsquo;une ordinateur à partir du réseau, le client récupère une image du système d&rsquo;exploitation située sur un serveur. Cette image peut consister en un système d&rsquo;exploitation de base ou être personnalisée avec divers éléments logiciels tels qu&rsquo;une suite bureautique, des utilitaires, des packs de sécurité, des scripts, etc.</p>
+<p>Couramment utilisé dans les environnements informatiques à grande échelle, PXE facilite les tâches telles que le déploiement de systèmes d&rsquo;exploitation, la restauration de systèmes et les installations en réseau. En permettant à un ordinateur d&rsquo;obtenir sa configuration réseau et les fichiers nécessaires, PXE lance le processus de démarrage sans dépendre des périphériques de stockage locaux.</p>
+<p><img src="/images/PXE-server-topology.png" alt="PXE server diagram">
+<em>Crédits pour l&rsquo;image CC(ChenChih) sur medium.com</em></p>
+<h2 id="configuration-du-serveur-pxe">Configuration du serveur PXE</h2>
+<p>PXE simpifie les configurations d&rsquo;ordinateurs en grand nombre, en éliminant le besoin de CD ou de clés USB et en permettant l&rsquo;installation d&rsquo;une seule image de système d&rsquo;exploitation sur plusieurs machines simultanément, ce qui vous permet de gagner du temps. Il utilise un serveur DHCP, un serveur TFTP et un serveur web. Le serveur DHCP attribue une adresse IP à l&rsquo;ordinateur et fournit des informations sur le serveur PXE, notamment l&rsquo;emplacement du serveur TFTP (Trivial File Transfer Protocol) pour le transfert des fichiers d&rsquo;amorçage PXE aux clients pendant le processus d&rsquo;amorçage.</p>
+<p>Bien qu&rsquo;un serveur web ne soit pas strictement nécessaire pour la fonctionnalité PXE de base, il devient essentiel lorsqu&rsquo;il s&rsquo;agit de configurations PXE plus avancées et du déploiement de systèmes d&rsquo;exploitation qui s&rsquo;appuient sur la récupération de fichiers via HTTP au cours du processus d&rsquo;installation. Le serveur web est principalement utilisé pour stocker les fichiers d&rsquo;installation, ce qui améliore considérablement les capacités de votre serveur PXE.</p>
+<p>Pour de nombreux systèmes d&rsquo;exploitation, en particulier les versions modernes de Windows et diverses distributions Linux, les fichiers d&rsquo;installation sont trop volumineux pour être transférés uniquement par TFTP. Un serveur web est utilisé pour stocker ces fichiers et les rendre accessibles aux clients PXE pendant le processus d&rsquo;installation. Passons maintenant aux aspects pratiques de la mise en place d&rsquo;un serveur PXE.</p>
+<h3 id="préalables">Préalables</h3>
+<p>Tout d&rsquo;abord, assurez-vous que les conditions suivantes sont réunies:</p>
+<ol>
+<li>Infrastructure du serveur :</li>
+</ol>
+<ul>
+<li>Un serveur dédié ou une machine virtuelle qui servira de serveur PXE.</li>
+</ul>
+<ol start="2">
+<li>Système d&rsquo;exploitation :</li>
+</ol>
+<ul>
+<li>Choisir une distribution Linux pour le serveur PXE. Les choix les plus courants sont Ubuntu Server, CentOS ou Debian.</li>
+</ul>
+<ol start="3">
+<li>Configuration du réseau :</li>
+</ol>
+<ul>
+<li>Établir un réseau stable avec DHCP configuré pour allouer des adresses IP aux clients PXE.</li>
+<li>Établir un segment de réseau isolé ou un VLAN dédié au trafic lié au PXE afin d&rsquo;améliorer la sécurité.</li>
+</ul>
+<h3 id="étapes-de-configuration-dun-serveur-pxe">Étapes de configuration d&rsquo;un serveur PXE</h3>
+<ol>
+<li>Serveur DHCP: Installer et configurer un serveur DHCP pour fournir des adresses IP aux clients PXE. Assurez-vous que les options DHCP sont définies pour indiquer l&rsquo;emplacement du serveur PXE et des fichiers de démarrage.</li>
+</ol>
+<pre tabindex="0"><code>sudo apt-get install isc-dhcp-server
+</code></pre><ol start="2">
+<li>Serveur TFTP: Installer un serveur TFTP pour transférer les fichiers de démarrage PXE aux clients pendant le processus de démarrage.</li>
+</ol>
+<pre tabindex="0"><code>sudo apt-get install tftpd-hpa
+</code></pre><ol start="3">
+<li>Serveur web: Configurer un serveur web pour héberger les fichiers d&rsquo;installation de divers systèmes d&rsquo;exploitation.</li>
+</ol>
+<pre tabindex="0"><code>sudo apt-get install apache2
+</code></pre><ol start="4">
+<li>Configurer le serveur DHCP : Modifier le fichier de configuration du serveur DHCP pour y inclure les paramètres spécifiques à PXE. Par exemple, dans le fichier /etc/dhcp/dhcpd.conf:</li>
+</ol>
+<pre tabindex="0"><code>option domain-name &#34;example.com&#34;;
+option domain-name-servers ns1.example.com, ns2.example.com;
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.100 192.168.1.200;
+  option routers 192.168.1.1;
+  option broadcast-address 192.168.1.255;
+  option subnet-mask 255.255.255.0;
+  filename &#34;pxelinux.0&#34;;
+  next-server 192.168.1.10; # PXE Server IP
+}
+</code></pre><ol start="5">
+<li>Configurer le serveur TFTP : Modifiez le fichier de configuration du serveur TFTP (généralement situé dans /etc/default/tftpd-hpa) pour définir le répertoire racine du TFTP:</li>
+</ol>
+<pre tabindex="0"><code>TFTP_USERNAME=&#34;tftp&#34;
+TFTP_DIRECTORY=&#34;/var/lib/tftpboot&#34;
+TFTP_ADDRESS=&#34;0.0.0.0:69&#34;
+TFTP_OPTIONS=&#34;--secure&#34;
+</code></pre><ol start="6">
+<li>Préparer les fichiers d&rsquo;amorçage PXE: Téléchargez les fichiers d&rsquo;amorçage PXE, tels que PXELinux, à partir du site web officiel ou des dépôts de paquets. Placez ces fichiers dans le répertoire racine TFTP (/var/lib/tftpboot).</li>
+</ol>
+<pre tabindex="0"><code>sudo mkdir /var/lib/tftpboot
+sudo wget https://www.syslinux.org/wiki/uploads/attachments/syslinux-6.04-pre1.tar.xz
+sudo tar -xvf syslinux-6.04-pre1.tar.xz
+sudo cp syslinux-6.04-pre1/bios/core/pxelinux.0 /var/lib/tftpboot
+sudo cp syslinux-6.04-pre1/bios/com32/elflink/ldlinux/ldlinux.c32 /var/lib/tftpboot
+sudo cp syslinux-6.04-pre1/bios/com32/lib/libcom32.c32 /var/lib/tftpboot
+sudo cp syslinux-6.04-pre1/bios/com32/libutil/libutil.c32 /var/lib/tftpboot
+</code></pre><ol start="7">
+<li>
+<p>Configurer le serveur web: Copiez les fichiers d&rsquo;installation pour les systèmes d&rsquo;exploitation souhaités (Windows, distributions Linux) dans le répertoire racine du serveur web (par exemple, /var/www/html pour Apache).</p>
+</li>
+<li>
+<p>Tester le démarrage PXE:</p>
+</li>
+</ol>
+<ul>
+<li>Démarrer les services DHCP et TFTP:</li>
+</ul>
+<pre tabindex="0"><code>sudo systemctl restart isc-dhcp-server
+sudo systemctl restart tftpd-hpa
+</code></pre><ul>
+<li>S&rsquo;assurer que le serveur web fonctionne:</li>
+</ul>
+<pre tabindex="0"><code>sudo systemctl restart apache2
+</code></pre><ul>
+<li>Démarrer un client compatible PXE et vérifiez qu&rsquo;il lance avec succès le processus de démarrage PXE.</li>
+</ul>
+<p>Après ces étapes, vous disposez maintenant d&rsquo;un serveur PXE prêt à l&rsquo;emploi.</p>
+<h2 id="considérations-en-matière-de-sécurité">Considérations en matière de sécurité</h2>
+<h3 id="vulnérabilités">Vulnérabilités</h3>
+<p>Bien que PXE soit une technologie pratique et efficace, elle comporte des vulnérabilités potentielles. En voici quelques unes et les contre-mesures correspondantes:</p>
+<ul>
+<li>
+<p>Accès non autorisé: Des acteurs malveillants pourraient tenter d&rsquo;obtenir un accès non autorisé au serveur PXE, en injectant ou en modifiant les fichiers de démarrage afin de compromettre l&rsquo;intégrité des installations du système d&rsquo;exploitation.</p>
+</li>
+<li>
+<p>Attaques de l&rsquo;homme du milieu (HDM) ou man-in-the-middle attack (MITM): Les attaquants peuvent intercepter les communications entre le serveur PXE et les machines clientes, ce qui leur permet de manipuler ou de surveiller le processus d&rsquo;installation.</p>
+</li>
+<li>
+<p>Usurpation du protocole DHCP (DHCP Spoofing): Si un attaquant réussit à usurper les réponses DHCP, il peut rediriger les clients PXE vers un autre serveur PXE sous son contrôle, ce qui conduit à des installations non autorisées du système d&rsquo;exploitation ou à une exploitation potentielle.</p>
+</li>
+</ul>
+<blockquote>
+<p>Si vous voulez lire sur une vulnérabilité PXE, consultez <a href="https://nvd.nist.gov/vuln/detail/CVE-2020-3284" target="_blank" >CVE-2020-3284</a>
+
+</p>
+</blockquote>
+<h3 id="contre-mesures">Contre-mesures</h3>
+<ul>
+<li>
+<p>Sécuriser le serveur PXE: Mettre en place des contrôles d&rsquo;authentification et d&rsquo;accès robustes pour le serveur PXE. Mettez régulièrement à jour et corrigez le système d&rsquo;exploitation et les logiciels du serveur afin de remédier aux vulnérabilités connues.</p>
+</li>
+<li>
+<p>Cryptage: Utiliser des protocoles de chiffrement (tels que HTTPS) pour sécuriser les communications entre le serveur PXE et les clients. Cela permet de se prémunir contre les attaques de type &ldquo;man-in-the-middle&rdquo; et de garantir l&rsquo;intégrité des fichiers de démarrage.</p>
+</li>
+<li>
+<p>Segmentation du réseau: Utiliser la segmentation du réseau pour isoler le serveur PXE des réseaux non fiables. Cette stratégie limite la surface d&rsquo;attaque potentielle et réduit le risque d&rsquo;accès non autorisé.</p>
+</li>
+<li>
+<p>Signatures numériques: Signer les fichiers de démarrage avec des signatures numériques pour vérifier leur authenticité. N&rsquo;autoriser l&rsquo;installation que d&rsquo;images de systèmes d&rsquo;exploitation signées et vérifiées, ce qui réduit le risque d&rsquo;injection ou d&rsquo;altération de fichiers.</p>
+</li>
+<li>
+<p>Sécurité DHCP: Mettre en œuvre le snooping DHCP et l&rsquo;inspection ARP dynamique (DAI) pour prévenir les attaques par usurpation d&rsquo;identité DHCP. Cette mesure garantit que les clients PXE reçoivent des réponses DHCP valides de la part de serveurs légitimes.</p>
+</li>
+<li>
+<p>Surveillance et journalisation: Surveiller et journaliser régulièrement les activités du serveur PXE afin de détecter tout comportement inhabituel ou suspect, et de fournir des indicateurs précoces d&rsquo;incidents de sécurité potentiels.</p>
+</li>
+<li>
+<p>Mots de passe Firmware/BIOS: Définissez des mots de passe complexes pour les paramètres du micrologiciel/BIOS afin d&rsquo;empêcher toute modification non autorisée. Cette étape permet de se protéger contre la falsification des paramètres de démarrage PXE sur des machines individuelles.</p>
+</li>
+</ul>
+<p>En mettant en œuvre ces contre-mesures, vous pouvez renforcer la sécurité de votre déploiement PXE et réduire le risque d&rsquo;exploitation par des acteurs malveillants. Si vous souhaitez obtenir plus de détails sur les mesures de sécurité, Microsoft propose un ensemble de méthodes disponibles <a href="https://learn.microsoft.com/en-us/mem/configmgr/osd/plan-design/security-and-privacy-for-operating-system-deployment" target="_blank" >ici</a>
+
+.</p>
+<h2 id="automatisation">Automatisation</h2>
+<p>Un serveur web vous permet d&rsquo;héberger des scripts personnalisés, des fichiers de démarrage, des fichiers preseed ou d&rsquo;autres fichiers de configuration qui automatisent le processus d&rsquo;installation. Cette capacité est particulièrement précieuse pour les installations sans surveillance et la personnalisation.</p>
+<p>Les fichiers de réponse pour Windows et les fichiers preseed pour Ubuntu sont des fichiers de configuration utilisés dans les installations sans surveillance. Ces fichiers contiennent des réglages et des paramètres qui automatisent le processus d&rsquo;installation, éliminant ainsi le besoin d&rsquo;interaction de l&rsquo;utilisateur pendant l&rsquo;installation du système d&rsquo;exploitation.</p>
+<h3 id="fichiers-de-réponse-answer-files-pour-windows">Fichiers de réponse (Answer files) pour Windows</h3>
+<ol>
+<li>Unattend.xml (Windows Vista et versions ultérieures):</li>
+</ol>
+<ul>
+<li>Pour Windows Vista et les versions ultérieures, y compris les éditions Windows Server, l&rsquo;installation sans surveillance est généralement contrôlée par un fichier XML appelé Unattend.xml.</li>
+<li>Ce fichier contient des paramètres tels que la clé de produit, le fuseau horaire, les comptes d&rsquo;utilisateurs, etc.</li>
+</ul>
+<ol start="2">
+<li>
+<p>Sysprep:
+Avant de créer une image pour le déploiement, on utilise souvent l&rsquo;outil de préparation du système (Sysprep) pour généraliser l&rsquo;installation de Windows. Pendant Sysprep, vous pouvez spécifier un fichier de réponse qui sera utilisé lors du prochain démarrage pour configurer le système.</p>
+</li>
+<li>
+<p>Kit de déploiement et d&rsquo;évaluation Windows:</p>
+</li>
+</ol>
+<ul>
+<li>Utilisez l&rsquo;invite de commande des outils de déploiement (qui fait partie du kit d&rsquo;évaluation et de déploiement Windows - ADK) pour générer et modifier les fichiers de réponse.</li>
+<li>Windows SIM (System Image Manager) est couramment utilisé pour la création et la modification des fichiers de réponse.</li>
+</ul>
+<h3 id="fichiers-preseed-pour-ubuntu">Fichiers Preseed pour Ubuntu</h3>
+<ol>
+<li>Fichier de configuration Preseed:</li>
+</ol>
+<ul>
+<li>Pour les systèmes Ubuntu et Debian, le fichier preseed est utilisé pour automatiser le processus d&rsquo;installation.</li>
+<li>Le fichier est généralement nommé preseed.cfg ou un nom similaire et contient des instructions sur le partitionnement, la sélection des paquets, la création d&rsquo;utilisateurs et d&rsquo;autres options d&rsquo;installation.</li>
+</ul>
+<ol start="2">
+<li>Emplacement du fichier Preseed:</li>
+</ol>
+<ul>
+<li>Au cours du processus de démarrage PXE, le programme d&rsquo;installation recherche le fichier preseed à un emplacement spécifique. Par exemple, il peut se trouver à l&rsquo;adresse <a href="http://example.com/preseed.cfg" target="_blank" >http://example.com/preseed.cfg</a>
+
+ sur un serveur web.</li>
+</ul>
+<ol start="3">
+<li>Configuration DHCP:</li>
+</ol>
+<ul>
+<li>La configuration DHCP de votre serveur PXE doit inclure une option permettant de spécifier l&rsquo;emplacement du fichier preseed. Par exemple, dans la configuration DHCP, vous pouvez définir:</li>
+</ul>
+<pre tabindex="0"><code>option preseed-url &#34;http://example.com/preseed.cfg&#34;;
+</code></pre><h3 id="utilisation-des-fichiers-answer-et-preseed-avec-pxe">Utilisation des fichiers Answer et Preseed avec PXE</h3>
+<ol>
+<li>
+<p>Créer des fichiers de réponse/Preseed: Utiliser des outils tels que Windows SIM pour Windows ou créer manuellement un fichier preseed pour Ubuntu. Ces fichiers définissent les options de configuration pour l&rsquo;installation sans surveillance.</p>
+</li>
+<li>
+<p>Placez les fichiers sur le serveur Web: Héberger le fichier de réponse (par exemple, Unattend.xml pour Windows ou preseed.cfg pour Ubuntu) sur un serveur web accessible aux clients PXE.</p>
+</li>
+<li>
+<p>Configurer le serveur PXE : Modifier la configuration du serveur PXE pour inclure l&rsquo;URL ou le chemin d&rsquo;accès au fichier de réponse ou au fichier preseed. Cette opération s&rsquo;effectue généralement dans le fichier de configuration du serveur PXE ou dans les options DHCP. Par exemple, dans un fichier de configuration PXE, vous pouvez spécifier l&rsquo;emplacement du fichier de réponse Windows comme suit:</p>
+</li>
+</ol>
+<pre tabindex="0"><code>APPEND  ... inst.ks=http://example.com/Unattend.xml
+</code></pre><ul>
+<li>Dans la configuration DHCP, vous pouvez spécifier l&rsquo;emplacement du fichier Ubuntu preseed:</li>
+</ul>
+<pre tabindex="0"><code>option preseed-url &#34;http://example.com/preseed.cfg&#34;;
+</code></pre><ol start="4">
+<li>Tester l&rsquo;installation :</li>
+</ol>
+<ul>
+<li>Démarrer une machine cliente via PXE et observez le processus d&rsquo;installation automatisé. Le programme d&rsquo;installation récupère le fichier de réponse ou le fichier preseed à l&rsquo;emplacement spécifié et l&rsquo;utilise pour configurer les paramètres d&rsquo;installation.</li>
+</ul>
+<p>L&rsquo;utilisation de fichiers de réponse ou de fichiers preseed avec PXE permet un déploiement efficace et automatisé des systèmes d&rsquo;exploitation.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>En conclusion, PXE est une excellente technologie capable de gérer des environnements informatiques divers et vastes. Elle permet de simplifier le déploiement et la maintenance des systèmes d&rsquo;exploitation. PXE est utilisé à diverses fins, notamment pour le déploiement de systèmes d&rsquo;exploitation, la récupération de systèmes, la maintenance, les déploiements automatisés et la création d&rsquo;images. J&rsquo;espère vous avoir donné un aperçu détaillé de cette technologie. Je prépare un projet basé sur PXE. Je vais créer un serveur PXE avec VirtualBox et déployer plusieurs systèmes d&rsquo;exploitation sur des machines virtuelles via PXE boot, j&rsquo;essaierai ensuite de démontrer les vulnérabilités du réseau et d&rsquo;appliquer des contre-mesures pour améliorer la sécurité du serveur. Restez à l&rsquo;écoute et à la prochaine!</p>
+]]></content>
+        </item>
         
         <item>
             <title>Comparaison des Modèles Réseau: OSI vs. TCP/IP</title>
@@ -18,7 +243,7 @@
             <description>Introduction Comprendre les réseaux informatiques est une compétence indispensable pour la plupart des professionnels évoluant dans le domaine des technologies de l’information. Deux modèles majeurs sont au cœur de cette compréhension : le modèle d’interconnexion des systèmes ouverts (OSI) et le modèle de protocole de contrôle de transmission/protocole Internet (TCP/IP). Ces modèles OSI et TCP/IP servent de références pour la conception, la mise en œuvre et la maintenance des réseaux informatiques.</description>
             <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
 <p>Comprendre les réseaux informatiques est une compétence indispensable pour la plupart des professionnels évoluant dans le domaine des technologies de l’information. Deux modèles majeurs sont au cœur de cette compréhension : le modèle d’interconnexion des systèmes ouverts (OSI) et le modèle de protocole de contrôle de transmission/protocole Internet (TCP/IP). Ces modèles OSI et TCP/IP servent de références pour la conception, la mise en œuvre et la maintenance des réseaux informatiques. Ils représentent des plans directeurs qui facilitent la communication entre les différents composants d&rsquo;un réseau. Dans cet article, nous allons examiner ces deux modèles, explorer les différentes couches qui les composent, et comprendre leurs fonctionnalités respectives.</p>
-<h2 id="osi-model">OSI Model</h2>
+<h2 id="modèle-osi">Modèle OSI</h2>
 <p><img src="/images/OSI-7-layers.jpg" alt="OSI Model"></p>
 <p>Le modèle d&rsquo;interconnexion des systèmes ouverts (OSI) constitue un schéma de base pour la compréhension et la conceptualisation de la communication en réseau. Introduit par l&rsquo;Organisation internationale de normalisation (ISO), le modèle OSI est structuré en sept couches distinctes, chacune ayant une fonction spécifique dans la transmission des données.</p>
 <ol>
@@ -57,7 +282,7 @@
 <blockquote>
 <p>L&rsquo;une des caractéristiques du modèle OSI est sa nature hiérarchique. Chaque couche s&rsquo;appuie sur les fonctionnalités des couches inférieures, créant un système structuré et modulaire pour la conception des réseaux. Cette organisation permet une flexibilité et une évolutivité qui en font une excellente référence pour les architectes et les administrateurs de réseaux. Le modèle OSI fournit une structure universelle pour comprendre et construire des systèmes de communication en réseau, indépendamment des protocoles ou des technologies spécifiques.</p>
 </blockquote>
-<h2 id="tcpip-model">TCP/IP Model</h2>
+<h2 id="modèle-tcpip">Modèle TCP/IP</h2>
 <p><img src="/images/The-TCP-IP-five-layer-model.png" alt="TCP/IP Model Model"></p>
 <p>Le modèle TCP/IP (Transmission Control Protocol/Internet Protocol) s&rsquo;est imposé comme le standard pour la conception et la mise en œuvre de réseaux Internet. Issu du développement de l&rsquo;ARPANET, le modèle TCP/IP est réputé pour sa simplicité et son efficacité. Contrairement aux sept couches du modèle OSI, le modèle TCP/IP condense le processus de communication réseau en cinq couches, offrant ainsi une approche simplifiée et pratique.</p>
 <ol>

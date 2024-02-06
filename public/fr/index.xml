@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 28 Jan 2024 14:23:09 -0600</lastBuildDate>
+    <lastBuildDate>Sun, 04 Feb 2024 15:42:38 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure</title>
+      <link>https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/</link>
+      <pubDate>Sun, 04 Feb 2024 15:42:38 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/</guid>
+      <description>Introduction Vous êtes-vous déjà demandé comment les installations de systèmes d&amp;rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&amp;rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus?</description>
+    </item>
     <item>
       <title>Comparaison des Modèles Réseau: OSI vs. TCP/IP</title>
       <link>https://scorpiosec.com/fr/posts/2024/01/comparaison-des-mod%C3%A8les-r%C3%A9seau-osi-vs.-tcp/ip/</link>

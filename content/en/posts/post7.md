@@ -3,7 +3,7 @@ title = "Streamlining IT Operations: A Guide to PXE Server Setup and Security"
 date = 2024-02-04T15:42:38-06:00
 draft = false
 toc = true
-tags = []
+tags = ['PXE']
 +++
 
 ## Introduction 

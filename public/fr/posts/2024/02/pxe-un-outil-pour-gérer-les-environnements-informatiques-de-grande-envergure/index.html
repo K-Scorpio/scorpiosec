@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Introduction Vous êtes-vous déjà demandé comment les installations de systèmes d&amp;rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&amp;rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus?" />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, PXE" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/" />
+
+
+    <title>
+        
+            PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure">
+<meta itemprop="description" content="Introduction Vous êtes-vous déjà demandé comment les installations de systèmes d&rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus?"><meta itemprop="datePublished" content="2024-02-04T15:42:38-06:00" />
+<meta itemprop="dateModified" content="2024-02-04T15:42:38-06:00" />
+<meta itemprop="wordCount" content="1987"><meta itemprop="image" content="https://scorpiosec.com/" />
+<meta itemprop="keywords" content="PXE," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/" /><meta name="twitter:title" content="PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure"/>
+<meta name="twitter:description" content="Introduction Vous êtes-vous déjà demandé comment les installations de systèmes d&rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus?"/>
+
+
+
+    <meta property="og:title" content="PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure" />
+<meta property="og:description" content="Introduction Vous êtes-vous déjà demandé comment les installations de systèmes d&rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/" /><meta property="og:image" content="https://scorpiosec.com/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-02-04T15:42:38-06:00" />
+<meta property="article:modified_time" content="2024-02-04T15:42:38-06:00" />
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-02-04 15:42:38 -0600 CST" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        10 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/">PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#configuration-du-serveur-pxe">Configuration du serveur PXE</a>
+      <ul>
+        <li><a href="#préalables">Préalables</a></li>
+        <li><a href="#étapes-de-configuration-dun-serveur-pxe">Étapes de configuration d&rsquo;un serveur PXE</a></li>
+      </ul>
+    </li>
+    <li><a href="#considérations-en-matière-de-sécurité">Considérations en matière de sécurité</a>
+      <ul>
+        <li><a href="#vulnérabilités">Vulnérabilités</a></li>
+        <li><a href="#contre-mesures">Contre-mesures</a></li>
+      </ul>
+    </li>
+    <li><a href="#automatisation">Automatisation</a>
+      <ul>
+        <li><a href="#fichiers-de-réponse-answer-files-pour-windows">Fichiers de réponse (Answer files) pour Windows</a></li>
+        <li><a href="#fichiers-preseed-pour-ubuntu">Fichiers Preseed pour Ubuntu</a></li>
+        <li><a href="#utilisation-des-fichiers-answer-et-preseed-avec-pxe">Utilisation des fichiers Answer et Preseed avec PXE</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <h2 id="introduction">Introduction</h2>
+<p>Vous êtes-vous déjà demandé comment les installations de systèmes d&rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus? Imaginez maintenant qu&rsquo;il ne s&rsquo;agisse pas seulement de 10, 20 ou 30 ordinateurs, mais aussi de serveurs, de commutateurs, de routeurs, de machines virtuelles, etc. La difficulté devient évidente.</p>
+<p>PXE est une des solutions pour simplifier cette situation. Le processus de démarrage PXE (Pre-boot eXecution Environment) permet le démarrage d&rsquo;une ordinateur à partir du réseau, le client récupère une image du système d&rsquo;exploitation située sur un serveur. Cette image peut consister en un système d&rsquo;exploitation de base ou être personnalisée avec divers éléments logiciels tels qu&rsquo;une suite bureautique, des utilitaires, des packs de sécurité, des scripts, etc.</p>
+<p>Couramment utilisé dans les environnements informatiques à grande échelle, PXE facilite les tâches telles que le déploiement de systèmes d&rsquo;exploitation, la restauration de systèmes et les installations en réseau. En permettant à un ordinateur d&rsquo;obtenir sa configuration réseau et les fichiers nécessaires, PXE lance le processus de démarrage sans dépendre des périphériques de stockage locaux.</p>
+<p><img src="https://scorpiosec.com/images/PXE-server-topology.png" alt="PXE server diagram">
+<em>Crédits pour l&rsquo;image CC(ChenChih) sur medium.com</em></p>
+<h2 id="configuration-du-serveur-pxe">Configuration du serveur PXE</h2>
+<p>PXE simpifie les configurations d&rsquo;ordinateurs en grand nombre, en éliminant le besoin de CD ou de clés USB et en permettant l&rsquo;installation d&rsquo;une seule image de système d&rsquo;exploitation sur plusieurs machines simultanément, ce qui vous permet de gagner du temps. Il utilise un serveur DHCP, un serveur TFTP et un serveur web. Le serveur DHCP attribue une adresse IP à l&rsquo;ordinateur et fournit des informations sur le serveur PXE, notamment l&rsquo;emplacement du serveur TFTP (Trivial File Transfer Protocol) pour le transfert des fichiers d&rsquo;amorçage PXE aux clients pendant le processus d&rsquo;amorçage.</p>
+<p>Bien qu&rsquo;un serveur web ne soit pas strictement nécessaire pour la fonctionnalité PXE de base, il devient essentiel lorsqu&rsquo;il s&rsquo;agit de configurations PXE plus avancées et du déploiement de systèmes d&rsquo;exploitation qui s&rsquo;appuient sur la récupération de fichiers via HTTP au cours du processus d&rsquo;installation. Le serveur web est principalement utilisé pour stocker les fichiers d&rsquo;installation, ce qui améliore considérablement les capacités de votre serveur PXE.</p>
+<p>Pour de nombreux systèmes d&rsquo;exploitation, en particulier les versions modernes de Windows et diverses distributions Linux, les fichiers d&rsquo;installation sont trop volumineux pour être transférés uniquement par TFTP. Un serveur web est utilisé pour stocker ces fichiers et les rendre accessibles aux clients PXE pendant le processus d&rsquo;installation. Passons maintenant aux aspects pratiques de la mise en place d&rsquo;un serveur PXE.</p>
+<h3 id="préalables">Préalables</h3>
+<p>Tout d&rsquo;abord, assurez-vous que les conditions suivantes sont réunies:</p>
+<ol>
+<li>Infrastructure du serveur :</li>
+</ol>
+<ul>
+<li>Un serveur dédié ou une machine virtuelle qui servira de serveur PXE.</li>
+</ul>
+<ol start="2">
+<li>Système d&rsquo;exploitation :</li>
+</ol>
+<ul>
+<li>Choisir une distribution Linux pour le serveur PXE. Les choix les plus courants sont Ubuntu Server, CentOS ou Debian.</li>
+</ul>
+<ol start="3">
+<li>Configuration du réseau :</li>
+</ol>
+<ul>
+<li>Établir un réseau stable avec DHCP configuré pour allouer des adresses IP aux clients PXE.</li>
+<li>Établir un segment de réseau isolé ou un VLAN dédié au trafic lié au PXE afin d&rsquo;améliorer la sécurité.</li>
+</ul>
+<h3 id="étapes-de-configuration-dun-serveur-pxe">Étapes de configuration d&rsquo;un serveur PXE</h3>
+<ol>
+<li>Serveur DHCP: Installer et configurer un serveur DHCP pour fournir des adresses IP aux clients PXE. Assurez-vous que les options DHCP sont définies pour indiquer l&rsquo;emplacement du serveur PXE et des fichiers de démarrage.</li>
+</ol>
+<pre tabindex="0"><code>sudo apt-get install isc-dhcp-server
+</code></pre><ol start="2">
+<li>Serveur TFTP: Installer un serveur TFTP pour transférer les fichiers de démarrage PXE aux clients pendant le processus de démarrage.</li>
+</ol>
+<pre tabindex="0"><code>sudo apt-get install tftpd-hpa
+</code></pre><ol start="3">
+<li>Serveur web: Configurer un serveur web pour héberger les fichiers d&rsquo;installation de divers systèmes d&rsquo;exploitation.</li>
+</ol>
+<pre tabindex="0"><code>sudo apt-get install apache2
+</code></pre><ol start="4">
+<li>Configurer le serveur DHCP : Modifier le fichier de configuration du serveur DHCP pour y inclure les paramètres spécifiques à PXE. Par exemple, dans le fichier /etc/dhcp/dhcpd.conf:</li>
+</ol>
+<pre tabindex="0"><code>option domain-name &#34;example.com&#34;;
+option domain-name-servers ns1.example.com, ns2.example.com;
+
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.100 192.168.1.200;
+  option routers 192.168.1.1;
+  option broadcast-address 192.168.1.255;
+  option subnet-mask 255.255.255.0;
+  filename &#34;pxelinux.0&#34;;
+  next-server 192.168.1.10; # PXE Server IP
+}
+</code></pre><ol start="5">
+<li>Configurer le serveur TFTP : Modifiez le fichier de configuration du serveur TFTP (généralement situé dans /etc/default/tftpd-hpa) pour définir le répertoire racine du TFTP:</li>
+</ol>
+<pre tabindex="0"><code>TFTP_USERNAME=&#34;tftp&#34;
+TFTP_DIRECTORY=&#34;/var/lib/tftpboot&#34;
+TFTP_ADDRESS=&#34;0.0.0.0:69&#34;
+TFTP_OPTIONS=&#34;--secure&#34;
+</code></pre><ol start="6">
+<li>Préparer les fichiers d&rsquo;amorçage PXE: Téléchargez les fichiers d&rsquo;amorçage PXE, tels que PXELinux, à partir du site web officiel ou des dépôts de paquets. Placez ces fichiers dans le répertoire racine TFTP (/var/lib/tftpboot).</li>
+</ol>
+<pre tabindex="0"><code>sudo mkdir /var/lib/tftpboot
+sudo wget https://www.syslinux.org/wiki/uploads/attachments/syslinux-6.04-pre1.tar.xz
+sudo tar -xvf syslinux-6.04-pre1.tar.xz
+sudo cp syslinux-6.04-pre1/bios/core/pxelinux.0 /var/lib/tftpboot
+sudo cp syslinux-6.04-pre1/bios/com32/elflink/ldlinux/ldlinux.c32 /var/lib/tftpboot
+sudo cp syslinux-6.04-pre1/bios/com32/lib/libcom32.c32 /var/lib/tftpboot
+sudo cp syslinux-6.04-pre1/bios/com32/libutil/libutil.c32 /var/lib/tftpboot
+</code></pre><ol start="7">
+<li>
+<p>Configurer le serveur web: Copiez les fichiers d&rsquo;installation pour les systèmes d&rsquo;exploitation souhaités (Windows, distributions Linux) dans le répertoire racine du serveur web (par exemple, /var/www/html pour Apache).</p>
+</li>
+<li>
+<p>Tester le démarrage PXE:</p>
+</li>
+</ol>
+<ul>
+<li>Démarrer les services DHCP et TFTP:</li>
+</ul>
+<pre tabindex="0"><code>sudo systemctl restart isc-dhcp-server
+sudo systemctl restart tftpd-hpa
+</code></pre><ul>
+<li>S&rsquo;assurer que le serveur web fonctionne:</li>
+</ul>
+<pre tabindex="0"><code>sudo systemctl restart apache2
+</code></pre><ul>
+<li>Démarrer un client compatible PXE et vérifiez qu&rsquo;il lance avec succès le processus de démarrage PXE.</li>
+</ul>
+<p>Après ces étapes, vous disposez maintenant d&rsquo;un serveur PXE prêt à l&rsquo;emploi.</p>
+<h2 id="considérations-en-matière-de-sécurité">Considérations en matière de sécurité</h2>
+<h3 id="vulnérabilités">Vulnérabilités</h3>
+<p>Bien que PXE soit une technologie pratique et efficace, elle comporte des vulnérabilités potentielles. En voici quelques unes et les contre-mesures correspondantes:</p>
+<ul>
+<li>
+<p>Accès non autorisé: Des acteurs malveillants pourraient tenter d&rsquo;obtenir un accès non autorisé au serveur PXE, en injectant ou en modifiant les fichiers de démarrage afin de compromettre l&rsquo;intégrité des installations du système d&rsquo;exploitation.</p>
+</li>
+<li>
+<p>Attaques de l&rsquo;homme du milieu (HDM) ou man-in-the-middle attack (MITM): Les attaquants peuvent intercepter les communications entre le serveur PXE et les machines clientes, ce qui leur permet de manipuler ou de surveiller le processus d&rsquo;installation.</p>
+</li>
+<li>
+<p>Usurpation du protocole DHCP (DHCP Spoofing): Si un attaquant réussit à usurper les réponses DHCP, il peut rediriger les clients PXE vers un autre serveur PXE sous son contrôle, ce qui conduit à des installations non autorisées du système d&rsquo;exploitation ou à une exploitation potentielle.</p>
+</li>
+</ul>
+<blockquote>
+<p>Si vous voulez lire sur une vulnérabilité PXE, consultez <a href="https://nvd.nist.gov/vuln/detail/CVE-2020-3284" target="_blank" >CVE-2020-3284</a>
+
+</p>
+</blockquote>
+<h3 id="contre-mesures">Contre-mesures</h3>
+<ul>
+<li>
+<p>Sécuriser le serveur PXE: Mettre en place des contrôles d&rsquo;authentification et d&rsquo;accès robustes pour le serveur PXE. Mettez régulièrement à jour et corrigez le système d&rsquo;exploitation et les logiciels du serveur afin de remédier aux vulnérabilités connues.</p>
+</li>
+<li>
+<p>Cryptage: Utiliser des protocoles de chiffrement (tels que HTTPS) pour sécuriser les communications entre le serveur PXE et les clients. Cela permet de se prémunir contre les attaques de type &ldquo;man-in-the-middle&rdquo; et de garantir l&rsquo;intégrité des fichiers de démarrage.</p>
+</li>
+<li>
+<p>Segmentation du réseau: Utiliser la segmentation du réseau pour isoler le serveur PXE des réseaux non fiables. Cette stratégie limite la surface d&rsquo;attaque potentielle et réduit le risque d&rsquo;accès non autorisé.</p>
+</li>
+<li>
+<p>Signatures numériques: Signer les fichiers de démarrage avec des signatures numériques pour vérifier leur authenticité. N&rsquo;autoriser l&rsquo;installation que d&rsquo;images de systèmes d&rsquo;exploitation signées et vérifiées, ce qui réduit le risque d&rsquo;injection ou d&rsquo;altération de fichiers.</p>
+</li>
+<li>
+<p>Sécurité DHCP: Mettre en œuvre le snooping DHCP et l&rsquo;inspection ARP dynamique (DAI) pour prévenir les attaques par usurpation d&rsquo;identité DHCP. Cette mesure garantit que les clients PXE reçoivent des réponses DHCP valides de la part de serveurs légitimes.</p>
+</li>
+<li>
+<p>Surveillance et journalisation: Surveiller et journaliser régulièrement les activités du serveur PXE afin de détecter tout comportement inhabituel ou suspect, et de fournir des indicateurs précoces d&rsquo;incidents de sécurité potentiels.</p>
+</li>
+<li>
+<p>Mots de passe Firmware/BIOS: Définissez des mots de passe complexes pour les paramètres du micrologiciel/BIOS afin d&rsquo;empêcher toute modification non autorisée. Cette étape permet de se protéger contre la falsification des paramètres de démarrage PXE sur des machines individuelles.</p>
+</li>
+</ul>
+<p>En mettant en œuvre ces contre-mesures, vous pouvez renforcer la sécurité de votre déploiement PXE et réduire le risque d&rsquo;exploitation par des acteurs malveillants. Si vous souhaitez obtenir plus de détails sur les mesures de sécurité, Microsoft propose un ensemble de méthodes disponibles <a href="https://learn.microsoft.com/en-us/mem/configmgr/osd/plan-design/security-and-privacy-for-operating-system-deployment" target="_blank" >ici</a>
+
+.</p>
+<h2 id="automatisation">Automatisation</h2>
+<p>Un serveur web vous permet d&rsquo;héberger des scripts personnalisés, des fichiers de démarrage, des fichiers preseed ou d&rsquo;autres fichiers de configuration qui automatisent le processus d&rsquo;installation. Cette capacité est particulièrement précieuse pour les installations sans surveillance et la personnalisation.</p>
+<p>Les fichiers de réponse pour Windows et les fichiers preseed pour Ubuntu sont des fichiers de configuration utilisés dans les installations sans surveillance. Ces fichiers contiennent des réglages et des paramètres qui automatisent le processus d&rsquo;installation, éliminant ainsi le besoin d&rsquo;interaction de l&rsquo;utilisateur pendant l&rsquo;installation du système d&rsquo;exploitation.</p>
+<h3 id="fichiers-de-réponse-answer-files-pour-windows">Fichiers de réponse (Answer files) pour Windows</h3>
+<ol>
+<li>Unattend.xml (Windows Vista et versions ultérieures):</li>
+</ol>
+<ul>
+<li>Pour Windows Vista et les versions ultérieures, y compris les éditions Windows Server, l&rsquo;installation sans surveillance est généralement contrôlée par un fichier XML appelé Unattend.xml.</li>
+<li>Ce fichier contient des paramètres tels que la clé de produit, le fuseau horaire, les comptes d&rsquo;utilisateurs, etc.</li>
+</ul>
+<ol start="2">
+<li>
+<p>Sysprep:
+Avant de créer une image pour le déploiement, on utilise souvent l&rsquo;outil de préparation du système (Sysprep) pour généraliser l&rsquo;installation de Windows. Pendant Sysprep, vous pouvez spécifier un fichier de réponse qui sera utilisé lors du prochain démarrage pour configurer le système.</p>
+</li>
+<li>
+<p>Kit de déploiement et d&rsquo;évaluation Windows:</p>
+</li>
+</ol>
+<ul>
+<li>Utilisez l&rsquo;invite de commande des outils de déploiement (qui fait partie du kit d&rsquo;évaluation et de déploiement Windows - ADK) pour générer et modifier les fichiers de réponse.</li>
+<li>Windows SIM (System Image Manager) est couramment utilisé pour la création et la modification des fichiers de réponse.</li>
+</ul>
+<h3 id="fichiers-preseed-pour-ubuntu">Fichiers Preseed pour Ubuntu</h3>
+<ol>
+<li>Fichier de configuration Preseed:</li>
+</ol>
+<ul>
+<li>Pour les systèmes Ubuntu et Debian, le fichier preseed est utilisé pour automatiser le processus d&rsquo;installation.</li>
+<li>Le fichier est généralement nommé preseed.cfg ou un nom similaire et contient des instructions sur le partitionnement, la sélection des paquets, la création d&rsquo;utilisateurs et d&rsquo;autres options d&rsquo;installation.</li>
+</ul>
+<ol start="2">
+<li>Emplacement du fichier Preseed:</li>
+</ol>
+<ul>
+<li>Au cours du processus de démarrage PXE, le programme d&rsquo;installation recherche le fichier preseed à un emplacement spécifique. Par exemple, il peut se trouver à l&rsquo;adresse <a href="http://example.com/preseed.cfg" target="_blank" >http://example.com/preseed.cfg</a>
+
+ sur un serveur web.</li>
+</ul>
+<ol start="3">
+<li>Configuration DHCP:</li>
+</ol>
+<ul>
+<li>La configuration DHCP de votre serveur PXE doit inclure une option permettant de spécifier l&rsquo;emplacement du fichier preseed. Par exemple, dans la configuration DHCP, vous pouvez définir:</li>
+</ul>
+<pre tabindex="0"><code>option preseed-url &#34;http://example.com/preseed.cfg&#34;;
+</code></pre><h3 id="utilisation-des-fichiers-answer-et-preseed-avec-pxe">Utilisation des fichiers Answer et Preseed avec PXE</h3>
+<ol>
+<li>
+<p>Créer des fichiers de réponse/Preseed: Utiliser des outils tels que Windows SIM pour Windows ou créer manuellement un fichier preseed pour Ubuntu. Ces fichiers définissent les options de configuration pour l&rsquo;installation sans surveillance.</p>
+</li>
+<li>
+<p>Placez les fichiers sur le serveur Web: Héberger le fichier de réponse (par exemple, Unattend.xml pour Windows ou preseed.cfg pour Ubuntu) sur un serveur web accessible aux clients PXE.</p>
+</li>
+<li>
+<p>Configurer le serveur PXE : Modifier la configuration du serveur PXE pour inclure l&rsquo;URL ou le chemin d&rsquo;accès au fichier de réponse ou au fichier preseed. Cette opération s&rsquo;effectue généralement dans le fichier de configuration du serveur PXE ou dans les options DHCP. Par exemple, dans un fichier de configuration PXE, vous pouvez spécifier l&rsquo;emplacement du fichier de réponse Windows comme suit:</p>
+</li>
+</ol>
+<pre tabindex="0"><code>APPEND  ... inst.ks=http://example.com/Unattend.xml
+</code></pre><ul>
+<li>Dans la configuration DHCP, vous pouvez spécifier l&rsquo;emplacement du fichier Ubuntu preseed:</li>
+</ul>
+<pre tabindex="0"><code>option preseed-url &#34;http://example.com/preseed.cfg&#34;;
+</code></pre><ol start="4">
+<li>Tester l&rsquo;installation :</li>
+</ol>
+<ul>
+<li>Démarrer une machine cliente via PXE et observez le processus d&rsquo;installation automatisé. Le programme d&rsquo;installation récupère le fichier de réponse ou le fichier preseed à l&rsquo;emplacement spécifié et l&rsquo;utilise pour configurer les paramètres d&rsquo;installation.</li>
+</ul>
+<p>L&rsquo;utilisation de fichiers de réponse ou de fichiers preseed avec PXE permet un déploiement efficace et automatisé des systèmes d&rsquo;exploitation.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>En conclusion, PXE est une excellente technologie capable de gérer des environnements informatiques divers et vastes. Elle permet de simplifier le déploiement et la maintenance des systèmes d&rsquo;exploitation. PXE est utilisé à diverses fins, notamment pour le déploiement de systèmes d&rsquo;exploitation, la récupération de systèmes, la maintenance, les déploiements automatisés et la création d&rsquo;images. J&rsquo;espère vous avoir donné un aperçu détaillé de cette technologie. Je prépare un projet basé sur PXE. Je vais créer un serveur PXE avec VirtualBox et déployer plusieurs systèmes d&rsquo;exploitation sur des machines virtuelles via PXE boot, j&rsquo;essaierai ensuite de démontrer les vulnérabilités du réseau et d&rsquo;appliquer des contre-mesures pour améliorer la sécurité du serveur. Restez à l&rsquo;écoute et à la prochaine!</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/pxe/">PXE</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1987 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-02-04 15:42
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure&amp;caption=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f;description=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f&amp;title=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure&amp;summary=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f&amp;resubmit=true&amp;title=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f;title=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f&amp;t=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=PXE%3a%20Un%20Outil%20pour%20G%c3%a9rer%20les%20Environnements%20Informatiques%20de%20Grande%20Envergure&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fpxe-un-outil-pour-g%25C3%25A9rer-les-environnements-informatiques-de-grande-envergure%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/01/comparaison-des-mod%C3%A8les-r%C3%A9seau-osi-vs.-tcp/ip/">
+                    <span class="button__text">Comparaison des Modèles Réseau: OSI vs. TCP/IP</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

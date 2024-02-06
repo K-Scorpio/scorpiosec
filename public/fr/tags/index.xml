@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sun, 28 Jan 2024 14:23:09 -0600</lastBuildDate>
+    <lastBuildDate>Sun, 04 Feb 2024 15:42:38 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PXE</title>
+      <link>https://scorpiosec.com/fr/tags/pxe/</link>
+      <pubDate>Sun, 04 Feb 2024 15:42:38 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/tags/pxe/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Networking</title>
       <link>https://scorpiosec.com/fr/tags/networking/</link>

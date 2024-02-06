@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PXE on Scorpiosec</title>
+    <link>https://scorpiosec.com/tags/pxe/</link>
+    <description>Recent content in PXE on Scorpiosec</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Sun, 04 Feb 2024 15:42:38 -0600</lastBuildDate>
+    <atom:link href="https://scorpiosec.com/tags/pxe/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Streamlining IT Operations: A Guide to PXE Server Setup and Security</title>
+      <link>https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/</link>
+      <pubDate>Sun, 04 Feb 2024 15:42:38 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/</guid>
+      <description>Introduction Have you ever wondered how OS installations or system maintenance are handled in large IT infrastructure? Picture this: you work in the IT department and are tasked with preparing laptops for new hires. These individuals will be working in different departments, each requiring a specific OS. How would you approach this task? Would you physically interact with each laptop to complete the process? Now, imagine it&amp;rsquo;s not just 10, 20, or 30 laptops but also servers, switches, routers, virtual machines, and more.</description>
+    </item>
+  </channel>
+</rss>

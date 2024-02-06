@@ -3,7 +3,7 @@ title = "PXE: Un Outil pour Gérer les Environnements Informatiques de Grande En
 date = 2024-02-04T15:42:38-06:00
 draft = false
 toc = true
-tags = []
+tags = ['PXE']
 +++
 
 ## Introduction 
@@ -195,4 +195,4 @@ L'utilisation de fichiers de réponse ou de fichiers preseed avec PXE permet un 
 
 ## Conclusion
 
-En conclusion, PXE est une excellente technologie capable de gérer des environnements informatiques divers et vastes. Elle permet de simplifier le déploiement et la maintenance des systèmes d'exploitation. PXE est utilisé à diverses fins, notamment pour le déploiement de systèmes d'exploitation, la récupération de systèmes, la maintenance, les déploiements automatisés et la création d'images. J'espère vous avoir donné un aperçu détaillé de cette technologie. J'ai l'intention de réaliser un projet autour d'elle. Après avoir créé un réseau avec un serveur PXE et déployé plusieurs systèmes d'exploitation sur des machines virtuelles, j'essaierai de démontrer les vulnérabilités du réseau et d'appliquer des contre-mesures pour améliorer la sécurité du serveur. Restez à l'écoute et à la prochaine!
+En conclusion, PXE est une excellente technologie capable de gérer des environnements informatiques divers et vastes. Elle permet de simplifier le déploiement et la maintenance des systèmes d'exploitation. PXE est utilisé à diverses fins, notamment pour le déploiement de systèmes d'exploitation, la récupération de systèmes, la maintenance, les déploiements automatisés et la création d'images. J'espère vous avoir donné un aperçu détaillé de cette technologie. Je prépare un projet basé sur PXE. Je vais créer un serveur PXE avec VirtualBox et déployer plusieurs systèmes d'exploitation sur des machines virtuelles via PXE boot, j'essaierai ensuite de démontrer les vulnérabilités du réseau et d'appliquer des contre-mesures pour améliorer la sécurité du serveur. Restez à l'écoute et à la prochaine!
