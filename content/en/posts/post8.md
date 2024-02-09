@@ -49,7 +49,7 @@ You should see a screen saying that All Operations were successful. But there is
 
 6. File system configuration
 
-In my case I have two laptops (Windows and Linux) and in order for storage devices to work on both systems you have to use a compatible file system type. I recommend to format your device to `exFAT` if you want to use on Windows and Linux. 
+In my case I have two laptops (Windows and Linux) and in order for storage devices to work on both systems you have to use a compatible file system type. I recommend to format your device to `exFAT` if you want to use on Windows and Linux. If you plan on using it just on Linux system choose `ext4` and for Windows systems `NTFS`.
 
 Righ-click on the partition and hover over `Format to`, you will get a list of file ssytems select `exfat` and press the green check button to continue. Close all the window after the operations are done and you should see that under the `File System` section the device now uses `exfat`.
 
@@ -80,7 +80,26 @@ After assigning a drive letter, your USB drive should now appear in File Explore
 
 ![GParted Operation Successful](/images/File-Explorer.png)
 
-
-
 ## Windows Method
 
+1. Plug the bootable USB drive into a USB port on your Windows computer.
+
+2. Press Win + E to open File Explorer.
+
+3. Right-click on the USB drive and select "Format..." from the context menu.
+
+4. In the Format dialog box, you can choose the desired file system. For compatibility between Windows and other operating systems like Linux, you can choose FAT32 or exFAT. If you only plan to use the USB drive with Windows, you can choose NTFS. You can also set a volume label if desired.
+
+![GParted Operation Successful](/images/Windows-formatting.png)
+
+5. Click on the "Start" button to begin the formatting process.
+
+6. If prompted to confirm, click "OK" to proceed. Note that formatting will erase all data on the USB drive, so make sure to back up any important files before proceeding.
+
+7. Wait for Windows to complete the formatting process. This may take a few moments, depending on the size of the USB drive.
+
+![GParted Operation Successful](/images/Windows-formatting-2.png)
+
+8. Once the formatting process is complete, safely eject the USB drive from your computer to ensure that all changes are finalized and the drive is safe to remove.
+
+After completing these steps, your bootable USB drive should be reverted back to a normal USB stick, and you can use it for regular storage purposes.
