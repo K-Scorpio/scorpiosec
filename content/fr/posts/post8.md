@@ -8,7 +8,7 @@ tags = []
 
 ## Introduction 
 
-Après avoir transformé une clé USB en une clé USB amorçable, elle devient inutilisable et ne peut plus transferrer de données. J'ai d'abord cru qu'il suffisait de supprimer tous les fichiers de la clé USB pour qu'elle retrouve son fonctionnement normal. Après avoir cherché en ligne un guide pour réinitialiser la clé USB, je n'ai pas trouvé de solution satisfaisante (peut-être mes compétences en matière de recherche n'étaient-elles pas à la hauteur). J'ai donc décidé de créer un guide complet. Dans cet article, je vous expliquerai comment restaurer votre clé USB, que vous utilisiez Linux ou Windows.
+Après avoir transformé une clé USB en clé USB amorçable, elle devient inutilisable et ne peut plus transferrer de données. J'ai d'abord cru qu'il suffisait de supprimer tous les fichiers de la clé USB pour qu'elle retrouve son fonctionnement normal. Après avoir cherché en ligne un guide pour réinitialiser la clé USB, je n'ai pas trouvé de solution satisfaisante. J'ai donc décidé de créer un guide complet. Dans cet article, je vous expliquerai comment restaurer votre clé USB, que vous utilisiez Linux ou Windows.
 
 ## Sur Linux
 
@@ -37,7 +37,7 @@ Choisissez ensuite le type de table de partitions que vous souhaitez créer (gé
 
 4. Créer une nouvelle partition
 
-Créez maintenant une nouvelle partition dans l'espace non alloué. Cliquez avec le bouton droit de la souris sur l'espace non alloué, choisissez " New " (Nouveau), définissez le système de fichiers souhaité et cliquez sur " Add " (Ajouter). Cliquez sur le bouton vert pour " Apply All Operations " (Appliquer toutes les opérations). Vous devez faire de même chaque fois que vous voyez "1 operation pending" (1 opération en attente) en bas de l'écran.
+Créez maintenant une nouvelle partition dans l'espace non alloué. Cliquez avec le bouton droit de la souris sur l'espace non alloué, choisissez "New" (Nouveau), définissez le système de fichiers souhaité et cliquez sur "Add" (Ajouter). Cliquez sur le bouton vert pour "Apply All Operations" (Appliquer toutes les opérations). Vous devez utiliser le bouton vert de vérification chaque fois que vous voyez "1 operation pending" (1 opération en attente) en bas de l'écran.
 
 ![GParted Create a New Partition](/images/gparted3.png)
 
@@ -47,7 +47,7 @@ Vous devriez voir apparaître un écran indiquant que toutes les opérations ont
 
 ![GParted Operation Successful](/images/gparted4.png)
 
-6. File system configuration
+6. Configuration du système de fichiers
 
 Dans mon cas, j'ai deux ordinateurs portables (Windows et Linux) et pour que les périphériques de stockage fonctionnent sur les deux systèmes, vous devez utiliser un type de système de fichiers compatible. Je recommande de formater votre périphérique en `exFAT` si vous voulez l'utiliser sur Windows et Linux. Si vous prévoyez de l'utiliser exclusivement sur un système Linux, choisissez `ext4` et pour les systèmes Windows `NTFS`.
 
