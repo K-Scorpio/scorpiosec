@@ -8,7 +8,7 @@ tags = []
 
 ## Introduction 
 
-After you turn a USB stick into a bootable USB drive you may have noticed that it becomes unusable for normal purposes (you cannot use it anymore to move data around). Ignorant me thought that I only needed to delete all the files on the USB stick to revert it to its "normal mode". I then search online for a guide to get it back but I could not find anything good (maybe my research skills just suck) so I decided to write my own guide. In this blog post I will show you how to "revive" your USB stick whether you are on Linux or Windows.
+After turning a USB stick into a bootable USB drive, you may find it unusable for normal purposes, such as transferring data. I initially believed that simply deleting all the files on the USB stick would return it to its regular functionality. After searching online for a guide to revert the USB stick, I couldn't find a satisfactory solution (perhaps my research skills weren't up to par). Therefore, I took it upon myself to create a comprehensive guide. In this blog post, I'll demonstrate how to "revive" your USB stick, whether you're using Linux or Windows.
 
 ## Linux Method
 
@@ -49,7 +49,7 @@ You should see a screen saying that All Operations were successful. But there is
 
 6. File system configuration
 
-In my case I have two laptops (Windows and Linux) and in order for storage devices to work on both systems you have to use a compatible file system type. I recommend to format your device to `exFAT` if you want to use on Windows and Linux. If you plan on using it just on Linux system choose `ext4` and for Windows systems `NTFS`.
+In my case I have two laptops (Windows and Linux) and in order for storage devices to work on both systems you have to use a compatible file system type. I recommend to format your device to `exFAT` if you want to use it on Windows and Linux. If you plan on using it exclusively on Linux system choose `ext4` and for Windows systems `NTFS`.
 
 Righ-click on the partition and hover over `Format to`, you will get a list of file ssytems select `exfat` and press the green check button to continue. Close all the window after the operations are done and you should see that under the `File System` section the device now uses `exfat`.
 
@@ -76,7 +76,7 @@ It may happen that despite the USB stick being recognized on a Windows system, i
 
 * Choose a drive letter from the list and click "OK.
 
-After assigning a drive letter, your USB drive should now appear in File Explorer on your Windows laptop.
+After assigning a drive letter, your USB drive should now appear in File Explorer on your Windows computer.
 
 ![GParted Operation Successful](/images/File-Explorer.png)
 
@@ -88,7 +88,7 @@ After assigning a drive letter, your USB drive should now appear in File Explore
 
 3. Right-click on the USB drive and select "Format..." from the context menu.
 
-4. In the Format dialog box, you can choose the desired file system. For compatibility between Windows and other operating systems like Linux, you can choose FAT32 or exFAT. If you only plan to use the USB drive with Windows, you can choose NTFS. You can also set a volume label if desired.
+4. In the Format dialog box, you can choose the desired file system. For compatibility between Windows and other operating systems like Linux, you can choose exFAT. If you only plan to use the USB drive with Windows, you can choose NTFS. You can also set a volume label if desired.
 
 ![GParted Operation Successful](/images/Windows-formatting.png)
 
