@@ -3,7 +3,8 @@ title = "Comment restaurer une clé USB bootable pour une utilisation normale su
 date = 2024-02-09T14:55:37-06:00
 draft = false
 toc = true
-tags = []
+tags = ['Troubleshooting']
+categories = ['Personal']
 +++
 
 ## Introduction 
@@ -14,7 +15,7 @@ Après avoir transformé une clé USB en clé USB amorçable, elle devient inuti
 
 Pour utiliser à nouveau la clé USB comme un périphérique de stockage normal, vous devez la formater, ce qui effacera toutes les données existantes. Sous Linux, on peut utiliser GParted pour le formatage.
 
-1. Commencez par lancer gparted (s'il n'est pas installé, vous pouvez l'installer avec `sudo apt install gparted`):
+**1. Commencez par lancer gparted (s'il n'est pas installé, vous pouvez l'installer avec `sudo apt install gparted`):**
 
 ```
 sudo gparted
@@ -24,30 +25,30 @@ Vous pouvez utiliser le menu déroulant dans le coin supérieur droit pour passe
 
 ![GParted Interface](/images/gparted1.png)
 
-2. Supprimez les partitions existantes répertoriées sur la clé USB.
+**2. Supprimez les partitions existantes répertoriées sur la clé USB**
 
 Cliquez avec le bouton droit de la souris sur chaque partition existante sur la clé USB et sélectionnez "Delete". Je n'ai qu'une seule partition répertoriée sous le nom de `/dev/sdb1`. Si l'option "Supprimer" est grisée, cela signifie que vous devez d'abord démonter le périphérique ce qui peut se faire avec un clic droit sur le périphérique et en sélectionnant "Unmount" dans l'explorateur de fichiers.
 
-3. Créer une nouvelle table de partitions
+**3. Créer une nouvelle table de partitions**
 
 Après avoir supprimé toutes les partitions, cliquez sur le menu "Device" et sélectionnez "Create Partition Table".
 Choisissez ensuite le type de table de partitions que vous souhaitez créer (généralement "msdos" pour MBR ou "gpt" pour GPT). Cliquez sur "Appliquer". (msdos fera l'affaire)
 
 ![GParted Create New Partition Table](/images/gparted2.png)
 
-4. Créer une nouvelle partition
+**4. Créer une nouvelle partition**
 
 Créez maintenant une nouvelle partition dans l'espace non alloué. Cliquez avec le bouton droit de la souris sur l'espace non alloué, choisissez "New" (Nouveau), définissez le système de fichiers souhaité et cliquez sur "Add" (Ajouter). Cliquez sur le bouton vert pour "Apply All Operations" (Appliquer toutes les opérations). Vous devez utiliser le bouton vert de vérification chaque fois que vous voyez "1 operation pending" (1 opération en attente) en bas de l'écran.
 
 ![GParted Create a New Partition](/images/gparted3.png)
 
-5. Formatage réussi
+**5. Formatage réussi**
 
 Vous devriez voir apparaître un écran indiquant que toutes les opérations ont été effectuées avec succès. Vous pouvez toutefois aller plus loin.
 
 ![GParted Operation Successful](/images/gparted4.png)
 
-6. Configuration du système de fichiers
+**6. Configuration du système de fichiers**
 
 Dans mon cas, j'ai deux ordinateurs portables (Windows et Linux) et pour que les périphériques de stockage fonctionnent sur les deux systèmes, vous devez utiliser un type de système de fichiers compatible. Je recommande de formater votre périphérique en `exFAT` si vous voulez l'utiliser sur Windows et Linux. Si vous prévoyez de l'utiliser exclusivement sur un système Linux, choisissez `ext4` et pour les systèmes Windows `NTFS`.
 
@@ -60,7 +61,7 @@ Faites un clic droit sur la partition et survolez `Format to`, vous obtiendrez u
 
 Votre périphérique USB est maintenant prêt à être utilisé.
 
-7. Le périphérique ne s'affiche pas dans l'explorateur de fichiers sur les systèmes Windows
+**7. Le périphérique ne s'affiche pas dans l'explorateur de fichiers sur les systèmes Windows**
 
 Il peut arriver que, bien que la clé USB soit reconnue sur un système Windows, elle n'apparaisse pas dans l'explorateur de fichiers avec d'autres lecteurs tels que (C:) et (D:). Cela est dû au fait qu'aucune lettre de lecteur n'a été attribuée au périphérique. Vous pouvez y remédier en utilisant l'application Disk Management (Gestion des disques) de Windows.
 	

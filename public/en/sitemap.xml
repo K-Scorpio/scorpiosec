@@ -2,8 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://scorpiosec.com/categories/</loc>
+    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/categories/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/posts/2024/02/from-bootable-to-usable-a-guide-to-restoring-your-usb-drive-for-everyday-use/</loc>
+    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/02/from-bootable-to-usable-a-guide-to-restoring-your-usb-drive-for-everyday-use/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/categories/personal/</loc>
+    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/categories/personal/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/categories/personal/"
+                />
+  </url><url>
     <loc>https://scorpiosec.com/posts/</loc>
-    <lastmod>2024-02-04T15:42:38-06:00</lastmod>
+    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
@@ -13,6 +52,45 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/posts/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/</loc>
+    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/</loc>
+    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/troubleshooting/</loc>
+    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/troubleshooting/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/troubleshooting/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/tags/pxe/</loc>
@@ -28,19 +106,6 @@
                 href="https://scorpiosec.com/tags/pxe/"
                 />
   </url><url>
-    <loc>https://scorpiosec.com/</loc>
-    <lastmod>2024-02-04T15:42:38-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/"
-                />
-  </url><url>
     <loc>https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/</loc>
     <lastmod>2024-02-04T15:42:38-06:00</lastmod>
     <xhtml:link
@@ -52,19 +117,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/tags/</loc>
-    <lastmod>2024-02-04T15:42:38-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/</loc>
@@ -91,19 +143,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/tags/networking/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/categories/</loc>
-    <lastmod>2024-01-21T18:33:14-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/categories/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/categories/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/tags/filesystem/</loc>
@@ -195,19 +234,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/tags/certifications/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/categories/personal/</loc>
-    <lastmod>2024-01-07T21:13:59-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/categories/personal/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/categories/personal/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/posts/2024/01/cracking-the-ccna-a-step-by-step-guide-to-exam-success/</loc>

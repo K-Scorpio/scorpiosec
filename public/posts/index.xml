@@ -6,8 +6,96 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sun, 04 Feb 2024 15:42:38 -0600</lastBuildDate>
+        <lastBuildDate>Fri, 09 Feb 2024 14:55:37 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>From Bootable to Usable: A Guide to Restoring Your USB Drive for Everyday Use</title>
+            <link>https://scorpiosec.com/posts/2024/02/from-bootable-to-usable-a-guide-to-restoring-your-usb-drive-for-everyday-use/</link>
+            <pubDate>Fri, 09 Feb 2024 14:55:37 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/02/from-bootable-to-usable-a-guide-to-restoring-your-usb-drive-for-everyday-use/</guid>
+            <description>Introduction After turning a USB stick into a bootable USB drive, you may find it unusable for normal purposes, such as transferring data. I initially believed that simply deleting all the files on the USB stick would return it to its regular functionality. After searching online for a guide to revert the USB stick, I couldn&amp;rsquo;t find a satisfactory solution (perhaps my research skills weren&amp;rsquo;t up to par). Therefore, I took it upon myself to create a comprehensive guide.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>After turning a USB stick into a bootable USB drive, you may find it unusable for normal purposes, such as transferring data. I initially believed that simply deleting all the files on the USB stick would return it to its regular functionality. After searching online for a guide to revert the USB stick, I couldn&rsquo;t find a satisfactory solution (perhaps my research skills weren&rsquo;t up to par). Therefore, I took it upon myself to create a comprehensive guide. In this blog post, I&rsquo;ll demonstrate how to &ldquo;revive&rdquo; your USB stick, whether you&rsquo;re using Linux or Windows.</p>
+<h2 id="linux-method">Linux Method</h2>
+<p>To use the USB stick as a normal storage device again, you&rsquo;ll need to format it, which will erase all existing data. On Linux we can use GParted for the formatting.</p>
+<p><strong>1. Start by launching gparted (if not installed, you can install it with <code>sudo apt install gparted</code>):</strong></p>
+<pre tabindex="0"><code>sudo gparted
+</code></pre><p>This will bring GParted interface, you can use the dropdown menu in the top-right corner to switch between your different drives. The USB drive will often be named <code>/dev/sdb</code>, or a similar identifier. You can also identify your storage device by the space in GiB.</p>
+<p><img src="/images/gparted1.png" alt="GParted Interface"></p>
+<p><strong>2. Delete the existing partitions listed on the USB drive</strong></p>
+<p>Right-click on each existing partition listed on the USB drive and select &ldquo;Delete.&rdquo; Confirm any prompts. I only have one partition listed for me as <code>/dev/sdb1</code>. If the &ldquo;Delete&rdquo; option is greyed out it means that you have to unmount the device first. Go to your file explorer right-click on your device and select &ldquo;Unmount&rdquo;.</p>
+<p><strong>3. Create a New Partition Table</strong></p>
+<p>After deleting all partitions, click on the &ldquo;Device&rdquo; menu and select &ldquo;Create Partition Table.&rdquo;
+Then choose the type of partition table you want to create (usually &ldquo;msdos&rdquo; for MBR or &ldquo;gpt&rdquo; for GPT) and click &ldquo;Apply.&rdquo; (msdos will work just fine)</p>
+<p><img src="/images/gparted2.png" alt="GParted Create New Partition Table"></p>
+<p><strong>4. Create a New Partition</strong></p>
+<p>Now, create a new partition on the unallocated space. Right-click on the unallocated space, choose &ldquo;New,&rdquo; set the desired file system, and click &ldquo;Add.&rdquo; Click on the green check button to &ldquo;Apply All Operations&rdquo;. You have to use the green check button everytime you see &ldquo;1 operation pending&rdquo; at the bottom of the screen.</p>
+<p><img src="/images/gparted3.png" alt="GParted Create a New Partition"></p>
+<p><strong>5. Formatting successful</strong></p>
+<p>You should see a screen saying that All Operations were successful. But there is more that you can do.</p>
+<p><img src="/images/gparted4.png" alt="GParted Operation Successful"></p>
+<p><strong>6. File system configuration</strong></p>
+<p>In my case I have two laptops (Windows and Linux) and in order for storage devices to work on both systems you have to use a compatible file system type. I recommend to format your device to <code>exFAT</code> if you want to use it on Windows and Linux. If you plan on using it exclusively on Linux system choose <code>ext4</code> and for Windows systems <code>NTFS</code>.</p>
+<p>Righ-click on the partition and hover over <code>Format to</code>, you will get a list of file systems, select <code>exfat</code> and press the green check button to continue. Close all the window after the operations are done and you should see that under the <code>File System</code> section the device now uses <code>exfat</code>.</p>
+<p><img src="/images/gparted5.png" alt="GParted Operation Successful"></p>
+<p><img src="/images/gparted6.png" alt="GParted Operation Successful"></p>
+<p>Your USB device is now ready for use.</p>
+<p><strong>7. Device not showing in file explorer on Windows systems</strong></p>
+<p>It may happen that despite the USB stick being recognized on a Windows system, it does not appear in the file explorer with other drives such as (C:) and (D:). This happens because the device does not have a drive letter assigned. You can fix it by using the Disk Management application on Windows.</p>
+<ul>
+<li>Right-click on the Start menu and select &ldquo;Disk Management&rdquo; from the context menu.</li>
+</ul>
+<p><img src="/images/Disk-Management-1.png" alt="GParted Operation Successful"></p>
+<ul>
+<li>
+<p>In the Disk Management window, you should see a list of drives. Look for your USB drive, which may be labeled as &ldquo;Removable&rdquo; or &ldquo;Unknown.&rdquo;</p>
+</li>
+<li>
+<p>Right-click on the USB drive and select &ldquo;Change Drive Letter and Paths.&rdquo; and Click &ldquo;Add.&rdquo; (It is better to leave some free letters for the computer drives, so choose F: or something further than that).</p>
+</li>
+</ul>
+<p><img src="/images/Disk-Management-2.png" alt="GParted Operation Successful"></p>
+<ul>
+<li>Choose a drive letter from the list and click &ldquo;OK.</li>
+</ul>
+<p>After assigning a drive letter, your USB drive should now appear in File Explorer on your Windows computer.</p>
+<p><img src="/images/File-Explorer.png" alt="GParted Operation Successful"></p>
+<h2 id="windows-method">Windows Method</h2>
+<ol>
+<li>
+<p>Plug the bootable USB drive into a USB port on your Windows computer.</p>
+</li>
+<li>
+<p>Press Win + E to open File Explorer.</p>
+</li>
+<li>
+<p>Right-click on the USB drive and select &ldquo;Format&hellip;&rdquo; from the context menu.</p>
+</li>
+<li>
+<p>In the Format dialog box, you can choose the desired file system. For compatibility between Windows and other operating systems like Linux, you can choose exFAT. If you only plan to use the USB drive with Windows, you can choose NTFS. You can also set a volume label if desired.</p>
+</li>
+</ol>
+<p><img src="/images/Windows-formatting.png" alt="GParted Operation Successful"></p>
+<ol start="5">
+<li>
+<p>Click on the &ldquo;Start&rdquo; button to begin the formatting process.</p>
+</li>
+<li>
+<p>If prompted to confirm, click &ldquo;OK&rdquo; to proceed. Note that formatting will erase all data on the USB drive, so make sure to back up any important files before proceeding.</p>
+</li>
+<li>
+<p>Wait for Windows to complete the formatting process. This may take a few moments, depending on the size of the USB drive.</p>
+</li>
+</ol>
+<p><img src="/images/Windows-formatting-2.png" alt="GParted Operation Successful"></p>
+<ol start="8">
+<li>Once the formatting process is complete, safely eject the USB drive from your computer to ensure that all changes are finalized and the drive is safe to remove.</li>
+</ol>
+<p>After completing these steps, your bootable USB drive should be reverted back to a normal USB stick, and you can use it for regular storage purposes.</p>
+]]></content>
+        </item>
         
         <item>
             <title>Streamlining IT Operations: A Guide to PXE Server Setup and Security</title>

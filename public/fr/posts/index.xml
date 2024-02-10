@@ -6,8 +6,96 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sun, 04 Feb 2024 15:42:38 -0600</lastBuildDate>
+        <lastBuildDate>Fri, 09 Feb 2024 14:55:37 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>Comment restaurer une clé USB bootable pour une utilisation normale sur Linux et Windows</title>
+            <link>https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/</link>
+            <pubDate>Fri, 09 Feb 2024 14:55:37 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/</guid>
+            <description>Introduction Après avoir transformé une clé USB en clé USB amorçable, elle devient inutilisable et ne peut plus transferrer de données. J&amp;rsquo;ai d&amp;rsquo;abord cru qu&amp;rsquo;il suffisait de supprimer tous les fichiers de la clé USB pour qu&amp;rsquo;elle retrouve son fonctionnement normal. Après avoir cherché en ligne un guide pour réinitialiser la clé USB, je n&amp;rsquo;ai pas trouvé de solution satisfaisante. J&amp;rsquo;ai donc décidé de créer un guide complet. Dans cet article, je vous expliquerai comment restaurer votre clé USB, que vous utilisiez Linux ou Windows.</description>
+            <content type="html"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>Après avoir transformé une clé USB en clé USB amorçable, elle devient inutilisable et ne peut plus transferrer de données. J&rsquo;ai d&rsquo;abord cru qu&rsquo;il suffisait de supprimer tous les fichiers de la clé USB pour qu&rsquo;elle retrouve son fonctionnement normal. Après avoir cherché en ligne un guide pour réinitialiser la clé USB, je n&rsquo;ai pas trouvé de solution satisfaisante. J&rsquo;ai donc décidé de créer un guide complet. Dans cet article, je vous expliquerai comment restaurer votre clé USB, que vous utilisiez Linux ou Windows.</p>
+<h2 id="sur-linux">Sur Linux</h2>
+<p>Pour utiliser à nouveau la clé USB comme un périphérique de stockage normal, vous devez la formater, ce qui effacera toutes les données existantes. Sous Linux, on peut utiliser GParted pour le formatage.</p>
+<p><strong>1. Commencez par lancer gparted (s&rsquo;il n&rsquo;est pas installé, vous pouvez l&rsquo;installer avec <code>sudo apt install gparted</code>):</strong></p>
+<pre tabindex="0"><code>sudo gparted
+</code></pre><p>Vous pouvez utiliser le menu déroulant dans le coin supérieur droit pour passer d&rsquo;un disque à l&rsquo;autre. Le périphérique USB est souvent nommé <code>/dev/sdb</code>. Vous pouvez également identifier votre périphérique de stockage par l&rsquo;espace en GiB.</p>
+<p><img src="/images/gparted1.png" alt="GParted Interface"></p>
+<p><strong>2. Supprimez les partitions existantes répertoriées sur la clé USB</strong></p>
+<p>Cliquez avec le bouton droit de la souris sur chaque partition existante sur la clé USB et sélectionnez &ldquo;Delete&rdquo;. Je n&rsquo;ai qu&rsquo;une seule partition répertoriée sous le nom de <code>/dev/sdb1</code>. Si l&rsquo;option &ldquo;Supprimer&rdquo; est grisée, cela signifie que vous devez d&rsquo;abord démonter le périphérique ce qui peut se faire avec un clic droit sur le périphérique et en sélectionnant &ldquo;Unmount&rdquo; dans l&rsquo;explorateur de fichiers.</p>
+<p><strong>3. Créer une nouvelle table de partitions</strong></p>
+<p>Après avoir supprimé toutes les partitions, cliquez sur le menu &ldquo;Device&rdquo; et sélectionnez &ldquo;Create Partition Table&rdquo;.
+Choisissez ensuite le type de table de partitions que vous souhaitez créer (généralement &ldquo;msdos&rdquo; pour MBR ou &ldquo;gpt&rdquo; pour GPT). Cliquez sur &ldquo;Appliquer&rdquo;. (msdos fera l&rsquo;affaire)</p>
+<p><img src="/images/gparted2.png" alt="GParted Create New Partition Table"></p>
+<p><strong>4. Créer une nouvelle partition</strong></p>
+<p>Créez maintenant une nouvelle partition dans l&rsquo;espace non alloué. Cliquez avec le bouton droit de la souris sur l&rsquo;espace non alloué, choisissez &ldquo;New&rdquo; (Nouveau), définissez le système de fichiers souhaité et cliquez sur &ldquo;Add&rdquo; (Ajouter). Cliquez sur le bouton vert pour &ldquo;Apply All Operations&rdquo; (Appliquer toutes les opérations). Vous devez utiliser le bouton vert de vérification chaque fois que vous voyez &ldquo;1 operation pending&rdquo; (1 opération en attente) en bas de l&rsquo;écran.</p>
+<p><img src="/images/gparted3.png" alt="GParted Create a New Partition"></p>
+<p><strong>5. Formatage réussi</strong></p>
+<p>Vous devriez voir apparaître un écran indiquant que toutes les opérations ont été effectuées avec succès. Vous pouvez toutefois aller plus loin.</p>
+<p><img src="/images/gparted4.png" alt="GParted Operation Successful"></p>
+<p><strong>6. Configuration du système de fichiers</strong></p>
+<p>Dans mon cas, j&rsquo;ai deux ordinateurs portables (Windows et Linux) et pour que les périphériques de stockage fonctionnent sur les deux systèmes, vous devez utiliser un type de système de fichiers compatible. Je recommande de formater votre périphérique en <code>exFAT</code> si vous voulez l&rsquo;utiliser sur Windows et Linux. Si vous prévoyez de l&rsquo;utiliser exclusivement sur un système Linux, choisissez <code>ext4</code> et pour les systèmes Windows <code>NTFS</code>.</p>
+<p>Faites un clic droit sur la partition et survolez <code>Format to</code>, vous obtiendrez une liste de systèmes de fichiers, sélectionnez <code>exfat</code> et appuyez sur le bouton vert pour continuer. Fermez toutes les fenêtres une fois les opérations terminées et vous remarquerez dans la section <code>File System</code> que le périphérique utilise maintenant <code>exfat</code>.</p>
+<p><img src="/images/gparted5.png" alt="GParted Operation Successful"></p>
+<p><img src="/images/gparted6.png" alt="GParted Operation Successful"></p>
+<p>Votre périphérique USB est maintenant prêt à être utilisé.</p>
+<p><strong>7. Le périphérique ne s&rsquo;affiche pas dans l&rsquo;explorateur de fichiers sur les systèmes Windows</strong></p>
+<p>Il peut arriver que, bien que la clé USB soit reconnue sur un système Windows, elle n&rsquo;apparaisse pas dans l&rsquo;explorateur de fichiers avec d&rsquo;autres lecteurs tels que (C:) et (D:). Cela est dû au fait qu&rsquo;aucune lettre de lecteur n&rsquo;a été attribuée au périphérique. Vous pouvez y remédier en utilisant l&rsquo;application Disk Management (Gestion des disques) de Windows.</p>
+<ul>
+<li>Cliquez avec le bouton droit de la souris sur le menu Démarrer et sélectionnez &ldquo;Disk Management&rdquo; dans le menu contextuel.</li>
+</ul>
+<p><img src="/images/Disk-Management-1.png" alt="GParted Operation Successful"></p>
+<ul>
+<li>
+<p>Dans la fenêtre Gestion des disques, vous devriez voir une liste de lecteurs. Recherchez votre clé USB, qui peut être identifiée comme &ldquo;Removable&rdquo; (amovible) ou &ldquo;Unknown&rdquo; (inconnu).</p>
+</li>
+<li>
+<p>Cliquez avec le bouton droit de la souris sur le lecteur USB et sélectionnez &ldquo;Change Drive Letter and Paths&rdquo; (Modifier la lettre du lecteur et les chemins d&rsquo;accès), puis cliquez sur &ldquo;Add&rdquo; (Ajouter). (Il est préférable de laisser quelques lettres libres pour les lecteurs de l&rsquo;ordinateur, donc choisissez F: ou une lettre plus éloignée).</p>
+</li>
+</ul>
+<p><img src="/images/Disk-Management-2.png" alt="GParted Operation Successful"></p>
+<ul>
+<li>Choisissez une lettre de lecteur dans la liste et cliquez sur &ldquo;OK&rdquo;.</li>
+</ul>
+<p>Après avoir attribué une lettre de lecteur, votre clé USB devrait maintenant apparaître dans l&rsquo;Explorateur de fichiers de votre ordinateur Windows.</p>
+<p><img src="/images/File-Explorer.png" alt="GParted Operation Successful"></p>
+<h2 id="sur-windows">Sur Windows</h2>
+<ol>
+<li>
+<p>Branchez la clé USB amorçable sur un port USB de votre ordinateur Windows.</p>
+</li>
+<li>
+<p>Appuyez sur Win + E pour ouvrir l&rsquo;Explorateur de fichiers.</p>
+</li>
+<li>
+<p>Cliquez avec le bouton droit de la souris sur la clé USB et sélectionnez &ldquo;Formater&hellip;&rdquo; dans le menu contextuel.</p>
+</li>
+<li>
+<p>Dans la boîte de dialogue Format, vous pouvez choisir le système de fichiers souhaité. Pour assurer la compatibilité entre Windows et d&rsquo;autres systèmes d&rsquo;exploitation comme Linux, vous pouvez choisir exFAT. Si vous prévoyez d&rsquo;utiliser la clé USB uniquement avec Windows, vous pouvez choisir NTFS. Vous pouvez également définir une étiquette de volume (volume label) si vous le souhaitez.</p>
+</li>
+</ol>
+<p><img src="/images/Windows-formatting.png" alt="GParted Operation Successful"></p>
+<ol start="5">
+<li>
+<p>Cliquez sur le bouton &ldquo;Démarrer&rdquo; (Start) pour lancer le processus de formatage.</p>
+</li>
+<li>
+<p>Si vous êtes invité à confirmer, cliquez sur &ldquo;OK&rdquo; pour continuer. Notez que le formatage effacera toutes les données de la clé USB. Veillez donc à sauvegarder tous les fichiers importants avant de poursuivre.</p>
+</li>
+<li>
+<p>Attendez que Windows termine le processus de formatage. Cela peut prendre quelques instants, en fonction de la taille de la clé USB.</p>
+</li>
+</ol>
+<p><img src="/images/Windows-formatting-2.png" alt="GParted Operation Successful"></p>
+<ol start="8">
+<li>Une fois le processus de formatage terminé, éjectez la clé USB de votre ordinateur de manière sécurisée afin de vous assurer que toutes les modifications ont été finalisées et que la clé peut être retirée sans risque.</li>
+</ol>
+<p>Une fois ces étapes terminées, votre clé USB amorçable devrait redevenir une clé USB normale et vous pourrez l&rsquo;utiliser à des fins de stockage.</p>
+]]></content>
+        </item>
         
         <item>
             <title>PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure</title>

@@ -3,7 +3,8 @@ title = "From Bootable to Usable: A Guide to Restoring Your USB Drive for Everyd
 date = 2024-02-09T14:55:37-06:00
 draft = false
 toc = true
-tags = []
+tags = ['Troubleshooting']
+categories = ['Personal']
 +++
 
 ## Introduction 
