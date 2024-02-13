@@ -7,91 +7,89 @@ tags = ['OSINT','TryHackMe']
 categories = ['Writeups']
 +++
 
-* Platform: TryHackMe
-* Link: [OhSINT](https://tryhackme.com/room/ohsint)
-* Level: Easy
+* Platforme: TryHackMe
+* Lien: [OhSINT](https://tryhackme.com/room/ohsint)
+* Niveau: Easy
 * Type: OSINT
-
 ---
 
+Il s'agit d'un défi OSINT, c'est-à-dire Open-Source Intelligence. Il s'agit essentiellement de la collecte et de l'analyse d'informations accessibles au public afin d'obtenir des renseignements. C'est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l'information est librement accessible.
 
-This is an OSINT challenge, OSINT stands for Open-Source Intelligence. It's essentially the collection and analysis of publicly available information to gain valuable insights. Think of it like putting together a puzzle using pieces you find scattered around the internet, libraries, or anywhere information is freely accessible.
-
-After downloading the Task Files, with the `Download Task Files` button you get a single image named `WindowsXP.jpg`. As you can see, you cannot get anything from this picture at first glance. 
+Après avoir téléchargé les fichiers de tâches à l'aide du bouton `Download Task Files`, vous obtenez une seule image nommée `WindowsXP.jpg`. Comme vous pouvez le constater, vous ne pouvez rien tirer de cette image à première vue. 
 
 ![WindowsXP backgroung image](/images/THM-OhSINT/WindowsXP.jpg)
 
 ## 1. What is this user's avatar of?
 
->Imagine you have a collection of photos from your recent vacation. The photos themselves capture the memories, but there's more you might want to know about them: when were they taken, where, by whom? This "extra" information that describes the photos themselves is called metadata. In short metadata is data that provides information about other data.
+>Imaginez que vous ayez une collection de photos de vos dernières vacances. Les photos elles-mêmes immortalisent les souvenirs, mais vous aimeriez en savoir plus sur elles : quand ont-elles été prises, où, par qui ? Ces informations "supplémentaires" qui décrivent les photos elles-mêmes sont appelées métadonnées (metadata). Pour résumer, les métadonnées sont des données qui fournissent des informations sur d'autres données.
 
-On Linux, we can use the `exiftool` to read the image metadata. Run the command `exiftool WindowsXP.jpg` and you will get some output.
+Sous Linux, nous pouvons utiliser `exiftool` pour lire les métadonnées de l'image. Exécutez la commande `exiftool WindowsXP.jpg` et vous obtiendrez des informations sur l'image.
 
 ![Output of exiftool command](/images/THM-OhSINT/exiftool-cmd-result.png)
 
-We get some useful information and a nickname for the Copyright, `OWoodflint`. This room being a OSINT case we look for publicly available information.
+Nous obtenons quelques informations utiles et un pseudo pour le droit d'auteur, `OWoodflint`. Cet challenge étant un cas OSINT, nous recherchons des informations publiquement disponibles.
 
-Googling `OWoodflint` get us multiple links, let's look at the X (formerly Twitter) account first.
+En cherchant sur Google `OWoodflint`, nous obtenons de nombreux liens, mais commençons par le compte X (anciennement Twitter).
 
 ![Search results of googling OWoodflint](/images/THM-OhSINT/OWoodflint-search-results.png)
 
-We see a cat as the profile picture, we try `cat` as the answer of the first question and it is the correct answer.
+Nous voyons un chat comme photo de profil, essayons `cat` comme réponse à la première question et c'est la bonne!
 
 ## 2. What city is this person in?
 
-The hint tells us to use the BSSID found on X on a site called `Wigle.net`. 
+L'indice nous indique d'utiliser le BSSID trouvé sur X sur un site appelé `Wigle.net`.
 
 ![BSSID found on X account](/images/THM-OhSINT/OWoodflint-BSSID.png)
 
-In his second post the user gave us a BSSID of `B4:5D:50:AA:86:41`. Now we go on [wigle.net](https://www.wigle.net/) and use that BSSID.
+Dans son deuxième poste, l'utilisateur nous donne un BSSID de `B4:5D:50:AA:86:41`. Nous allons maintenant sur [wigle.net](https://www.wigle.net/) pour l'utiliser.
 
-> A BSSID (**Basic Service Set Identifier**) is a unique identifier assigned to each wireless access point (AP) or router in a Wi-Fi network. It distinguishes one wireless network from another within a given coverage area. Essentially, the BSSID serves as the MAC (Media Access Control) address of the wireless device.
+> Un identifiant BSSID (**Basic Service Set Identifier**) est un identifiant unique attribué à chaque point d'accès (AP) ou routeur d'un réseau Wi-Fi. Il permet de distinguer un réseau sans fil d'un autre dans une zone de couverture donnée. Le BSSID sert essentiellement d'adresse MAC (Media Access Control) à l'appareil sans fil.
 
-Enter the BSSID and click on the `Filter` button below.
+Saisissez le BSSID et cliquez sur le bouton `Filter` plus bas.
 
 ![BSSID search on wigle.net](/images/THM-OhSINT/Wigle-BSSID-search.png)
 
-You will have to zoom out and look for a purple circle on the map. The match shows `London`. This turns out to be the correct answer for the second question.
+Vous aurez à faire un zoom arrière et à chercher un cercle violet sur la carte. La correspondance indique `London`. Il s'agit de la bonne réponse à la deuxième question.
 
 ![BSSID search result](/images/THM-OhSINT/BSSID-location-match.png)
 
 ## 3. What is the SSID of the WAP he connected to?
 
->An SSID, which stands for **Service Set Identifier**, is essentially the name of your Wi-Fi network. It's the public identifier that your wireless router broadcasts to announce its presence and allow nearby devices to connect.
+>Un SSID (**Service Set Identifier**) est essentiellement le nom d'un réseau Wi-Fi. Il s'agit de l'identifiant public qu'un routeur Wi-Fi communique pour annoncer sa présence et permettre aux appareils voisins de se connecter.
 
-Keep zooming in on the location marked on the map and you will see the word `UnileverWiFi` above the BSSID you entered earlier, which is the correct answer for this question.
+Continuez à zoomer sur l'emplacement indiqué sur la carte et vous verrez le mot "UnileverWiFi" au-dessus du BSSID que vous avez saisi plus tôt, ce qui est la bonne réponse à cette question.
 
 ![WAP SSID](/images/THM-OhSINT/OhSINT-WAP-SSID.png)
 
 ## 4. What is his personal email address?
 
-The second search result is a Github account, let's look there. We find an email address `OWoodflint@gmail.com`.
+Le deuxième résultat de la recherche est un compte Github, examinons-le. Nous trouvons une adresse email `OWoodflint@gmail.com`.
 
 ![Email address found on Github](/images/THM-OhSINT/OhSINT-email.png)
 
 ## 5. What site did you find his email address on?
 
-We found the email address on `Github`.
+Nous avons trouvé l'adresse email sur `Github`.
 
 ## 6. Where has he gone on holiday?
 
-We see a WordPress website on the Github repository.
+Nous trouvons un site web WordPress sur le compte Github.
 
 ![WordPress site url](/images/THM-OhSINT/OhSINT-WordPress-site.png)
 
-On the WordPress site the user revealed his location, saying that he is in `New York`, which is the correct answer.
+Sur le site WordPress, l'utilisateur révèle sa localisation en disant qu'il se trouve à `New York`, ce qui est la bonne réponse.
 
 ![Target holiday location](/images/THM-OhSINT/OhSINT-holiday-location-1.png)
 
 ## 7. What is the person's password?
 
-I recently learned about sensitive data exposure and how sometimes you will find sensitive data in the source code of web pages. Looking at the source code, we find a string written in white (`#ffffff` is the Hex color code for the white color). The author of this web page attempted to hide this string by writing it in white on a white background, essentially making it invisible. We try `pennYDr0pper.!` as the password and gets it right.
+J'ai récemment appris ce qu'est l'exposition aux données sensibles et comment on peut parfois trouver des données sensibles dans le code source des pages web. En examinant le code source, nous trouvons un texte écrit en blanc (`#ffffff` est le code hexadécimal de la couleur blanche). L'auteur de cette page web a tenté de cacher ce texte en l'écrivant en blanc sur un fond blanc, ce qui le rend invisible. Nous essayons `pennYDr0pper.!` comme mot de passe et nous obtenons un résultat correct.
 
 ![user password in source code](/images/THM-OhSINT/OhSINT-password.png)
 
-> I think when it comes to OSINT challenges one should be very attentive and nothing should be overlooked. The password was just in front of me but I didn't pick up on it at first. I accidentally pressed `Ctrl+a` and the string `pennYDr0pper.!` became visible but I failed to notice that it was not visible before. 
+> Je pense que lorsqu'il s'agit de défis OSINT, il faut être très attentif et ne rien négliger. Le mot de passe était juste devant moi, mais je ne l'ai pas remarqué tout de suite. J'ai accidentellement appuyé sur `Ctrl+a` et le message `pennYDr0pper.!` est devenu visible, mais je n'ai pas remarqué qu'il ne l'était pas auparavant. 
 
 ![Target holiday location](/images/THM-OhSINT/WP-password-trick.png)
 
-That's it for my first writeup! I will try to tackle different types of hacking challenges to keep them interesting. Until next time.
+C'est tout pour ce premier hacking challenge. J'essaierai de résoudre différents types de défis qui requièrent des compétences variées. A la prochaine!
 

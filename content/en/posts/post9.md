@@ -13,7 +13,6 @@ categories = ['Writeups']
 * Type: OSINT
 ---
 
-
 This is an OSINT challenge, OSINT stands for Open-Source Intelligence. It's essentially the collection and analysis of publicly available information to gain valuable insights. Think of it like putting together a puzzle using pieces you find scattered around the internet, libraries, or anywhere information is freely accessible.
 
 After downloading the Task Files, with the `Download Task Files` button you get a single image named `WindowsXP.jpg`. As you can see, you cannot get anything from this picture at first glance. 
@@ -56,7 +55,7 @@ You will have to zoom out and look for a purple circle on the map. The match sho
 
 ## 3. What is the SSID of the WAP he connected to?
 
->An SSID, which stands for **Service Set Identifier**, is essentially the name of your Wi-Fi network. It's the public identifier that your wireless router broadcasts to announce its presence and allow nearby devices to connect.
+>An SSID, which stands for **Service Set Identifier**, is essentially the name of a Wi-Fi network. It's the public identifier that a wireless router broadcasts to announce its presence and allow nearby devices to connect.
 
 Keep zooming in on the location marked on the map and you will see the word `UnileverWiFi` above the BSSID you entered earlier, which is the correct answer for this question.
 
