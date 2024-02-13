@@ -6,8 +6,78 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 09 Feb 2024 14:55:37 -0600</lastBuildDate>
+        <lastBuildDate>Tue, 13 Feb 2024 14:31:59 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>OhSINT</title>
+            <link>https://scorpiosec.com/fr/posts/2024/02/ohsint/</link>
+            <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/02/ohsint/</guid>
+            <description>Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.
+Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/room/ohsint" target="_blank" >OhSINT</a>
+
+</li>
+<li>Niveau: Easy</li>
+<li>Type: OSINT</li>
+</ul>
+<hr>
+<p>Il s&rsquo;agit d&rsquo;un défi OSINT, c&rsquo;est-à-dire Open-Source Intelligence. L&rsquo;OSINT est essentiellement de la collecte et de l&rsquo;analyse d&rsquo;informations accessibles au public afin d&rsquo;obtenir des renseignements. C&rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&rsquo;information est librement accessible.</p>
+<p>Après avoir téléchargé les fichiers de tâches à l&rsquo;aide du bouton <code>Download Task Files</code>, vous obtenez une seule image nommée <code>WindowsXP.jpg</code>. Comme vous pouvez le constater, vous ne pouvez rien tirer de cette image à première vue.</p>
+<p><img src="/images/THM-OhSINT/WindowsXP.jpg" alt="WindowsXP backgroung image"></p>
+<h2 id="1-what-is-this-users-avatar-of">1. What is this user&rsquo;s avatar of?</h2>
+<blockquote>
+<p>Imaginez que vous ayez une collection de photos de vos dernières vacances. Les photos elles-mêmes immortalisent les souvenirs, mais vous aimeriez en savoir plus sur elles : quand ont-elles été prises, où, par qui ? Ces informations &ldquo;supplémentaires&rdquo; qui décrivent les photos elles-mêmes sont appelées métadonnées (metadata). Pour résumer, les métadonnées sont des données qui fournissent des informations sur d&rsquo;autres données.</p>
+</blockquote>
+<p>Sous Linux, nous pouvons utiliser <code>exiftool</code> pour lire les métadonnées de l&rsquo;image. Exécutez la commande <code>exiftool WindowsXP.jpg</code> et vous obtiendrez des informations sur l&rsquo;image.</p>
+<p><img src="/images/THM-OhSINT/exiftool-cmd-result.png" alt="Output of exiftool command"></p>
+<p>Nous obtenons quelques informations utiles et un pseudo pour le droit d&rsquo;auteur, <code>OWoodflint</code>. Cet challenge étant un cas OSINT, nous recherchons des informations publiquement disponibles.</p>
+<p>En cherchant sur Google <code>OWoodflint</code>, nous obtenons de nombreux liens, mais commençons par le compte X (anciennement Twitter).</p>
+<p><img src="/images/THM-OhSINT/OWoodflint-search-results.png" alt="Search results of googling OWoodflint"></p>
+<p>Nous voyons un chat comme photo de profil, essayons <code>cat</code> comme réponse à la première question et c&rsquo;est la bonne!</p>
+<h2 id="2-what-city-is-this-person-in">2. What city is this person in?</h2>
+<p>L&rsquo;indice nous indique d&rsquo;utiliser le BSSID trouvé sur X sur un site appelé <code>Wigle.net</code>.</p>
+<p><img src="/images/THM-OhSINT/OWoodflint-BSSID.png" alt="BSSID found on X account"></p>
+<p>Dans son deuxième poste, l&rsquo;utilisateur nous donne un BSSID de <code>B4:5D:50:AA:86:41</code>. Nous allons maintenant sur <a href="https://www.wigle.net/" target="_blank" >wigle.net</a>
+
+ pour l&rsquo;utiliser.</p>
+<blockquote>
+<p>Un identifiant BSSID (<strong>Basic Service Set Identifier</strong>) est un identifiant unique attribué à chaque point d&rsquo;accès (AP) ou routeur d&rsquo;un réseau Wi-Fi. Il permet de distinguer un réseau sans fil d&rsquo;un autre dans une zone de couverture donnée. Le BSSID sert essentiellement d&rsquo;adresse MAC (Media Access Control) à l&rsquo;appareil sans fil.</p>
+</blockquote>
+<p>Saisissez le BSSID et cliquez sur le bouton <code>Filter</code> plus bas.</p>
+<p><img src="/images/THM-OhSINT/Wigle-BSSID-search.png" alt="BSSID search on wigle.net"></p>
+<p>Vous aurez à faire un zoom arrière et à chercher un cercle violet sur la carte. La correspondance indique <code>London</code>. Il s&rsquo;agit de la bonne réponse à la deuxième question.</p>
+<p><img src="/images/THM-OhSINT/BSSID-location-match.png" alt="BSSID search result"></p>
+<h2 id="3-what-is-the-ssid-of-the-wap-he-connected-to">3. What is the SSID of the WAP he connected to?</h2>
+<blockquote>
+<p>Un SSID (<strong>Service Set Identifier</strong>) est essentiellement le nom d&rsquo;un réseau Wi-Fi. Il s&rsquo;agit de l&rsquo;identifiant public qu&rsquo;un routeur Wi-Fi communique pour annoncer sa présence et permettre aux appareils voisins de se connecter.</p>
+</blockquote>
+<p>Continuez à zoomer sur l&rsquo;emplacement indiqué sur la carte et vous verrez le mot &ldquo;UnileverWiFi&rdquo; au-dessus du BSSID que vous avez saisi plus tôt, ce qui est la bonne réponse à cette question.</p>
+<p><img src="/images/THM-OhSINT/OhSINT-WAP-SSID.png" alt="WAP SSID"></p>
+<h2 id="4-what-is-his-personal-email-address">4. What is his personal email address?</h2>
+<p>Le deuxième résultat de la recherche est un compte Github, examinons-le. Nous trouvons une adresse email <code>OWoodflint@gmail.com</code>.</p>
+<p><img src="/images/THM-OhSINT/OhSINT-email.png" alt="Email address found on Github"></p>
+<h2 id="5-what-site-did-you-find-his-email-address-on">5. What site did you find his email address on?</h2>
+<p>Nous avons trouvé l&rsquo;adresse email sur <code>Github</code>.</p>
+<h2 id="6-where-has-he-gone-on-holiday">6. Where has he gone on holiday?</h2>
+<p>Nous trouvons un site web WordPress sur le compte Github.</p>
+<p><img src="/images/THM-OhSINT/OhSINT-WordPress-site.png" alt="WordPress site url"></p>
+<p>Sur le site WordPress, l&rsquo;utilisateur révèle sa localisation en disant qu&rsquo;il se trouve à <code>New York</code>, ce qui est la bonne réponse.</p>
+<p><img src="/images/THM-OhSINT/OhSINT-holiday-location-1.png" alt="Target holiday location"></p>
+<h2 id="7-what-is-the-persons-password">7. What is the person&rsquo;s password?</h2>
+<p>J&rsquo;ai récemment appris ce qu&rsquo;est l&rsquo;exposition aux données sensibles et comment on peut parfois trouver des données sensibles dans le code source des pages web. En examinant le code source, nous trouvons un texte écrit en blanc (<code>#ffffff</code> est le code hexadécimal de la couleur blanche). L&rsquo;auteur de cette page web a tenté de cacher ce texte en l&rsquo;écrivant en blanc sur un fond blanc, ce qui le rend invisible. Nous essayons <code>pennYDr0pper.!</code> comme mot de passe et nous obtenons un résultat correct.</p>
+<p><img src="/images/THM-OhSINT/OhSINT-password.png" alt="user password in source code"></p>
+<blockquote>
+<p>Je pense que lorsqu&rsquo;il s&rsquo;agit de défis OSINT, il faut être très attentif et ne rien négliger. Le mot de passe était juste devant moi, mais je ne l&rsquo;ai pas remarqué tout de suite. J&rsquo;ai accidentellement appuyé sur <code>Ctrl+a</code> et le message <code>pennYDr0pper.!</code> est devenu visible, mais je n&rsquo;ai pas remarqué qu&rsquo;il ne l&rsquo;était pas auparavant.</p>
+</blockquote>
+<p><img src="/images/THM-OhSINT/WP-password-trick.png" alt="Target holiday location"></p>
+<p>C&rsquo;est tout pour ce premier hacking challenge. J&rsquo;essaierai de résoudre différents types de défis qui requièrent des compétences variées. A la prochaine!</p>
+]]></content>
+        </item>
         
         <item>
             <title>Comment restaurer une clé USB bootable pour une utilisation normale sur Linux et Windows</title>

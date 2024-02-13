@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.
+Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, OSINT, TryHackMe" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/02/ohsint/" />
+
+
+    <title>
+        
+            OhSINT
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="OhSINT">
+<meta itemprop="description" content="Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&rsquo;agit d&rsquo;un défi OSINT, c&rsquo;est-à-dire Open-Source Intelligence. L&rsquo;OSINT est essentiellement de la collecte et de l&rsquo;analyse d&rsquo;informations accessibles au public afin d&rsquo;obtenir des renseignements. C&rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&rsquo;information est librement accessible.
+Après avoir téléchargé les fichiers de tâches à l&rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP."><meta itemprop="datePublished" content="2024-02-13T14:31:59-06:00" />
+<meta itemprop="dateModified" content="2024-02-13T14:31:59-06:00" />
+<meta itemprop="wordCount" content="709"><meta itemprop="image" content="https://scorpiosec.com/" />
+<meta itemprop="keywords" content="OSINT,TryHackMe," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/" /><meta name="twitter:title" content="OhSINT"/>
+<meta name="twitter:description" content="Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&rsquo;agit d&rsquo;un défi OSINT, c&rsquo;est-à-dire Open-Source Intelligence. L&rsquo;OSINT est essentiellement de la collecte et de l&rsquo;analyse d&rsquo;informations accessibles au public afin d&rsquo;obtenir des renseignements. C&rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&rsquo;information est librement accessible.
+Après avoir téléchargé les fichiers de tâches à l&rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP."/>
+
+
+
+    <meta property="og:title" content="OhSINT" />
+<meta property="og:description" content="Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&rsquo;agit d&rsquo;un défi OSINT, c&rsquo;est-à-dire Open-Source Intelligence. L&rsquo;OSINT est essentiellement de la collecte et de l&rsquo;analyse d&rsquo;informations accessibles au public afin d&rsquo;obtenir des renseignements. C&rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&rsquo;information est librement accessible.
+Après avoir téléchargé les fichiers de tâches à l&rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/02/ohsint/" /><meta property="og:image" content="https://scorpiosec.com/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-02-13T14:31:59-06:00" />
+<meta property="article:modified_time" content="2024-02-13T14:31:59-06:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-02-13 14:31:59 -0600 CST" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/02/ohsint/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        4 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/02/ohsint/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/02/ohsint/">OhSINT</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-what-is-this-users-avatar-of">1. What is this user&rsquo;s avatar of?</a></li>
+    <li><a href="#2-what-city-is-this-person-in">2. What city is this person in?</a></li>
+    <li><a href="#3-what-is-the-ssid-of-the-wap-he-connected-to">3. What is the SSID of the WAP he connected to?</a></li>
+    <li><a href="#4-what-is-his-personal-email-address">4. What is his personal email address?</a></li>
+    <li><a href="#5-what-site-did-you-find-his-email-address-on">5. What site did you find his email address on?</a></li>
+    <li><a href="#6-where-has-he-gone-on-holiday">6. Where has he gone on holiday?</a></li>
+    <li><a href="#7-what-is-the-persons-password">7. What is the person&rsquo;s password?</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/room/ohsint" target="_blank" >OhSINT</a>
+
+</li>
+<li>Niveau: Easy</li>
+<li>Type: OSINT</li>
+</ul>
+<hr>
+<p>Il s&rsquo;agit d&rsquo;un défi OSINT, c&rsquo;est-à-dire Open-Source Intelligence. L&rsquo;OSINT est essentiellement de la collecte et de l&rsquo;analyse d&rsquo;informations accessibles au public afin d&rsquo;obtenir des renseignements. C&rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&rsquo;information est librement accessible.</p>
+<p>Après avoir téléchargé les fichiers de tâches à l&rsquo;aide du bouton <code>Download Task Files</code>, vous obtenez une seule image nommée <code>WindowsXP.jpg</code>. Comme vous pouvez le constater, vous ne pouvez rien tirer de cette image à première vue.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/WindowsXP.jpg" alt="WindowsXP backgroung image"></p>
+<h2 id="1-what-is-this-users-avatar-of">1. What is this user&rsquo;s avatar of?</h2>
+<blockquote>
+<p>Imaginez que vous ayez une collection de photos de vos dernières vacances. Les photos elles-mêmes immortalisent les souvenirs, mais vous aimeriez en savoir plus sur elles : quand ont-elles été prises, où, par qui ? Ces informations &ldquo;supplémentaires&rdquo; qui décrivent les photos elles-mêmes sont appelées métadonnées (metadata). Pour résumer, les métadonnées sont des données qui fournissent des informations sur d&rsquo;autres données.</p>
+</blockquote>
+<p>Sous Linux, nous pouvons utiliser <code>exiftool</code> pour lire les métadonnées de l&rsquo;image. Exécutez la commande <code>exiftool WindowsXP.jpg</code> et vous obtiendrez des informations sur l&rsquo;image.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/exiftool-cmd-result.png" alt="Output of exiftool command"></p>
+<p>Nous obtenons quelques informations utiles et un pseudo pour le droit d&rsquo;auteur, <code>OWoodflint</code>. Cet challenge étant un cas OSINT, nous recherchons des informations publiquement disponibles.</p>
+<p>En cherchant sur Google <code>OWoodflint</code>, nous obtenons de nombreux liens, mais commençons par le compte X (anciennement Twitter).</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/OWoodflint-search-results.png" alt="Search results of googling OWoodflint"></p>
+<p>Nous voyons un chat comme photo de profil, essayons <code>cat</code> comme réponse à la première question et c&rsquo;est la bonne!</p>
+<h2 id="2-what-city-is-this-person-in">2. What city is this person in?</h2>
+<p>L&rsquo;indice nous indique d&rsquo;utiliser le BSSID trouvé sur X sur un site appelé <code>Wigle.net</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/OWoodflint-BSSID.png" alt="BSSID found on X account"></p>
+<p>Dans son deuxième poste, l&rsquo;utilisateur nous donne un BSSID de <code>B4:5D:50:AA:86:41</code>. Nous allons maintenant sur <a href="https://www.wigle.net/" target="_blank" >wigle.net</a>
+
+ pour l&rsquo;utiliser.</p>
+<blockquote>
+<p>Un identifiant BSSID (<strong>Basic Service Set Identifier</strong>) est un identifiant unique attribué à chaque point d&rsquo;accès (AP) ou routeur d&rsquo;un réseau Wi-Fi. Il permet de distinguer un réseau sans fil d&rsquo;un autre dans une zone de couverture donnée. Le BSSID sert essentiellement d&rsquo;adresse MAC (Media Access Control) à l&rsquo;appareil sans fil.</p>
+</blockquote>
+<p>Saisissez le BSSID et cliquez sur le bouton <code>Filter</code> plus bas.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/Wigle-BSSID-search.png" alt="BSSID search on wigle.net"></p>
+<p>Vous aurez à faire un zoom arrière et à chercher un cercle violet sur la carte. La correspondance indique <code>London</code>. Il s&rsquo;agit de la bonne réponse à la deuxième question.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/BSSID-location-match.png" alt="BSSID search result"></p>
+<h2 id="3-what-is-the-ssid-of-the-wap-he-connected-to">3. What is the SSID of the WAP he connected to?</h2>
+<blockquote>
+<p>Un SSID (<strong>Service Set Identifier</strong>) est essentiellement le nom d&rsquo;un réseau Wi-Fi. Il s&rsquo;agit de l&rsquo;identifiant public qu&rsquo;un routeur Wi-Fi communique pour annoncer sa présence et permettre aux appareils voisins de se connecter.</p>
+</blockquote>
+<p>Continuez à zoomer sur l&rsquo;emplacement indiqué sur la carte et vous verrez le mot &ldquo;UnileverWiFi&rdquo; au-dessus du BSSID que vous avez saisi plus tôt, ce qui est la bonne réponse à cette question.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/OhSINT-WAP-SSID.png" alt="WAP SSID"></p>
+<h2 id="4-what-is-his-personal-email-address">4. What is his personal email address?</h2>
+<p>Le deuxième résultat de la recherche est un compte Github, examinons-le. Nous trouvons une adresse email <code>OWoodflint@gmail.com</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/OhSINT-email.png" alt="Email address found on Github"></p>
+<h2 id="5-what-site-did-you-find-his-email-address-on">5. What site did you find his email address on?</h2>
+<p>Nous avons trouvé l&rsquo;adresse email sur <code>Github</code>.</p>
+<h2 id="6-where-has-he-gone-on-holiday">6. Where has he gone on holiday?</h2>
+<p>Nous trouvons un site web WordPress sur le compte Github.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/OhSINT-WordPress-site.png" alt="WordPress site url"></p>
+<p>Sur le site WordPress, l&rsquo;utilisateur révèle sa localisation en disant qu&rsquo;il se trouve à <code>New York</code>, ce qui est la bonne réponse.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/OhSINT-holiday-location-1.png" alt="Target holiday location"></p>
+<h2 id="7-what-is-the-persons-password">7. What is the person&rsquo;s password?</h2>
+<p>J&rsquo;ai récemment appris ce qu&rsquo;est l&rsquo;exposition aux données sensibles et comment on peut parfois trouver des données sensibles dans le code source des pages web. En examinant le code source, nous trouvons un texte écrit en blanc (<code>#ffffff</code> est le code hexadécimal de la couleur blanche). L&rsquo;auteur de cette page web a tenté de cacher ce texte en l&rsquo;écrivant en blanc sur un fond blanc, ce qui le rend invisible. Nous essayons <code>pennYDr0pper.!</code> comme mot de passe et nous obtenons un résultat correct.</p>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/OhSINT-password.png" alt="user password in source code"></p>
+<blockquote>
+<p>Je pense que lorsqu&rsquo;il s&rsquo;agit de défis OSINT, il faut être très attentif et ne rien négliger. Le mot de passe était juste devant moi, mais je ne l&rsquo;ai pas remarqué tout de suite. J&rsquo;ai accidentellement appuyé sur <code>Ctrl+a</code> et le message <code>pennYDr0pper.!</code> est devenu visible, mais je n&rsquo;ai pas remarqué qu&rsquo;il ne l&rsquo;était pas auparavant.</p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/THM-OhSINT/WP-password-trick.png" alt="Target holiday location"></p>
+<p>C&rsquo;est tout pour ce premier hacking challenge. J&rsquo;essaierai de résoudre différents types de défis qui requièrent des compétences variées. A la prochaine!</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/osint/">OSINT</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/tryhackme/">TryHackMe</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        709 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-02-13 14:31
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=OhSINT&amp;caption=OhSINT&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=OhSINT&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f;description=OhSINT" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f&amp;title=OhSINT&amp;summary=OhSINT&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f&amp;resubmit=true&amp;title=OhSINT" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f;title=OhSINT" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=OhSINT%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f&amp;t=OhSINT" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=OhSINT&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fohsint%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/">
+                    <span class="button__text">Comment restaurer une clé USB bootable pour une utilisation normale sur Linux et Windows</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

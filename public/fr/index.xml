@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 09 Feb 2024 14:55:37 -0600</lastBuildDate>
+    <lastBuildDate>Tue, 13 Feb 2024 14:31:59 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OhSINT</title>
+      <link>https://scorpiosec.com/fr/posts/2024/02/ohsint/</link>
+      <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/02/ohsint/</guid>
+      <description>Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.&#xA;Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP.</description>
+    </item>
     <item>
       <title>Comment restaurer une clé USB bootable pour une utilisation normale sur Linux et Windows</title>
       <link>https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/</link>
@@ -71,13 +78,6 @@
       <pubDate>Mon, 18 Dec 2023 17:31:29 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/about/</guid>
       <description>Bienvenue chez Scorpiosec, là où ma passion pour la technologie et ma tendance pour l&amp;rsquo;apprentissage autodidacte se rencontrent. Professionel de la cybersécurité en devenir, plongé dans le monde de la tech depuis 2022. J&amp;rsquo;ai troqué les tableaux excel ennuyeux après mon Bachelor en finance (trop de chiffres, pas assez de fun). Mon objectif est d&amp;rsquo;exercer en tant que hacker (red team) ou dans la sécurité du Cloud.&#xA;Ce blog, c&amp;rsquo;est mon journal technologique.</description>
-    </item>
-    <item>
-      <title>Le Début de L&#39;aventure</title>
-      <link>https://scorpiosec.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</link>
-      <pubDate>Mon, 18 Dec 2023 17:26:43 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2023/12/le-d%C3%A9but-de-laventure/</guid>
-      <description>Il y a quelques années, il me semblait irréel d&amp;rsquo;apprendre des choses &amp;ldquo;techniques&amp;rdquo; (la programmation c&amp;rsquo;est pour les matheux ou ceux qui l&amp;rsquo;ont commencé depuis longtemps etc - que de préjugés!) et pourtant, me voici en train de vous raconter comment je suis passé des états financiers aux pare-feux en un an et demi.&#xA;Après mon bachelor en finance, je savais que ce domaine n&amp;rsquo;était pas fait pour moi. Honnêtement, je n&amp;rsquo;avais jamais vraiment réfléchi à ce que je voulais faire, et j&amp;rsquo;ai opté pour cette filière par défaut.</description>
     </item>
   </channel>
 </rss>

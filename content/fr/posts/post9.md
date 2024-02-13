@@ -13,7 +13,7 @@ categories = ['Writeups']
 * Type: OSINT
 ---
 
-Il s'agit d'un défi OSINT, c'est-à-dire Open-Source Intelligence. Il s'agit essentiellement de la collecte et de l'analyse d'informations accessibles au public afin d'obtenir des renseignements. C'est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l'information est librement accessible.
+Il s'agit d'un défi OSINT, c'est-à-dire Open-Source Intelligence. L'OSINT est essentiellement de la collecte et de l'analyse d'informations accessibles au public afin d'obtenir des renseignements. C'est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l'information est librement accessible.
 
 Après avoir téléchargé les fichiers de tâches à l'aide du bouton `Download Task Files`, vous obtenez une seule image nommée `WindowsXP.jpg`. Comme vous pouvez le constater, vous ne pouvez rien tirer de cette image à première vue. 
 

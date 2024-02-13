@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://scorpiosec.com/fr/categories/</loc>
-    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -13,6 +13,97 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/categories/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/posts/2024/02/ohsint/</loc>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/02/ohsint/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/02/ohsint/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/osint/</loc>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/osint/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/osint/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/posts/</loc>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/</loc>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/</loc>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/tryhackme/</loc>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/tryhackme/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/tryhackme/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/categories/writeups/</loc>
+    <lastmod>2024-02-13T14:31:59-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/categories/writeups/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/categories/writeups/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/</loc>
@@ -39,45 +130,6 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/categories/personal/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/posts/</loc>
-    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/posts/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/</loc>
-    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/tags/</loc>
-    <lastmod>2024-02-09T14:55:37-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/tags/troubleshooting/</loc>
