@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sat, 24 Feb 2024 19:37:32 -0600</lastBuildDate>
+    <lastBuildDate>Sat, 02 Mar 2024 11:10:54 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: CozyHosting</title>
+      <link>https://scorpiosec.com/fr/posts/2024/03/htb-cozyhosting/</link>
+      <pubDate>Sat, 02 Mar 2024 11:10:54 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-cozyhosting/</guid>
+      <description>Platforme: Hack The Box Lien: CozyHosting Niveau: Easy OS: Linux CozyHosting est une machine Linux de niveau facile comportant un site web d&amp;rsquo;hébergement vulnérable à l&amp;rsquo;injection de commandes.&#xA;L&amp;rsquo;adresse IP cible est 10.10.11.230&#xA;Balayage (Scanning) sudo nmap -sC -sV -oA nmap/CozyHosting 10.10.11.230 Nous avons une machine Linux Une application web sur le port 80 Le service SSH est activé Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 11:21 CST Nmap scan report for cozyhosting.</description>
+    </item>
     <item>
       <title>HTB: Visual</title>
       <link>https://scorpiosec.com/fr/posts/2024/02/htb-visual/</link>
@@ -71,13 +78,6 @@
       <pubDate>Tue, 02 Jan 2024 20:08:15 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/01/r%C3%A9ussir-lexamen-ccna-guide-%C3%A9tape-par-%C3%A9tape-pour-la-certification-cisco/</guid>
       <description>Introduction Essayez de résoudre une équation mathématique complexe sans maîtriser les bases de l&amp;rsquo;arithmétique, un vrai défi, n&amp;rsquo;est-ce pas? En matière de &amp;ldquo;hacking&amp;rdquo; éthique, sautez les fondamentaux des réseaux informatiques et s&amp;rsquo;attaquer aux tâches avancées équivaut à essayer de résoudre des équations différentielles sans d&amp;rsquo;abord maîtriser l&amp;rsquo;addition et la soustraction. Vous ne pouvez attaquer ou défendre ce que vous ne comprenez pas.&#xA;Tout comme les cours de mathématiques s&amp;rsquo;appuient les uns sur les autres, la compétence en matière de hacking nécessite une bonne compréhension des réseaux informatiques.</description>
-    </item>
-    <item>
-      <title>Rien ici, pour l&#39;instant!</title>
-      <link>https://scorpiosec.com/fr/projects/placeholder/</link>
-      <pubDate>Fri, 29 Dec 2023 14:41:39 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/projects/placeholder/</guid>
-      <description></description>
     </item>
   </channel>
 </rss>

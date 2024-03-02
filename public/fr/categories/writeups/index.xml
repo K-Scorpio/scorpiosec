@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sat, 24 Feb 2024 19:37:32 -0600</lastBuildDate>
+    <lastBuildDate>Sat, 02 Mar 2024 11:10:54 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: CozyHosting</title>
+      <link>https://scorpiosec.com/fr/posts/2024/03/htb-cozyhosting/</link>
+      <pubDate>Sat, 02 Mar 2024 11:10:54 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-cozyhosting/</guid>
+      <description>Platforme: Hack The Box Lien: CozyHosting Niveau: Easy OS: Linux CozyHosting est une machine Linux de niveau facile comportant un site web d&amp;rsquo;hébergement vulnérable à l&amp;rsquo;injection de commandes.&#xA;L&amp;rsquo;adresse IP cible est 10.10.11.230&#xA;Balayage (Scanning) sudo nmap -sC -sV -oA nmap/CozyHosting 10.10.11.230 Nous avons une machine Linux Une application web sur le port 80 Le service SSH est activé Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 11:21 CST Nmap scan report for cozyhosting.</description>
+    </item>
     <item>
       <title>HTB: Visual</title>
       <link>https://scorpiosec.com/fr/posts/2024/02/htb-visual/</link>
