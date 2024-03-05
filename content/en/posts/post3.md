@@ -38,7 +38,7 @@ The official training you get when you purchase your voucher is exactly what you
 
 ## Conclusion
 
-While I acknowledge that the criticism about the CEH is valid, I think it does provide some value by helping you with HR and teaching about a lot of topics related to ethical hacking and you should go for it if you are getting sponsored. I encourage you to have a balanced view of certifications, and make informed decisions based on your career goals and personal situation. At the end of the day, you know what is best for you. I also recommend complementing that CEH with hands-on experience by doing labs. 
+While I acknowledge that the criticism about the CEH is valid, I think it does provide some value by helping you with HR and teaching about a lot of topics related to ethical hacking. You should go for it if you are getting sponsored. I encourage you to have a balanced view of certifications, and make informed decisions based on your career goals and personal situation. At the end of the day, you know what is best for you. I also recommend complementing that CEH with hands-on experience by doing labs. 
 
  
 
