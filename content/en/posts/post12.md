@@ -177,11 +177,11 @@ crackmapexec smb manager.htb -u guest -p '' --rid-brute
 
 ![RID-Brute-forcing](/images/HTB-Manager/rid-bruteforcing.png)
 
-I only want the usernames so I copy them into a file (start from user `Zhong`)
+I only want the lines with the usernames so I copy them into a file (start from user `Zhong`).
 
 ![Users-from-RID-brute-forcing](/images/HTB-Manager/smb-list.png)
 
-And I extract the usernames from it and I send the output to another file (you only want the names of the users)
+I extract the usernames from it and I send the output to another file.
 
 ```
 awk -F': ' '{split($NF, a, "\\"); split(a[2], b, " "); print tolower(b[1])}' smb-output.txt > smb-users.txt
@@ -229,7 +229,7 @@ xp_dirtree C:\inetpub\wwwroot
 
 I see a backup file called `website-backup-27-07-23-old.zip` that I download with `wget http://manager.htb/website-backup-27-07-23-old.zip -O backup.zip`.
 
-After unzip the file I notice a hidden file called `.old-conf.xml`.
+After unziping the file I notice a hidden file called `.old-conf.xml`.
 
 ![old-conf-xml-file](/images/HTB-Manager/xml-file.png)
 
@@ -386,9 +386,5 @@ certipy auth -pfx administrator.pfx -dc-ip 10.10.11.236 && export KRB5CCNAME=adm
 The root flag `root.txt` is at `c:\Users\Administrator\Desktop`
 
 ![root-flag](/images/HTB-Manager/root-flag.png)
-
-
-
-
 
 
