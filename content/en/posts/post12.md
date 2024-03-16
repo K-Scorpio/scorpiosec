@@ -14,13 +14,13 @@ categories = ['Writeups']
 * OS: Windows
 ---
 
-Manager is featuring a Windows server 2019 running Active Directory and a MSSQL database on top common services. The target is vulnerable to RID brute forcing and ESC7 (Vulnerable Certificate Authority Access Control).
+Manager is featuring a Windows server 2019 running Active Directory and a MSSQL database in addtion to various other services. The target is vulnerable to RID brute forcing and ESC7 (Vulnerable Certificate Authority Access Control).
 
 The target IP address is `10.10.11.236`
 
 ## Scanning 
 
-I first check all the open ports
+I first check all the open ports.
 
 ```
 nmap 10.10.11.236 -p- -T4 -Pn --open
@@ -58,7 +58,7 @@ PORT      STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 107.12 seconds
 ```
 
-And I run another scan to get more information about services and their versions 
+And I run another scan to get more information about services and their versions.
 
 ```
 nmap -sC -sV --open 10.10.11.236
@@ -220,7 +220,7 @@ I try enabling `xp_cmdshell` but it fails.
 
 ![xp-cmdshell-failure](/images/HTB-Manager/xp-cmdshell.png)
 
-I try to list the directories with `xp_dirtree`, Microsoft IIS web root is found at `C:\inetpub\wwwroot`.
+I list the directories with `xp_dirtree`, Microsoft IIS web root is found at `C:\inetpub\wwwroot`.
 
 ```
 xp_dirtree C:\inetpub\wwwroot
@@ -229,11 +229,11 @@ xp_dirtree C:\inetpub\wwwroot
 
 I see a backup file called `website-backup-27-07-23-old.zip` that I download with `wget http://manager.htb/website-backup-27-07-23-old.zip -O backup.zip`.
 
-After unziping the file I notice a hidden file called `.old-conf.xml`.
+After unziping the archive I notice a hidden file called `.old-conf.xml`.
 
 ![old-conf-xml-file](/images/HTB-Manager/xml-file.png)
 
-It contains credentials for the user `raven`
+It contains credentials for the user `raven`.
 
 ![raven-user-credentials](/images/HTB-Manager/raven-user-credentials.png)
 
@@ -250,11 +250,11 @@ evil-winrm -u raven -p 'R4v3nBe5tD3veloP3r!123' -i manager.htb
 
 ### user flag
 
-The user flag `user.txt` is at `C:\Users\Raven\Desktop\user.txt`
+The user flag `user.txt` is at `C:\Users\Raven\Desktop\user.txt`.
 
 ![Foothold-via-evil-WinRM](/images/HTB-Manager/user-flag.png)
 
-I get the computer info just in case I need to look for some vulnerabilities specific to an OS version. I do so with `get-computerinfo`
+I get more information about the system just in case I need to look for some vulnerabilities specific to the OS version. I do so with `get-computerinfo`.
 
 ![Target-system-info](/images/HTB-Manager/computerinfo.png)
 
@@ -387,4 +387,5 @@ The root flag `root.txt` is at `c:\Users\Administrator\Desktop`
 
 ![root-flag](/images/HTB-Manager/root-flag.png)
 
+This is all for this challenge, I hope this writeup for helpful! Stay tuned for more and feel free to reach me out on X at [@_KScorpio](https://twitter.com/_KScorpio).
 

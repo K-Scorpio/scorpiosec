@@ -20,7 +20,7 @@ L'adresse IP cible est `10.10.11.236`
 
 ## Balayage (Scanning)
 
-J'identifie d'abord tous les ports ouverts
+J'identifie d'abord tous les ports ouverts.
 
 ```
 nmap 10.10.11.236 -p- -T4 -Pn --open
@@ -169,7 +169,7 @@ smbmap -H 10.10.11.236 -u guest
 
 Je sais qu'Active Directory est présent sur la cible donc je tente un RID brute forcing.
 
-> RID signifie Relative Identifier (identifiant relatif). Il s'agit d'un identifiant unique attribué à chaque principal de sécurité (tel que les utilisateurs, les groupes et les ordinateurs) au sein d'un domaine Windows. Le RID brute forcing, également connu sous le nom de RID cycling ou RID enumeration, est une technique utilisée par les attaquants pour identifier les comptes d'utilisateurs valides au sein d'un domaine Windows en devinant les valeurs du RID.
+> RID signifie Relative Identifier (identifiant relatif). Il s'agit d'un identifiant unique attribué à chaque objet (tel que les utilisateurs, les groupes et les ordinateurs) au sein d'un domaine Windows. Le RID brute forcing, également connu sous le nom de RID cycling ou RID enumeration, est une technique utilisée par les attaquants pour identifier les comptes d'utilisateurs valides au sein d'un domaine Windows en devinant les valeurs du RID.
 
 ```
 crackmapexec smb manager.htb -u guest -p '' --rid-brute
@@ -214,13 +214,13 @@ impacket-mssqlclient operator:operator@dc01.manager.htb -windows-auth
 ```
 ![MSSQL-database-accessed](/images/HTB-Manager/MSSQL-ACCESS.png)
 
-J'ai essayé d'activer `xp_cmdshell` mais cela échoue.
+J'essaie d'activer `xp_cmdshell` mais cela échoue.
 
-> `xp_cmdshell` est une fonctionnalité de Microsoft SQL Server qui permet aux utilisateurs d'exécuter des commandes du système d'exploitation directement à partir de SQL Server. Il s'agit d'une fonctionnalité puissante qui permet d'interagir avec le système d'exploitation sous-jacent à partir de l'environnement SQL Server.
+> `xp_cmdshell` est une fonctionnalité de Microsoft SQL Server qui permet aux utilisateurs d'exécuter des commandes des commandes pour interagir avec le système d'exploitation depuis SQL Server.
 
 ![xp-cmdshell-failure](/images/HTB-Manager/xp-cmdshell.png)
 
-Je liste les répertoires avec `xp_dirtree`, la racine web de Microsoft IIS se trouve à `C:\inetpub\wwwroot`.
+Je liste le contenu de la base de données avec `xp_dirtree`, la racine web de Microsoft IIS se trouve à `C:\inetpub\wwwroot`.
 
 ```
 xp_dirtree C:\inetpub\wwwroot
@@ -228,9 +228,9 @@ xp_dirtree C:\inetpub\wwwroot
 
 ![MSSQL-database-accessed](/images/HTB-Manager/xp_dirtree.png)
 
-Je trouve un fichier de sauvegarde appelé `website-backup-27-07-23-old.zip` que je télécharge avec `wget http://manager.htb/website-backup-27-07-23-old.zip -O backup.zip`.
+J'ai trouvé une archive appelée `website-backup-27-07-23-old.zip` que je télécharge avec `wget http://manager.htb/website-backup-27-07-23-old.zip -O backup.zip`.
 
-Après avoir décompressé l'archive, je remarque un fichier caché appelé `.old-conf.xml`.
+Après l'avoir décompressé, je remarque un fichier caché appelé `.old-conf.xml`.
 
 ![old-conf-xml-file](/images/HTB-Manager/xml-file.png)
 
@@ -242,7 +242,7 @@ Il contient les informations d'identification de l'utilisateur `raven`.
 
 > Je sais d'après les résultats de nmap que le port `5985` était ouvert, ce port est typiquement utilisé pour le service `WinRM (Windows Remote Management)`.
 
-Je parviens à entrer dans le système grâce aux identifiants de connexion trouvés précédemment.
+Je parviens à accéder au système grâce aux identifiants de connexion trouvés précédemment.
 
 ```
 evil-winrm -u raven -p 'R4v3nBe5tD3veloP3r!123' -i manager.htb
@@ -323,7 +323,7 @@ Si les commandes ne sont pas exécutées assez rapidement, cette erreur se produ
 
 ![Clock-skew-error](/images/HTB-Manager/Clock-error.png)
 
-Lancez la commande ci-dessous et exécutez immédiatement la seconde commande avec `certipy auth`.
+Utilisez la commande ci-dessous et exécutez immédiatement la seconde commande avec `certipy auth`.
 
 ```
 sudo ntpdate -u manager.htb
@@ -386,3 +386,5 @@ certipy auth -pfx administrator.pfx -dc-ip 10.10.11.236 && export KRB5CCNAME=adm
 Le fichier `root.txt` se trouve à `c:\Users\Administrator\Desktop`
 
 ![root-flag](/images/HTB-Manager/root-flag.png)
+
+C'est tout pour ce challenge, j'espère que ce guide vous aura été utile! Je compte explorer d'autres platformes de hacking bientôt telles que Hackviser et HackMyVM. Restez à l'écoute et n'hésitez pas à me contacter sur X à [@_KScorpio](https://twitter.com/_KScorpio).

