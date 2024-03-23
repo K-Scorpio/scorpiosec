@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 15 Mar 2024 22:14:37 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 22 Mar 2024 16:28:33 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Hack Smarter Security</title>
+      <link>https://scorpiosec.com/posts/2024/03/thm-hack-smarter-security/</link>
+      <pubDate>Fri, 22 Mar 2024 16:28:33 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/03/thm-hack-smarter-security/</guid>
+      <description>Platform: TryHackMe Link: Hack Smarter Security Level: Medium OS: Windows In this challenge we exploit a Windows Server machine feature SSH (which is not usual). After exploiting an uncommon service we find ourselves having to bypass Windows Defender in order to achieve administrative privileges.&#xA;The target IP address is 10.10.189.226.&#xA;Recon nmap -sC -sV -oA nmap/Hack-Smarter-Security 10.10.189.226 Several ports are found to be opened:&#xA;FTP is running on port 21, with anonymous login allowed SSH on port 22, which can potentially be our way into the system if credentials are found A Windows IIS server is running on port 80 From the nmap results it is not clear which service is running on port 1311 Windows WBT server is running on port 3389, this is used for Windows Remote Desktop and Remote Assistance connections Starting Nmap 7.</description>
+    </item>
     <item>
       <title>HTB: Manager</title>
       <link>https://scorpiosec.com/posts/2024/03/htb-manager/</link>
