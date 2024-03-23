@@ -6,8 +6,104 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 22 Mar 2024 16:28:33 -0500</lastBuildDate>
+        <lastBuildDate>Sat, 23 Mar 2024 01:25:21 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Analytics</title>
+            <link>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</link>
+            <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</guid>
+            <description>Platforme: Hack The Box Lien: Analytics Niveau: Facile OS: Linux Analytics comporte une instance Metabase, qui est un logiciel open-source de &amp;ldquo;business intelligence&amp;rdquo;. La cible est vulnérable au CVE-2023-38646 qui permet l&amp;rsquo;exécution de commandes en l&amp;rsquo;absence d&amp;rsquo;authentification. Après avoir énuméré les variables de l&amp;rsquo;environnement, des identifiants SSH sont découverts et le shell root est obtenu via un &amp;ldquo;kernel exploit&amp;rdquo;.
+L&amp;rsquo;adresse IP cible - 10.10.11.233
+Scanning nmap -sC -sV -oA nmap/Analytics 10.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Analytics" target="_blank" >Analytics</a>
+
+</li>
+<li>Niveau: Facile</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Analytics comporte une instance Metabase, qui est un logiciel open-source de &ldquo;business intelligence&rdquo;. La cible est vulnérable au CVE-2023-38646 qui permet l&rsquo;exécution de commandes en l&rsquo;absence d&rsquo;authentification. Après avoir énuméré les variables de l&rsquo;environnement, des identifiants SSH sont découverts et le shell root est obtenu via un &ldquo;kernel exploit&rdquo;.</p>
+<p>L&rsquo;adresse IP cible - <code>10.10.11.233</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Analytics 10.10.11.233
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-03-15 13:11 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.233
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.047s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">998</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.4 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://analytical.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 9.31 seconds
+</span></span></code></pre></div><p>Nous sommes redirigés vers <code>analytical.htb</code> qui est ajouté au fichier <code>/etc/hosts</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.233 analytical.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Le site ne présente rien d&rsquo;intéressant à part une page de login qui me redirige vers <code>http://data.analytical.htb/</code>, j&rsquo;ajoute le sous-domaine à mon fichier <code>/etc/hosts</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.233 data.analytical.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><p>La visite du sous-domaine récemment identifié conduit à une page de connexion pour <a href="https://www.metabase.com/" target="_blank" >Metabase</a>
+
+.</p>
+<p><img src="/images/HTB-Analytics/signin-Metabase.png" alt="Metabase login page"></p>
+<p>Aucune des informations d&rsquo;identification par défaut ne fonctionne.</p>
+<p><img src="/images/HTB-Analytics/Metabase-default-users.png" alt="Metabase default credentials"></p>
+<p>En recherchant les vulnérabilités de Metabase, nous trouvons <a href="https://www.cvedetails.com/vulnerability-list/vendor_id-19475/product_id-51231/Metabase-Metabase.html" target="_blank" >CVE-2023-38646</a>
+
+ permettant aux attaquants d&rsquo;exécuter des commandes même lorsqu&rsquo;ils ne sont pas authentifiés.</p>
+<p><img src="/images/HTB-Analytics/cve-2023-38646.png" alt="CVE-2023-38646"></p>
+<p>Un PoC pour l&rsquo;exploit se trouve <a href="https://github.com/m3m0o/metabase-pre-auth-rce-poc/tree/main" target="_blank" >ici</a>
+
+.</p>
+<h2 id="foothold">Foothold</h2>
+<p>Le <code>setup-token</code> est récupéré en allant sur <code>http://data.analytical.htb/api/session/properties</code>.</p>
+<p><img src="/images/HTB-Analytics/Metabase-setup-token.png" alt="setup-token"></p>
+<p>Un shell inversé est créé à l&rsquo;aide de <a href="https://www.revshells.com/" target="_blank" >Reverse shell generator</a>
+
+.</p>
+<p>Pour exécuter l&rsquo;exploit, utilisez</p>
+<pre tabindex="0"><code>python3 main.py -u http://[targeturl] -t [setup-token] -c &#34;[command]&#34;
+</code></pre><p>Configurez votre listener et exécutez la commande.</p>
+<p><img src="/images/HTB-Analytics/Metabase-xploit.png" alt="Metabase exploit running"></p>
+<p>Nous accédons au système par l&rsquo;intermédiaire de l&rsquo;utilisateur <code>Metabase</code>.</p>
+<p><img src="/images/HTB-Analytics/foothold.png" alt="Initial foothold"></p>
+<p>Le fichier <code>user.txt</code> ne se trouve pas dans le répertoire personnel de cet utilisateur et la tentative de &ldquo;upgrade&rdquo; l&rsquo;interpréteur de commandes échoue. Nous semblons être dans un environnement contraint avec un nombre limité de services, probablement un conteneur. <code>0::/</code> est découvert à la fois dans <code>/proc/1/cgroup</code> et <code>/proc/self/cgroup</code> ce qui est une forte indication que nous opérons dans un conteneur. Cela signifie typiquement que le processus avec le <code>PID 1</code> (habituellement le processus init) s&rsquo;exécute dans un <code>cgroup</code>, ce qui est une caractéristique commune des environnements conteneurisés.</p>
+<p>Après avoir trouvé et examiné le contenu du script <code>/app/run_metabase.sh</code>, il est évident que les variables d&rsquo;environnement sont manipulées via les fonctions <code>file_env</code> et <code>docker_setup_env</code>.</p>
+<p>L&rsquo;exécution de <code>env</code> dévoile quelques informations d&rsquo;identification.</p>
+<blockquote>
+<p>La commande <code>env</code> affiche les variables d&rsquo;environnement actuelles définies dans l&rsquo;interpréteur de commandes. Les variables d&rsquo;environnement sont des paires clé-valeur qui contiennent des informations sur l&rsquo;environnement dans lequel un processus s&rsquo;exécute.</p>
+</blockquote>
+<p><img src="/images/HTB-Analytics/user-credentials.png" alt="Leaked user credentials"></p>
+<pre tabindex="0"><code>META_USER=metalytics
+META_PASS=An4lytics_ds20223#
+</code></pre><p>Nous utilisons ces identifiants pour nous connecter avec SSH.</p>
+<pre tabindex="0"><code>ssh metalytics@analytical.htb
+</code></pre><p>Et le fichier <code>user.txt</code> se trouve dans <code>/home/metalytics/user.txt</code>.</p>
+<p><img src="/images/HTB-Analytics/user-flag.png" alt="User flag"></p>
+<h2 id="escalade-des-privilèges">Escalade des privilèges</h2>
+<p>La recherche de pistes d&rsquo;escalade de privilèges avec <code>sudo -l</code> et l&rsquo;énumération manuelle du système ne mènent à rien pour l&rsquo;instant. Portant mon attention sur le noyau du système, je vérifie ses caractéristiques avec <code>uname -a &amp;&amp; cat /proc/version</code>.</p>
+<p><img src="/images/HTB-Analytics/system-features.png" alt="System kernel version"></p>
+<p>Le système fonctionne sous Ubuntu 22.04 et la version du noyau 6.2.0-25-generic. Après avoir cherché des attaques, je découvre <a href="https://www.crowdstrike.com/blog/crowdstrike-discovers-new-container-exploit/" target="_blank" >GameOver(lay)</a>
+
+ avec les <code>CVE-2023-2640</code> et <code>CVE-2023-32629</code>. Un PoC est disponible sur ce <a href="https://github.com/g1vi/CVE-2023-2640-CVE-2023-32629/blob/main/exploit.sh" target="_blank" >compte Github</a>
+
+.</p>
+<p>Après l&rsquo;exécution de l&rsquo;exploit, un shell root est obtenu et le fichier <code>root.txt</code> est accessible dans <code>/root/root.txt</code>.</p>
+<p><img src="/images/HTB-Analytics/root-flag.png" alt="Root flag"></p>
+<p>Merci d&rsquo;avoir visité mon blog!</p>
+]]></content>
+        </item>
         
         <item>
             <title>THM: Hack Smarter Security</title>

@@ -6,8 +6,105 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 22 Mar 2024 16:28:33 -0500</lastBuildDate>
+        <lastBuildDate>Sat, 23 Mar 2024 01:25:21 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Analytics</title>
+            <link>https://scorpiosec.com/posts/2024/03/htb-analytics/</link>
+            <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/03/htb-analytics/</guid>
+            <description>Platform: Hack The Box Link: Analytics Level: Easy OS: Linux Analytics features a Metabase instance, which is an open-source business intelligence software. The target is vulnerable to CVE-2023-38646 allowing command execution while unauthenticated. After enumerating the environment varialbles, SSH credentials are discovered and the root shell is gained via a kernel exploit.
+Target IP Address - 10.10.11.233
+Scanning nmap -sC -sV -oA nmap/Analytics 10.10.11.233 Results
+Starting Nmap 7.94SVN ( https://nmap.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Analytics" target="_blank" >Analytics</a>
+
+</li>
+<li>Level: Easy</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Analytics features a Metabase instance, which is an open-source business intelligence software. The target is vulnerable to CVE-2023-38646 allowing command execution while unauthenticated. After enumerating the environment varialbles, SSH credentials are discovered and the root shell is gained via a kernel exploit.</p>
+<p>Target IP Address - <code>10.10.11.233</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Analytics 10.10.11.233
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-03-15 13:11 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.233
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.047s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">998</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.4 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://analytical.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 9.31 seconds
+</span></span></code></pre></div><p>We are being redirected to <code>analytical.htb</code> which is added to the <code>/etc/hosts</code> file.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.233 analytical.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>The website does not have anything interesting besides a login page that redirects me to <code>http://data.analytical.htb/</code>, I add the subdomain to my <code>/etc/hosts</code> file.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.233 data.analytical.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><p>Visiting the newly found subdomain leads to a login page for <a href="https://www.metabase.com/" target="_blank" >Metabase</a>
+
+ which is an open-source business intelligence software.</p>
+<p><img src="/images/HTB-Analytics/signin-Metabase.png" alt="Metabase login page"></p>
+<p>None of the default credentials worked.</p>
+<p><img src="/images/HTB-Analytics/Metabase-default-users.png" alt="Metabase default credentials"></p>
+<p>Looking for Metabase vulnerabilities we find <a href="https://www.cvedetails.com/vulnerability-list/vendor_id-19475/product_id-51231/Metabase-Metabase.html" target="_blank" >CVE-2023-38646</a>
+
+ allowing attackers to execute commands even while unauthenticated.</p>
+<p><img src="/images/HTB-Analytics/cve-2023-38646.png" alt="CVE-2023-38646"></p>
+<p>A PoC for the exploit is found <a href="https://github.com/m3m0o/metabase-pre-auth-rce-poc/tree/main" target="_blank" >here</a>
+
+.</p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>The <code>setup-token</code> is retrieved by going to <code>http://data.analytical.htb/api/session/properties</code>.</p>
+<p><img src="/images/HTB-Analytics/Metabase-setup-token.png" alt="setup-token"></p>
+<p>Craft a reverse shell with <a href="https://www.revshells.com/" target="_blank" >Reverse Shell Generator</a>
+
+.</p>
+<p>To run the exploit use</p>
+<pre tabindex="0"><code>python3 main.py -u http://[targeturl] -t [setup-token] -c &#34;[command]&#34;
+</code></pre><p>Setup your listener, run the command</p>
+<p><img src="/images/HTB-Analytics/Metabase-xploit.png" alt="Metabase exploit running"></p>
+<p>And catch a shell!</p>
+<p><img src="/images/HTB-Analytics/foothold.png" alt="Initial foothold"></p>
+<p>After accessing the system no flag is found in this user home directory and trying to upgrade the shell fails. We seem to be in a constrained environment with a limited amount of services/utilities, probably a container. <code>0::/</code> is discovered in both <code>/proc/1/cgroup</code> and <code>/proc/self/cgroup</code> which is a strong indication that we are operating within a container. This typically signifies that the process with <code>PID 1</code> (usually the init process) is running within a <code>cgroup</code>, which is a common characteristic of containerized environments.</p>
+<p>After finding and examining the content of the script <code>/app/run_metabase.sh</code>, it appears that the environment variables are manipulated via the functions <code>file_env</code> and <code>docker_setup_env</code>.</p>
+<p>Running <code>env</code> leaks some credentials.</p>
+<blockquote>
+<p>The <code>env</code> command prints out the current environment variables set in the shell. Environment variables are key-value pairs that hold information about the environment in which a process is running.</p>
+</blockquote>
+<p><img src="/images/HTB-Analytics/user-credentials.png" alt="Leaked user credentials"></p>
+<pre tabindex="0"><code>META_USER=metalytics
+META_PASS=An4lytics_ds20223#
+</code></pre><p>We log in SSH with them.</p>
+<pre tabindex="0"><code>ssh metalytics@analytical.htb
+</code></pre><p>And the user flag is found at <code>/home/metalytics/user.txt</code>.</p>
+<p><img src="/images/HTB-Analytics/user-flag.png" alt="User flag"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Searching for privilege escalation paths with <code>sudo -l</code> and enumerating the system manually give no leads at this point. Turning my attention to system kernel, I check its features with <code>uname -a &amp;&amp; cat /proc/version</code>.</p>
+<p><img src="/images/HTB-Analytics/system-features.png" alt="System kernel version"></p>
+<p>The system is running Ubuntu 22.04 and kernel version 6.2.0-25-generic. After searching for exploits I find <a href="https://www.crowdstrike.com/blog/crowdstrike-discovers-new-container-exploit/" target="_blank" >GameOver(lay)</a>
+
+ featuring <code>CVE-2023-2640</code> and <code>CVE-2023-32629</code>. A PoC is available at this <a href="https://github.com/g1vi/CVE-2023-2640-CVE-2023-32629/blob/main/exploit.sh" target="_blank" >Github account</a>
+
+.</p>
+<p>After running the exploit, a root shell is obtained and the root flag is accessible at <code>/root/root.txt</code>.</p>
+<p><img src="/images/HTB-Analytics/root-flag.png" alt="Root flag"></p>
+<p>Thanks for taking the time to check out my blog, this challenge was fairly straightforward. Keep learning and practicing!</p>
+]]></content>
+        </item>
         
         <item>
             <title>THM: Hack Smarter Security</title>

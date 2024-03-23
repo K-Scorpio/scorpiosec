@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 22 Mar 2024 16:28:33 -0500</lastBuildDate>
+    <lastBuildDate>Sat, 23 Mar 2024 01:25:21 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Analytics</title>
+      <link>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</link>
+      <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</guid>
+      <description>Platforme: Hack The Box Lien: Analytics Niveau: Facile OS: Linux Analytics comporte une instance Metabase, qui est un logiciel open-source de &amp;ldquo;business intelligence&amp;rdquo;. La cible est vulnérable au CVE-2023-38646 qui permet l&amp;rsquo;exécution de commandes en l&amp;rsquo;absence d&amp;rsquo;authentification. Après avoir énuméré les variables de l&amp;rsquo;environnement, des identifiants SSH sont découverts et le shell root est obtenu via un &amp;ldquo;kernel exploit&amp;rdquo;.&#xA;L&amp;rsquo;adresse IP cible - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.</description>
+    </item>
     <item>
       <title>THM: Hack Smarter Security</title>
       <link>https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/</link>

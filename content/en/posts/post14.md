@@ -131,7 +131,6 @@ After running the exploit, a root shell is obtained and the root flag is accessi
 
 ![Root flag](/images/HTB-Analytics/root-flag.png)
 
-
-
+Thanks for taking the time to check out my blog, this challenge was fairly straightforward. Keep learning and practicing!
 
 

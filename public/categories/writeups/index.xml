@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 22 Mar 2024 16:28:33 -0500</lastBuildDate>
+    <lastBuildDate>Sat, 23 Mar 2024 01:25:21 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Analytics</title>
+      <link>https://scorpiosec.com/posts/2024/03/htb-analytics/</link>
+      <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/03/htb-analytics/</guid>
+      <description>Platform: Hack The Box Link: Analytics Level: Easy OS: Linux Analytics features a Metabase instance, which is an open-source business intelligence software. The target is vulnerable to CVE-2023-38646 allowing command execution while unauthenticated. After enumerating the environment varialbles, SSH credentials are discovered and the root shell is gained via a kernel exploit.&#xA;Target IP Address - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.10.11.233 Results&#xA;Starting Nmap 7.94SVN ( https://nmap.</description>
+    </item>
     <item>
       <title>THM: Hack Smarter Security</title>
       <link>https://scorpiosec.com/posts/2024/03/thm-hack-smarter-security/</link>
