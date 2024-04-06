@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Sat, 23 Mar 2024 01:25:21 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 05 Apr 2024 16:50:10 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Codify</title>
+      <link>https://scorpiosec.com/posts/2024/04/htb-codify/</link>
+      <pubDate>Fri, 05 Apr 2024 16:50:10 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/04/htb-codify/</guid>
+      <description>Platform: Hack The Box Link: Codify Level: Easy OS: Linux Codify starts with a web application that offers a sandbox environment for testing Node.js code. It utilizes the vm2 library and employs a module whitelist for security. However, there is a vulnerability (CVE-2023-3214 ) in vm2 that can be exploited to break out of the sandbox and access the target system. This is followed by lateral movement to access another user account and obtain the user flag.</description>
+    </item>
     <item>
       <title>HTB: Analytics</title>
       <link>https://scorpiosec.com/posts/2024/03/htb-analytics/</link>
@@ -71,13 +78,6 @@
       <pubDate>Sun, 28 Jan 2024 14:23:09 -0600</pubDate>
       <guid>https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/</guid>
       <description>Introduction Networking – a skill that resonates loudly in the realm of technical IT roles. It&amp;rsquo;s a non-negotiable proficiency for anyone navigating the intricate landscapes of information technology. At the heart of this expertise are two pivotal models: the Open Systems Interconnection (OSI) model and the Transmission Control Protocol/Internet Protocol (TCP/IP) model. Serving as foundational blueprints, these models play a crucial role in designing, implementing, and troubleshooting networks. They offer a conceptual framework that streamlines communication between devices.</description>
-    </item>
-    <item>
-      <title>Overview of the Common Linux File System Types</title>
-      <link>https://scorpiosec.com/posts/2024/01/overview-of-the-common-linux-file-system-types/</link>
-      <pubDate>Sun, 21 Jan 2024 18:33:14 -0600</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/01/overview-of-the-common-linux-file-system-types/</guid>
-      <description>Introduction Last week, we explored the organization of files in Linux, but how does the operating system automatically know where to store file &amp;ldquo;X&amp;rdquo; or file &amp;ldquo;Y&amp;rdquo;? The answer lies in the file system type—a crucial blueprint that dictates the organization and storage of data on a computer&amp;rsquo;s storage devices, such as hard drives or solid-state drives. It guides the computer to manage and keep track of files and folders.</description>
     </item>
   </channel>
 </rss>

