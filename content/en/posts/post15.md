@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Codify starts with a web application that offers a sandbox environment for testing Node.js code. It utilizes the [vm2](https://github.com/patriksimek/vm2/releases/tag/3.9.16) library and employs a module whitelist for security. However, there is a vulnerability ([CVE-2023-3214](https://nvd.nist.gov/vuln/detail/CVE-2023-32314) ) in vm2 that can be exploited to break out of the sandbox and access the target system. This is followed by lateral movement to access another user account and obtain the user flag. Additionally, upon identifying a vulnerability in a script, a custom brute force script is employed to obtain the root password.
+Codify starts with a web application that offers a sandbox environment for testing Node.js code. It utilizes the [vm2](https://github.com/patriksimek/vm2/releases/tag/3.9.16) library and employs a module whitelist for security. However, there is a vulnerability ([CVE-2023-3214](https://nvd.nist.gov/vuln/detail/CVE-2023-32314) ) in vm2 that can be exploited to break out of the sandbox and access the target system. This is followed by lateral movement to access another user account and obtain the user flag. Additionally, upon identifying a vulnerability in a script that we can run with elevated privileges, a custom brute force script is employed to obtain the root password.
 
 Target IP address - `10.10.11.239`
 
@@ -53,6 +53,8 @@ We find three ports open 22 (SSH), 80 (HTTP) and 3000 (Node.js). We are being re
 sudo echo "10.10.11.239 codify.htb" | sudo tee -a /etc/hosts
 ```
 
+## Enumeration
+
 The website is a service to test Node.js code in a sandbox environment.
 
 ![Codify Website](/images/HTB-Codify/codify-website.png)
@@ -69,11 +71,13 @@ In the `About Us` section we learn that the [vm2](https://github.com/patriksimek
 
 ![Codify About Section](/images/HTB-Codify/codify-about.png)
 
+## Initial Foothold
+
 Researching for vm2 vulnerabilities, we find [CVE-2023-3214](https://nvd.nist.gov/vuln/detail/CVE-2023-32314) and a PoC can be found [here](https://gist.github.com/arkark/e9f5cf5782dec8321095be3e52acf5ac). The exploit allows us to escape the sandbox and obtain remote code execution (RCE).
 
-After multiple failures, the search for a reverse shell leads to [this](https://www.youtube.com/watch?v=_q_ZCy-hEqg&ab_channel=0xdf) old video of 0xdf where he explains `mkfifo / nc Reverse Shell`. I then found some [here](https://www.oreilly.com/library/view/hands-on-red-team/9781788995238/b76e6441-5999-45e4-949e-bd332cb21cce.xhtml) and used the first one. Below is the complete code.
+After multiple failures, the search for a reverse shell leads to [this](https://www.youtube.com/watch?v=_q_ZCy-hEqg&ab_channel=0xdf) old video of 0xdf where he explains `mkfifo / nc Reverse Shell`. Some mkfifo reverse shells are available [here](https://www.oreilly.com/library/view/hands-on-red-team/9781788995238/b76e6441-5999-45e4-949e-bd332cb21cce.xhtml) and the first one ends up working. Below is the complete code.
 
-> Don't forget to change the IP and port number accordingly.
+> Don't forget to change the IP address and port number accordingly.
 
 ```Javascript
 const { VM } = require("vm2");
@@ -103,7 +107,7 @@ Initial access is achieved after running the code in the editor.
 
 ![Codify Foothold](/images/HTB-Codify/foothold.png)
 
-The shell can be upgraded by running the commands below
+The shell can be upgraded by running the commands below.
 
 ```
 python3 -c 'import pty;pty.spawn("/bin/bash")'  
@@ -113,9 +117,11 @@ stty raw -echo; fg
 stty rows 38 columns 116
 ```
 
-![Access to Joshua directory denied](/images/HTB-Codify/access-denied.png)
+### Lateral Movement
 
 Access to the `joshua` directory in `/home` is denied. It is owned by the user `joshua` which is our target for lateral movement.
+
+![Access to Joshua directory denied](/images/HTB-Codify/access-denied.png)
 
 After running `linpeas` on the target, some interesting accessible files are found in the Apache web root directory.
 
@@ -129,17 +135,19 @@ The file `tickets.db` in `/var/www/contact` contains the password hash for the u
 
 ![Hashid command results](/images/HTB-Codify/hashid.png)
 
-Using john to crack the hash the password `spongebob1` is retrieved.
+Using john to crack the hash, the password `spongebob1` is retrieved.
 
 ![User Joshua password](/images/HTB-Codify/hash-cracked.png)
 
 With the credentials `joshua:spongebob1` we can login via SSH and get the user flag `user.txt` 
 
+## Privilege Escalation
+
 Running `sudo -l` reveals that the user `joshua` can run the script `mysql-backup.sh` as root.
 
 ![Sudo -l command results](/images/HTB-Codify/sudo-l.png)
 
-If you try to execute the script you get the prompt `Enter MySQL password for root:`.
+When we try to execute the script we get the prompt `Enter MySQL password for root:`.
 
 This is the content of the script 
 
@@ -179,7 +187,7 @@ The image below highlights the script vulnerability. In Bash, if the right side 
 
 ![mysql-backup.sh script vulnerability](/images/HTB-Codify/script-vulnerability.png)
 
-For example if the password is `hello`, both `[[$DB_PASS == hello]]` and `[[$DB_PASS == h*]]` will match because `h*` is a pattern that matches any string starting with the letter `h`. Knowing this bruteforcing, the password becomes a viable solution.
+For example if the password is `hello`, both `[[$DB_PASS == hello]]` and `[[$DB_PASS == h*]]` will match because `h*` is a pattern that matches any string starting with the letter `h`. Knowing this, bruteforcing the password becomes a viable solution.
 
 > To fix this, you should quote the variable `$USER_PASS` in the comparison, like so: `if [[ $DB_PASS == "$USER_PASS" ]]; then`. This ensures that the value of `$USER_PASS` is treated as a string, not a pattern.
 
@@ -209,14 +217,14 @@ print("[+] process terminated, root password is: "+password)
 
 Here’s how it works:
 
-1. It imports the necessary modules: string for character sets and os for executing system commands. 
+1. It imports the necessary modules: `string` for character sets and `os` for executing system commands. 
 
-2. It defines a character set chars that includes all ASCII letters (both lowercase and uppercase) and digits. 
+2. It defines a character set `chars` that includes all ASCII letters (both lowercase and uppercase) and digits. 
  
-3. It initializes an empty string password to store the discovered password characters, and a flag next to control the loop. 
+3. An empty string password is initialized to store the discovered password characters, and a flag (`next`) to control the loop. 
 
-4. It enters a while loop that continues as long as next is 1. Inside this loop:
-	* It iterates over each character `i` in chars. 
+4. It enters a while loop that continues as long as `next` is 1. Inside this loop:
+	* It iterates over each character `i` in `chars`. 
 	* For each character, it constructs a command that echoes the current password plus the character `i`, followed by a wildcard `*`, and pipes this to `sudo /opt/scripts/mysql-backup.sh`. The command is executed in a shell and its output is redirected to /dev/null to suppress it.
 	* If the command succeeds (i.e., the exit status `errorlevel` is `0`), it means that the current `password` plus the character `i` is a prefix of the actual password. In this case, it appends `i` to password, prints a message to the console, and sets `next` to `1` to continue the loop. 
 	* If the command fails (i.e., the exit status `errorlevel` is non-zero), it means that the current `password` plus the character `i` is not a prefix of the actual password. In this case, it sets `next` to `0` to stop the loop after the current iteration.
@@ -234,10 +242,4 @@ After switching to `root`, the root flag `root.txt` is found in `/root`.
 I enjoyed this challenge especially the code review part because it is one of my weakest skills. Having some scripting/programming knowledge in Bash and Python will always help as a security professional. 
 
 freeCodeCamp has a Bash Scripting Tutorial for Beginners [video](https://www.youtube.com/watch?v=tK9Oc6AEnR4&t=18s&ab_channel=freeCodeCamp.org) on their YouTube channel. If you prefer books [Learning the bash Shell, 3rd Edition](https://www.amazon.com/Learning-bash-Shell-Programming-Nutshell/dp/0596009658) and [The Linux Command Line, 2nd Edition: A Complete Introduction](https://www.amazon.com/Linux-Command-Line-2nd-Introduction/dp/1593279523) are my recommendations.
-
-
-
-
-
-
 
