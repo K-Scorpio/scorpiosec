@@ -3,13 +3,13 @@ title = "THM: Clocky"
 date = 2024-04-10T13:03:18-05:00
 draft = false
 toc = true
-images = ['/images/']
+images = ['/images/THM-Clocky/clocky.png']
 tags = ['Hack The Box']
 categories = ['Writeups']
 +++
 
 * Platform: TryHackMe
-* Link: [Clocky](https://app.hackthebox.com/machines/Codify)
+* Link: [Clocky](https://tryhackme.com/r/room/clocky)
 * Level: Medium
 * OS: Linux
 ---
