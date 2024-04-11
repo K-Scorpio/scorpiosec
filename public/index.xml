@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 05 Apr 2024 16:50:10 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 10 Apr 2024 13:03:18 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Clocky</title>
+      <link>https://scorpiosec.com/posts/2024/04/thm-clocky/</link>
+      <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/04/thm-clocky/</guid>
+      <description>Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&amp;rsquo;s password reset mechanism, granting us access to the administrative dashboard.</description>
+    </item>
     <item>
       <title>HTB: Codify</title>
       <link>https://scorpiosec.com/posts/2024/04/htb-codify/</link>
@@ -71,13 +78,6 @@
       <pubDate>Sun, 04 Feb 2024 15:42:38 -0600</pubDate>
       <guid>https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/</guid>
       <description>Introduction Have you ever wondered how OS installations or system maintenance are handled in large IT infrastructure? Picture this: you work in the IT department and are tasked with preparing laptops for new hires. These individuals will be working in different departments, each requiring a specific OS. How would you approach this task? Would you physically interact with each laptop to complete the process? Now, imagine it&amp;rsquo;s not just 10, 20, or 30 laptops but also servers, switches, routers, virtual machines, and more.</description>
-    </item>
-    <item>
-      <title>Comparing the Building Blocks: OSI Model vs. TCP/IP Model</title>
-      <link>https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/</link>
-      <pubDate>Sun, 28 Jan 2024 14:23:09 -0600</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/01/comparing-the-building-blocks-osi-model-vs.-tcp/ip-model/</guid>
-      <description>Introduction Networking – a skill that resonates loudly in the realm of technical IT roles. It&amp;rsquo;s a non-negotiable proficiency for anyone navigating the intricate landscapes of information technology. At the heart of this expertise are two pivotal models: the Open Systems Interconnection (OSI) model and the Transmission Control Protocol/Internet Protocol (TCP/IP) model. Serving as foundational blueprints, these models play a crucial role in designing, implementing, and troubleshooting networks. They offer a conceptual framework that streamlines communication between devices.</description>
     </item>
   </channel>
 </rss>

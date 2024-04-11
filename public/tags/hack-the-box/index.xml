@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 05 Apr 2024 16:50:10 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 10 Apr 2024 13:03:18 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Clocky</title>
+      <link>https://scorpiosec.com/posts/2024/04/thm-clocky/</link>
+      <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/04/thm-clocky/</guid>
+      <description>Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&amp;rsquo;s password reset mechanism, granting us access to the administrative dashboard.</description>
+    </item>
     <item>
       <title>HTB: Codify</title>
       <link>https://scorpiosec.com/posts/2024/04/htb-codify/</link>
