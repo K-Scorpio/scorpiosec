@@ -4,7 +4,7 @@ date = 2024-04-10T13:03:18-05:00
 draft = false
 toc = true
 images = ['/images/THM-Clocky/clocky.png']
-tags = ['Hack The Box']
+tags = ['TryHackMe']
 categories = ['Writeups']
 +++
 
@@ -18,7 +18,7 @@ For this challenge our objective is to locate six flags. Our inital step involve
 
 The dashboard presents a form vulnerable to Server-Side Request Forgery (SSRF), enabling us to acquire a file with plaintext passwords. By combining the user names we enumerate and the passwords, we get an initial foothold into the system via SSH. 
 
-Further exploration revealed a mysql database; however attempting to read one of its table's content produces some indecipherable output because of the `cache_sha2_password` plugin's encryption. Eventually, using a meticulously crafted query, we successfully dump the password hashes in a legible format and after cracking them we get the root password.
+Further exploration reveals a mysql database; however attempting to read one of its table's content produces some indecipherable output because of the `cache_sha2_password` plugin's encryption. Eventually, using a meticulously crafted query, we successfully dump the password hashes in a legible format and after cracking them we get the root password.
 
 Target IP  - `10.10.62.39`
 
@@ -128,6 +128,8 @@ Moreover the generation of the token is time sensitive. Here is how it works:
 * `value` is then converted into a string and the last 4 characters are removed. A space, a dot and the upper case version of the user name are then appended to the string.
 * the `lnk` string is finally hashed using SHA-1 (which is insecure).
 
+![Clocky token value expected](/images/THM-Clocky/token-gen-code.png)
+
 So to exploit it we have to:
 
 * provide a valid username 
@@ -135,7 +137,6 @@ So to exploit it we have to:
 * generate a valid token value 
 * reset the password of the adminstrator account 
 
-![Clocky token value expected](/images/THM-Clocky/token-gen-code.png)
 
 We use the script below to achieve it.
 
@@ -208,7 +209,7 @@ THM{ee68e42f755f6ebbcd89439432d7b462}
 
 ## Flag 4
 
-On the Administrator Dashboard we can submit a `Location` and download a file. After capturing the request with Burp Suite I can see that it uses the `location` parameter.
+On the Administrator Dashboard we can submit a `Location` and download a file. After capturing the request with Burp Suite we can see that it uses the `location` parameter.
 
 It turns out to be vulnerable to SSRF.
 
@@ -298,8 +299,6 @@ The first `dev` password hash gives the password `armadillo`.
 ```
 hashcat -m 7401 -a 0 hash.txt /usr/share/wordlists/rockyou.txt
 ```
-
-
 
 Using the newly found password we are able to connect as root and grab flag 6 in `/root` and that's all of them!
 

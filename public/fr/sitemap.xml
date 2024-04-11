@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://scorpiosec.com/fr/categories/</loc>
-    <lastmod>2024-04-05T16:50:10-05:00</lastmod>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -13,6 +13,84 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/categories/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/posts/</loc>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/</loc>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/</loc>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</loc>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/04/thm-clocky/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/04/thm-clocky/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/tags/tryhackme/</loc>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/tryhackme/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/tryhackme/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/fr/categories/writeups/</loc>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/categories/writeups/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/categories/writeups/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/tags/hack-the-box/</loc>
@@ -41,58 +119,6 @@
                 href="https://scorpiosec.com/fr/posts/2024/04/htb-codify/"
                 />
   </url><url>
-    <loc>https://scorpiosec.com/fr/posts/</loc>
-    <lastmod>2024-04-05T16:50:10-05:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/posts/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/</loc>
-    <lastmod>2024-04-05T16:50:10-05:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/tags/</loc>
-    <lastmod>2024-04-05T16:50:10-05:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/categories/writeups/</loc>
-    <lastmod>2024-04-05T16:50:10-05:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/categories/writeups/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/categories/writeups/"
-                />
-  </url><url>
     <loc>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</loc>
     <lastmod>2024-03-23T01:25:21-05:00</lastmod>
     <xhtml:link
@@ -117,19 +143,6 @@
                 rel="alternate"
                 hreflang="fr"
                 href="https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/fr/tags/tryhackme/</loc>
-    <lastmod>2024-03-22T16:28:33-05:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/tryhackme/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/tryhackme/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/fr/posts/2024/03/htb-manager/</loc>

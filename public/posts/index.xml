@@ -18,7 +18,7 @@
             <description>Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&amp;rsquo;s password reset mechanism, granting us access to the administrative dashboard.</description>
             <content type="html"><![CDATA[<ul>
 <li>Platform: TryHackMe</li>
-<li>Link: <a href="https://app.hackthebox.com/machines/Codify" target="_blank" >Clocky</a>
+<li>Link: <a href="https://tryhackme.com/r/room/clocky" target="_blank" >Clocky</a>
 
 </li>
 <li>Level: Medium</li>
@@ -27,7 +27,7 @@
 <hr>
 <p>For this challenge our objective is to locate six flags. Our inital step involves examining the <code>robots.txt</code> file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&rsquo;s password reset mechanism, granting us access to the administrative dashboard.</p>
 <p>The dashboard presents a form vulnerable to Server-Side Request Forgery (SSRF), enabling us to acquire a file with plaintext passwords. By combining the user names we enumerate and the passwords, we get an initial foothold into the system via SSH.</p>
-<p>Further exploration revealed a mysql database; however attempting to read one of its table&rsquo;s content produces some indecipherable output because of the <code>cache_sha2_password</code> plugin&rsquo;s encryption. Eventually, using a meticulously crafted query, we successfully dump the password hashes in a legible format and after cracking them we get the root password.</p>
+<p>Further exploration reveals a mysql database; however attempting to read one of its table&rsquo;s content produces some indecipherable output because of the <code>cache_sha2_password</code> plugin&rsquo;s encryption. Eventually, using a meticulously crafted query, we successfully dump the password hashes in a legible format and after cracking them we get the root password.</p>
 <p>Target IP  - <code>10.10.62.39</code></p>
 <h2 id="scanning">Scanning</h2>
 <pre tabindex="0"><code>nmap -sC -sV -oA nmap/Clocky 10.10.62.39
@@ -97,6 +97,7 @@
 <li><code>value</code> is then converted into a string and the last 4 characters are removed. A space, a dot and the upper case version of the user name are then appended to the string.</li>
 <li>the <code>lnk</code> string is finally hashed using SHA-1 (which is insecure).</li>
 </ul>
+<p><img src="/images/THM-Clocky/token-gen-code.png" alt="Clocky token value expected"></p>
 <p>So to exploit it we have to:</p>
 <ul>
 <li>provide a valid username</li>
@@ -104,7 +105,6 @@
 <li>generate a valid token value</li>
 <li>reset the password of the adminstrator account</li>
 </ul>
-<p><img src="/images/THM-Clocky/token-gen-code.png" alt="Clocky token value expected"></p>
 <p>We use the script below to achieve it.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> datetime
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
@@ -155,7 +155,7 @@
 </code></pre><p><img src="/images/THM-Clocky/admin-dashboard.png" alt="admin dashboard"></p>
 <hr>
 <h2 id="flag-4">Flag 4</h2>
-<p>On the Administrator Dashboard we can submit a <code>Location</code> and download a file. After capturing the request with Burp Suite I can see that it uses the <code>location</code> parameter.</p>
+<p>On the Administrator Dashboard we can submit a <code>Location</code> and download a file. After capturing the request with Burp Suite we can see that it uses the <code>location</code> parameter.</p>
 <p>It turns out to be vulnerable to SSRF.</p>
 <blockquote>
 <p>&ldquo;A <strong>Server-side Request Forgery (SSRF)</strong> vulnerability occurs when an attacker manipulates a <strong>server-side application</strong> into making <strong>HTTP requests</strong> to a domain of their choice. This vulnerability exposes the server to arbitrary external requests directed by the attacker.&rdquo; Source - <a href="https://book.hacktricks.xyz/pentesting-web/ssrf-server-side-request-forgery" target="_blank" >hacktricks</a>

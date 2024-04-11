@@ -15,19 +15,6 @@
                 href="https://scorpiosec.com/categories/"
                 />
   </url><url>
-    <loc>https://scorpiosec.com/tags/hack-the-box/</loc>
-    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/hack-the-box/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/hack-the-box/"
-                />
-  </url><url>
     <loc>https://scorpiosec.com/posts/</loc>
     <lastmod>2024-04-10T13:03:18-05:00</lastmod>
     <xhtml:link
@@ -69,6 +56,29 @@
   </url><url>
     <loc>https://scorpiosec.com/posts/2024/04/thm-clocky/</loc>
     <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/04/thm-clocky/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/04/thm-clocky/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/tryhackme/</loc>
+    <lastmod>2024-04-10T13:03:18-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/tryhackme/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/tryhackme/"
+                />
   </url><url>
     <loc>https://scorpiosec.com/categories/writeups/</loc>
     <lastmod>2024-04-10T13:03:18-05:00</lastmod>
@@ -81,6 +91,19 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/categories/writeups/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/hack-the-box/</loc>
+    <lastmod>2024-04-05T16:50:10-05:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/hack-the-box/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/hack-the-box/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/posts/2024/04/htb-codify/</loc>
@@ -120,19 +143,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/posts/2024/03/thm-hack-smarter-security/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/tags/tryhackme/</loc>
-    <lastmod>2024-03-22T16:28:33-05:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/tryhackme/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/tryhackme/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/posts/2024/03/htb-manager/</loc>

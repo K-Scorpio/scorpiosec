@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 22 Mar 2024 16:28:33 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 10 Apr 2024 13:03:18 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Clocky</title>
+      <link>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</link>
+      <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</guid>
+      <description>Platforme: TryHackMe Lien: Clocky Niveau: Moyen OS: Linux Pour ce défi, notre objectif est de trouver six drapeaux. Notre première étape consiste à examiner le fichier robots.txt qui contient quelques extensions de fichiers. En utilisant ces extensions de fichiers, nous obtenons une archive et en l&amp;rsquo;extrayant, nous obtenons le code source d&amp;rsquo;une application. Après inspection du code, nous identifions un moyen de manipuler le mécanisme de réinitialisation de mot de passe de l&amp;rsquo;application, ce qui nous permet d&amp;rsquo;accéder au tableau de bord administratif.</description>
+    </item>
     <item>
       <title>THM: Hack Smarter Security</title>
       <link>https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/</link>
