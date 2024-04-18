@@ -52,7 +52,7 @@ Nous avons deux ports ouverts, 22 (SSH) et 80 (Nginx). Nous sommes redirigés ve
 sudo echo "10.10.119.61 creative.thm" | sudo tee -a /etc/hosts
 ```
 
-## Enumeration
+## Enumération
 
 Le site web semble plutôt simple, sans aucun élément exploitable. 
 
@@ -98,7 +98,7 @@ Dans `/home` nous trouvons un répertoire pour `saad`. En allant plus loin avec 
 
 Il suffit d'utiliser `http://127.0.0.1:1337/home/saad/user.txt` pour révéler le premier drapeau.
 
-## Initial Foothold
+## Accès Initial
 
 En soumettant `http://127.0.0.1:1337/home/saad/.ssh/id_rsa` nous pouvons récupérer la clé SSH de l'utilisateur.
 
@@ -127,7 +127,7 @@ Elle est trouvée et nous pouvons maintenant nous connecter.
 
 ![Initial foothold via SSH login](/images/THM-Creative/foothold.png)
 
-## Privilege Escalation
+## Elévation de Privilèges
 
 Une des choses que nous devrions toujours vérifier est le fichier `.bash_history`. Il révèle le mot de passe du compte `saad`.
 

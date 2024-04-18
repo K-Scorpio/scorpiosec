@@ -39,7 +39,7 @@
 <meta itemprop="name" content="THM: Creative">
 <meta itemprop="description" content="Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&rsquo;est pas exploitable. L&rsquo;énumération des sous-domaines permet de découvrir une application de test d&rsquo;URL vulnérable au SSRF. Cependant, l&rsquo;exploitation complète n&rsquo;est possible qu&rsquo;après la découverte d&rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&rsquo;ancrage."><meta itemprop="datePublished" content="2024-04-17T22:14:41-05:00" />
 <meta itemprop="dateModified" content="2024-04-17T22:14:41-05:00" />
-<meta itemprop="wordCount" content="826"><meta itemprop="image" content="https://scorpiosec.com/images/THM-Creative/Creative.svg" />
+<meta itemprop="wordCount" content="827"><meta itemprop="image" content="https://scorpiosec.com/images/THM-Creative/Creative.svg" />
 <meta itemprop="keywords" content="TryHackMe," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/THM-Creative/Creative.svg" /><meta name="twitter:title" content="THM: Creative"/>
@@ -182,9 +182,9 @@ if (!doNotTrack) {
           <nav id="TableOfContents">
   <ul>
     <li><a href="#scanning">Scanning</a></li>
-    <li><a href="#enumeration">Enumeration</a></li>
-    <li><a href="#initial-foothold">Initial Foothold</a></li>
-    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+    <li><a href="#enumération">Enumération</a></li>
+    <li><a href="#accès-initial">Accès Initial</a></li>
+    <li><a href="#elévation-de-privilèges">Elévation de Privilèges</a></li>
   </ul>
 </nav>
         </aside>
@@ -226,7 +226,7 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 40.97 seconds
 </span></span></code></pre></div><p>Nous avons deux ports ouverts, 22 (SSH) et 80 (Nginx). Nous sommes redirigés vers <code>http://creative.thm</code>.</p>
 <pre tabindex="0"><code>sudo echo &#34;10.10.119.61 creative.thm&#34; | sudo tee -a /etc/hosts
-</code></pre><h2 id="enumeration">Enumeration</h2>
+</code></pre><h2 id="enumération">Enumération</h2>
 <p>Le site web semble plutôt simple, sans aucun élément exploitable.</p>
 <p>L&rsquo;énumération des répertoires et l&rsquo;examen du code source ne donnent rien.</p>
 <p>En utilisant ffuf pour l&rsquo;énumération des sous-domaines, nous trouvons <code>beta</code>.</p>
@@ -247,7 +247,7 @@ if (!doNotTrack) {
 <p><img src="https://scorpiosec.com/images/THM-Creative/home-dir.png" alt="Home directory via SSRF"></p>
 <p>Dans <code>/home</code> nous trouvons un répertoire pour <code>saad</code>. En allant plus loin avec <code>http://127.0.0.1:1337/home/saad/</code> nous découvrons le dossier <code>.shh</code> et le drapeau de l&rsquo;utilisateur <code>user.txt</code>.</p>
 <p>Il suffit d&rsquo;utiliser <code>http://127.0.0.1:1337/home/saad/user.txt</code> pour révéler le premier drapeau.</p>
-<h2 id="initial-foothold">Initial Foothold</h2>
+<h2 id="accès-initial">Accès Initial</h2>
 <p>En soumettant <code>http://127.0.0.1:1337/home/saad/.ssh/id_rsa</code> nous pouvons récupérer la clé SSH de l&rsquo;utilisateur.</p>
 <p><img src="https://scorpiosec.com/images/THM-Creative/saad-ssh-key.png" alt="saad user SSH key"></p>
 <blockquote>
@@ -263,7 +263,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
 </code></pre><p><img src="https://scorpiosec.com/images/THM-Creative/passphrase.png" alt="Hash cracking to recover passphrase"></p>
 <p>Elle est trouvée et nous pouvons maintenant nous connecter.</p>
 <p><img src="https://scorpiosec.com/images/THM-Creative/foothold.png" alt="Initial foothold via SSH login"></p>
-<h2 id="privilege-escalation">Privilege Escalation</h2>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
 <p>Une des choses que nous devrions toujours vérifier est le fichier <code>.bash_history</code>. Il révèle le mot de passe du compte <code>saad</code>.</p>
 <p><img src="https://scorpiosec.com/images/THM-Creative/system-password.png" alt="Account password recovered"></p>
 <p>Avec ce mot de passe, nous pouvons lancer <code>sudo -l</code>. L&rsquo;utilisateur est capable de lancer <code>/usr/bin/ping</code> en tant que root.</p>
@@ -338,7 +338,7 @@ nano shell.c
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        826 Mots
+        827 Mots
       </p>
 
       <p>
@@ -459,13 +459,6 @@ nano shell.c
         
 
         <div class="pagination__buttons">
-            
-            <span class="button previous">
-                <a href="https://scorpiosec.com/fr/posts/2024/04/thm-creative/">
-                    <span class="button__icon">←</span>
-                    <span class="button__text">THM: Creative</span>
-                </a>
-            </span>
             
 
             
