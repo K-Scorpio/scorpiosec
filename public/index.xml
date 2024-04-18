@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 10 Apr 2024 13:03:18 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 17 Apr 2024 22:14:41 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Creative</title>
+      <link>https://scorpiosec.com/posts/2024/04/thm-creative/</link>
+      <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/04/thm-creative/</guid>
+      <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux The challenge begins with a static website that is unexploitable. Through subdomain enumeration, a URL testing application is uncovered, susceptible to SSRF. However, full exploitation is only possible after discovering an internally exposed port. This access allows for file reading on the server, leading to the retrieval of an SSH private key. Yet, this alone isn&amp;rsquo;t enough to establish a foothold. Success is achieved by cracking the obtained SSH key&amp;rsquo;s hash, granting access to the target system.</description>
+    </item>
     <item>
       <title>THM: Clocky</title>
       <link>https://scorpiosec.com/posts/2024/04/thm-clocky/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 09 Feb 2024 14:55:37 -0600</pubDate>
       <guid>https://scorpiosec.com/posts/2024/02/from-bootable-to-usable-a-guide-to-restoring-your-usb-drive-for-everyday-use/</guid>
       <description>Introduction After turning a USB stick into a bootable USB drive, you may find it unusable for normal purposes, such as transferring data. I initially believed that simply deleting all the files on the USB stick would return it to its regular functionality. After searching online for a guide to revert the USB stick, I couldn&amp;rsquo;t find a satisfactory solution (perhaps my research skills weren&amp;rsquo;t up to par). Therefore, I took it upon myself to create a comprehensive guide.</description>
-    </item>
-    <item>
-      <title>Streamlining IT Operations: A Guide to PXE Server Setup and Security</title>
-      <link>https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/</link>
-      <pubDate>Sun, 04 Feb 2024 15:42:38 -0600</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/02/streamlining-it-operations-a-guide-to-pxe-server-setup-and-security/</guid>
-      <description>Introduction Have you ever wondered how OS installations or system maintenance are handled in large IT infrastructure? Picture this: you work in the IT department and are tasked with preparing laptops for new hires. These individuals will be working in different departments, each requiring a specific OS. How would you approach this task? Would you physically interact with each laptop to complete the process? Now, imagine it&amp;rsquo;s not just 10, 20, or 30 laptops but also servers, switches, routers, virtual machines, and more.</description>
     </item>
   </channel>
 </rss>

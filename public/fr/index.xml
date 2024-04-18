@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 10 Apr 2024 13:03:18 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 17 Apr 2024 22:14:41 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Creative</title>
+      <link>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</link>
+      <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</guid>
+      <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage.</description>
+    </item>
+    <item>
+      <title>THM: Creative</title>
+      <link>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</link>
+      <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</guid>
+      <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage.</description>
+    </item>
     <item>
       <title>THM: Clocky</title>
       <link>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</link>
@@ -64,20 +78,6 @@
       <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</guid>
       <description>Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.&#xA;Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP.</description>
-    </item>
-    <item>
-      <title>Comment restaurer une clé USB bootable pour une utilisation normale sur Linux et Windows</title>
-      <link>https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/</link>
-      <pubDate>Fri, 09 Feb 2024 14:55:37 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/02/comment-restaurer-une-cl%C3%A9-usb-bootable-pour-une-utilisation-normale-sur-linux-et-windows/</guid>
-      <description>Introduction Après avoir transformé une clé USB en clé USB amorçable, elle devient inutilisable et ne peut plus transferrer de données. J&amp;rsquo;ai d&amp;rsquo;abord cru qu&amp;rsquo;il suffisait de supprimer tous les fichiers de la clé USB pour qu&amp;rsquo;elle retrouve son fonctionnement normal. Après avoir cherché en ligne un guide pour réinitialiser la clé USB, je n&amp;rsquo;ai pas trouvé de solution satisfaisante. J&amp;rsquo;ai donc décidé de créer un guide complet. Dans cet article, je vous expliquerai comment restaurer votre clé USB, que vous utilisiez Linux ou Windows.</description>
-    </item>
-    <item>
-      <title>PXE: Un Outil pour Gérer les Environnements Informatiques de Grande Envergure</title>
-      <link>https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/</link>
-      <pubDate>Sun, 04 Feb 2024 15:42:38 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/02/pxe-un-outil-pour-g%C3%A9rer-les-environnements-informatiques-de-grande-envergure/</guid>
-      <description>Introduction Vous êtes-vous déjà demandé comment les installations de systèmes d&amp;rsquo;exploitation ou la maintenance des systèmes sont gérées dans une vaste infrastructure informatique? Imaginez la situation suivante: vous travaillez dans le service informatique et vous êtes chargé de préparer les ordinateurs des nouveaux employés. Ces personnes travailleront dans différents services, chacun nécessitant un système d&amp;rsquo;exploitation spécifique. Comment aborderiez-vous cette tâche? Interviendriez-vous physiquement sur chaque ordinateur portable pour mener à bien le processus?</description>
     </item>
   </channel>
 </rss>

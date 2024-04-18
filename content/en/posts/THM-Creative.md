@@ -129,7 +129,7 @@ The passphrase is found and we can now login.
 
 ## Privilege Escalation
 
-One of the things we should always check is the `.bash_history` file. This reveals the account password for `saad`.
+One of the things we should always check is the `.bash_history` file. It reveals the account password for `saad`.
 
 ![Account password recovered](/images/THM-Creative/system-password.png)
 
@@ -189,10 +189,7 @@ sudo LD_PRELOAD=/tmp/shell.so /usr/bin/ping
 
 ![Privilege escalation and root flag](/images/THM-Creative/root-flag.png)
 
-This was a pretty straightforward challenge, showing how one vulnerability can lead to an exploitation chain.  The challenge also highlighted how miscommunications can be used to an attacker's advantage. Until the next one, keep learning!
-
-
-
+This was a pretty straightforward challenge, showing how one vulnerability can lead to an exploitation chain. The challenge also highlighted how misconfigurations can be used to an attacker's advantage. Until the next one, keep learning!
 
 
 

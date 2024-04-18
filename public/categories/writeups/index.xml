@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 10 Apr 2024 13:03:18 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 17 Apr 2024 22:14:41 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Creative</title>
+      <link>https://scorpiosec.com/posts/2024/04/thm-creative/</link>
+      <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/04/thm-creative/</guid>
+      <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux The challenge begins with a static website that is unexploitable. Through subdomain enumeration, a URL testing application is uncovered, susceptible to SSRF. However, full exploitation is only possible after discovering an internally exposed port. This access allows for file reading on the server, leading to the retrieval of an SSH private key. Yet, this alone isn&amp;rsquo;t enough to establish a foothold. Success is achieved by cracking the obtained SSH key&amp;rsquo;s hash, granting access to the target system.</description>
+    </item>
     <item>
       <title>THM: Clocky</title>
       <link>https://scorpiosec.com/posts/2024/04/thm-clocky/</link>
