@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Sureveillance begins with the discovery of a web application running on port 80, where we identify the software version and use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it. Eventually, by exploiting vulnerabilities in certain scripts, we escalate our privileges and gain access to the root account.
+Sureveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it. Eventually, by exploiting vulnerabilities in certain scripts, we escalate our privileges and gain access to the root account.
 
 Target IP - `10.10.11.245`
 
@@ -51,6 +51,8 @@ We have two open ports 22 (SSH) and 80 (HTTP - nginx), we are also redirected to
 sudo echo "10.10.11.245 surveillance.htb" | sudo tee -a /etc/hosts
 ```
 
+## Enumeration
+
 The website is for a company offering security services but it does not offer any exploitable features.
 
 ![Surveillance website](/images/HTB-Surveillance/surveillance-website.png)
@@ -64,6 +66,8 @@ With `Wappalyzer` we discovered that the website is using `Craft CMS`. Going thr
 Searching for vulnerabilities leads to [CVE-2023-41892](https://www.exploit-db.com/exploits/51918) allowing for unauthenticated remote code execution. A PoC is available [here](https://gist.github.com/gmh5225/8fad5f02c2cf0334249614eb80cbf4ce).
 
 > In my experience the PoC above does not properly work sometimes, if this happens to you use [this one](https://github.com/Faelian/CraftCMS_CVE-2023-41892) instead.
+
+## Initial Foothold
 
 After running the script we get a shell.
 
@@ -126,6 +130,8 @@ With the credentials `matthew:starcraft122490` we log in via SSH and get the use
 
 ![user flag](/images/HTB-Surveillance/user-flag.png)
 
+### Port Forwarding
+
 Checking the services running on the target with `ss -lntp` we find something on port `8080`. 
 
 ![ss command](/images/HTB-Surveillance/ss-cmd.png)
@@ -136,7 +142,7 @@ We use port forwarding to access the service. On our local machine we run
 ssh -f -N -L 5555:127.0.0.1:8080 matthew@surveillance.htb
 ```
 
-> This command to establish a tunnel from the local machine to the remote server `surveillance.htb`
+> The command above establishes a tunnel from the local machine to the remote server `surveillance.htb`.
 
 We then access the service by visiting `localhost:5555`, and find a `ZoneMinder` instance. 
 
@@ -157,6 +163,8 @@ On our listener we get another shell as `zoneminder`.
 
 ![ZoneMinder RCE shell](/images/HTB-Surveillance/ZM-shell.png)
 
+## Privilege Escalation
+
 Running `sudo -l`, we find out that the user `zoneminder` can execute anything matching the pattern `/usr/bin/zm[a-zA-Z]*.pl` with `sudo` privileges without being prompted for a password. Moreover any options can be passed to the commands thanks to the wildcard `*`.
 
 ![sudo -l command](/images/HTB-Surveillance/sudo-l.png)
@@ -172,7 +180,7 @@ echo 'cp /bin/bash /tmp/bash;chmod 4755 /tmp/bash' > /tmp/exploit.sh
 chmod +x /tmp/exploit.sh
 ```
 
-> When the `exploit.sh` script will be executed, it will create a copy of the `bash` binary in `/tmp` and set its permissions to be executable with elevated privileges (setuid)
+> When the `exploit.sh` script will be executed, it will create a copy of the `bash` binary in `/tmp` and set its permissions to be executable with elevated privileges (setuid).
 
 With command substitution we execute our script via the `zmupdate.pl` script.
 

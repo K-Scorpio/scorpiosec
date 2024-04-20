@@ -8,9 +8,9 @@ tags = ['TryHackMe']
 categories = ['Writeups']
 +++
 
-* Platform: TryHackMe
-* Link: [Creative](https://tryhackme.com/r/room/creative)
-* Level: Easy
+* Platforme: TryHackMe
+* Lien: [Creative](https://tryhackme.com/r/room/creative)
+* Niveau: Facile
 * OS: Linux
 ---
 
@@ -24,7 +24,7 @@ Adresse IP cible - `10.10.119.61`
 nmap -sC -sV -oA nmap/Creative 10.10.119.61
 ```
 
-**Results**
+**Résultats**
 
 ```shell
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-04-12 20:52 CDT
