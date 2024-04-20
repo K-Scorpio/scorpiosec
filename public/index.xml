@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 17 Apr 2024 22:14:41 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 19 Apr 2024 15:48:38 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Surveillance</title>
+      <link>https://scorpiosec.com/posts/2024/04/htb-surveillance/</link>
+      <pubDate>Fri, 19 Apr 2024 15:48:38 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/04/htb-surveillance/</guid>
+      <description>Platform: Hack The Box Link: Surveillance Level: Medium OS: Linux Surveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it.</description>
+    </item>
     <item>
       <title>THM: Creative</title>
       <link>https://scorpiosec.com/posts/2024/04/thm-creative/</link>
@@ -71,13 +78,6 @@
       <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
       <guid>https://scorpiosec.com/posts/2024/02/thm-ohsint/</guid>
       <description>Platform: TryHackMe Link: OhSINT Level: Easy Type: OSINT This is an OSINT challenge, OSINT stands for Open-Source Intelligence. It&amp;rsquo;s essentially the collection and analysis of publicly available information to gain valuable insights. Think of it like putting together a puzzle using pieces you find scattered around the internet, libraries, or anywhere information is freely accessible.&#xA;After downloading the Task Files, with the Download Task Files button you get a single image named WindowsXP.</description>
-    </item>
-    <item>
-      <title>From Bootable to Usable: A Guide to Restoring Your USB Drive for Everyday Use</title>
-      <link>https://scorpiosec.com/posts/2024/02/from-bootable-to-usable-a-guide-to-restoring-your-usb-drive-for-everyday-use/</link>
-      <pubDate>Fri, 09 Feb 2024 14:55:37 -0600</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/02/from-bootable-to-usable-a-guide-to-restoring-your-usb-drive-for-everyday-use/</guid>
-      <description>Introduction After turning a USB stick into a bootable USB drive, you may find it unusable for normal purposes, such as transferring data. I initially believed that simply deleting all the files on the USB stick would return it to its regular functionality. After searching online for a guide to revert the USB stick, I couldn&amp;rsquo;t find a satisfactory solution (perhaps my research skills weren&amp;rsquo;t up to par). Therefore, I took it upon myself to create a comprehensive guide.</description>
     </item>
   </channel>
 </rss>

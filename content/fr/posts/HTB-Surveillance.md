@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Sureveillance débute par la découverte d'une application web fonctionnant sur le port 80, où nous identifions la version du logiciel utilisé et utilisons CVE-2023-41892 pour obtenir un accès initial. Grâce à une exploration plus poussée, nous trouvons une sauvegarde de base de données qui révèle le nom d'utilisateur et le hash du mot de passe d'un utilisateur administrateur, que nous utilisons pour entrer dans le système par SSH et découvrir un service interne. En utilisant la redirection de port, nous accédons au service et utilisons CVE-2023-26035 pour l'exploiter. Finalement, en tirant profit des vulnérabilités de certains scripts, nous élevons nos privilèges et obtenons l'accès au compte root.
+Surveillance débute par la découverte d'une application web fonctionnant sur le port 80, où nous identifions la version du logiciel utilisé et utilisons le CVE-2023-41892 pour obtenir un accès initial. Grâce à une exploration plus poussée, nous trouvons une sauvegarde de base de données qui révèle le nom et le hash du mot de passe d'un utilisateur administrateur. Ces informations sont utilisées pour nous connecter au système par SSH, et nous découvrons un service en interne. En utilisant la redirection de port, nous accédons au service et nous tirons parti du CVE-2023-26035 pour l'exploiter. Finalement, en exploitant les vulnérabilités de certains scripts, nous élevons nos privilèges et obtenons l'accès au compte root.
 
 Adresse IP cible - `10.10.11.245`
 
@@ -65,7 +65,7 @@ Avec `Wappalyzer` nous constatons que le site utilise `Craft CMS`. En parcourant
 
 La recherche de vulnérabilités conduit au [CVE-2023-41892](https://www.exploit-db.com/exploits/51918) qui permet l'exécution de code à distance sans authentification. Un PoC est disponible [ici](https://gist.github.com/gmh5225/8fad5f02c2cf0334249614eb80cbf4ce).
 
-> D'après mon expérience, le PoC ci-dessus ne fonctionne pas toujours correctement, si cela vous arrive, utilisez [celui-ci](https://github.com/Faelian/CraftCMS_CVE-2023-41892) instead.
+> D'après mon expérience, le PoC ci-dessus ne fonctionne pas toujours correctement, si cela vous arrive, utilisez [celui-ci](https://github.com/Faelian/CraftCMS_CVE-2023-41892).
 
 ## Accès Initial
 
@@ -100,7 +100,7 @@ stty rows 38 columns 116
 
 ![New shell](/images/HTB-Surveillance/new-shell.png)
 
-Pour l'énumération du système, nous utilisons `linpeas`. Nous notons que `mysql` est en cours d'exécution sur la cible.
+Pour l'énumération du système, nous utilisons `linpeas` et notons que `mysql` est en cours d'exécution sur la cible.
 
 ![MySQL service](/images/HTB-Surveillance/mysql.png)
 
@@ -108,9 +108,9 @@ Pour l'énumération du système, nous utilisons `linpeas`. Nous notons que `mys
 
 Nous trouvons également des identifiants pour MySQL.
 
-> Lorsque nous accédons à MySQL, nous trouvons une base de données `craftdb`, avec une table nommée `users`, mais nous ne pouvons pas déchiffrer les hashs qui s'y trouvent.
-
 ![MySQL credentials](/images/HTB-Surveillance/Craft-db-pwd.png)
+
+> Après s'être connecté à MySQL, nous trouvons une base de données `craftdb` et une table nommée `users`, mais nous ne pouvons pas déchiffrer les hashs qui s'y trouvent.
 
 Une sauvegarde de la base de données se trouve sur la cible dans `/var/www/html/craft/storage/backups/`.
 
@@ -142,7 +142,7 @@ La redirection de port est ensuite utilisée pour accéder au service via un tun
 ssh -f -N -L 5555:127.0.0.1:8080 matthew@surveillance.htb
 ```
 
-> La commande ci-dessus établit un tunnel entre la machine locale et le serveur `surveillance.htb`.
+> La commande ci-dessus établit un tunnel entre notre machine et le serveur `surveillance.htb`.
 
 Nous accédons ensuite au service en visitant `localhost:5555`, et trouvons une instance `ZoneMinder`. 
 
@@ -193,7 +193,7 @@ Après avoir démarré une nouvelle instance de l'interpréteur de commandes bas
 ```
 ![root flag](/images/HTB-Surveillance/root-flag.png)
 
-Ce défi était assez simple et montrait comment la redirection de port peut être utilisé à des fins d'exploitation. Si vous souhaitez approfondir la question du tunneling, Hack The Box propose un excellent module sur le sujet [ici](https://academy.hackthebox.com/module/details/158). Si vous souhaitez expérimenter différents outils de tunneling, vous pouvez consulter [awesome-tunneling(https://github.com/anderspitman/awesome-tunneling).
+Ce défi était assez simple et montrait comment la redirection de port peut être utilisé à des fins d'exploitation. Si vous souhaitez approfondir la question du tunneling, Hack The Box propose un excellent module sur le sujet [ici](https://academy.hackthebox.com/module/details/158). Si vous souhaitez expérimenter différents outils de tunneling, vous pouvez consulter [awesome-tunneling](https://github.com/anderspitman/awesome-tunneling).
 
 
 

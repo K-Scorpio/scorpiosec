@@ -14,7 +14,7 @@
       <link>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</link>
       <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</guid>
-      <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage.</description>
+      <description>Platforme: TryHackMe Lien: Creative Niveau: Facile OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage.</description>
     </item>
     <item>
       <title>THM: Clocky</title>
