@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 19 Apr 2024 15:48:38 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 09 May 2024 21:41:07 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Monitored</title>
+      <link>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</link>
+      <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</guid>
+      <description>Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access.</description>
+    </item>
     <item>
       <title>HTB: Surveillance</title>
       <link>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</link>
@@ -71,13 +78,6 @@
       <pubDate>Sat, 24 Feb 2024 19:37:32 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/02/htb-visual/</guid>
       <description>Platforme: Hack The Box Link: Visual Niveau: Moyen OS: Windows La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.&#xA;Adresse IP cible - 10.10.11.234&#xA;Mon adresse IP - 10.10.14.222&#xA;Balayage (Scanning) sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234 Je commence avec un scan nmap et j&amp;rsquo;obtiens quelques informations:&#xA;Un serveur web Apache Une machine Windows Une application PHP Starting Nmap 7.</description>
-    </item>
-    <item>
-      <title>THM: OhSINT</title>
-      <link>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</link>
-      <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</guid>
-      <description>Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.&#xA;Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP.</description>
     </item>
   </channel>
 </rss>

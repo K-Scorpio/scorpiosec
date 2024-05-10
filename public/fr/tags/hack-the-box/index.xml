@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 19 Apr 2024 15:48:38 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 09 May 2024 21:41:07 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Monitored</title>
+      <link>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</link>
+      <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</guid>
+      <description>Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access.</description>
+    </item>
     <item>
       <title>HTB: Surveillance</title>
       <link>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</link>
