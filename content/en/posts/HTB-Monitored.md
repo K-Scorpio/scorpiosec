@@ -170,7 +170,7 @@ The most likely way to exploitation is SNMP. We can use `snmpwalk` to enumerate 
 snmpwalk -c public -v1 -t 10 10.10.11.248 > snmp.txt
 ```
 
-Going over the output I find some lines referencing a script `/opt/scripts/check_host.sh` with what seems to look like some credentials `svc:XjH7VCehowpR1xZB`.
+Going over the output we find some lines referencing a script `/opt/scripts/check_host.sh` with what seems to look like some credentials `svc:XjH7VCehowpR1xZB`.
 
 ![SNMP potential credentials](/images/HTB-Monitored/creds-snmp.png)
 
@@ -262,11 +262,11 @@ You also have to click `Apply Configuration` for the new command to be listed. N
 
 Let's start a listener on the port specified in our command.
 
-To run the command Go to `Monitoring` > `Hosts` > click on `localhost`.
+To run the command go to `Monitoring` > `Hosts` > click on `localhost`.
 
 ![Configuration - localhost](/images/HTB-Monitored/localhost.png)
 
-Under `Check command`, select your command and click `Run Check Commad` and you will get a connection on your listener.
+Under `Check command`, select your command and click `Run Check Command` and you will get a connection on your listener.
 
 ![Initial Foothold](/images/HTB-Monitored/nagios-shell.png)
 
