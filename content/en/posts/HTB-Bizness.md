@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Bizness is demonstrating a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that contains numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash. Unfortunately, common cracking methods fail to break it. To escalate our privileges to root, we switch tactics. We create a script that encrypts each line of a wordlist and compare the resulting hashes to the one we have. Once we find a match, the root password is revealed.
+Bizness is showcasing a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that containing numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash. Unfortunately, common cracking methods fail to break it. To escalate our privileges to root, we switch tactics. We create a script that encrypts each line of a wordlist and compare the resulting hashes to the one we have. Once we find a match, the root password is revealed.
 
 Target IP - `10.10.11.252`
 
@@ -92,15 +92,15 @@ We then go to `/control/login` and I find a login page.
 
 ## Initial Foothold
 
-We don't have any credentials right now so we research `Apache OFBiz vulnerability` and find `CVE-2019-51467`.
+We don't have any credentials right now so we research `Apache OFBiz vulnerability` and find `CVE-2023-51467`.
 
 ![CVE-2023-51467](/images/HTB-Bizness/CVE-2023-51467.png)
 
-I then find a exploit at this [Github account](https://github.com/jakabakos/Apache-OFBiz-Authentication-Bypass/tree/master). I verify that the target is indeed vulnerable wit the `xdetection` script.
+An exploit is available at this [Github account](https://github.com/jakabakos/Apache-OFBiz-Authentication-Bypass/tree/master). I verify that the target is indeed vulnerable wit the `xdetection` script.
 
 ![CVE-2023-51467 test](/images/HTB-Bizness/ApacheOFBiz-vulnerable.png)
 
-I setup a netcat listener and I run the exploit script.
+We setup a netcat listener and run the exploit script.
 
 ```
 nc -lvnp 4444
@@ -134,7 +134,7 @@ After more digging we find a directory called `derby`.
 
 > Apache Derby is a relational database management system developed by the Apache Software Foundation that can be embedded in Java programs and used for online transaction processing.
 
-A file called `README_DO_NOT_TOUCH_FILES.txt` at `/opt/ofbiz/runtime/data/derby/ofbiz/seg0` confirming that this is indeed the database folder. It contains a lot of files.
+A file called `README_DO_NOT_TOUCH_FILES.txt` at `/opt/ofbiz/runtime/data/derby/ofbiz/seg0` confirmis that this is indeed the database folder.
 
 ![Apache derby database file](/images/HTB-Bizness/derby-db.png)
 
@@ -154,7 +154,7 @@ On our local machine we search through all of the `.dat` files with
 strings dat_files.txt | grep SHA
 ```
 
-A hash is found 
+A hash is found.
 
 ![hash found](/images/HTB-Bizness/hash1.png)
 
@@ -162,11 +162,13 @@ A hash is found
 $SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I
 ```
 
-I am sure that is the admin password because this line found in the same file. But I am unable to crack this one also. Currently we have two hashes but no way to crack them.
+In the same file we find a line with `admin` as the username hinting that this is the admin password hash. But we are unable to crack this one also. Currently we have two hashes but no way to crack them.
 
 ![admin username](/images/HTB-Bizness/login-admin.png)
 
-We can go another route, by encrypt each line of the `rockyou.txt` and comparing it to the last hash I found. The match will reveal the password.
+We can go another route, by encrypting each line of the `rockyou.txt` wordlist and comparing it to the last hash I found. The match will reveal the password.
+
+> You can check the [source code](https://github.com/apache/ofbiz/blob/trunk/framework/base/src/main/java/org/apache/ofbiz/base/crypto/HashCrypt.java) of Apache OFBiz to see how the hashes are generated. 
 
 ```python
 import hashlib
@@ -207,11 +209,11 @@ with open(wordlist, 'r', encoding='latin-1') as password_list:
             break
 ```
 
-After running it we find the password to be `monkeybizness`.
+After running the script we find the password to be `monkeybizness`.
 
 ![Password finder with Python](/images/HTB-Bizness/pwd-find.png)
 
-We use it to login as root on the target machine with `su root`
+We use it to login as root on the target machine with `su root`.
 
 ![root login](/images/HTB-Bizness/root-login.png)
 

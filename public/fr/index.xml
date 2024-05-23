@@ -7,14 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 09 May 2024 21:41:07 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 22 May 2024 21:18:09 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB Bizness</title>
+      <link>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</link>
+      <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</guid>
+      <description>Platforme: Hack The Box Lien: Bizness Niveau: Easy OS: Linux Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l&amp;rsquo;authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe.</description>
+    </item>
     <item>
       <title>HTB: Monitored</title>
       <link>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</link>
       <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</guid>
-      <description>Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access.</description>
+      <description>Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&amp;rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&amp;rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&amp;rsquo;identifiants que nous utilisons pour nous connecter.</description>
     </item>
     <item>
       <title>HTB: Surveillance</title>
@@ -71,13 +78,6 @@
       <pubDate>Sat, 02 Mar 2024 11:10:54 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/03/htb-cozyhosting/</guid>
       <description>Platforme: Hack The Box Lien: CozyHosting Niveau: Easy OS: Linux CozyHosting est une machine Linux de niveau facile comportant un site web d&amp;rsquo;hébergement vulnérable à l&amp;rsquo;injection de commandes.&#xA;L&amp;rsquo;adresse IP cible est 10.10.11.230&#xA;Balayage (Scanning) sudo nmap -sC -sV -oA nmap/CozyHosting 10.10.11.230 Nous avons une machine Linux Une application web sur le port 80 Le service SSH est activé Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 11:21 CST Nmap scan report for cozyhosting.</description>
-    </item>
-    <item>
-      <title>HTB: Visual</title>
-      <link>https://scorpiosec.com/fr/posts/2024/02/htb-visual/</link>
-      <pubDate>Sat, 24 Feb 2024 19:37:32 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/02/htb-visual/</guid>
-      <description>Platforme: Hack The Box Link: Visual Niveau: Moyen OS: Windows La cible est une machine Windows de difficulté moyenne avec une application web acceptant les URLs des répertoires Git soumis par les utilisateurs.&#xA;Adresse IP cible - 10.10.11.234&#xA;Mon adresse IP - 10.10.14.222&#xA;Balayage (Scanning) sudo nmap -sC -sV -oA nmap/Visual 10.10.11.234 Je commence avec un scan nmap et j&amp;rsquo;obtiens quelques informations:&#xA;Un serveur web Apache Une machine Windows Une application PHP Starting Nmap 7.</description>
     </item>
   </channel>
 </rss>

@@ -10,13 +10,13 @@ categories = ['Writeups']
 
 * Platforme: Hack The Box
 * Lien: [Bizness](https://app.hackthebox.com/machines/Bizness)
-* Niveau: Facile
+* Niveau: Easy
 * OS: Linux
 ---
 
-Bizness is demonstrating a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that contains numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash. Unfortunately, common cracking methods fail to break it. To escalate our privileges to root, we switch tactics. We create a script that encrypts each line of a wordlist and compare the resulting hashes to the one we have. Once we find a match, the root password is revealed.
+Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l'authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe. Malheureusement, les méthodes de craquage courantes ne parviennent pas à le forcer. Afin d'élever nos privilèges au niveau de root, nous changeons de tactique. Nous créons un script qui chiffre chaque ligne d'une liste de mots et comparons les hashs obtenus à celui que nous avons. Une fois la correspondance trouvée, le mot de passe de root est révélé.
 
-Addresse IP cible - `10.10.11.252`
+Adresse IP cible - `10.10.11.252`
 
 ## Scanning
 
@@ -57,50 +57,50 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done at Mon Mar  4 14:21:07 2024 -- 1 IP address (1 host up) scanned in 18.37 seconds
 ```
 
-Our scan discovers three open ports:
-* Port 22/tcp: running SSH (Secure Shell) service.
-* Port 80/tcp: running HTTP service with nginx 1.18.0.
-* Port 443/tcp: running SSL/HTTP (HTTPS) service with nginx 1.18.0.
+Notre scan révèle trois ports ouverts :
+* Port 22/tcp : SSH (Secure Shell).
+* Port 80/tcp : HTTP avec nginx 1.18.0.
+* Port 443/tcp : SSL/HTTP (HTTPS) avec nginx 1.18.0.
 
-We also have a redirection to `bizness.htb`, which we add to our `/etc/hosts` file with `sudo echo "10.10.11.252 bizness.htb" | sudo tee -a /etc/hosts`.
+Nous avons aussi une redirection vers `bizness.htb`, que nous ajoutons à notre fichier `/etc/hosts` avec `sudo echo "10.10.11.252 bizness.htb" | sudo tee -a /etc/hosts`.
 
-##  Énumération
+## Enumération
 
-At `https://bizness.htb/` we find a website for a company providing different business services.
+À l'adresse `https://bizness.htb/`, nous trouvons le site web d'une entreprise proposant différents services.
 
 ![Bizness website](/images/HTB-Bizness/bizness-website.png)
 
-At the end of the page we notice that the website is powered by `Apache OFBiz`.
+En fin de page, on remarque que l'application web utilise `Apache OFBiz`.
 
 ![Footer info showing Apache OFBiz used](/images/HTB-Bizness/pwrd-Apache-OFBiz.png)
 
-The website doesn't offer any additional useful information so we move to directory bruteforcing.
+Le site web n'offre pas d'autres informations utiles et nous passons donc au "directory brute forcing".
 
 ![Dirsearch results](/images/HTB-Bizness/dirsearch1.png)
 
 ![More dirsearch results](/images/HTB-Bizness/dirsearch2.png)
 
-We check `/control` and it is showing an error message.
+`/control` mène à une page d'erreur.
 
 ![Apache OFBiz error message](/images/HTB-Bizness/apache-OFBiz.png)
 
-> Apache OFBiz is an open source enterprise resource planning system. It provides a suite of enterprise applications that integrate and automate many of the business processes of an enterprise.
+> Apache OFBiz est un système de planification des ressources d'entreprise open source. Il fournit une gamme d'applications d'entreprise qui intègrent et automatisent de nombreux processus d'affaires d'une entreprise.
 
-We then go to `/control/login` and I find a login page.
+Nous allons ensuite à `/control/login` et trouvons une page de login.
 
 ![Apache OFBiz login page](/images/HTB-Bizness/apacheOFBiz-login.png)
 
-## Accès Initial
+## Accès initial
 
-We don't have any credentials right now so we research `Apache OFBiz vulnerability` and find `CVE-2019-51467`.
+Nous n'avons pas d'informations d'identification à ce stade. En recherchant les vulnérabilités d'Apache OFBiz et nous trouvons le `CVE-20023-51467`.
 
 ![CVE-2023-51467](/images/HTB-Bizness/CVE-2023-51467.png)
 
-I then find a exploit at this [Github account](https://github.com/jakabakos/Apache-OFBiz-Authentication-Bypass/tree/master). I verify that the target is indeed vulnerable wit the `xdetection` script.
+Un exploit est disponible sur ce [compte Github](https://github.com/jakabakos/Apache-OFBiz-Authentication-Bypass/tree/master). Le script `xdetection` permet de vérifier que la cible est effectivement vulnérable.
 
 ![CVE-2023-51467 test](/images/HTB-Bizness/ApacheOFBiz-vulnerable.png)
 
-I setup a netcat listener and I run the exploit script.
+Nous mettons en place un listener netcat et exécutons le script d'exploitation.
 
 ```
 nc -lvnp 4444
@@ -108,11 +108,11 @@ nc -lvnp 4444
 
 ![Apache OFBiz exploitation](/images/HTB-Bizness/exploit-script-ApacheOFBiz.png)
 
-On the listener we get a reverse shell!
+Nous obtenons une connexion sur notre listeneer netcat!
 
 ![Reverse shell](/images/HTB-Bizness/reverse-shell.png)
 
-We can upgrade our shell.
+Les commandes ci-dessous sont utilisées pour améliorer notre shell.
 
 ```
 python3 -c 'import pty;pty.spawn("/bin/bash")'  
@@ -122,39 +122,39 @@ stty raw -echo; fg
 ```
 ![Reverse shell](/images/HTB-Bizness/better-shell.png)
 
-The user flag is found at `/home/ofbiz/user.txt`.
+Le drapeau de l'utilisateur se trouve à `/home/ofbiz/user.txt`.
 
 ![User flag](/images/HTB-Bizness/user-flag.png)
 
 ## Elévation de Privilèges
 
-After exploring the system we find a password hash at `/opt/ofbiz/framework/resources/templates/AdminUserLoginData.xml` but we are unable to crack it.
+Après avoir exploré le système, nous trouvons un hash de mot de passe dans `/opt/ofbiz/framework/resources/templates/AdminUserLoginData.xml` mais nous ne parvenons pas à le craquer.
 
-After more digging we find a directory called `derby`.
+En creusant un peu plus, nous trouvons un dossier appelé `derby`.
 
-> Apache Derby is a relational database management system developed by the Apache Software Foundation that can be embedded in Java programs and used for online transaction processing.
+> Apache Derby est un système de gestion de base de données relationnelle développé par la Apache Software Foundation, qui peut être intégré dans des programmes Java et utilisé pour le traitement des transactions en ligne.
 
-A file called `README_DO_NOT_TOUCH_FILES.txt` at `/opt/ofbiz/runtime/data/derby/ofbiz/seg0` confirming that this is indeed the database folder. It contains a lot of files.
+Un fichier appelé `README_DO_NOT_TOUCH_FILES.txt` dans `/opt/ofbiz/runtime/data/derby/ofbiz/seg0` confirme qu'il s'agit bien du dossier de la base de données.
 
 ![Apache derby database file](/images/HTB-Bizness/derby-db.png)
 
-The `seg0` directory contains a lot of `.dat` files.
+Le répertoire `seg0` contient de nombreux fichiers `.dat`.
 
 ![.dat files list](/images/HTB-Bizness/dat-files.png)
 
-To make searching through the content easier we put all the content into a single `.txt` file that I transfer on my local machine.
+Pour faciliter la recherche de contenu, nous les regroupons dans un seul fichier `.txt` que nous transférons sur notre machine locale.
 
 ```
 cat /opt/ofbiz/runtime/data/derby/ofbiz/seg0/* > dat_files.txt
 ```
 
-On our local machine we search through all of the `.dat` files with 
+Sur notre machine locale, nous recherchons dans tous les fichiers `.dat` avec 
 
 ```
 strings dat_files.txt | grep SHA
 ```
 
-A hash is found 
+Un hachage est trouvé.
 
 ![hash found](/images/HTB-Bizness/hash1.png)
 
@@ -162,11 +162,13 @@ A hash is found
 $SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I
 ```
 
-I am sure that is the admin password because this line found in the same file. But I am unable to crack this one also. Currently we have two hashes but no way to crack them.
+Dans le même fichier, nous trouvons une ligne avec `admin` comme nom d'utilisateur, ce qui suggère qu'il s'agit du hash du mot de passe de l'administrateur. Mais nous ne sommes pas en mesure de craquer le hash. Nous disposons maintenant de deux hashs mais aucun moyen de les craquer.
 
 ![admin username](/images/HTB-Bizness/login-admin.png)
 
-We can go another route, by encrypt each line of the `rockyou.txt` and comparing it to the last hash I found. The match will reveal the password.
+Nous procédons autrement, en chiffrant chaque ligne de la liste de mots `rockyou.txt` et en les comparant au dernier hash trouvé. La correspondance révélera le mot de passe.
+
+> Vous pouvez consulter le [code source](https://github.com/apache/ofbiz/blob/trunk/framework/base/src/main/java/org/apache/ofbiz/base/crypto/HashCrypt.java) d'Apache OFBiz pour voir comment les hashs sont générés. 
 
 ```python
 import hashlib
@@ -207,19 +209,24 @@ with open(wordlist, 'r', encoding='latin-1') as password_list:
             break
 ```
 
-After running it we find the password to be `monkeybizness`.
+Après avoir exécuté le script, nous trouvons le mot de passe `monkeybizness`.
 
 ![Password finder with Python](/images/HTB-Bizness/pwd-find.png)
 
-We use it to login as root on the target machine with `su root`
+Nous l'utilisons pour nous connecter en tant que root avec `su root`.
 
 ![root login](/images/HTB-Bizness/root-login.png)
 
-The root flag is found at `/root/root.txt`.
+Et `root.txt` se trouve dans `/root`.
 
 ![root flag](/images/HTB-Bizness/root-flag.png)
 
-I am not sure I would have made this an "Easy" machine but I enjoyed this challenge a lot because it helped me polish my scripting and problem solving skills. 
+Il est indéniable que la programmation fait de nous de meilleurs hackers, j'encourage tout le monde à apprendre les bases de Python, Bash et Powershell pour être capable d'écrire des scripts qui automatisent et facilitent certaines tâches. J'espère que cet article vous a été utile!
 
+Recommandations:
+
+* [Python for Hackers](https://www.youtube.com/watch?v=XWuP5Yf5ILI&t=1683s&ab_channel=RyanJohn)
+* [Bash for Bug Bounty & Ethical Hacking](https://www.youtube.com/watch?v=YtKCoPvACVY&ab_channel=RyanJohn)
+* [PowerShell for Hackers playlist](https://www.youtube.com/playlist?list=PL3NRVyAumvmppdfMFMUzMug9Cn_MtF6ub)
 
 

