@@ -39,7 +39,7 @@
 <meta itemprop="name" content="HTB Bizness">
 <meta itemprop="description" content="Platforme: Hack The Box Lien: Bizness Niveau: Easy OS: Linux Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l&rsquo;authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe."><meta itemprop="datePublished" content="2024-05-22T21:18:09-05:00" />
 <meta itemprop="dateModified" content="2024-05-22T21:18:09-05:00" />
-<meta itemprop="wordCount" content="975"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Bizness/Bizness.png" />
+<meta itemprop="wordCount" content="974"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Bizness/Bizness.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Bizness/Bizness.png" /><meta name="twitter:title" content="HTB Bizness"/>
@@ -338,7 +338,7 @@ stty raw -echo; fg
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> hashed_password <span style="color:#f92672">==</span> search:
 </span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Password found: </span><span style="color:#e6db74">{</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74">, hash: </span><span style="color:#e6db74">{</span>hashed_password<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
-</span></span></code></pre></div><p>Après avoir exécuté le script, nous trouvons le mot de passe <code>monkeybizness</code>.</p>
+</span></span></code></pre></div><p>Après l&rsquo;exécution du script, nous trouvons le mot de passe <code>monkeybizness</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Bizness/pwd-find.png" alt="Password finder with Python"></p>
 <p>Nous l&rsquo;utilisons pour nous connecter en tant que root avec <code>su root</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Bizness/root-login.png" alt="root login"></p>
@@ -389,7 +389,7 @@ stty raw -echo; fg
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        975 Mots
+        974 Mots
       </p>
 
       <p>

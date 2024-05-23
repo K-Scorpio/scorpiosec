@@ -161,7 +161,7 @@ stty raw -echo; fg
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> hashed_password <span style="color:#f92672">==</span> search:
 </span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Password found: </span><span style="color:#e6db74">{</span>value<span style="color:#e6db74">}</span><span style="color:#e6db74">, hash: </span><span style="color:#e6db74">{</span>hashed_password<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
-</span></span></code></pre></div><p>Après avoir exécuté le script, nous trouvons le mot de passe <code>monkeybizness</code>.</p>
+</span></span></code></pre></div><p>Après l&rsquo;exécution du script, nous trouvons le mot de passe <code>monkeybizness</code>.</p>
 <p><img src="/images/HTB-Bizness/pwd-find.png" alt="Password finder with Python"></p>
 <p>Nous l&rsquo;utilisons pour nous connecter en tant que root avec <code>su root</code>.</p>
 <p><img src="/images/HTB-Bizness/root-login.png" alt="root login"></p>

@@ -209,7 +209,7 @@ with open(wordlist, 'r', encoding='latin-1') as password_list:
             break
 ```
 
-Après avoir exécuté le script, nous trouvons le mot de passe `monkeybizness`.
+Après l'exécution du script, nous trouvons le mot de passe `monkeybizness`.
 
 ![Password finder with Python](/images/HTB-Bizness/pwd-find.png)
 
