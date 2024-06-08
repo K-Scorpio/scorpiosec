@@ -206,6 +206,3 @@ We use `shell` to spawn a `cmd` shell, we are now `nt authority\system` and the 
 A Windows VM is sometimes necessary to run some tools for penetration testing, I highly recommend [CommandoVM](https://github.com/mandiant/commando-vm) as it comes with many tools that are not included in Kali Linux. You can follow [this video](https://www.youtube.com/watch?v=nNMEhm8pvPM&ab_channel=Lsecqt) for an installation tutorial. I hope this write up was useful to you!
 
 
-
-
-

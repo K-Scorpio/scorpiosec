@@ -45,7 +45,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 23.01 seconds
 ```
 
-## Enumeration
+## Enumération
 
 Pour faciliter l'énumération, nous ajoutons la cible à notre fichier `/etc/hosts`.
 
@@ -93,7 +93,7 @@ Sous `Testcase 1.5` nous lisons que nous devons fournir deux paramètres `--appp
 
 Nous avons aussi besoin que notre payload soit encodé en base64, ce que nous obtenons sur [revshells](https://www.revshells.com/) en utilisant l'option `PowerShell #3 (Base64)`.
 
-## Initial Foothold
+## Accès initial
 
 `ysoserial` est conçu pour Windows. Nous utilisons une VM Windows avec Defender désactivé parce qu'il signale l'outil comme malveillant. Après exécution de la commande ci-dessous, nous copions son résultat et nous l'utilisons pour le paramètre `ViewState`.
 
@@ -139,7 +139,7 @@ $cred.GetNetworkCredential() | fl
 
 ![User alaading user](/images/HTB-Pov/alaading-creds.png)
 
-### Lateral Movement
+### Mouvement latéral
 
 Avec les identifiants, nous pouvons maintenant utiliser [RunasCs](https://github.com/antonioCoco/RunasCs) pour obtenir un shell en tant qu'utilisateur `alaading`.
 
@@ -161,7 +161,7 @@ Après avoir exécuté la commande ci-dessous, nous obtenons un shell.
 
 Nous trouvons `user.txt` à l'adresse `C\Users\alaading\desktop\user.txt`.
 
-## Privilege Escalation
+## Elévation de Privilèges
 
 Nous avons vu que cet utilisateur dispose du privilège `SeDebugPrivilege`. Selon [HackTricks](https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens#sedebugprivilege), "ce privilège permet de **debugger d'autres processus**, y compris de lire et d'écrire dans la mémoire. Diverses stratégies d'injection de mémoire, capables d'échapper à la plupart des antivirus et des solutions de prévention des intrusions, peuvent être employées avec ce privilège".
 
@@ -201,5 +201,5 @@ Nous utilisons `shell` pour lancer un shell `cmd`, nous sommes maintenant `nt au
 
 ![Root flag](/images/HTB-Pov/root-flag.png)
 
-Une VM Windows est parfois nécessaire pour exécuter certains outils pour les tests de pénétration, je recommande fortement [CommandoVM](https://github.com/mandiant/commando-vm) car il contient de nombreux outils qui ne sont pas inclus dans Kali Linux. Vous pouvez suivre [cette vidéo](https://www.youtube.com/watch?v=nNMEhm8pvPM&ab_channel=Lsecqt) pour un tutoriel d'installation. J'espère que cet article vous a été utile!
+Une VM Windows est parfois nécessaire pour exécuter certains outils pour les tests de pénétration, je recommande [CommandoVM](https://github.com/mandiant/commando-vm) car il est livré avec de nombreux outils qui ne sont pas inclus dans Kali Linux. Vous pouvez suivre [cette vidéo](https://www.youtube.com/watch?v=nNMEhm8pvPM&ab_channel=Lsecqt) pour un tutoriel d'installation. J'espère que cet article vous a été utile !
 
