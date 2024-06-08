@@ -7,14 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 22 May 2024 21:18:09 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 07 Jun 2024 12:42:21 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HTB Bizness</title>
+      <title>HTB: Pov</title>
+      <link>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</link>
+      <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</guid>
+      <description>Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&amp;rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&amp;rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible.</description>
+    </item>
+    <item>
+      <title>HTB: Bizness</title>
       <link>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</link>
       <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</guid>
-      <description>Platforme: Hack The Box Lien: Bizness Niveau: Easy OS: Linux Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l&amp;rsquo;authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe.</description>
+      <description>Platforme: Hack The Box Lien: Bizness Niveau: Facile OS: Linux Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l&amp;rsquo;authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe.</description>
     </item>
     <item>
       <title>HTB: Monitored</title>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 15 Mar 2024 22:14:37 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/03/htb-manager/</guid>
       <description>Platforme: Hack The Box Lien: Manager Niveau: Moyen OS: Windows Manager présente un serveur Windows 2019 utilisant Active Directory et une base de données MSSQL en plus de quelques services tels que MSRPC et HTTP. La cible est vulnérable au brute forcing RID et à l&amp;rsquo;ESC7 ( Vulnerable Certificate Authority Access Control).&#xA;L&amp;rsquo;adresse IP cible est 10.10.11.236&#xA;Balayage (Scanning) J&amp;rsquo;identifie d&amp;rsquo;abord tous les ports ouverts.&#xA;nmap 10.10.11.236 -p- -T4 -Pn --open Starting Nmap 7.</description>
-    </item>
-    <item>
-      <title>HTB: CozyHosting</title>
-      <link>https://scorpiosec.com/fr/posts/2024/03/htb-cozyhosting/</link>
-      <pubDate>Sat, 02 Mar 2024 11:10:54 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-cozyhosting/</guid>
-      <description>Platforme: Hack The Box Lien: CozyHosting Niveau: Easy OS: Linux CozyHosting est une machine Linux de niveau facile comportant un site web d&amp;rsquo;hébergement vulnérable à l&amp;rsquo;injection de commandes.&#xA;L&amp;rsquo;adresse IP cible est 10.10.11.230&#xA;Balayage (Scanning) sudo nmap -sC -sV -oA nmap/CozyHosting 10.10.11.230 Nous avons une machine Linux Une application web sur le port 80 Le service SSH est activé Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 11:21 CST Nmap scan report for cozyhosting.</description>
     </item>
   </channel>
 </rss>

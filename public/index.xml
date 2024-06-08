@@ -7,10 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 22 May 2024 21:18:09 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 07 Jun 2024 12:42:21 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HTB Bizness</title>
+      <title>HTB: Pov</title>
+      <link>https://scorpiosec.com/posts/2024/06/htb-pov/</link>
+      <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/06/htb-pov/</guid>
+      <description>Platform: Hack The Box Link: Pov Level: Medium OS: Windows Pov starts with a basic static website. After some enumeration, we discover a subdomain leading to an ASP.NET website that turns out to be vulnerable to LFI. Leveraging this vulnerability, we are able to read a critical file exposing sensitive information that we use to exploit the ViewState mechanism of the website, granting us our initial foothold. After exploring the target system, we move laterally to another user after finding and revealing their credentials.</description>
+    </item>
+    <item>
+      <title>HTB: Bizness</title>
       <link>https://scorpiosec.com/posts/2024/05/htb-bizness/</link>
       <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/05/htb-bizness/</guid>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 15 Mar 2024 22:14:37 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/03/htb-manager/</guid>
       <description>Platform: Hack The Box Link: Manager Level: Medium OS: Windows Manager is featuring a Windows server 2019 running Active Directory and a MSSQL database in addtion to various other services. The target is vulnerable to RID brute forcing and ESC7 (Vulnerable Certificate Authority Access Control).&#xA;The target IP address is 10.10.11.236&#xA;Scanning I first check all the open ports.&#xA;nmap 10.10.11.236 -p- -T4 -Pn --open Starting Nmap 7.94SVN ( https://nmap.</description>
-    </item>
-    <item>
-      <title>HTB: CozyHosting</title>
-      <link>https://scorpiosec.com/posts/2024/03/htb-cozyhosting/</link>
-      <pubDate>Sat, 02 Mar 2024 11:10:54 -0600</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/03/htb-cozyhosting/</guid>
-      <description>Platform: Hack The Box Link: CozyHosting Level: Easy OS: Linux CozyHosting is an easy Linux machine featuring a Hosting website vulnerable to command injection.&#xA;The target IP address is 10.10.11.230&#xA;Scanning sudo nmap -sC -sV -oA nmap/CozyHosting 10.10.11.230 We have a Linux machine Running a web application on port 80 The SSH service is enabled on the target Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 11:21 CST Nmap scan report for cozyhosting.</description>
     </item>
   </channel>
 </rss>
