@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 07 Jun 2024 12:42:21 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 12 Jun 2024 21:19:39 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Crafty</title>
+      <link>https://scorpiosec.com/fr/posts/2024/06/htb-crafty/</link>
+      <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/06/htb-crafty/</guid>
+      <description> Platforme: Hack The Box Lien: Crafty Niveau: Facile OS: Windows </description>
+    </item>
     <item>
       <title>HTB: Pov</title>
       <link>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 22 Mar 2024 16:28:33 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/</guid>
       <description>Platforme: TryHackMe Lien: Hack Smarter Security Niveau: Moyen OS: Windows Dans Hack Smarter Security, nous devons exploiter un serveur Windows utilisant quelques services (dont SSH). Après avoir exploité un service peu courant pour accéder au système, nous devons contourner Microsoft Defender afin de prendre le contrôle d&amp;rsquo;un compte privilégié.&#xA;L&amp;rsquo;adresse IP cible est 10.10.189.226.&#xA;Reconnaissance nmap -sC -sV -oA nmap/Hack-Smarter-Security 10.10.189.226 Plusieurs ports sont ouverts :&#xA;FTP sur le port 21, avec une connexion anonyme autorisée SSH sur le port 22, qui peut potentiellement être notre point d&amp;rsquo;accès au système si des identifiants sont trouvés Un serveur Windows IIS sur le port 80 Les résultats du scan ne nous permettent pas de déterminer avec certitude quel service est sur le port 1311 Le serveur Windows WBT fonctionne sur le port 3389, il est utilisé pour les connexions de Windows Remote Desktop et de Remote Assistance Starting Nmap 7.</description>
-    </item>
-    <item>
-      <title>HTB: Manager</title>
-      <link>https://scorpiosec.com/fr/posts/2024/03/htb-manager/</link>
-      <pubDate>Fri, 15 Mar 2024 22:14:37 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-manager/</guid>
-      <description>Platforme: Hack The Box Lien: Manager Niveau: Moyen OS: Windows Manager présente un serveur Windows 2019 utilisant Active Directory et une base de données MSSQL en plus de quelques services tels que MSRPC et HTTP. La cible est vulnérable au brute forcing RID et à l&amp;rsquo;ESC7 ( Vulnerable Certificate Authority Access Control).&#xA;L&amp;rsquo;adresse IP cible est 10.10.11.236&#xA;Balayage (Scanning) J&amp;rsquo;identifie d&amp;rsquo;abord tous les ports ouverts.&#xA;nmap 10.10.11.236 -p- -T4 -Pn --open Starting Nmap 7.</description>
     </item>
   </channel>
 </rss>

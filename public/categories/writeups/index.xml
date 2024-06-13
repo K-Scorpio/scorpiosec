@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 07 Jun 2024 12:42:21 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 12 Jun 2024 21:19:39 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Crafty</title>
+      <link>https://scorpiosec.com/posts/2024/06/htb-crafty/</link>
+      <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/06/htb-crafty/</guid>
+      <description>Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Target IP - 10.10.11.249&#xA;Scanning sudo nmap -sC -sV -p- -T5 -oA nmap/Crafty 10.10.11.249 Results&#xA;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 13:56 CST Nmap scan report for crafty.htb (10.10.11.249) Host is up (0.054s latency). Not shown: 65533 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 80/tcp open http Microsoft IIS httpd 10.0 |_http-title: Crafty - Official Website |_http-server-header: Microsoft-IIS/10.</description>
+    </item>
     <item>
       <title>HTB: Pov</title>
       <link>https://scorpiosec.com/posts/2024/06/htb-pov/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 22 Mar 2024 16:28:33 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/03/thm-hack-smarter-security/</guid>
       <description>Platform: TryHackMe Link: Hack Smarter Security Level: Medium OS: Windows In this challenge we exploit a Windows Server machine feature SSH (which is not usual). After exploiting an uncommon service we find ourselves having to bypass Windows Defender in order to achieve administrative privileges.&#xA;The target IP address is 10.10.189.226.&#xA;Recon nmap -sC -sV -oA nmap/Hack-Smarter-Security 10.10.189.226 Several ports are found to be opened:&#xA;FTP is running on port 21, with anonymous login allowed SSH on port 22, which can potentially be our way into the system if credentials are found A Windows IIS server is running on port 80 From the nmap results it is not clear which service is running on port 1311 Windows WBT server is running on port 3389, this is used for Windows Remote Desktop and Remote Assistance connections Starting Nmap 7.</description>
-    </item>
-    <item>
-      <title>HTB: Manager</title>
-      <link>https://scorpiosec.com/posts/2024/03/htb-manager/</link>
-      <pubDate>Fri, 15 Mar 2024 22:14:37 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/03/htb-manager/</guid>
-      <description>Platform: Hack The Box Link: Manager Level: Medium OS: Windows Manager is featuring a Windows server 2019 running Active Directory and a MSSQL database in addtion to various other services. The target is vulnerable to RID brute forcing and ESC7 (Vulnerable Certificate Authority Access Control).&#xA;The target IP address is 10.10.11.236&#xA;Scanning I first check all the open ports.&#xA;nmap 10.10.11.236 -p- -T4 -Pn --open Starting Nmap 7.94SVN ( https://nmap.</description>
     </item>
   </channel>
 </rss>
