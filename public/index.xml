@@ -14,7 +14,7 @@
       <link>https://scorpiosec.com/posts/2024/06/htb-crafty/</link>
       <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/06/htb-crafty/</guid>
-      <description>Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Target IP - 10.10.11.249&#xA;Scanning sudo nmap -sC -sV -p- -T5 -oA nmap/Crafty 10.10.11.249 Results&#xA;Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 13:56 CST Nmap scan report for crafty.htb (10.10.11.249) Host is up (0.054s latency). Not shown: 65533 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 80/tcp open http Microsoft IIS httpd 10.0 |_http-title: Crafty - Official Website |_http-server-header: Microsoft-IIS/10.</description>
+      <description>Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.&#xA;Target IP - 10.10.11.249&#xA;Scanning sudo nmap -sC -sV -p- -oA nmap/Crafty 10.</description>
     </item>
     <item>
       <title>HTB: Pov</title>

