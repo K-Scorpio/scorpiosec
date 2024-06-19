@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 12 Jun 2024 21:19:39 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 19 Jun 2024 14:37:09 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: CyberLens</title>
+      <link>https://scorpiosec.com/posts/2024/06/thm-cyberlens/</link>
+      <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/06/thm-cyberlens/</guid>
+      <description>Platform: TryHackMe Link: CyberLens Level: Easy OS: Windows CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to CVE-2018-1335 is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse AlwaysInstallElevated to obtain a system shell.&#xA;Scanning We will use a Bash script to automate the scanning process.</description>
+    </item>
     <item>
       <title>HTB: Crafty</title>
       <link>https://scorpiosec.com/posts/2024/06/htb-crafty/</link>
@@ -71,13 +78,6 @@
       <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/03/htb-analytics/</guid>
       <description>Platform: Hack The Box Link: Analytics Level: Easy OS: Linux Analytics features a Metabase instance, which is an open-source business intelligence software. The target is vulnerable to CVE-2023-38646 allowing command execution while unauthenticated. After enumerating the environment varialbles, SSH credentials are discovered and the root shell is gained via a kernel exploit.&#xA;Target IP Address - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.10.11.233 Results&#xA;Starting Nmap 7.94SVN ( https://nmap.</description>
-    </item>
-    <item>
-      <title>THM: Hack Smarter Security</title>
-      <link>https://scorpiosec.com/posts/2024/03/thm-hack-smarter-security/</link>
-      <pubDate>Fri, 22 Mar 2024 16:28:33 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/03/thm-hack-smarter-security/</guid>
-      <description>Platform: TryHackMe Link: Hack Smarter Security Level: Medium OS: Windows In this challenge we exploit a Windows Server machine feature SSH (which is not usual). After exploiting an uncommon service we find ourselves having to bypass Windows Defender in order to achieve administrative privileges.&#xA;The target IP address is 10.10.189.226.&#xA;Recon nmap -sC -sV -oA nmap/Hack-Smarter-Security 10.10.189.226 Several ports are found to be opened:&#xA;FTP is running on port 21, with anonymous login allowed SSH on port 22, which can potentially be our way into the system if credentials are found A Windows IIS server is running on port 80 From the nmap results it is not clear which service is running on port 1311 Windows WBT server is running on port 3389, this is used for Windows Remote Desktop and Remote Assistance connections Starting Nmap 7.</description>
     </item>
   </channel>
 </rss>

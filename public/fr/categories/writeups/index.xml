@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 12 Jun 2024 21:19:39 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 19 Jun 2024 14:37:09 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: CyberLens</title>
+      <link>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</link>
+      <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</guid>
+      <description>Platforme: TryHackMe Lien: CyberLens Niveau: Facile OS: Windows CyberLens présente un site web avec une fonction d&amp;rsquo;extraction de métadonnées. Après notre énumération, nous découvrons que cette fonction utilise Apache Tika, une version obsolète du logiciel vulnérable au CVE-2018-1335 est installée. Nous obtenons notre accès initial en exploitant cette vulnérabilité. Pour l&amp;rsquo;escalade des privilèges, nous abusons de AlwaysInstallElevated pour obtenir un shell système.&#xA;Balayage Nous utiliserons un script Bash pour automatiser le balayage.</description>
+    </item>
     <item>
       <title>HTB: Crafty</title>
       <link>https://scorpiosec.com/fr/posts/2024/06/htb-crafty/</link>
@@ -71,13 +78,6 @@
       <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</guid>
       <description>Platforme: Hack The Box Lien: Analytics Niveau: Facile OS: Linux Analytics comporte une instance Metabase, qui est un logiciel open-source de &amp;ldquo;business intelligence&amp;rdquo;. La cible est vulnérable au CVE-2023-38646 qui permet l&amp;rsquo;exécution de commandes en l&amp;rsquo;absence d&amp;rsquo;authentification. Après avoir énuméré les variables de l&amp;rsquo;environnement, des identifiants SSH sont découverts et le shell root est obtenu via un &amp;ldquo;kernel exploit&amp;rdquo;.&#xA;L&amp;rsquo;adresse IP cible - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.</description>
-    </item>
-    <item>
-      <title>THM: Hack Smarter Security</title>
-      <link>https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/</link>
-      <pubDate>Fri, 22 Mar 2024 16:28:33 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/</guid>
-      <description>Platforme: TryHackMe Lien: Hack Smarter Security Niveau: Moyen OS: Windows Dans Hack Smarter Security, nous devons exploiter un serveur Windows utilisant quelques services (dont SSH). Après avoir exploité un service peu courant pour accéder au système, nous devons contourner Microsoft Defender afin de prendre le contrôle d&amp;rsquo;un compte privilégié.&#xA;L&amp;rsquo;adresse IP cible est 10.10.189.226.&#xA;Reconnaissance nmap -sC -sV -oA nmap/Hack-Smarter-Security 10.10.189.226 Plusieurs ports sont ouverts :&#xA;FTP sur le port 21, avec une connexion anonyme autorisée SSH sur le port 22, qui peut potentiellement être notre point d&amp;rsquo;accès au système si des identifiants sont trouvés Un serveur Windows IIS sur le port 80 Les résultats du scan ne nous permettent pas de déterminer avec certitude quel service est sur le port 1311 Le serveur Windows WBT fonctionne sur le port 3389, il est utilisé pour les connexions de Windows Remote Desktop et de Remote Assistance Starting Nmap 7.</description>
     </item>
   </channel>
 </rss>
