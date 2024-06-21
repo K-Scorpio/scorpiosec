@@ -286,7 +286,7 @@ sudo neo4j start
 bloodhound --no-sandbox
 ```
 
-When Bloodhound launches use the `Upload Data` button on the right. 
+When Bloodhound launches, we use the `Upload Data` button on the right. 
 
 ![Upload data in Bloodhound](/images/HTB-Office/upload-data-bloodhound.png)
 
@@ -357,7 +357,7 @@ A few minutes after placing `shell.exe` at the correct location and uploading ou
 
 ### Third Lateral Movement
 
-We use `winpeas` to enumerate the target system and find some DPAPI credentials.
+We use `winpeas` to enumerate the target system and we find some DPAPI credentials files.
 
 > DPAPI, which stands for Data Protection API, is a set of cryptographic services built into Windows operating systems. It provides developers with a straightforward way to protect sensitive data, such as passwords, encryption keys, and other confidential information, by encrypting and decrypting data using strong cryptographic algorithms.
 
@@ -454,7 +454,7 @@ Get-NetGPO | Where-Object { $_.DisplayName -eq "Default Domain Controllers Polic
 
 ![Default Domain Controller Policy permissions](/images/HTB-Office/GPO-Permissions.png)
 
-We notice that the SID matches the GPO Managers group's SID. Moreover `AceType` and `AceQualifier` are both set to `AccessAllowed`. This data confirms that the members of the `GPO Managers` group can exercise all the permissions they have on the `Default Domain Controllers Policy`.
+We notice that the listed SID matches the GPO Managers group's SID. Moreover `AceType` and `AceQualifier` are both set to `AccessAllowed`. This data confirms that the members of the `GPO Managers` group can exercise all the permissions they have on the `Default Domain Controllers Policy`.
 
 We exploit this misconfiguration and add `hhogan` to the administrators group with a tool call [SharpGPOAbuse](https://github.com/byronkg/SharpGPOAbuse/releases/tag/1.0).
 
@@ -488,7 +488,7 @@ Learning Active Directory is a non-negotiable for aspiring security professional
 * TryHackMe gives you access to two AD networks for free as long as you have a 7 days streak minimum, find them [here](https://tryhackme.com/r/hacktivities) in the `Networks` section.
 * They also have some free rooms pertaining to Active Directory such as [Active Directory Basics](https://tryhackme.com/r/room/winadbasics), [Attacktive Directory](https://tryhackme.com/r/room/attacktivedirectory), [Ra](https://tryhackme.com/r/room/ra), [Reset](https://tryhackme.com/r/room/resetui), and [Enterprise](https://tryhackme.com/r/room/enterprise).
 * HackTheBox Academy has multiple modules on Active Directory, go to [this](https://academy.hackthebox.com/modules) page and search for "active directory" to find them all. 
-* If you are a book lover, I highly recommand [Pentesting Active Directory and Windows-based Infrastructure](https://www.amazon.com/Pentesting-Active-Directory-Windows-based-Infrastructure/dp/1804611360#customerReviews).
+* If you are a book lover, I highly recommand [Pentesting Active Directory and Windows-based Infrastructure](https://www.amazon.com/Pentesting-Active-Directory-Windows-based-Infrastructure/dp/1804611360).
 
 
 
