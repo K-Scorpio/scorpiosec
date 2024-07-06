@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 19 Jun 2024 14:37:09 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 04 Jul 2024 14:05:10 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Perfection</title>
+      <link>https://scorpiosec.com/fr/posts/2024/07/htb-perfection/</link>
+      <pubDate>Thu, 04 Jul 2024 14:05:10 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/07/htb-perfection/</guid>
+      <description>Platforme: Hack The Box Lien: Perfection Niveau: Facile OS: Linux Ce challenge débute avec un site web simple. Grâce à l&amp;rsquo;énumération, nous identifions une vulnérabilité à l&amp;rsquo;injection de modèle côté serveur (SSTI), que nous exploitons pour obtenir notre accès initial. Nous découvrons ensuite un fichier de base de données contenant des hachages de mots de passe, mais nos premières tentatives pour les craquer sont infructueuses. Après avoir lu les courriels des utilisateurs, nous apprenons que les mots de passe suivent un format spécifique.</description>
+    </item>
+    <item>
+      <title>HTB: Office</title>
+      <link>https://scorpiosec.com/fr/posts/2024/06/htb-office/</link>
+      <pubDate>Wed, 19 Jun 2024 23:28:44 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/06/htb-office/</guid>
+      <description>Platforme: Hack The Box Lien: Office Niveau: Difficile OS: Windows Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au CVE-2023-23752. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&amp;rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&amp;rsquo;accéder à un dossier partagé contenant un fichier pcap.</description>
+    </item>
     <item>
       <title>THM: CyberLens</title>
       <link>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</link>
@@ -64,20 +78,6 @@
       <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</guid>
       <description>Platforme: TryHackMe Lien: Clocky Niveau: Moyen OS: Linux Pour ce défi, notre objectif est de trouver six drapeaux. Notre première étape consiste à examiner le fichier robots.txt qui contient quelques extensions de fichiers. En utilisant ces extensions de fichiers, nous obtenons une archive et en l&amp;rsquo;extrayant, nous obtenons le code source d&amp;rsquo;une application. Après inspection du code, nous identifions un moyen de manipuler le mécanisme de réinitialisation de mot de passe de l&amp;rsquo;application, ce qui nous permet d&amp;rsquo;accéder au tableau de bord administratif.</description>
-    </item>
-    <item>
-      <title>HTB: Codify</title>
-      <link>https://scorpiosec.com/fr/posts/2024/04/htb-codify/</link>
-      <pubDate>Fri, 05 Apr 2024 16:50:10 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/04/htb-codify/</guid>
-      <description>Platforme: Hack The Box Lien: Codify Niveau: Facile OS: Linux Codify démarre avec une application web offrant un environnement sandbox pour tester son code Node.js. Elle utilise vm2 et emploie une liste blanche de modules. Cependant, il existe une vulnérabilité (CVE-2023-3214 ) avec vm2 qui peut être exploitée pour sortir du sandbox et accéder au système cible. Un mouvement latéral permet ensuite d&amp;rsquo;accéder à un autre compte utilisateur et d&amp;rsquo; obtenir le drapeau user.</description>
-    </item>
-    <item>
-      <title>HTB: Analytics</title>
-      <link>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</link>
-      <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</guid>
-      <description>Platforme: Hack The Box Lien: Analytics Niveau: Facile OS: Linux Analytics comporte une instance Metabase, qui est un logiciel open-source de &amp;ldquo;business intelligence&amp;rdquo;. La cible est vulnérable au CVE-2023-38646 qui permet l&amp;rsquo;exécution de commandes en l&amp;rsquo;absence d&amp;rsquo;authentification. Après avoir énuméré les variables de l&amp;rsquo;environnement, des identifiants SSH sont découverts et le shell root est obtenu via un &amp;ldquo;kernel exploit&amp;rdquo;.&#xA;L&amp;rsquo;adresse IP cible - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.</description>
     </item>
   </channel>
 </rss>

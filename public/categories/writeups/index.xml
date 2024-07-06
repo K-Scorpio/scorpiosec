@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 19 Jun 2024 14:37:09 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 04 Jul 2024 14:05:10 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Perfection</title>
+      <link>https://scorpiosec.com/posts/2024/07/htb-perfection/</link>
+      <pubDate>Thu, 04 Jul 2024 14:05:10 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/07/htb-perfection/</guid>
+      <description>Platform: Hack The Box Link: Perfection Level: Easy OS: Linux Perfection begins with a straightforward website. Through enumeration, we identify a vulnerability to Server-Side Template Injection (SSTI), which we exploit to gain an initial foothold. We then discover a database file containing password hashes, but our initial attempts to crack them are unsuccessful. After reading the user&amp;rsquo;s emails, we learn that the passwords follow a specific format. Using this information, we employ a mask attack with Hashcat and successfully recover the password.</description>
+    </item>
+    <item>
+      <title>HTB: Office</title>
+      <link>https://scorpiosec.com/posts/2024/06/htb-office/</link>
+      <pubDate>Wed, 19 Jun 2024 23:28:44 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/06/htb-office/</guid>
+      <description>Platform: Hack The Box Link: Office Level: Hard OS: Windows The Office box is a Windows Server 2022 running as a domain controller. The website hosted on the web server uses an outdated version of Joomla, which is vulnerable to CVE-2023-23752. By exploiting this vulnerability, we leak the MySQL database password. After some enumeration, we find a valid username for the password, granting us access to a shared folder containing a pcap file.</description>
+    </item>
     <item>
       <title>THM: CyberLens</title>
       <link>https://scorpiosec.com/posts/2024/06/thm-cyberlens/</link>
@@ -64,20 +78,6 @@
       <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/04/thm-clocky/</guid>
       <description>Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&amp;rsquo;s password reset mechanism, granting us access to the administrative dashboard.</description>
-    </item>
-    <item>
-      <title>HTB: Codify</title>
-      <link>https://scorpiosec.com/posts/2024/04/htb-codify/</link>
-      <pubDate>Fri, 05 Apr 2024 16:50:10 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/04/htb-codify/</guid>
-      <description>Platform: Hack The Box Link: Codify Level: Easy OS: Linux Codify starts with a web application that offers a sandbox environment for testing Node.js code. It utilizes the vm2 library and employs a module whitelist for security. However, there is a vulnerability (CVE-2023-3214 ) in vm2 that can be exploited to break out of the sandbox and access the target system. This is followed by lateral movement to access another user account and obtain the user flag.</description>
-    </item>
-    <item>
-      <title>HTB: Analytics</title>
-      <link>https://scorpiosec.com/posts/2024/03/htb-analytics/</link>
-      <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/03/htb-analytics/</guid>
-      <description>Platform: Hack The Box Link: Analytics Level: Easy OS: Linux Analytics features a Metabase instance, which is an open-source business intelligence software. The target is vulnerable to CVE-2023-38646 allowing command execution while unauthenticated. After enumerating the environment varialbles, SSH credentials are discovered and the root shell is gained via a kernel exploit.&#xA;Target IP Address - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.10.11.233 Results&#xA;Starting Nmap 7.94SVN ( https://nmap.</description>
     </item>
   </channel>
 </rss>

