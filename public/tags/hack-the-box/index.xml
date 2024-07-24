@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 04 Jul 2024 14:05:10 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jul 2024 22:17:23 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Headless</title>
+      <link>https://scorpiosec.com/posts/2024/07/htb-headless/</link>
+      <pubDate>Fri, 19 Jul 2024 22:17:23 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/07/htb-headless/</guid>
+      <description>Platform: Hack The Box Link: Headless Level: Easy OS: Linux Headless starts with a static website. Through enumeration, we identify a contact form vulnerable to Cross-Site Scripting (XSS), though basic payloads prove ineffective. By capturing the admin&amp;rsquo;s cookie value, we gain access to the dashboard page and establish our foothold through command injection. For privilege escalation, we exploit a custom script to take control of the root account.&#xA;Target IP address - 10.</description>
+    </item>
     <item>
       <title>HTB: Perfection</title>
       <link>https://scorpiosec.com/posts/2024/07/htb-perfection/</link>
@@ -71,13 +78,6 @@
       <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/03/htb-analytics/</guid>
       <description>Platform: Hack The Box Link: Analytics Level: Easy OS: Linux Analytics features a Metabase instance, which is an open-source business intelligence software. The target is vulnerable to CVE-2023-38646 allowing command execution while unauthenticated. After enumerating the environment varialbles, SSH credentials are discovered and the root shell is gained via a kernel exploit.&#xA;Target IP Address - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.10.11.233 Results&#xA;Starting Nmap 7.94SVN ( https://nmap.</description>
-    </item>
-    <item>
-      <title>HTB: Manager</title>
-      <link>https://scorpiosec.com/posts/2024/03/htb-manager/</link>
-      <pubDate>Fri, 15 Mar 2024 22:14:37 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/03/htb-manager/</guid>
-      <description>Platform: Hack The Box Link: Manager Level: Medium OS: Windows Manager is featuring a Windows server 2019 running Active Directory and a MSSQL database in addtion to various other services. The target is vulnerable to RID brute forcing and ESC7 (Vulnerable Certificate Authority Access Control).&#xA;The target IP address is 10.10.11.236&#xA;Scanning I first check all the open ports.&#xA;nmap 10.10.11.236 -p- -T4 -Pn --open Starting Nmap 7.94SVN ( https://nmap.</description>
     </item>
   </channel>
 </rss>

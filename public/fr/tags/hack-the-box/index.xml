@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 04 Jul 2024 14:05:10 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 19 Jul 2024 22:17:23 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Headless</title>
+      <link>https://scorpiosec.com/fr/posts/2024/07/htb-headless/</link>
+      <pubDate>Fri, 19 Jul 2024 22:17:23 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/07/htb-headless/</guid>
+      <description>Platforme: Hack The Box Lien: Headless Niveau: Facile OS: Linux Headless débute avec un site web statique. L&amp;rsquo;énumération nous permet d&amp;rsquo;identifier un formulaire de contact vulnérable au Cross-Site Scripting (XSS), mais les payloads standards s&amp;rsquo;avèrent inefficaces. En capturant la valeur du cookie de l&amp;rsquo;administrateur, nous accédons à la page du tableau de bord, puis au système cible grâce à l&amp;rsquo;injection de commandes. Pour l&amp;rsquo;escalade des privilèges, nous exploitons un script pour obtenir le contrôle du compte root.</description>
+    </item>
     <item>
       <title>HTB: Perfection</title>
       <link>https://scorpiosec.com/fr/posts/2024/07/htb-perfection/</link>
@@ -71,13 +78,6 @@
       <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</guid>
       <description>Platforme: Hack The Box Lien: Analytics Niveau: Facile OS: Linux Analytics comporte une instance Metabase, qui est un logiciel open-source de &amp;ldquo;business intelligence&amp;rdquo;. La cible est vulnérable au CVE-2023-38646 qui permet l&amp;rsquo;exécution de commandes en l&amp;rsquo;absence d&amp;rsquo;authentification. Après avoir énuméré les variables de l&amp;rsquo;environnement, des identifiants SSH sont découverts et le shell root est obtenu via un &amp;ldquo;kernel exploit&amp;rdquo;.&#xA;L&amp;rsquo;adresse IP cible - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.</description>
-    </item>
-    <item>
-      <title>HTB: Manager</title>
-      <link>https://scorpiosec.com/fr/posts/2024/03/htb-manager/</link>
-      <pubDate>Fri, 15 Mar 2024 22:14:37 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-manager/</guid>
-      <description>Platforme: Hack The Box Lien: Manager Niveau: Moyen OS: Windows Manager présente un serveur Windows 2019 utilisant Active Directory et une base de données MSSQL en plus de quelques services tels que MSRPC et HTTP. La cible est vulnérable au brute forcing RID et à l&amp;rsquo;ESC7 ( Vulnerable Certificate Authority Access Control).&#xA;L&amp;rsquo;adresse IP cible est 10.10.11.236&#xA;Balayage (Scanning) J&amp;rsquo;identifie d&amp;rsquo;abord tous les ports ouverts.&#xA;nmap 10.10.11.236 -p- -T4 -Pn --open Starting Nmap 7.</description>
     </item>
   </channel>
 </rss>
