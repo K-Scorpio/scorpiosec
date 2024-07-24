@@ -133,7 +133,7 @@ Visiting `http://10.10.11.8:5000/` we find to web page.
 
 ![Headless webiste](/images/HTB-Headless/website-build.png)
 
-Clicking on the only button present brings a contact form with the url `http://10.10.11.8:5000/support` 
+Clicking on the only button present brings a contact form with the url `http://10.10.11.8:5000/support`. 
 
 ![Contact Support form](/images/HTB-Headless/contact-form.png)
 
@@ -276,6 +276,8 @@ The user `dvir` is allowed to run the command `/usr/bin/syscheck` with sudo priv
 After running `sudo /usr/bin/syscheck` and `/bin/bash -p` we become root and the flag is found at `/root/root.txt`.
 
 ![root flag](/images/HTB-Headless/root-flag.png)
+
+## Closing Words
 
 This box was fairly easy but required a good understanding of Linux and Bash. You can learn about both on HackTheBox Academy with:
 
