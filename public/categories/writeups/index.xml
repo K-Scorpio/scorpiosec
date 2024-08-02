@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 19 Jul 2024 22:17:23 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 01 Aug 2024 17:57:29 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: IClean</title>
+      <link>https://scorpiosec.com/posts/2024/08/htb-iclean/</link>
+      <pubDate>Thu, 01 Aug 2024 17:57:29 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/08/htb-iclean/</guid>
+      <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux The IClean challenge begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection, which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes.</description>
+    </item>
+    <item>
+      <title>HTB: WifineticTwo</title>
+      <link>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</link>
+      <pubDate>Fri, 26 Jul 2024 15:04:48 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</guid>
+      <description>Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.</description>
+    </item>
     <item>
       <title>HTB: Headless</title>
       <link>https://scorpiosec.com/posts/2024/07/htb-headless/</link>
@@ -64,20 +78,6 @@
       <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/05/htb-monitored/</guid>
       <description>Platform: Hack The Box Link: Monitored Level: Medium OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access.</description>
-    </item>
-    <item>
-      <title>HTB: Surveillance</title>
-      <link>https://scorpiosec.com/posts/2024/04/htb-surveillance/</link>
-      <pubDate>Fri, 19 Apr 2024 15:48:38 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/04/htb-surveillance/</guid>
-      <description>Platform: Hack The Box Link: Surveillance Level: Medium OS: Linux Surveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it.</description>
-    </item>
-    <item>
-      <title>THM: Creative</title>
-      <link>https://scorpiosec.com/posts/2024/04/thm-creative/</link>
-      <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/04/thm-creative/</guid>
-      <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux The challenge begins with a static website that is unexploitable. Through subdomain enumeration, a URL testing application is uncovered, susceptible to SSRF. However, full exploitation is only possible after discovering an internally exposed port. This access allows for file reading on the server, leading to the retrieval of an SSH private key. Yet, this alone isn&amp;rsquo;t enough to establish a foothold. Success is achieved by cracking the obtained SSH key&amp;rsquo;s hash, granting access to the target system.</description>
     </item>
   </channel>
 </rss>

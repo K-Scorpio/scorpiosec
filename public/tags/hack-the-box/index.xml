@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 19 Jul 2024 22:17:23 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 01 Aug 2024 17:57:29 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: IClean</title>
+      <link>https://scorpiosec.com/posts/2024/08/htb-iclean/</link>
+      <pubDate>Thu, 01 Aug 2024 17:57:29 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/08/htb-iclean/</guid>
+      <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux The IClean challenge begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection, which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes.</description>
+    </item>
+    <item>
+      <title>HTB: WifineticTwo</title>
+      <link>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</link>
+      <pubDate>Fri, 26 Jul 2024 15:04:48 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</guid>
+      <description>Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.</description>
+    </item>
     <item>
       <title>HTB: Headless</title>
       <link>https://scorpiosec.com/posts/2024/07/htb-headless/</link>
@@ -64,20 +78,6 @@
       <pubDate>Fri, 19 Apr 2024 15:48:38 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/04/htb-surveillance/</guid>
       <description>Platform: Hack The Box Link: Surveillance Level: Medium OS: Linux Surveillance begins with the discovery of a web application running on port 80, after identifying the software version, we use CVE-2023-41892 to gain initial access. Through further exploration, we find a database backup leaking the user name and password hash for an admin user, which we utilize to SSH into the system and uncover an internal service. Leveraging SSH tunneling, we access the service and make use of CVE-2023-26035 to exploit it.</description>
-    </item>
-    <item>
-      <title>HTB: Codify</title>
-      <link>https://scorpiosec.com/posts/2024/04/htb-codify/</link>
-      <pubDate>Fri, 05 Apr 2024 16:50:10 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/04/htb-codify/</guid>
-      <description>Platform: Hack The Box Link: Codify Level: Easy OS: Linux Codify starts with a web application that offers a sandbox environment for testing Node.js code. It utilizes the vm2 library and employs a module whitelist for security. However, there is a vulnerability (CVE-2023-3214 ) in vm2 that can be exploited to break out of the sandbox and access the target system. This is followed by lateral movement to access another user account and obtain the user flag.</description>
-    </item>
-    <item>
-      <title>HTB: Analytics</title>
-      <link>https://scorpiosec.com/posts/2024/03/htb-analytics/</link>
-      <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/03/htb-analytics/</guid>
-      <description>Platform: Hack The Box Link: Analytics Level: Easy OS: Linux Analytics features a Metabase instance, which is an open-source business intelligence software. The target is vulnerable to CVE-2023-38646 allowing command execution while unauthenticated. After enumerating the environment varialbles, SSH credentials are discovered and the root shell is gained via a kernel exploit.&#xA;Target IP Address - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.10.11.233 Results&#xA;Starting Nmap 7.94SVN ( https://nmap.</description>
     </item>
   </channel>
 </rss>
