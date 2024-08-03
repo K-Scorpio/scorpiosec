@@ -14,7 +14,7 @@
       <link>https://scorpiosec.com/posts/2024/08/htb-iclean/</link>
       <pubDate>Thu, 01 Aug 2024 17:57:29 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/08/htb-iclean/</guid>
-      <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux The IClean challenge begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection, which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes.</description>
+      <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux IClean begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection (SSTI), which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes. By cracking one of these hashes, we gain SSH access and retrieve the user flag.</description>
     </item>
     <item>
       <title>HTB: WifineticTwo</title>
