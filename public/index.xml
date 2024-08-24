@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 01 Aug 2024 17:57:29 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 22 Aug 2024 19:24:15 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Runner</title>
+      <link>https://scorpiosec.com/posts/2024/08/htb-runner/</link>
+      <pubDate>Thu, 22 Aug 2024 19:24:15 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/08/htb-runner/</guid>
+      <description>Platform: Hack The Box Link: Runner Level: Medium OS: Linux Runner starts with a basic website offering CI/CD solutions. Through subdomain enumeration, we uncover a vulnerable TeamCity instance (CVE-2023-42793), granting us access. A backup archive downloaded from this instance reveals a private SSH key and password hashes. Using the SSH key, we gain an initial foothold and retrieve the user flag. Further exploration uncovers another subdomain hosting a Portainer.io instance, which we access using the previously recovered credentials.</description>
+    </item>
     <item>
       <title>HTB: IClean</title>
       <link>https://scorpiosec.com/posts/2024/08/htb-iclean/</link>
@@ -71,13 +78,6 @@
       <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/05/htb-bizness/</guid>
       <description>Platform: Hack The Box Link: Bizness Level: Easy OS: Linux Bizness is showcasing a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that containing numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash.</description>
-    </item>
-    <item>
-      <title>HTB: Monitored</title>
-      <link>https://scorpiosec.com/posts/2024/05/htb-monitored/</link>
-      <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/05/htb-monitored/</guid>
-      <description>Platform: Hack The Box Link: Monitored Level: Medium OS: Linux Monitored emphasizes rigorous enumeration, the challenge starts with a login form for Nagios XI and directory enumeration leads to the discovery of more and more endpoints. After exhausting all the leads from our nmap TCP scan we make use of a UDP scan to find an exploitable service leading to the leakage of credentials that we use to login. We are able to discover the software version on the target and we leverage CVE-2023-40931 to add a new admin account to the Nagios XI instance to grant us access.</description>
     </item>
   </channel>
 </rss>

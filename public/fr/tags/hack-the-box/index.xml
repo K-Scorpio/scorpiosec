@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 19 Jul 2024 22:17:23 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 22 Aug 2024 19:24:15 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Runner</title>
+      <link>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</link>
+      <pubDate>Thu, 22 Aug 2024 19:24:15 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</guid>
+      <description>Platforme: Hack The Box Lien: Runner Niveau: Moyen OS: Linux Runner débute avec un site web présentant des solutions CI/CD. Grâce à l&amp;rsquo;énumération des sous-domaines, nous découvrons une instance TeamCity vulnérable (CVE-2023-42793), ce qui nous permet d&amp;rsquo;y accéder. Une archive de sauvegarde téléchargée depuis cette instance révèle une clé SSH privée et des hachages de mots de passe. En utilisant la clé SSH, nous obtenons un accès initial et récupérons le fichier user.</description>
+    </item>
     <item>
       <title>HTB: Headless</title>
       <link>https://scorpiosec.com/fr/posts/2024/07/htb-headless/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 05 Apr 2024 16:50:10 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/04/htb-codify/</guid>
       <description>Platforme: Hack The Box Lien: Codify Niveau: Facile OS: Linux Codify démarre avec une application web offrant un environnement sandbox pour tester son code Node.js. Elle utilise vm2 et emploie une liste blanche de modules. Cependant, il existe une vulnérabilité (CVE-2023-3214 ) avec vm2 qui peut être exploitée pour sortir du sandbox et accéder au système cible. Un mouvement latéral permet ensuite d&amp;rsquo;accéder à un autre compte utilisateur et d&amp;rsquo; obtenir le drapeau user.</description>
-    </item>
-    <item>
-      <title>HTB: Analytics</title>
-      <link>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</link>
-      <pubDate>Sat, 23 Mar 2024 01:25:21 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/03/htb-analytics/</guid>
-      <description>Platforme: Hack The Box Lien: Analytics Niveau: Facile OS: Linux Analytics comporte une instance Metabase, qui est un logiciel open-source de &amp;ldquo;business intelligence&amp;rdquo;. La cible est vulnérable au CVE-2023-38646 qui permet l&amp;rsquo;exécution de commandes en l&amp;rsquo;absence d&amp;rsquo;authentification. Après avoir énuméré les variables de l&amp;rsquo;environnement, des identifiants SSH sont découverts et le shell root est obtenu via un &amp;ldquo;kernel exploit&amp;rdquo;.&#xA;L&amp;rsquo;adresse IP cible - 10.10.11.233&#xA;Scanning nmap -sC -sV -oA nmap/Analytics 10.</description>
     </item>
   </channel>
 </rss>

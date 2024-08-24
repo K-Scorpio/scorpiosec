@@ -6,8 +6,165 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 19 Jul 2024 22:17:23 -0500</lastBuildDate>
+        <lastBuildDate>Thu, 22 Aug 2024 19:24:15 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Runner</title>
+            <link>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</link>
+            <pubDate>Thu, 22 Aug 2024 19:24:15 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</guid>
+            <description>Platforme: Hack The Box Lien: Runner Niveau: Moyen OS: Linux Runner débute avec un site web présentant des solutions CI/CD. Grâce à l&amp;rsquo;énumération des sous-domaines, nous découvrons une instance TeamCity vulnérable (CVE-2023-42793), ce qui nous permet d&amp;rsquo;y accéder. Une archive de sauvegarde téléchargée depuis cette instance révèle une clé SSH privée et des hachages de mots de passe. En utilisant la clé SSH, nous obtenons un accès initial et récupérons le fichier user.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Runner" target="_blank" >Runner</a>
+
+</li>
+<li>Niveau: Moyen</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Runner débute avec un site web présentant des solutions CI/CD. Grâce à l&rsquo;énumération des sous-domaines, nous découvrons une instance TeamCity vulnérable (CVE-2023-42793), ce qui nous permet d&rsquo;y accéder. Une archive de sauvegarde téléchargée depuis cette instance révèle une clé SSH privée et des hachages de mots de passe. En utilisant la clé SSH, nous obtenons un accès initial et récupérons le fichier <code>user.txt</code>. Après l&rsquo;énumération du system cible nous trouvons un autre sous-domaine hébergeant une instance de Portainer.io, à laquelle nous accédons en utilisant les informations d&rsquo;identification récupérées précédemment. L&rsquo;escalade des privilèges est réalisée en exploitant un montage bind, permettant l&rsquo;accès au répertoire racine de la machine cible via le conteneur.</p>
+<p>Addresse IP cible - <code>10.10.11.13</code></p>
+<h2 id="balayage">Balayage</h2>
+<blockquote>
+<p>J&rsquo;utilise un script pour la phase de balayage, vous pouvez le trouver <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/nmap_scan.sh" target="_blank" >ici</a>
+
+ . Les commandes que j&rsquo;utilise sont souvent les mêmes, ce qui me facilite la tâche.</p>
+</blockquote>
+<pre tabindex="0"><code>./nmap_scan.sh 10.10.11.13 Runner
+</code></pre><p><strong>Résultats</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,80,8000
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-08-22 19:23 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.13
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.054s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE     VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh         OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp   open  http        nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://runner.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>8000/tcp open  nagios-nsca Nagios NSCA
+</span></span><span style="display:flex;"><span>|_http-title: Site doesn<span style="color:#960050;background-color:#1e0010">&#39;</span>t have a title <span style="color:#f92672">(</span>text/plain; charset<span style="color:#f92672">=</span>utf-8<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 9.64 seconds
+</span></span></code></pre></div><p>Le scan détecte trois ports ouverts : 22 (SSH), 80 (HTTP avec Nginx), et 8000 (nagios-nsca).
+Il y a aussi une redirection vers <code>runner.htb</code>.</p>
+<p>Mettons à jour notre fichier hosts.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.13 runner.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Nous découvrons le site web d&rsquo;une entreprise proposant des solutions CI/CD à l&rsquo;adresse <code>http://runner.htb</code>. Ce site ne présente aucune fonctionnalité que nous pourrions exploiter et l&rsquo;énumération des répertoires ne produit rien d&rsquo;utile pour <code>http://runner.htb</code>.</p>
+<p><img src="/images/HTB-Runner/runner-website.png" alt="Runner website"></p>
+<p>Avec l&rsquo;énumération des sous-domaines, nous trouvons <code>teamcity</code> que nous ajoutons à notre fichier <code>/etc/hosts</code>.</p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -t 100 -u http://runner.htb -H &#34;Host: FUZZ.runner.htb&#34; -ic -fs 154
+</code></pre><p><img src="/images/HTB-Runner/ffuf-subdomain.png" alt="subdomain enumeration"></p>
+<h2 id="accès-initial">Accès Initial</h2>
+<p><code>http://teamcity.runner.htb</code> mène à un formulaire de connexion pour TeamCity avec la version <code>2023.05.3</code>. En recherchant les vulnérabilités, nous découvrons le <a href="https://www.exploit-db.com/exploits/51884" target="_blank" >CVE-2023-42793</a>
+
+ , qui nous permet de créer un nouvel utilisateur avec des privilèges administratifs.</p>
+<p><img src="/images/HTB-Runner/teamcity-runner.png" alt="teamcity subdomain"></p>
+<p>En utilisant ce <a href="https://github.com/H454NSec/CVE-2023-42793" target="_blank" >PoC</a>
+
+, nous exploitons la vulnérabilité et créons un nouvel utilisateur admin avec les identifiants <code>H454NSec5438:@H454NSec</code>.</p>
+<pre tabindex="0"><code>python3 CVE-2023-42793.py -u http://teamcity.runner.htb
+</code></pre><p><img src="/images/HTB-Runner/Poc_use.png" alt="Poc in use"></p>
+<p>Nous nous connectons à l&rsquo;instance TeamCity.</p>
+<p><img src="/images/HTB-Runner/teamcity-admin-login.png" alt="teamcity subdomain login"></p>
+<p>Dans la section <code>Administration</code>, sous <code>Server Administration</code> nous trouvons une option <code>Backup</code> et nous utilisons le bouton <code>Start Backup</code> pour démarrer le processus.</p>
+<p><img src="/images/HTB-Runner/backup.png" alt="teamcity backup"></p>
+<p><img src="/images/HTB-Runner/backup-start.png" alt="teamcity backup start"></p>
+<p>Une fois l&rsquo;opération terminée, nous pouvons télécharger l&rsquo;archive en cliquant sur le lien.</p>
+<p><img src="/images/HTB-Runner/backup-file.png" alt="teamcity backup archive"></p>
+<blockquote>
+<p>Après l&rsquo;extraction de l&rsquo;archive, nous modifions les permissions sur tous les fichiers afin d&rsquo;y accéder.</p>
+</blockquote>
+<pre tabindex="0"><code>unzip TeamCity_Backup_20240421_214500.zip &amp;&amp; chmod -R 744 *
+</code></pre><p><img src="/images/HTB-Runner/backup-files.png" alt="teamcity backup files"></p>
+<p>Nous trouvons une clé SSH dans <code>config/projects/AllProjects/pluginData/ssh_keys/id_rsa</code> mais pour l&rsquo;instant nous ne savons pas à quel utilisateur elle appartient.</p>
+<p>Nous obtenons aussi une liste d&rsquo;utilisateurs et leurs hachage de mot de passe dans <code>database_dump/users</code>.</p>
+<blockquote>
+<p><code>admin</code> et <code>matthew</code> sont les utilisateurs intéressants ici, les autres ont été créés par le PoC.</p>
+</blockquote>
+<p><img src="/images/HTB-Runner/db-users-hashes.png" alt="user hashes"></p>
+<p>Le hash de <code>admin</code> (john) ne peut pas être craqué mais nous récupérons avec succès le mot de passe de <code>matthew</code> qui est <code>piper123</code>.</p>
+<pre tabindex="0"><code>hashcat -a 0 -m 3200 matthew-hash.txt /usr/share/wordlists/rockyou.txt
+</code></pre><p><img src="/images/HTB-Runner/matthew-pwd.png" alt="user matthew hash cracked"></p>
+<p>En utilisant la clé SSH trouvée précédemment, nous nous connectons en tant que <code>john</code> via SSH.</p>
+<p><img src="/images/HTB-Runner/ssh-login-admin.png" alt="SSH admin login"></p>
+<pre tabindex="0"><code>ssh -i id_rsa john@runner.htb
+</code></pre><p><img src="/images/HTB-Runner/john-user.png" alt="john user"></p>
+<p>Le fichier <code>user.txt</code> se trouve dans <code>/home/john/user.txt</code>.</p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>En utilisant <code>linpeas</code> pour l&rsquo;énumération du système, nous identifions un autre sous-domaine que nous n&rsquo;avions pas pu découvrir auparavant, <code>portainer-administration.runner.htb</code>.</p>
+<p><img src="/images/HTB-Runner/subdomain-intern.png" alt="subdomain internal"></p>
+<p>À l&rsquo;adresse <code>http://portainer-administration.runner.htb/</code> nous sommes face à une autre page de connexion pour <code>portainer.io</code>. Les identifiants <code>matthew:piper123</code> sont valides ici!</p>
+<p><img src="/images/HTB-Runner/portainer-login.png" alt="portainer login"></p>
+<p>Nous ne sommes pas en mesure de modifier le conteneur actuel, mais nous pouvons créer de nouveaux volumes.</p>
+<ol>
+<li>Sélectionnez le conteneur <code>primary</code> et vous obtiendrez un menu déroulant dans le panneau de gauche.</li>
+</ol>
+<p><img src="/images/HTB-Runner/container-primary.png" alt="container primary"></p>
+<ol start="2">
+<li>Cliquez sur <code>Volumes</code> puis sur <code>Add volume</code> dans le coin droit.</li>
+</ol>
+<p><img src="/images/HTB-Runner/add-volume.png" alt="add volume for conmtainer"></p>
+<ol start="3">
+<li>Lors de la création du volume, utilisez l&rsquo;option <code>+ add driver option</code> et ajoutez les trois options ci-dessous afin de créer un volume racine.</li>
+</ol>
+<p><img src="/images/HTB-Runner/volume-options.png" alt="volume options"></p>
+<ul>
+<li>L&rsquo;option <strong>device</strong> spécifie le chemin source sur le système hôte qui sera monté dans le conteneur. Dans ce cas, il est défini sur <code>/</code>, qui est le répertoire racine de la machine hôte.</li>
+<li>L&rsquo;option <strong>o</strong> signifie «options» et, dans ce contexte, <code>bind</code> fait référence à un «montage bind».</li>
+<li>L&rsquo;option <strong>type</strong> définit le type de montage utilisé. Lorsqu&rsquo;elle est définie par <code>none</code>, elle indique qu&rsquo;aucun type de système de fichiers spécifique n&rsquo;est utilisé pour ce montage.</li>
+</ul>
+<ol start="4">
+<li>Dans <code>Containers</code> créez un nouveau container avec <code>ubuntu</code> comme nom d&rsquo;image, assurez-vous de cocher <code>Interactive &amp; TTY (-i -t)</code> pour <code>Console</code> dans <code>Advanced container settings</code>.</li>
+</ol>
+<p><img src="/images/HTB-Runner/console-interactive.png" alt="portainer console"></p>
+<p>Sous <code>Volumes</code> cliquez sur <code>+map additional volume</code>, pour <code>container</code> entrez <code>/mnt/root</code> et sélectionnez le volume que vous venez de créer, enfin déployez le conteneur.</p>
+<p><img src="/images/HTB-Runner/advanced_container_settings_volume.png" alt="Advanced container settings, volume section"></p>
+<ol start="5">
+<li>Vous devriez maintenant avoir un nouveau conteneur en cours d&rsquo;exécution.</li>
+</ol>
+<p><img src="/images/HTB-Runner/myContainer.png" alt="created container"></p>
+<p>Sélectionnez-le et cliquez sur <code>Console</code> puis sur <code>Connect</code>.</p>
+<p><img src="/images/HTB-Runner/console-container.png" alt="container status"></p>
+<ol start="6">
+<li>Vous vous connecterez en tant que root et trouverez <code>root.txt</code> dans <code>/mnt/root/root/</code>.</li>
+</ol>
+<p><img src="/images/HTB-Runner/root-flag.png" alt="Root flag"></p>
+<h3 id="explication-du-processus-dexploitation">Explication du processus d&rsquo;exploitation</h3>
+<p>Cette technique d&rsquo;escalade de privilèges exploite la fonctionnalité de liaison de volume de Docker, en particulier en utilisant Portainer.io comme outil de gestion.</p>
+<p>Le volume en question est monté sur le conteneur avec le système de fichiers racine (<code>/</code>) comme périphérique et <code>bind</code> comme type. Ceci signifie que le système de fichiers racine de l&rsquo;hôte est monté sur le conteneur.</p>
+<p>Lorsque nous créons un nouveau conteneur et que nous montons ce volume sur <code>/mnt/root</code>, cela donne essentiellement au conteneur l&rsquo;accès au répertoire racine de la machine hôte.</p>
+<p>Puisque le volume est lié au répertoire racine de l&rsquo;hôte, et que nous nous sommes connectés au conteneur avec une console interactive, nous avons un accès direct au système de fichiers de l&rsquo;hôte depuis le conteneur.</p>
+<p>Par défaut, les conteneurs s&rsquo;exécutent généralement en tant que root dans leur propre environnement, et grâce au montage avec <code>bind</code>, cet utilisateur root à l&rsquo;intérieur du conteneur a accès au répertoire racine de l&rsquo;hôte. Ainsi, nous pouvons manipuler ou exécuter des fichiers sur le système hôte comme si nous étions l&rsquo;utilisateur racine de l&rsquo;hôte, ce qui nous permet de contrôler totalement la machine hôte.</p>
+<h2 id="mots-de-fin">Mots de Fin</h2>
+<p>Je ne suis pas très compétent en matière d&rsquo;exploitation de conteneurs, mais cette box m&rsquo;a incité à en apprendre davantage sur le sujet. Vous trouverez ci-dessous une liste non exhaustive des ressources que j&rsquo;ai utilisées.</p>
+<p>Tout d&rsquo;abord, il faut savoir ce qu&rsquo;est Docker et à quoi il sert - <a href="https://www.youtube.com/watch?v=pg19Z8LL06w&amp;ab_channel=TechWorldwithNana" target="_blank" >Docker Crash Course</a>
+
+</p>
+<p>Ensuite, nous pourrons nous familiariser avec les méthodes d&rsquo;exploitation de Docker:</p>
+<ul>
+<li><a href="https://www.practical-devsecops.com/lesson-4-hacking-containers-like-a-boss/" target="_blank" >Lesson 4: Hacking Containers Like A Boss</a>
+
+</li>
+<li><a href="https://www.youtube.com/watch?v=IuiJdQsty5k&amp;ab_channel=Docker" target="_blank" >Hacking into your containers, and how to stop it!</a>
+
+</li>
+<li><a href="https://book.hacktricks.xyz/network-services-pentesting/2375-pentesting-docker#privilege-escalation" target="_blank" >Pentesting Docker on HackTricks</a>
+
+</li>
+</ul>
+<p>Merci d&rsquo;avoir pris le temps de lire mon article, j&rsquo;espère qu&rsquo;il vous a été utile !</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Headless</title>
