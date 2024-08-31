@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 22 Aug 2024 19:24:15 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 29 Aug 2024 21:44:51 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Summit</title>
+      <link>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</link>
+      <pubDate>Thu, 29 Aug 2024 21:44:51 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</guid>
+      <description>Ce challenge nécessite de créer des contre-mesures défensives pour différents échantillons de malware. Nous utiliserons des hachages de fichiers, des adresses IP, des règles de pare-feu, des règles DNS et des règles sigma.&#xA;Platforme: TryHackMe Lien: Summit Niveau: Facile What is the first flag you receive after successfully detecting sample1.exe? Après avoir cliqué sur le lien fourni, sélectionnez Malware Snadbox, le fichier sample1.exe est déjà présent et cliquez sur Submit for Analysis.</description>
+    </item>
     <item>
       <title>HTB: Runner</title>
       <link>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</guid>
       <description>Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&amp;rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&amp;rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&amp;rsquo;identifiants que nous utilisons pour nous connecter.</description>
-    </item>
-    <item>
-      <title>HTB: Surveillance</title>
-      <link>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</link>
-      <pubDate>Fri, 19 Apr 2024 15:48:38 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</guid>
-      <description>Platforme: Hack The Box Lien: Surveillance Niveau: Moyen OS: Linux Surveillance débute par la découverte d&amp;rsquo;une application web fonctionnant sur le port 80, où nous identifions la version du logiciel utilisé et utilisons le CVE-2023-41892 pour obtenir un accès initial. Grâce à une exploration plus poussée, nous trouvons une sauvegarde de base de données qui révèle le nom et le hash du mot de passe d&amp;rsquo;un utilisateur administrateur. Ces informations sont utilisées pour nous connecter au système par SSH, et nous découvrons un service en interne.</description>
     </item>
   </channel>
 </rss>

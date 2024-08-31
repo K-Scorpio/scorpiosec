@@ -6,8 +6,103 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Thu, 22 Aug 2024 19:24:15 -0500</lastBuildDate>
+        <lastBuildDate>Thu, 29 Aug 2024 21:44:51 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>THM: Summit</title>
+            <link>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</link>
+            <pubDate>Thu, 29 Aug 2024 21:44:51 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</guid>
+            <description>Ce challenge nécessite de créer des contre-mesures défensives pour différents échantillons de malware. Nous utiliserons des hachages de fichiers, des adresses IP, des règles de pare-feu, des règles DNS et des règles sigma.
+Platforme: TryHackMe Lien: Summit Niveau: Facile What is the first flag you receive after successfully detecting sample1.exe? Après avoir cliqué sur le lien fourni, sélectionnez Malware Snadbox, le fichier sample1.exe est déjà présent et cliquez sur Submit for Analysis.</description>
+            <content type="html"><![CDATA[<p>Ce challenge nécessite de créer des contre-mesures défensives pour différents échantillons de malware. Nous utiliserons des hachages de fichiers, des adresses IP, des règles de pare-feu, des règles DNS et des règles sigma.</p>
+<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/summit" target="_blank" >Summit</a>
+
+</li>
+<li>Niveau: Facile</li>
+</ul>
+<h2 id="what-is-the-first-flag-you-receive-after-successfully-detecting-sample1exe">What is the first flag you receive after successfully detecting sample1.exe?</h2>
+<p>Après avoir cliqué sur le lien fourni, sélectionnez <code>Malware Snadbox</code>, le fichier <code>sample1.exe</code> est déjà présent et cliquez sur <code>Submit for Analysis</code>.</p>
+<p><img src="/images/THM-Summit/malware_sandbox.png" alt="Malware Sandbox"></p>
+<p><img src="/images/THM-Summit/submit_for_analysis.png" alt="Submit for analysis button"></p>
+<p>Une fois l&rsquo;analyse terminée, nous obtenons trois valeurs de hachage.</p>
+<p><img src="/images/THM-Summit/general_info.png" alt="Sample1 analysis results"></p>
+<p>Dans le menu déroulant, il y a une section <code>Manage Hashes</code>, copiez l&rsquo;un des hashs, cochez la case correcte pour <code>Hash Algorithm</code> et soumettez-le.</p>
+<p><img src="/images/THM-Summit/detect_hashes.png" alt="Detect Hashes"></p>
+<p>Nous obtenons quelques résultats et un e-mail (la section <code>Mail</code> dans le menu déroulant) avec le premier drapeau.</p>
+<p><img src="/images/THM-Summit/hash_blocklist.png" alt="Hash Blocklist"></p>
+<p><img src="/images/THM-Summit/first_flag.png" alt="First flag"></p>
+<h2 id="what-is-the-second-flag-you-receive-after-successfully-detecting-sample2exe">What is the second flag you receive after successfully detecting sample2.exe?</h2>
+<p>En utilisant le même processus, nous analysons <code>sample2.exe</code>. Le rapport indique que ce fichier tente d&rsquo;envoyer une requête HTTP à l&rsquo;adresse IP <code>154.35.10.113:4444</code>.</p>
+<p><img src="/images/THM-Summit/sample2_network_activity.png" alt="Sample2 analysis results"></p>
+<p>Créons une règle dans la section <code>Firewall Rule Manager</code>.</p>
+<p><img src="/images/THM-Summit/firewall_rule_manager.png" alt="Firewall rule manager"></p>
+<p>Après la sauvegarde de cette règle, nous recevons le deuxième drapeau.</p>
+<p><img src="/images/THM-Summit/flag_2.png" alt="Second flag"></p>
+<h2 id="what-is-the-third-flag-you-receive-after-successfully-detecting-sample3exe">What is the third flag you receive after successfully detecting sample3.exe?</h2>
+<p>Après l&rsquo;analyse de <code>sample3.exe</code>, nous remarquons des requêtes HTTP vers l&rsquo;IP <code>62.123.140.9</code> et des requêtes DNS vers <code>emudyn.bresonicz.info</code> avec la même adresse IP.</p>
+<p><img src="/images/THM-Summit/sample3_network_activity.png" alt="Sample3 analysis results"></p>
+<p>Nous nous dirigeons vers la section <code>DNS Filter</code> et créons une règle DNS pour ce domaine, ce qui nous permet d&rsquo;obtenir le troisième drapeau.</p>
+<p><img src="/images/THM-Summit/DNS_malicious_domain.png" alt="DNS Rule Manager"></p>
+<p><img src="/images/THM-Summit/flag_3.png" alt="Third flag"></p>
+<h2 id="what-is-the-fourth-flag-you-receive-after-successfully-detecting-sample4exe">What is the fourth flag you receive after successfully detecting sample4.exe?</h2>
+<p>Grâce à l&rsquo;e-mail précédent, nous savons que le blocage des hashs, des IP ou des domaines ne résoudra pas ce problème. Nous devons aller plus loin.</p>
+<p>Le rapport d&rsquo;analyse de <code>sample4.exe</code> montre quelques modifications du registre.</p>
+<p><img src="/images/THM-Summit/sample4_registry_activity.png" alt="sample4 analysis results"></p>
+<p>Nous utilisons le <code>Sigma Rule Builder</code> pour ce cas. Pour l&rsquo;étape 1, nous choisissons <code>Sysmon Event Logs</code> et pour l&rsquo;étape 2 <code>Registry Modifications</code>. A l&rsquo;étape 3, nous entrons les valeurs observées dans le rapport.</p>
+<blockquote>
+<p>Si vous cherchez sur Google <code>att&amp;ck DisableRealtimeMonitoring ID</code> vous verrez que son ID est <code>T1562.002</code> qui appartient à <a href="https://attack.mitre.org/tactics/TA0005/" target="_blank" >Defense Evasion</a>
+
+ avec l&rsquo;ID <code>TA0005</code>.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Registry Key</th>
+<th>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Real-Time Protection</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registry Name</td>
+<td>DisableRealtimeMonitoring</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>1</td>
+</tr>
+<tr>
+<td>ATT&amp;CK ID</td>
+<td>Defense Evasion (TA0005)</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/images/THM-Summit/Sigma_rule.png" alt="Sigma rule for sample4"></p>
+<p>Après avoir validé la règle, nous recevons le drapeau 4.</p>
+<p><img src="/images/THM-Summit/flag_4.png" alt="Fourth flag"></p>
+<h2 id="what-is-the-fifth-flag-you-receive-after-successfully-detecting-sample5exe">What is the fifth flag you receive after successfully detecting sample5.exe?</h2>
+<p>Cette fois-ci, nous devons utiliser les logs pour déterminer notre solution.</p>
+<p><img src="/images/THM-Summit/log_file.png" alt="Log file for sample5"></p>
+<p>Nous remarquons une tendance dans les logs. Toutes les 30 minutes, il y a un trafic sortant de 97 octets vers l&rsquo;IP <code>51.102.10.19</code>. Dans le <code>Sigma Rule Builder</code>, allez dans <code>Sysmon Event Logs</code> -&gt; <code>Network connections</code>.</p>
+<p>Puisque l&rsquo;attaquant peut maintenant modifier les artefacts, nous ne pouvons pas nous fier aux adresses IP, aux protocoles ou aux numéros de port. De plus, étant donné que le trafic se produit toutes les 30 minutes, nous pouvons supposer qu&rsquo;il utilise un processus automatisé, probablement via un framework C2.</p>
+<p>En utilisant les valeurs de l&rsquo;image ci-dessous, nous obtenons le cinquième drapeau.</p>
+<p><img src="/images/THM-Summit/Sigma_rule_C2.png" alt="Sigma rule C2 server"></p>
+<p><img src="/images/THM-Summit/flag_5.png" alt="Fifth flag"></p>
+<h2 id="what-is-the-final-flag-you-receive-from-sphinx">What is the final flag you receive from Sphinx?</h2>
+<p>Nous devons maintenant utiliser un journaul de commandes.</p>
+<p><img src="/images/THM-Summit/commands_log.png" alt="commands log file"></p>
+<p>Tout d&rsquo;abord, nous devons comprendre ce que font ces commandes. Elles suggèrent que le logiciel malveillant effectue une reconnaissance et collecte des informations sur le système, le réseau et les comptes d&rsquo;utilisateurs. Les résultats sont stockés dans un fichier journal (<code>exfiltr8.log</code>) dans le répertoire temporaire (<code>%temp%</code>), probablement dans le but d&rsquo;exfiltrer ces données.</p>
+<p>Le fichier journal nous montre que le répertoire temporaire <code>%temp%</code> est toujours utilisé en combinaison avec un fichier nommé <code>exfiltr8.log</code>. Nous nous concentrerons donc sur ces éléments pour créer notre contre-mesure.</p>
+<p>Allez dans <code>Sigma Rule Builder</code> -&gt; <code>Sysmon Event Logs</code> -&gt; <code>FIle Creation and Modification</code> et utilisez les options ci-dessous.</p>
+<p><img src="/images/THM-Summit/sigma_rule_exfiltration.png" alt="Sigma rule data exfiltration malware"></p>
+<p>Nous obtenons le drapeau final.</p>
+<p><img src="/images/THM-Summit/final_flag.png" alt="Final flag"></p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Runner</title>
