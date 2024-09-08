@@ -14,7 +14,7 @@
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</link>
       <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</guid>
-      <description>Platforme: Hack The Box Lien: Mailing Niveau: Facile OS: Windows Target IP address - 10.10.11.14</description>
+      <description>Platforme: Hack The Box Lien: Mailing Niveau: Facile OS: Windows Cette machine HackTheBox est centrée sur les vulnérabilités email. Après une reconnaissance initiale, nous exploitons une LFI pour récupérer des hachages de mots de passe, dont un nous donne accès à un compte admin. En utilisant ensuite la vulnérabilité MonikerLink, nous obtenons un premier accès. L&amp;rsquo;escalade de privilèges se réalise en exploitant une configuration permettant l&amp;rsquo;exécution automatique de fichiers .</description>
     </item>
     <item>
       <title>HTB: Runner</title>

