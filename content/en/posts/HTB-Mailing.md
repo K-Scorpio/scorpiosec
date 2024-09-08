@@ -105,7 +105,7 @@ gobuster dir -u http://mailing.htb/ -w /usr/share/wordlists/seclists/Discovery/W
 ffuf -c -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -t 50 -u http://mailing.htb/ -H "Host: FUZZ.mailing.htb" -ic -fs 4681
 ```
 
-On the website, after capturing the request we get with the `Download Instructions` button we can observe the `file` parameter being included. If this is not properly secured we could have a potential LFI vulnerability (Local File Inclusion).
+After capturing the request we get with the `Download Instructions` button we can observe the `file` parameter being included. If this is not properly secured we could have a potential LFI vulnerability (Local File Inclusion).
 
 ![Mailing Download button request](/images/HTB-Mailing/download-request.png)
 
@@ -222,7 +222,7 @@ In `Program Files` we notice that `Libre Office` is installed. This is noteworth
 
 ![Libre Office version](/images/HTB-Mailing/LibreOffice-version.png)
 
-In `C:\Program Files\LibreOffice\program\` we find the `soffice.ps1` script.
+In `C:\Program Files\LibreOffice\program\` we find a `soffice.ps1` script.
 
 ```python
 # Set the directory where the .odt files are located
