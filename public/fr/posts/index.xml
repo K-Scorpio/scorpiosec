@@ -6,8 +6,28 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Thu, 29 Aug 2024 21:44:51 -0500</lastBuildDate>
+        <lastBuildDate>Fri, 06 Sep 2024 23:42:37 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB Mailing</title>
+            <link>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</link>
+            <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</guid>
+            <description>Platforme: Hack The Box Lien: Mailing Niveau: Facile OS: Windows Target IP address - 10.10.11.14</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Mailing" target="_blank" >Mailing</a>
+
+</li>
+<li>Niveau: Facile</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>Target IP address - <code>10.10.11.14</code></p>
+]]></content>
+        </item>
         
         <item>
             <title>THM: Summit</title>

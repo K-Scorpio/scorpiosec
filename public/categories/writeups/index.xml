@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 29 Aug 2024 21:44:51 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 06 Sep 2024 23:42:37 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB Mailing</title>
+      <link>https://scorpiosec.com/posts/2024/09/htb-mailing/</link>
+      <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/09/htb-mailing/</guid>
+      <description>Platform: Hack The Box Link: Mailing Level: Easy OS: Windows Mailing from HackTheBox is an interesting box. After our initial scan, we discover several email-related services. By exploiting an LFI vulnerability, we find two password hashes, and successfully cracking one of them gives us the admin password. We then use the recent MonikerLink vulnerability to retrieve a user&amp;rsquo;s NTLM hash, which provides us with our initial foothold. Privilege escalation is achieved by placing a malicious file in a specific directory where all files with the .</description>
+    </item>
     <item>
       <title>THM: Summit</title>
       <link>https://scorpiosec.com/posts/2024/08/thm-summit/</link>
@@ -71,13 +78,6 @@
       <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/06/htb-crafty/</guid>
       <description>Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.&#xA;Target IP - 10.10.11.249&#xA;Scanning sudo nmap -sC -sV -p- -oA nmap/Crafty 10.</description>
-    </item>
-    <item>
-      <title>HTB: Pov</title>
-      <link>https://scorpiosec.com/posts/2024/06/htb-pov/</link>
-      <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/06/htb-pov/</guid>
-      <description>Platform: Hack The Box Link: Pov Level: Medium OS: Windows Pov starts with a basic static website. After some enumeration, we discover a subdomain leading to an ASP.NET website that turns out to be vulnerable to LFI. Leveraging this vulnerability, we are able to read a critical file exposing sensitive information that we use to exploit the ViewState mechanism of the website, granting us our initial foothold. After exploring the target system, we move laterally to another user after finding and revealing their credentials.</description>
     </item>
   </channel>
 </rss>
