@@ -1,5 +1,5 @@
 +++
-title = "HTB Mailing"
+title = "HTB: Mailing"
 date = 2024-09-06T23:42:37-05:00
 draft = false
 toc = true
