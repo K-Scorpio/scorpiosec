@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 06 Sep 2024 23:42:37 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HTB Mailing</title>
+      <title>HTB: SolarLab</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</link>
+      <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</guid>
+      <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab débute par un site web de base qui, après énumération, n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. En se concentrant sur SMB, nous découvrons un document dans un partage de fichiers contenant des informations d&amp;rsquo;identification. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible à partir d&amp;rsquo;un sous-domaine trouvé lors de l&amp;rsquo;énumération précédente. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable (CVE-2023-33733), ce qui nous permet d&amp;rsquo;exploiter cela et d&amp;rsquo;obtenir un accès initial, en récupérant le drapeau de l&amp;rsquo;utilisateur.</description>
+    </item>
+    <item>
+      <title>THM: Friday Overtime</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</link>
+      <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</guid>
+      <description>Platforme: TryHackMe Lien: Friday Overtime Niveau: Moyen Après avoir lancé la VM fournie, nous nous connectons avec les identifiants ericatracy:Intel321!.&#xA;Who shared the malware samples? Immédiatement après notre identification, nous trouvons un document intitulé Urgent: Malicious Malware Artefacts Detected.&#xA;L&amp;rsquo;auteur du document est Oliver Bennett.&#xA;Réponse : Oliver Bennett&#xA;What is the SHA1 hash of the file &amp;ldquo;pRsm.dll&amp;rdquo; inside samples.zip? Cliquez sur Documents puis sur View All.&#xA;Après avoir sélectionné le document Urgent : Artefacts malveillants détectés, vous trouverez le fichier samples.</description>
+    </item>
+    <item>
+      <title>HTB: Mailing</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</link>
       <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</guid>
@@ -64,20 +78,6 @@
       <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/06/htb-crafty/</guid>
       <description>Platforme: Hack The Box Lien: Crafty Niveau: Facile OS: Windows Crafty est un Windows Server 2019 avec Minecraft 1.16.5, cette version est vulnérable à Log4Shell (CVE-2021-44228). Sur Github, nous avons accès à une preuve de concept pour exploiter cette vulnérabilité, nous l&amp;rsquo;utilisons pour obtenir un accès initial au système cible. Pour élever nos privilèges, nous utilisons un mot de passe trouvé dans une archive Java afin d&amp;rsquo;accéder au compte administrateur.</description>
-    </item>
-    <item>
-      <title>HTB: Pov</title>
-      <link>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</link>
-      <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</guid>
-      <description>Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&amp;rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&amp;rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible.</description>
-    </item>
-    <item>
-      <title>HTB: Bizness</title>
-      <link>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</link>
-      <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</guid>
-      <description>Platforme: Hack The Box Lien: Bizness Niveau: Facile OS: Linux Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l&amp;rsquo;authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe.</description>
     </item>
   </channel>
 </rss>

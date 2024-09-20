@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 06 Sep 2024 23:42:37 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HTB Mailing</title>
+      <title>HTB: SolarLab</title>
+      <link>https://scorpiosec.com/posts/2024/09/htb-solarlab/</link>
+      <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/09/htb-solarlab/</guid>
+      <description>Platform: Hack The Box Link: SolarLab Level: Medium OS: Windows SolarLab begins with a basic website that, after enumeration, offers no direct exploitation paths. Shifting focus to SMB, we discover a document in a file share containing credentials. These credentials grant access to ReportHub, accessible at a subdomain found during previous enumeration. Upon examining its functionality, we identify that it generates PDFs using the vulnerable ReportLab library (CVE-2023-33733), which allows us to exploit this and gain initial access, recovering the user flag.</description>
+    </item>
+    <item>
+      <title>THM: Friday Overtime</title>
+      <link>https://scorpiosec.com/posts/2024/09/thm-friday-overtime/</link>
+      <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/09/thm-friday-overtime/</guid>
+      <description>Platform: TryHackMe Link: Friday Overtime Level: Medium For this blue team challenge we need to conduct an investigation and provide answers to some questions.&#xA;After launching the provided VM we login with the credentials ericatracy:Intel321!.&#xA;Who shared the malware samples? Right after logging in we find a document titled Urgent: Malicious Malware Artefacts Detected.&#xA;The author of the document is Oliver Bennett.&#xA;Answer: Oliver Bennett&#xA;What is the SHA1 hash of the file &amp;ldquo;pRsm.</description>
+    </item>
+    <item>
+      <title>HTB: Mailing</title>
       <link>https://scorpiosec.com/posts/2024/09/htb-mailing/</link>
       <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/09/htb-mailing/</guid>
@@ -64,20 +78,6 @@
       <pubDate>Wed, 19 Jun 2024 23:28:44 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/06/htb-office/</guid>
       <description>Platform: Hack The Box Link: Office Level: Hard OS: Windows The Office box is a Windows Server 2022 running as a domain controller. The website hosted on the web server uses an outdated version of Joomla, which is vulnerable to CVE-2023-23752. By exploiting this vulnerability, we leak the MySQL database password. After some enumeration, we find a valid username for the password, granting us access to a shared folder containing a pcap file.</description>
-    </item>
-    <item>
-      <title>THM: CyberLens</title>
-      <link>https://scorpiosec.com/posts/2024/06/thm-cyberlens/</link>
-      <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/06/thm-cyberlens/</guid>
-      <description>Platform: TryHackMe Link: CyberLens Level: Easy OS: Windows CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to CVE-2018-1335 is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse AlwaysInstallElevated to obtain a system shell.&#xA;Scanning We will use a Bash script to automate the scanning process.</description>
-    </item>
-    <item>
-      <title>HTB: Crafty</title>
-      <link>https://scorpiosec.com/posts/2024/06/htb-crafty/</link>
-      <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/06/htb-crafty/</guid>
-      <description>Platform: Hack The Box Link: Crafty Level: Easy OS: Windows Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (CVE-2021-44228) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.&#xA;Target IP - 10.10.11.249&#xA;Scanning sudo nmap -sC -sV -p- -oA nmap/Crafty 10.</description>
     </item>
   </channel>
 </rss>

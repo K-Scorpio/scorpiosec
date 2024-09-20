@@ -7,10 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 06 Sep 2024 23:42:37 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HTB Mailing</title>
+      <title>HTB: SolarLab</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</link>
+      <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</guid>
+      <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab débute par un site web de base qui, après énumération, n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. En se concentrant sur SMB, nous découvrons un document dans un partage de fichiers contenant des informations d&amp;rsquo;identification. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible à partir d&amp;rsquo;un sous-domaine trouvé lors de l&amp;rsquo;énumération précédente. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable (CVE-2023-33733), ce qui nous permet d&amp;rsquo;exploiter cela et d&amp;rsquo;obtenir un accès initial, en récupérant le drapeau de l&amp;rsquo;utilisateur.</description>
+    </item>
+    <item>
+      <title>HTB: Mailing</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</link>
       <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</guid>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</guid>
       <description>Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&amp;rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&amp;rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&amp;rsquo;identifiants que nous utilisons pour nous connecter.</description>
-    </item>
-    <item>
-      <title>HTB: Surveillance</title>
-      <link>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</link>
-      <pubDate>Fri, 19 Apr 2024 15:48:38 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/04/htb-surveillance/</guid>
-      <description>Platforme: Hack The Box Lien: Surveillance Niveau: Moyen OS: Linux Surveillance débute par la découverte d&amp;rsquo;une application web fonctionnant sur le port 80, où nous identifions la version du logiciel utilisé et utilisons le CVE-2023-41892 pour obtenir un accès initial. Grâce à une exploration plus poussée, nous trouvons une sauvegarde de base de données qui révèle le nom et le hash du mot de passe d&amp;rsquo;un utilisateur administrateur. Ces informations sont utilisées pour nous connecter au système par SSH, et nous découvrons un service en interne.</description>
     </item>
   </channel>
 </rss>

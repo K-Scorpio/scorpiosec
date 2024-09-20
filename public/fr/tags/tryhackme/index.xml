@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 29 Aug 2024 21:44:51 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 19 Sep 2024 21:09:28 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Friday Overtime</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</link>
+      <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</guid>
+      <description>Platforme: TryHackMe Lien: Friday Overtime Niveau: Moyen Après avoir lancé la VM fournie, nous nous connectons avec les identifiants ericatracy:Intel321!.&#xA;Who shared the malware samples? Immédiatement après notre identification, nous trouvons un document intitulé Urgent: Malicious Malware Artefacts Detected.&#xA;L&amp;rsquo;auteur du document est Oliver Bennett.&#xA;Réponse : Oliver Bennett&#xA;What is the SHA1 hash of the file &amp;ldquo;pRsm.dll&amp;rdquo; inside samples.zip? Cliquez sur Documents puis sur View All.&#xA;Après avoir sélectionné le document Urgent : Artefacts malveillants détectés, vous trouverez le fichier samples.</description>
+    </item>
     <item>
       <title>THM: Summit</title>
       <link>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</link>

@@ -7,10 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 06 Sep 2024 23:42:37 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>HTB Mailing</title>
+      <title>HTB: SolarLab</title>
+      <link>https://scorpiosec.com/posts/2024/09/htb-solarlab/</link>
+      <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/09/htb-solarlab/</guid>
+      <description>Platform: Hack The Box Link: SolarLab Level: Medium OS: Windows SolarLab begins with a basic website that, after enumeration, offers no direct exploitation paths. Shifting focus to SMB, we discover a document in a file share containing credentials. These credentials grant access to ReportHub, accessible at a subdomain found during previous enumeration. Upon examining its functionality, we identify that it generates PDFs using the vulnerable ReportLab library (CVE-2023-33733), which allows us to exploit this and gain initial access, recovering the user flag.</description>
+    </item>
+    <item>
+      <title>HTB: Mailing</title>
       <link>https://scorpiosec.com/posts/2024/09/htb-mailing/</link>
       <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/09/htb-mailing/</guid>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/06/htb-pov/</guid>
       <description>Platform: Hack The Box Link: Pov Level: Medium OS: Windows Pov starts with a basic static website. After some enumeration, we discover a subdomain leading to an ASP.NET website that turns out to be vulnerable to LFI. Leveraging this vulnerability, we are able to read a critical file exposing sensitive information that we use to exploit the ViewState mechanism of the website, granting us our initial foothold. After exploring the target system, we move laterally to another user after finding and revealing their credentials.</description>
-    </item>
-    <item>
-      <title>HTB: Bizness</title>
-      <link>https://scorpiosec.com/posts/2024/05/htb-bizness/</link>
-      <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/05/htb-bizness/</guid>
-      <description>Platform: Hack The Box Link: Bizness Level: Easy OS: Linux Bizness is showcasing a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that containing numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash.</description>
     </item>
   </channel>
 </rss>
