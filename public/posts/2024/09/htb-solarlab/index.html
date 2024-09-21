@@ -39,7 +39,7 @@
 <meta itemprop="name" content="HTB: SolarLab">
 <meta itemprop="description" content="Platform: Hack The Box Link: SolarLab Level: Medium OS: Windows SolarLab begins with a basic website that, after enumeration, offers no direct exploitation paths. Shifting focus to SMB, we discover a document in a file share containing credentials. These credentials grant access to ReportHub, accessible at a subdomain found during previous enumeration. Upon examining its functionality, we identify that it generates PDFs using the vulnerable ReportLab library (CVE-2023-33733), which allows us to exploit this and gain initial access, recovering the user flag."><meta itemprop="datePublished" content="2024-09-20T13:33:36-05:00" />
 <meta itemprop="dateModified" content="2024-09-20T13:33:36-05:00" />
-<meta itemprop="wordCount" content="1090"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-SolarLab/SolarLab.png" />
+<meta itemprop="wordCount" content="1089"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-SolarLab/SolarLab.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-SolarLab/SolarLab.png" /><meta name="twitter:title" content="HTB: SolarLab"/>
@@ -277,7 +277,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 <p>Moving on, directory enumeration is also unfruitful.</p>
 <pre tabindex="0"><code>gobuster dir -u http://solarlab.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-SolarLab/gobuster.png" alt="SolarLab directory bruteforcing"></p>
-<p>Let&rsquo;s check the second subdomain. When we go to <code>http://report.solarlab.htb:6791/</code> we find a login form for ReportHub.</p>
+<p>Let&rsquo;s check the subdomain. When we go to <code>http://report.solarlab.htb:6791/</code> we find a login form for ReportHub.</p>
 <p><img src="https://scorpiosec.com/images/HTB-SolarLab/reporthub_solarlab.png" alt="SolarLab report subdomain"></p>
 <p>The only credentials we have so far are the ones from the password file, after several tries we are able to login with <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-SolarLab/dashboard.png" alt="SolarLab Dashboard"></p>
@@ -402,7 +402,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1090 Words
+        1089 Words
       </p>
 
       <p>

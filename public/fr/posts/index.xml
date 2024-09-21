@@ -96,7 +96,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 <p>L&rsquo;énumération des répertoires est également infructueuse.</p>
 <pre tabindex="0"><code>gobuster dir -u http://solarlab.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 </code></pre><p><img src="/images/HTB-SolarLab/gobuster.png" alt="SolarLab directory bruteforcing"></p>
-<p>Examinons le deuxième sous-domaine. Lorsque nous allons sur <code>http://report.solarlab.htb:6791/</code>, nous trouvons un formulaire de connexion pour ReportHub.</p>
+<p>Examinons le sous-domaine. Lorsque nous allons sur <code>http://report.solarlab.htb:6791/</code>, nous trouvons un formulaire de connexion pour ReportHub.</p>
 <p><img src="/images/HTB-SolarLab/reporthub_solarlab.png" alt="SolarLab report subdomain"></p>
 <p>Les seules informations d&rsquo;identification dont nous disposons jusqu&rsquo;à présent sont celles du fichier de mots de passe. Après plusieurs tentatives, nous parvenons à nous connecter avec <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
 <p><img src="/images/HTB-SolarLab/dashboard.png" alt="SolarLab Dashboard"></p>

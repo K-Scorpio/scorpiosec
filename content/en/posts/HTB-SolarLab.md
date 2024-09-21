@@ -125,7 +125,7 @@ gobuster dir -u http://solarlab.htb/ -w /usr/share/wordlists/seclists/Discovery/
 
 ![SolarLab directory bruteforcing](/images/HTB-SolarLab/gobuster.png)
 
-Let's check the second subdomain. When we go to `http://report.solarlab.htb:6791/` we find a login form for ReportHub.
+Let's check the subdomain. When we go to `http://report.solarlab.htb:6791/` we find a login form for ReportHub.
 
 ![SolarLab report subdomain](/images/HTB-SolarLab/reporthub_solarlab.png)
 

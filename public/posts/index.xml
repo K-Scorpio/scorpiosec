@@ -96,7 +96,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 <p>Moving on, directory enumeration is also unfruitful.</p>
 <pre tabindex="0"><code>gobuster dir -u http://solarlab.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 </code></pre><p><img src="/images/HTB-SolarLab/gobuster.png" alt="SolarLab directory bruteforcing"></p>
-<p>Let&rsquo;s check the second subdomain. When we go to <code>http://report.solarlab.htb:6791/</code> we find a login form for ReportHub.</p>
+<p>Let&rsquo;s check the subdomain. When we go to <code>http://report.solarlab.htb:6791/</code> we find a login form for ReportHub.</p>
 <p><img src="/images/HTB-SolarLab/reporthub_solarlab.png" alt="SolarLab report subdomain"></p>
 <p>The only credentials we have so far are the ones from the password file, after several tries we are able to login with <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
 <p><img src="/images/HTB-SolarLab/dashboard.png" alt="SolarLab Dashboard"></p>

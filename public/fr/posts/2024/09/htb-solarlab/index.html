@@ -39,7 +39,7 @@
 <meta itemprop="name" content="HTB: SolarLab">
 <meta itemprop="description" content="Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab commence par un site web qui n&rsquo;offre aucune voie d&rsquo;exploitation directe. Après avoir énuméré SMB, nous découvrons des informations d&rsquo;identification dans un partage de fichiers. Ces identifiants permettent d&rsquo;accéder à ReportHub, accessible par le biais d&rsquo;un sous-domaine découvert lors du balayage. En examinant ses fonctionnalités, nous identifions qu&rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable au CVE-2023-33733."><meta itemprop="datePublished" content="2024-09-20T13:33:36-05:00" />
 <meta itemprop="dateModified" content="2024-09-20T13:33:36-05:00" />
-<meta itemprop="wordCount" content="1115"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-SolarLab/SolarLab.png" />
+<meta itemprop="wordCount" content="1114"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-SolarLab/SolarLab.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-SolarLab/SolarLab.png" /><meta name="twitter:title" content="HTB: SolarLab"/>
@@ -277,7 +277,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 <p>L&rsquo;énumération des répertoires est également infructueuse.</p>
 <pre tabindex="0"><code>gobuster dir -u http://solarlab.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-SolarLab/gobuster.png" alt="SolarLab directory bruteforcing"></p>
-<p>Examinons le deuxième sous-domaine. Lorsque nous allons sur <code>http://report.solarlab.htb:6791/</code>, nous trouvons un formulaire de connexion pour ReportHub.</p>
+<p>Examinons le sous-domaine. Lorsque nous allons sur <code>http://report.solarlab.htb:6791/</code>, nous trouvons un formulaire de connexion pour ReportHub.</p>
 <p><img src="https://scorpiosec.com/images/HTB-SolarLab/reporthub_solarlab.png" alt="SolarLab report subdomain"></p>
 <p>Les seules informations d&rsquo;identification dont nous disposons jusqu&rsquo;à présent sont celles du fichier de mots de passe. Après plusieurs tentatives, nous parvenons à nous connecter avec <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-SolarLab/dashboard.png" alt="SolarLab Dashboard"></p>
@@ -401,7 +401,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1115 Mots
+        1114 Mots
       </p>
 
       <p>
