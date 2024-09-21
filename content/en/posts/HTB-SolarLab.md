@@ -133,7 +133,7 @@ The only credentials we have so far are the ones from the password file, after s
 
 ![SolarLab Dashboard](/images/HTB-SolarLab/dashboard.png)
 
-We can choose which option we want, fill the form and get a pdf file. We can also upload a picture for the signature (which might be a way to exploit the target).
+We can choose which option we want, fill the form and get a pdf file. We can also upload an image for the signature (which might be a way to exploit the target).
 
 ![Leave request form](/images/HTB-SolarLab/Leave-Request-form.png)
 
@@ -191,7 +191,7 @@ After trying various ports we find an Openfire Administration Console on port 90
 
 ![Openfire admin console](/images/HTB-SolarLab/Openfire-console.png)
 
-This is the admin console, no credentials we have so far are working. I remember this version of Openfire being vulnerable to [CVE-2023-32315](https://vulncheck.com/blog/openfire-cve-2023-32315) with a PoC being available [here](https://github.com/miko550/CVE-2023-32315).
+None of the credentials we have so far are working. I remember this version of Openfire being vulnerable to [CVE-2023-32315](https://vulncheck.com/blog/openfire-cve-2023-32315) with a PoC being available [here](https://github.com/miko550/CVE-2023-32315).
 
 > This exploitation method was used for HTB: Jab, but we already had credentials back then
 
@@ -223,7 +223,7 @@ Get another Powershell base64 encoded reverse shell from [revshells](https://www
 
 We still cannot find the root flag but after some system exploration we find a file called `openfire.script` in `C:\Program Files\Openfire\embedded-db`.
 
-The file contains the credentials of the admin user but the password needs to be decrypted. Forunately we have the password hash and the key.
+The file contains the credentials of the admin user but the password needs to be decrypted. Fortunately we have the password hash and the key.
 
 ![Openfire encrypted password](/images/HTB-SolarLab/encrypted-pwd.png)
 

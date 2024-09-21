@@ -100,7 +100,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 <p><img src="/images/HTB-SolarLab/reporthub_solarlab.png" alt="SolarLab report subdomain"></p>
 <p>The only credentials we have so far are the ones from the password file, after several tries we are able to login with <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
 <p><img src="/images/HTB-SolarLab/dashboard.png" alt="SolarLab Dashboard"></p>
-<p>We can choose which option we want, fill the form and get a pdf file. We can also upload a picture for the signature (which might be a way to exploit the target).</p>
+<p>We can choose which option we want, fill the form and get a pdf file. We can also upload an image for the signature (which might be a way to exploit the target).</p>
 <p><img src="/images/HTB-SolarLab/Leave-Request-form.png" alt="Leave request form"></p>
 <p>Below is an example of the PDF generated.</p>
 <p><img src="/images/HTB-SolarLab/pdf-generated.png" alt="pdf generated"></p>
@@ -142,7 +142,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 <p><img src="/images/HTB-SolarLab/netstat.png" alt="netstat command"></p>
 <p>After trying various ports we find an Openfire Administration Console on port 9090.</p>
 <p><img src="/images/HTB-SolarLab/Openfire-console.png" alt="Openfire admin console"></p>
-<p>This is the admin console, no credentials we have so far are working. I remember this version of Openfire being vulnerable to <a href="https://vulncheck.com/blog/openfire-cve-2023-32315" target="_blank" >CVE-2023-32315</a>
+<p>None of the credentials we have so far are working. I remember this version of Openfire being vulnerable to <a href="https://vulncheck.com/blog/openfire-cve-2023-32315" target="_blank" >CVE-2023-32315</a>
 
  with a PoC being available <a href="https://github.com/miko550/CVE-2023-32315" target="_blank" >here</a>
 
@@ -167,7 +167,7 @@ netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 <p><img src="/images/HTB-SolarLab/openfire_shell.png" alt="Openfire shell"></p>
 <h2 id="privilege-escation-admin-shell">Privilege Escation (admin shell)</h2>
 <p>We still cannot find the root flag but after some system exploration we find a file called <code>openfire.script</code> in <code>C:\Program Files\Openfire\embedded-db</code>.</p>
-<p>The file contains the credentials of the admin user but the password needs to be decrypted. Forunately we have the password hash and the key.</p>
+<p>The file contains the credentials of the admin user but the password needs to be decrypted. Fortunately we have the password hash and the key.</p>
 <p><img src="/images/HTB-SolarLab/encrypted-pwd.png" alt="Openfire encrypted password"></p>
 <ul>
 <li>Password hash: <code>becb0c67cfec25aa266ae077e18177c5c3308e2255db062e4f0b77c577e159a11a94016d57ac62d4e89b2856b0289b365f3069802e59d442</code></li>

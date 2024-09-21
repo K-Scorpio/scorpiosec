@@ -14,7 +14,7 @@
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</link>
       <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</guid>
-      <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab débute par un site web de base qui, après énumération, n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. En se concentrant sur SMB, nous découvrons un document dans un partage de fichiers contenant des informations d&amp;rsquo;identification. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible à partir d&amp;rsquo;un sous-domaine trouvé lors de l&amp;rsquo;énumération précédente. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable (CVE-2023-33733), ce qui nous permet d&amp;rsquo;exploiter cela et d&amp;rsquo;obtenir un accès initial, en récupérant le drapeau de l&amp;rsquo;utilisateur.</description>
+      <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab commence par un site web qui n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. Après avoir énuméré SMB, nous découvrons des informations d&amp;rsquo;identification dans un partage de fichiers. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible par le biais d&amp;rsquo;un sous-domaine découvert lors du balayage. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable au CVE-2023-33733.</description>
     </item>
     <item>
       <title>THM: Friday Overtime</title>
