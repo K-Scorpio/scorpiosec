@@ -230,7 +230,7 @@ Le fichier contient les informations d'identification de l'utilisateur admin mai
 * Password hash: `becb0c67cfec25aa266ae077e18177c5c3308e2255db062e4f0b77c577e159a11a94016d57ac62d4e89b2856b0289b365f3069802e59d442`
 * Key value: `hGXiFzsKaAeYLjn`
 
-Nous pouvons décrypter le mot de passe avec [openfire_decrypt](https://github.com/c0rdis/openfire_decrypt) by using the command below.
+Nous pouvons décrypter le mot de passe avec [openfire_decrypt](https://github.com/c0rdis/openfire_decrypt) en utilisant la commande ci-dessous.
 
 ```
 java OpenFireDecryptPass [PASSWORD_HASH] [KEY_VALUE]
