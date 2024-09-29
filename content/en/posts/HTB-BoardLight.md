@@ -120,7 +120,7 @@ After saving the modified code we get a shell as `www-data`.
 
 ![foothold shell](/images/HTB-BoardLight/foothold.png)
 
-Checking the `passwd` we notice a user called `larissa` and of course we cannot access her home directory.
+Checking the `passwd` file we notice a user called `larissa` and of course we cannot access her home directory.
 
 ![larissa user](/images/HTB-BoardLight/larissa_user.png)
 

