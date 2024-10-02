@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 27 Sep 2024 22:53:03 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: BoardLight</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/htb-boardlight/</link>
+      <pubDate>Fri, 27 Sep 2024 22:53:03 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-boardlight/</guid>
+      <description>Platforme: Hack The Box Lien: BoardLight Niveau: Facile OS: Linux BoardLight débute par la découverte d&amp;rsquo;un sous-domaine où se trouve une instance Dolibarr, à laquelle nous accédons en utilisant les informations d&amp;rsquo;identification par défaut. Grâce à un reverse shell PHP couplé à une technique de manipulation des majuscules, nous obtenons notre accès initial. Nous découvrons ensuite un fichier de configuration contenant des identifiants qui nous permettent de prendre le contrôle d&amp;rsquo;un autre compte.</description>
+    </item>
     <item>
       <title>HTB: SolarLab</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</link>
@@ -71,13 +78,6 @@
       <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</guid>
       <description>Platforme: Hack The Box Lien: Bizness Niveau: Facile OS: Linux Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l&amp;rsquo;authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe.</description>
-    </item>
-    <item>
-      <title>HTB: Monitored</title>
-      <link>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</link>
-      <pubDate>Thu, 09 May 2024 21:41:07 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/05/htb-monitored/</guid>
-      <description>Platforme: Hack The Box Lien: Monitored Niveau: Moyen OS: Linux Monitored met l&amp;rsquo;accent sur une énumération rigoureuse, le challenge commence avec un formulaire de connexion pour Nagios XI et l&amp;rsquo;énumération des répertoires mène à la découverte de plus en plus de points de terminaison. Après avoir exploité toutes les pistes de notre scan TCP, nous utilisons un scan UDP pour trouver un service exploitable qui conduit à une fuite d&amp;rsquo;identifiants que nous utilisons pour nous connecter.</description>
     </item>
   </channel>
 </rss>

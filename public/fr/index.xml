@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 27 Sep 2024 22:53:03 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: BoardLight</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/htb-boardlight/</link>
+      <pubDate>Fri, 27 Sep 2024 22:53:03 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-boardlight/</guid>
+      <description>Platforme: Hack The Box Lien: BoardLight Niveau: Facile OS: Linux BoardLight débute par la découverte d&amp;rsquo;un sous-domaine où se trouve une instance Dolibarr, à laquelle nous accédons en utilisant les informations d&amp;rsquo;identification par défaut. Grâce à un reverse shell PHP couplé à une technique de manipulation des majuscules, nous obtenons notre accès initial. Nous découvrons ensuite un fichier de configuration contenant des identifiants qui nous permettent de prendre le contrôle d&amp;rsquo;un autre compte.</description>
+    </item>
     <item>
       <title>HTB: SolarLab</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</link>
@@ -71,13 +78,6 @@
       <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</guid>
       <description>Platforme: TryHackMe Lien: CyberLens Niveau: Facile OS: Windows CyberLens présente un site web avec une fonction d&amp;rsquo;extraction de métadonnées. Après notre énumération, nous découvrons que cette fonction utilise Apache Tika, une version obsolète du logiciel vulnérable au CVE-2018-1335 est installée. Nous obtenons notre accès initial en exploitant cette vulnérabilité. Pour l&amp;rsquo;escalade des privilèges, nous abusons de AlwaysInstallElevated pour obtenir un shell système.&#xA;Balayage Nous utiliserons un script Bash pour automatiser le balayage.</description>
-    </item>
-    <item>
-      <title>HTB: Crafty</title>
-      <link>https://scorpiosec.com/fr/posts/2024/06/htb-crafty/</link>
-      <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/06/htb-crafty/</guid>
-      <description>Platforme: Hack The Box Lien: Crafty Niveau: Facile OS: Windows Crafty est un Windows Server 2019 avec Minecraft 1.16.5, cette version est vulnérable à Log4Shell (CVE-2021-44228). Sur Github, nous avons accès à une preuve de concept pour exploiter cette vulnérabilité, nous l&amp;rsquo;utilisons pour obtenir un accès initial au système cible. Pour élever nos privilèges, nous utilisons un mot de passe trouvé dans une archive Java afin d&amp;rsquo;accéder au compte administrateur.</description>
     </item>
   </channel>
 </rss>

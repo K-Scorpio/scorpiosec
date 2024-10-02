@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 20 Sep 2024 13:33:36 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Freelancer</title>
+      <link>https://scorpiosec.com/posts/2024/09/htb-freelancer/</link>
+      <pubDate>Mon, 30 Sep 2024 13:36:12 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/09/htb-freelancer/</guid>
+      <description>Platform: Hack The Box Link: Freelancer Level: Hard OS: Windows Freelancer begins with a website that allows the creation of various types of accounts. After registering, we exploit an Insecure Direct Object Reference (IDOR) vulnerability to gain access to an admin account. On the admin page, we find a SQL terminal, which we leverage to obtain an initial foothold.&#xA;Further exploration of the system reveals passwords in a configuration file, which we run against a user list, enabling us to pivot to another account and obtain the user flag.</description>
+    </item>
+    <item>
+      <title>HTB: BoardLight</title>
+      <link>https://scorpiosec.com/posts/2024/09/htb-boardlight/</link>
+      <pubDate>Fri, 27 Sep 2024 22:53:03 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/09/htb-boardlight/</guid>
+      <description>Platform: Hack The Box Link: BoardLight Level: Easy OS: Linux BoardLight begins with a subdomain discovery where we find a Dolibarr instance, which we access by using default credentials. The initial foothold is obtained via a PHP reverse shell coupled with an uppercase manipulation technique. From there we discover a configuration file containing credentials, allowing us to take over another account. Finally, we gain root privileges by exploiting a vulnerability in Enlightenment.</description>
+    </item>
     <item>
       <title>HTB: SolarLab</title>
       <link>https://scorpiosec.com/posts/2024/09/htb-solarlab/</link>
@@ -64,20 +78,6 @@
       <pubDate>Fri, 19 Jul 2024 22:17:23 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/07/htb-headless/</guid>
       <description>Platform: Hack The Box Link: Headless Level: Easy OS: Linux Headless starts with a static website. Through enumeration, we identify a contact form vulnerable to Cross-Site Scripting (XSS), though basic payloads prove ineffective. By capturing the admin&amp;rsquo;s cookie value, we gain access to the dashboard page and establish our foothold through command injection. For privilege escalation, we exploit a custom script to take control of the root account.&#xA;Target IP address - 10.</description>
-    </item>
-    <item>
-      <title>HTB: Perfection</title>
-      <link>https://scorpiosec.com/posts/2024/07/htb-perfection/</link>
-      <pubDate>Thu, 04 Jul 2024 14:05:10 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/07/htb-perfection/</guid>
-      <description>Platform: Hack The Box Link: Perfection Level: Easy OS: Linux Perfection begins with a straightforward website. Through enumeration, we identify a vulnerability to Server-Side Template Injection (SSTI), which we exploit to gain an initial foothold. We then discover a database file containing password hashes, but our initial attempts to crack them are unsuccessful. After reading the user&amp;rsquo;s emails, we learn that the passwords follow a specific format. Using this information, we employ a mask attack with Hashcat and successfully recover the password.</description>
-    </item>
-    <item>
-      <title>HTB: Office</title>
-      <link>https://scorpiosec.com/posts/2024/06/htb-office/</link>
-      <pubDate>Wed, 19 Jun 2024 23:28:44 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/06/htb-office/</guid>
-      <description>Platform: Hack The Box Link: Office Level: Hard OS: Windows The Office box is a Windows Server 2022 running as a domain controller. The website hosted on the web server uses an outdated version of Joomla, which is vulnerable to CVE-2023-23752. By exploiting this vulnerability, we leak the MySQL database password. After some enumeration, we find a valid username for the password, granting us access to a shared folder containing a pcap file.</description>
     </item>
   </channel>
 </rss>
