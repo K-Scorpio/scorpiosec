@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 27 Sep 2024 22:53:03 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Freelancer</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</link>
+      <pubDate>Mon, 30 Sep 2024 13:36:12 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</guid>
+      <description>Platforme: Hack The Box Lien: Freelancer Niveau: Difficile OS: Windows Freelancer consiste à exploiter une application web et, plus tard, un contrôleur de domaine. Le site web permet la création de deux types de comptes. Après l&amp;rsquo;enregistrement, nous exploitons une vulnérabilité IDOR (Insecure Direct Object Reference) pour accéder à un compte administrateur. Sur la page d&amp;rsquo;administration, nous trouvons un terminal SQL, que nous utilisons pour obtenir notre accès initial.</description>
+    </item>
     <item>
       <title>HTB: BoardLight</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-boardlight/</link>
@@ -71,13 +78,6 @@
       <pubDate>Wed, 19 Jun 2024 23:28:44 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/06/htb-office/</guid>
       <description>Platforme: Hack The Box Lien: Office Niveau: Difficile OS: Windows Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au CVE-2023-23752. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&amp;rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&amp;rsquo;accéder à un dossier partagé contenant un fichier pcap.</description>
-    </item>
-    <item>
-      <title>THM: CyberLens</title>
-      <link>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</link>
-      <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</guid>
-      <description>Platforme: TryHackMe Lien: CyberLens Niveau: Facile OS: Windows CyberLens présente un site web avec une fonction d&amp;rsquo;extraction de métadonnées. Après notre énumération, nous découvrons que cette fonction utilise Apache Tika, une version obsolète du logiciel vulnérable au CVE-2018-1335 est installée. Nous obtenons notre accès initial en exploitant cette vulnérabilité. Pour l&amp;rsquo;escalade des privilèges, nous abusons de AlwaysInstallElevated pour obtenir un shell système.&#xA;Balayage Nous utiliserons un script Bash pour automatiser le balayage.</description>
     </item>
   </channel>
 </rss>

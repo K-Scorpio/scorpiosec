@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 27 Sep 2024 22:53:03 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Freelancer</title>
+      <link>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</link>
+      <pubDate>Mon, 30 Sep 2024 13:36:12 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</guid>
+      <description>Platforme: Hack The Box Lien: Freelancer Niveau: Difficile OS: Windows Freelancer consiste à exploiter une application web et, plus tard, un contrôleur de domaine. Le site web permet la création de deux types de comptes. Après l&amp;rsquo;enregistrement, nous exploitons une vulnérabilité IDOR (Insecure Direct Object Reference) pour accéder à un compte administrateur. Sur la page d&amp;rsquo;administration, nous trouvons un terminal SQL, que nous utilisons pour obtenir notre accès initial.</description>
+    </item>
     <item>
       <title>HTB: BoardLight</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-boardlight/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</guid>
       <description>Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&amp;rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&amp;rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible.</description>
-    </item>
-    <item>
-      <title>HTB: Bizness</title>
-      <link>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</link>
-      <pubDate>Wed, 22 May 2024 21:18:09 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/05/htb-bizness/</guid>
-      <description>Platforme: Hack The Box Lien: Bizness Niveau: Facile OS: Linux Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l&amp;rsquo;authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe.</description>
     </item>
   </channel>
 </rss>

