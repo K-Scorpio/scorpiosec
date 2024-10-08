@@ -344,7 +344,7 @@ Nous pouvons restaurer l'objet en utilisant son `ObjectGUID`.
 Restore-ADObject -identity "ebe15df5-e265-45ec-b7fc-359877217138"
 ```
 
-> Je ne suis pas sûr qu'il soit possible d'accéder au compte administrateur depuis le compte de Liza Kazanof. Je mettrai à jour cette partie si je trouve un chemin d'exploitation pour le faire.
+> Je ne suis pas sûr qu'il soit possible d'accéder au compte administrateur depuis le compte de Liza Kazanof. Je mettrai à jour cette partie si je trouve un chemin d'exploitation pour le faire. **EDIT (08/10/2024)**: le chemin d'exploitation à partir du compte de Liza Kazanof est le chemin voulu par l'auteur et est détaillé dans l'article de 0xdf [ici](https://0xdf.gitlab.io/2024/10/05/htb-freelancer.html#intended-path).
 
 Les membres de `AD Recycle Bin` ont la permission `GenericWrite` sur le contrôleur de domaine, nous pouvons l'utiliser pour exploiter la cible par une délégation restreinte basée sur les ressources (RBCD). _Pour en savoir plus, cliquez [ici](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation)_.
 

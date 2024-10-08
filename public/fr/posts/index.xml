@@ -247,7 +247,9 @@ zbarimg QR-Code.png
 <p>Nous pouvons restaurer l&rsquo;objet en utilisant son <code>ObjectGUID</code>.</p>
 <pre tabindex="0"><code>Restore-ADObject -identity &#34;ebe15df5-e265-45ec-b7fc-359877217138&#34;
 </code></pre><blockquote>
-<p>Je ne suis pas sûr qu&rsquo;il soit possible d&rsquo;accéder au compte administrateur depuis le compte de Liza Kazanof. Je mettrai à jour cette partie si je trouve un chemin d&rsquo;exploitation pour le faire.</p>
+<p>Je ne suis pas sûr qu&rsquo;il soit possible d&rsquo;accéder au compte administrateur depuis le compte de Liza Kazanof. Je mettrai à jour cette partie si je trouve un chemin d&rsquo;exploitation pour le faire. <strong>EDIT (08/10/2024)</strong>: le chemin d&rsquo;exploitation à partir du compte de Liza Kazanof est le chemin voulu par l&rsquo;auteur et est détaillé dans l&rsquo;article de 0xdf <a href="https://0xdf.gitlab.io/2024/10/05/htb-freelancer.html#intended-path" target="_blank" >ici</a>
+
+.</p>
 </blockquote>
 <p>Les membres de <code>AD Recycle Bin</code> ont la permission <code>GenericWrite</code> sur le contrôleur de domaine, nous pouvons l&rsquo;utiliser pour exploiter la cible par une délégation restreinte basée sur les ressources (RBCD). <em>Pour en savoir plus, cliquez <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation" target="_blank" >ici</a>
 

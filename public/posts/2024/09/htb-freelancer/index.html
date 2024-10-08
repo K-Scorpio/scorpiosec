@@ -41,7 +41,7 @@ Further exploration of the system reveals passwords in a configuration file, whi
 <meta itemprop="description" content="Platform: Hack The Box Link: Freelancer Level: Hard OS: Windows Freelancer begins with a website that allows the creation of various types of accounts. After registering, we exploit an Insecure Direct Object Reference (IDOR) vulnerability to gain access to an admin account. On the admin page, we find a SQL terminal, which we leverage to obtain an initial foothold.
 Further exploration of the system reveals passwords in a configuration file, which we run against a user list, enabling us to pivot to another account and obtain the user flag."><meta itemprop="datePublished" content="2024-09-30T13:36:12-05:00" />
 <meta itemprop="dateModified" content="2024-09-30T13:36:12-05:00" />
-<meta itemprop="wordCount" content="1859"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Freelancer/Freelancer.png" />
+<meta itemprop="wordCount" content="1882"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Freelancer/Freelancer.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Freelancer/Freelancer.png" /><meta name="twitter:title" content="HTB: Freelancer"/>
@@ -423,7 +423,10 @@ zbarimg QR-Code.png
 <p>We can restore the object by using its <code>ObjectGUID</code>.</p>
 <pre tabindex="0"><code>Restore-ADObject -identity &#34;ebe15df5-e265-45ec-b7fc-359877217138&#34;
 </code></pre><blockquote>
-<p>I am not sure how/if it is possible to get to root from the liza kazanof account. I will update this part if I find an exploitation path for it.</p>
+<p>I am not sure how/if it is possible to get to root from the liza kazanof account. I will update this part if I find an exploitation path for it.
+<strong>EDIT (10/8/2024)</strong>: I was not able to find this exploitation path on my own. 0xdf details it in his write up <a href="https://0xdf.gitlab.io/2024/10/05/htb-freelancer.html#intended-path" target="_blank" >here</a>
+
+.</p>
 </blockquote>
 <p>The members of <code>AD Recycle Bin</code> have the <code>GenericWrite</code> permission on the domain controller which we can use to exploit the target via resource-based constrained delegation (RBCD). <em>Read more about it <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation" target="_blank" >here</a>
 
@@ -500,7 +503,7 @@ zbarimg QR-Code.png
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1859 Words
+        1882 Words
       </p>
 
       <p>

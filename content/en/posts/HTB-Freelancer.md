@@ -343,6 +343,7 @@ Restore-ADObject -identity "ebe15df5-e265-45ec-b7fc-359877217138"
 ```
 
 > I am not sure how/if it is possible to get to root from the liza kazanof account. I will update this part if I find an exploitation path for it. 
+> **EDIT (10/8/2024)**: I was not able to find this exploitation path on my own. 0xdf details it in his write up [here](https://0xdf.gitlab.io/2024/10/05/htb-freelancer.html#intended-path).
 
 The members of `AD Recycle Bin` have the `GenericWrite` permission on the domain controller which we can use to exploit the target via resource-based constrained delegation (RBCD). _Read more about it [here](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation)_.
 

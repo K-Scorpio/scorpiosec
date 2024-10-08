@@ -243,7 +243,10 @@ zbarimg QR-Code.png
 <p>We can restore the object by using its <code>ObjectGUID</code>.</p>
 <pre tabindex="0"><code>Restore-ADObject -identity &#34;ebe15df5-e265-45ec-b7fc-359877217138&#34;
 </code></pre><blockquote>
-<p>I am not sure how/if it is possible to get to root from the liza kazanof account. I will update this part if I find an exploitation path for it.</p>
+<p>I am not sure how/if it is possible to get to root from the liza kazanof account. I will update this part if I find an exploitation path for it.
+<strong>EDIT (10/8/2024)</strong>: I was not able to find this exploitation path on my own. 0xdf details it in his write up <a href="https://0xdf.gitlab.io/2024/10/05/htb-freelancer.html#intended-path" target="_blank" >here</a>
+
+.</p>
 </blockquote>
 <p>The members of <code>AD Recycle Bin</code> have the <code>GenericWrite</code> permission on the domain controller which we can use to exploit the target via resource-based constrained delegation (RBCD). <em>Read more about it <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation" target="_blank" >here</a>
 

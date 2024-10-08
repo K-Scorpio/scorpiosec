@@ -39,7 +39,7 @@
 <meta itemprop="name" content="HTB: Freelancer">
 <meta itemprop="description" content="Platforme: Hack The Box Lien: Freelancer Niveau: Difficile OS: Windows Freelancer consiste à exploiter une application web et, plus tard, un contrôleur de domaine. Le site web permet la création de deux types de comptes. Après l&rsquo;enregistrement, nous exploitons une vulnérabilité IDOR (Insecure Direct Object Reference) pour accéder à un compte administrateur. Sur la page d&rsquo;administration, nous trouvons un terminal SQL, que nous utilisons pour obtenir notre accès initial."><meta itemprop="datePublished" content="2024-09-30T13:36:12-05:00" />
 <meta itemprop="dateModified" content="2024-09-30T13:36:12-05:00" />
-<meta itemprop="wordCount" content="1988"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Freelancer/Freelancer.png" />
+<meta itemprop="wordCount" content="2015"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Freelancer/Freelancer.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Freelancer/Freelancer.png" /><meta name="twitter:title" content="HTB: Freelancer"/>
@@ -424,7 +424,9 @@ zbarimg QR-Code.png
 <p>Nous pouvons restaurer l&rsquo;objet en utilisant son <code>ObjectGUID</code>.</p>
 <pre tabindex="0"><code>Restore-ADObject -identity &#34;ebe15df5-e265-45ec-b7fc-359877217138&#34;
 </code></pre><blockquote>
-<p>Je ne suis pas sûr qu&rsquo;il soit possible d&rsquo;accéder au compte administrateur depuis le compte de Liza Kazanof. Je mettrai à jour cette partie si je trouve un chemin d&rsquo;exploitation pour le faire.</p>
+<p>Je ne suis pas sûr qu&rsquo;il soit possible d&rsquo;accéder au compte administrateur depuis le compte de Liza Kazanof. Je mettrai à jour cette partie si je trouve un chemin d&rsquo;exploitation pour le faire. <strong>EDIT (08/10/2024)</strong>: le chemin d&rsquo;exploitation à partir du compte de Liza Kazanof est le chemin voulu par l&rsquo;auteur et est détaillé dans l&rsquo;article de 0xdf <a href="https://0xdf.gitlab.io/2024/10/05/htb-freelancer.html#intended-path" target="_blank" >ici</a>
+
+.</p>
 </blockquote>
 <p>Les membres de <code>AD Recycle Bin</code> ont la permission <code>GenericWrite</code> sur le contrôleur de domaine, nous pouvons l&rsquo;utiliser pour exploiter la cible par une délégation restreinte basée sur les ressources (RBCD). <em>Pour en savoir plus, cliquez <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/resource-based-constrained-delegation" target="_blank" >ici</a>
 
@@ -501,7 +503,7 @@ zbarimg QR-Code.png
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1988 Mots
+        2015 Mots
       </p>
 
       <p>
