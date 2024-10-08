@@ -218,8 +218,8 @@ disableHugoGeneratorInject = false
     url  = "https://github.com/K-Scorpio"
 
   [[params.social]]
-    #name = "linkedin"
-    #url  = "https://linkedin.com/in/darryl-akretchakre/"
+    name = "linkedin"
+    url  = "https://linkedin.com/in/darryl-akretchakre/"
     
   [params.author]
     name = "K-Scorpio"
