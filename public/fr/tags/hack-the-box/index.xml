@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 10 Oct 2024 19:31:38 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Blurry</title>
+      <link>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</link>
+      <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</guid>
+      <description>Platforme: Hack The Box Lien: Blurry Niveau: Medium OS: Linux Addresse IP cible - 10.10.11.19</description>
+    </item>
     <item>
       <title>HTB: Freelancer</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</link>
@@ -71,13 +78,6 @@
       <pubDate>Wed, 12 Jun 2024 21:19:39 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/06/htb-crafty/</guid>
       <description>Platforme: Hack The Box Lien: Crafty Niveau: Facile OS: Windows Crafty est un Windows Server 2019 avec Minecraft 1.16.5, cette version est vulnérable à Log4Shell (CVE-2021-44228). Sur Github, nous avons accès à une preuve de concept pour exploiter cette vulnérabilité, nous l&amp;rsquo;utilisons pour obtenir un accès initial au système cible. Pour élever nos privilèges, nous utilisons un mot de passe trouvé dans une archive Java afin d&amp;rsquo;accéder au compte administrateur.</description>
-    </item>
-    <item>
-      <title>HTB: Pov</title>
-      <link>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</link>
-      <pubDate>Fri, 07 Jun 2024 12:42:21 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/06/htb-pov/</guid>
-      <description>Platforme: Hack The Box Lien: Pov Niveau: Moyen OS: Windows Pov débute par un simple site web. Après l&amp;rsquo;énumération, nous découvrons un sous-domaine menant à un site web ASP.NET qui s&amp;rsquo;avère être vulnérable à une faille LFI. En tirant parti de cette vulnérabilité, nous sommes en mesure de lire un fichier critique exposant des informations sensibles que nous utilisons pour exploiter le mécanisme ViewState du site web, ce qui nous donne accès au système cible.</description>
     </item>
   </channel>
 </rss>

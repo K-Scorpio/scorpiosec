@@ -6,8 +6,28 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
+        <lastBuildDate>Thu, 10 Oct 2024 19:31:38 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Blurry</title>
+            <link>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</link>
+            <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</guid>
+            <description>Platforme: Hack The Box Lien: Blurry Niveau: Medium OS: Linux Addresse IP cible - 10.10.11.19</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Blurry" target="_blank" >Blurry</a>
+
+</li>
+<li>Niveau: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Addresse IP cible - <code>10.10.11.19</code></p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Freelancer</title>

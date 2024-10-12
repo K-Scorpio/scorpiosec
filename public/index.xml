@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 10 Oct 2024 19:31:38 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Blurry</title>
+      <link>https://scorpiosec.com/posts/2024/10/htb-blurry/</link>
+      <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/10/htb-blurry/</guid>
+      <description>Platform: Hack The Box Link: Blurry Level: Medium OS: Linux The Blurry machine demonstrates how Python modules and specific Python features can be exploited to compromise systems. The challenge begins with access to a ClearML instance, containing various experiments tied to a project. Using CVE-2024-24590, we gain our initial foothold by uploading a malicious artifact through the API, allowing us to retrieve the user flag. This write-up will detail two distinct methods for privilege escalation, showcasing different approaches to fully compromise the system.</description>
+    </item>
     <item>
       <title>HTB: Freelancer</title>
       <link>https://scorpiosec.com/posts/2024/09/htb-freelancer/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 26 Jul 2024 15:04:48 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</guid>
       <description>Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.</description>
-    </item>
-    <item>
-      <title>HTB: Headless</title>
-      <link>https://scorpiosec.com/posts/2024/07/htb-headless/</link>
-      <pubDate>Fri, 19 Jul 2024 22:17:23 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/07/htb-headless/</guid>
-      <description>Platform: Hack The Box Link: Headless Level: Easy OS: Linux Headless starts with a static website. Through enumeration, we identify a contact form vulnerable to Cross-Site Scripting (XSS), though basic payloads prove ineffective. By capturing the admin&amp;rsquo;s cookie value, we gain access to the dashboard page and establish our foothold through command injection. For privilege escalation, we exploit a custom script to take control of the root account.&#xA;Target IP address - 10.</description>
     </item>
   </channel>
 </rss>

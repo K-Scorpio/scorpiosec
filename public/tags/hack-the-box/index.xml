@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 10 Oct 2024 19:31:38 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Blurry</title>
+      <link>https://scorpiosec.com/posts/2024/10/htb-blurry/</link>
+      <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/10/htb-blurry/</guid>
+      <description>Platform: Hack The Box Link: Blurry Level: Medium OS: Linux The Blurry machine demonstrates how Python modules and specific Python features can be exploited to compromise systems. The challenge begins with access to a ClearML instance, containing various experiments tied to a project. Using CVE-2024-24590, we gain our initial foothold by uploading a malicious artifact through the API, allowing us to retrieve the user flag. This write-up will detail two distinct methods for privilege escalation, showcasing different approaches to fully compromise the system.</description>
+    </item>
     <item>
       <title>HTB: Freelancer</title>
       <link>https://scorpiosec.com/posts/2024/09/htb-freelancer/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 04 Jul 2024 14:05:10 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/07/htb-perfection/</guid>
       <description>Platform: Hack The Box Link: Perfection Level: Easy OS: Linux Perfection begins with a straightforward website. Through enumeration, we identify a vulnerability to Server-Side Template Injection (SSTI), which we exploit to gain an initial foothold. We then discover a database file containing password hashes, but our initial attempts to crack them are unsuccessful. After reading the user&amp;rsquo;s emails, we learn that the passwords follow a specific format. Using this information, we employ a mask attack with Hashcat and successfully recover the password.</description>
-    </item>
-    <item>
-      <title>HTB: Office</title>
-      <link>https://scorpiosec.com/posts/2024/06/htb-office/</link>
-      <pubDate>Wed, 19 Jun 2024 23:28:44 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/06/htb-office/</guid>
-      <description>Platform: Hack The Box Link: Office Level: Hard OS: Windows The Office box is a Windows Server 2022 running as a domain controller. The website hosted on the web server uses an outdated version of Joomla, which is vulnerable to CVE-2023-23752. By exploiting this vulnerability, we leak the MySQL database password. After some enumeration, we find a valid username for the password, granting us access to a shared folder containing a pcap file.</description>
     </item>
   </channel>
 </rss>

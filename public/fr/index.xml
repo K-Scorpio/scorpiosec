@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 30 Sep 2024 13:36:12 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 10 Oct 2024 19:31:38 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Blurry</title>
+      <link>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</link>
+      <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</guid>
+      <description>Platforme: Hack The Box Lien: Blurry Niveau: Medium OS: Linux Addresse IP cible - 10.10.11.19</description>
+    </item>
     <item>
       <title>HTB: Freelancer</title>
       <link>https://scorpiosec.com/fr/posts/2024/09/htb-freelancer/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 04 Jul 2024 14:05:10 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/07/htb-perfection/</guid>
       <description>Platforme: Hack The Box Lien: Perfection Niveau: Facile OS: Linux Ce challenge débute avec un site web simple. Grâce à l&amp;rsquo;énumération, nous identifions une vulnérabilité à l&amp;rsquo;injection de modèle côté serveur (SSTI), que nous exploitons pour obtenir notre accès initial. Nous découvrons ensuite un fichier de base de données contenant des hachages de mots de passe, mais nos premières tentatives pour les craquer sont infructueuses. Après avoir lu les courriels des utilisateurs, nous apprenons que les mots de passe suivent un format spécifique.</description>
-    </item>
-    <item>
-      <title>HTB: Office</title>
-      <link>https://scorpiosec.com/fr/posts/2024/06/htb-office/</link>
-      <pubDate>Wed, 19 Jun 2024 23:28:44 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/06/htb-office/</guid>
-      <description>Platforme: Hack The Box Lien: Office Niveau: Difficile OS: Windows Office est un Windows Server 2022 fonctionnant en tant que contrôleur de domaine. Le site web hébergé sur le serveur utilise une version obsolète de Joomla, qui est vulnérable au CVE-2023-23752. En exploitant cette vulnérabilité, nous révélons le mot de passe de la base de données MySQL. Après énumération, nous trouvons un nom d&amp;rsquo;utilisateur valide pour le mot de passe, ce qui nous permet d&amp;rsquo;accéder à un dossier partagé contenant un fichier pcap.</description>
     </item>
   </channel>
 </rss>
