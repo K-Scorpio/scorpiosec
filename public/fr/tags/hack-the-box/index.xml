@@ -14,7 +14,7 @@
       <link>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</link>
       <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</guid>
-      <description>Platforme: Hack The Box Lien: Blurry Niveau: Medium OS: Linux Addresse IP cible - 10.10.11.19</description>
+      <description>Platforme: Hack The Box Lien: Blurry Niveau: Moyen OS: Linux La machine Blurry démontre comment les modules Python et les fonctionnalités spécifiques de Python peuvent être exploités pour compromettre des systèmes. Le défi commence par l&amp;rsquo;accès à une instance ClearML, contenant diverses expériences liées à un projet. En utilisant le CVE-2024-24590, nous obtenons notre accès initial en téléchargeant un artefact malveillant via l&amp;rsquo;API sur la cible, ce qui nous permet de récupérer le drapeau utilisateur (user.</description>
     </item>
     <item>
       <title>HTB: Freelancer</title>

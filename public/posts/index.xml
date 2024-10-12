@@ -48,7 +48,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 12.40 seconds
-</span></span></code></pre></div><p>Our nmap scan discovers two ports 22 (SSH) and 80 (HTTP). We also notice a redirection to <code>app.blurry.htb</code>, which we will access after updating our hosts file.</p>
+</span></span></code></pre></div><p>Our nmap scan discovers two open ports 22 (SSH) and 80 (HTTP). We also notice a redirection to <code>app.blurry.htb</code>, which we will access after updating our hosts file.</p>
 <pre tabindex="0"><code>sudo echo &#34;10.10.11.19 blurry.htb app.blurry.htb&#34; | sudo tee -a /etc/hosts
 </code></pre><h2 id="enumeration">Enumeration</h2>
 <p>At <code>http://app.blurry.htb/</code> we find a ClearML instance which we can connect to with the user name <code>Chad Jippity</code>. On the Github page we read that this solution is a &ldquo;ML/DL development and production suite&hellip;&rdquo;. <em><a href="https://github.com/allegroai/clearml" target="_blank" >Source</a>

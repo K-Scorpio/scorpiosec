@@ -48,7 +48,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 12.40 seconds
 ```
 
-Our nmap scan discovers two ports 22 (SSH) and 80 (HTTP). We also notice a redirection to `app.blurry.htb`, which we will access after updating our hosts file.
+Our nmap scan discovers two open ports 22 (SSH) and 80 (HTTP). We also notice a redirection to `app.blurry.htb`, which we will access after updating our hosts file.
 
 ```
 sudo echo "10.10.11.19 blurry.htb app.blurry.htb" | sudo tee -a /etc/hosts
