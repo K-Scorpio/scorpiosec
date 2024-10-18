@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 10 Oct 2024 19:31:38 -0500</lastBuildDate>
+    <lastBuildDate>Wed, 16 Oct 2024 21:00:55 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Editorial</title>
+      <link>https://scorpiosec.com/posts/2024/10/htb-editorial/</link>
+      <pubDate>Wed, 16 Oct 2024 21:00:55 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/10/htb-editorial/</guid>
+      <description>Platform: Hack The Box Link: Editorial Level: Easy OS: Linux Editorial is an easy Linux machine with a few interesting challenges. The web application is vulnerable to Server-Side Request Forgery (SSRF), but it requires fuzzing internal ports to uncover sensitive data. By exploiting an API endpoint, we retrieve credentials that grant initial access to the system. During further enumeration, we discover a series of Git commits, one of which exposes credentials for another user, enabling lateral movement.</description>
+    </item>
     <item>
       <title>HTB: Blurry</title>
       <link>https://scorpiosec.com/posts/2024/10/htb-blurry/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 01 Aug 2024 17:57:29 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/08/htb-iclean/</guid>
       <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux IClean begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection (SSTI), which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes. By cracking one of these hashes, we gain SSH access and retrieve the user flag.</description>
-    </item>
-    <item>
-      <title>HTB: WifineticTwo</title>
-      <link>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</link>
-      <pubDate>Fri, 26 Jul 2024 15:04:48 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</guid>
-      <description>Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.</description>
     </item>
   </channel>
 </rss>

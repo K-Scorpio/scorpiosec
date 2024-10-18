@@ -84,7 +84,7 @@ Checking the content of the response with `http://editorial.htb/static/images/un
 
 We are on the right track but we are missing something. Most of the time internal applications run on a different port that is not exposed to the public. In order to find the correct one we will do some fuzzing.
 
-I use the request in Burp, format it as much as I can and remove the redundant headers.
+I use the request from Burp, format it as much as I can and remove the redundant headers.
 
 By using it with ffuf we find the port `5000`.
 
@@ -107,14 +107,14 @@ ffuf -u 'http://editorial.htb/upload-cover' \
 | Option | Description                                                                                 |
 | ------ | ------------------------------------------------------------------------------------------- |
 | -u     | Specifies the target URL                                                                    |
-| -d $   | Specify the HTTP request body                                                               |
+| -d $   | Specifies the HTTP request body                                                             |
 | -w     | Wordlist (we are using a dynamically generated list for all the port numbers)               |
 | FUZZ   | This string will be replaced with each number during the fuzzing process                    |
-| -H     | Specify the HTTP header                                                                     |
+| -H     | Specifies the HTTP header                                                                   |
 | -t 100 | Sets the number of concurrent threads                                                       |
 | -mc    | Specifies which HTTP response status code to filter                                         |
 | all    | When used, ffuf will not filter responses based on status codes and will show all responses |
-| -fs 61 | Filter by response size. Here, responses with a body size of 61 bytes will be filtered out  |
+| -fs 61 | Filters by response size. Here, responses with a body size of 61 bytes will be filtered out |
 
 ![SSRF Internal port 5000 found](/images/HTB-Editorial/internal_port_5000_found.png)
 
@@ -251,7 +251,7 @@ The exploit leverages the `ext::` protocol in Git which allows users to use exte
 
 Let's use a bash script in order to get a reverse shell as `root`.
 
-We create `revshell.sh` and make it executable with `chmod +x revshell.sh`
+We create `revshell.sh` and make it executable with `chmod +x revshell.sh`.
 
 ```bash
 #!/bin/bash
