@@ -24,7 +24,7 @@ Addresse IP cible - `10.10.11.20`
 ./nmap_scan.sh 10.10.11.20 Editorial
 ```
 
-**Resultats**
+**Résultats**
 
 ```shell
 Running detailed scan on open ports: 22,80

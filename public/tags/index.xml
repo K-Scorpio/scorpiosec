@@ -7,20 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 16 Oct 2024 21:00:55 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 24 Oct 2024 14:16:05 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TryHackMe</title>
+      <link>https://scorpiosec.com/tags/tryhackme/</link>
+      <pubDate>Thu, 24 Oct 2024 14:16:05 -0500</pubDate>
+      <guid>https://scorpiosec.com/tags/tryhackme/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Hack The Box</title>
       <link>https://scorpiosec.com/tags/hack-the-box/</link>
       <pubDate>Wed, 16 Oct 2024 21:00:55 -0500</pubDate>
       <guid>https://scorpiosec.com/tags/hack-the-box/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>TryHackMe</title>
-      <link>https://scorpiosec.com/tags/tryhackme/</link>
-      <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
-      <guid>https://scorpiosec.com/tags/tryhackme/</guid>
       <description></description>
     </item>
     <item>

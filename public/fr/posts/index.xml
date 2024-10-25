@@ -6,8 +6,27 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Wed, 16 Oct 2024 21:00:55 -0500</lastBuildDate>
+        <lastBuildDate>Thu, 24 Oct 2024 14:16:05 -0500</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>THM: K2</title>
+            <link>https://scorpiosec.com/fr/posts/2024/10/thm-k2/</link>
+            <pubDate>Thu, 24 Oct 2024 14:16:05 -0500</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/10/thm-k2/</guid>
+            <description> Platforme: TryHackMe Lien: K2 Niveau: Difficile OS: Linux et Windows (Cette salle est composée de trois machines différentes) </description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/k2room" target="_blank" >K2</a>
+
+</li>
+<li>Niveau: Difficile</li>
+<li>OS: Linux et Windows (Cette salle est composée de trois machines différentes)</li>
+</ul>
+<hr>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Editorial</title>
@@ -29,7 +48,7 @@
 <p>Addresse IP cible - <code>10.10.11.20</code></p>
 <h2 id="balayage">Balayage</h2>
 <pre tabindex="0"><code>./nmap_scan.sh 10.10.11.20 Editorial
-</code></pre><p><strong>Resultats</strong></p>
+</code></pre><p><strong>Résultats</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,80
 </span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-10-16 21:07 CDT
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.20
