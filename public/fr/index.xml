@@ -14,7 +14,7 @@
       <link>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</link>
       <pubDate>Tue, 29 Oct 2024 19:25:05 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</guid>
-      <description> Platforme: TryHackMe Lien: Rabbit Hole Niveau: Difficile OS: Linux </description>
+      <description>Platforme: TryHackMe Lien: Rabbit Hole Niveau: Difficile OS: Linux Ce défi met l&amp;rsquo;accent sur les vulnérabilités liées aux injections SQL. Nous découvrons une vulnérabilité d&amp;rsquo;injection SQL de second ordre après plusieurs tentatives de Cross-Site Scripting (XSS) qui échouent. En utilisant cette vulnérabilité, nous récupérons des hachages de mots de passe, mais ils ne conduisent pas à un accès initial. En combinant un script python et une payload utilisant la commande PROCESSLIST, nous réussissons à extraire la requête contenant le mot de passe de l&amp;rsquo;utilisateur admin, que nous utilisons pour nous connecter via SSH et lire le drapeau.</description>
     </item>
     <item>
       <title>THM: K2</title>
