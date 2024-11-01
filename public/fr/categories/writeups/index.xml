@@ -7,14 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 24 Oct 2024 14:16:05 -0500</lastBuildDate>
+    <lastBuildDate>Tue, 29 Oct 2024 19:25:05 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Rabbit Hole</title>
+      <link>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</link>
+      <pubDate>Tue, 29 Oct 2024 19:25:05 -0500</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</guid>
+      <description> Platforme: TryHackMe Lien: Rabbit Hole Niveau: Difficile OS: Linux </description>
+    </item>
     <item>
       <title>THM: K2</title>
       <link>https://scorpiosec.com/fr/posts/2024/10/thm-k2/</link>
       <pubDate>Thu, 24 Oct 2024 14:16:05 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/10/thm-k2/</guid>
-      <description> Platforme: TryHackMe Lien: K2 Niveau: Difficile OS: Linux et Windows (Cette salle est composée de trois machines différentes) </description>
+      <description>Platforme: TryHackMe Lien: K2 Niveau: Difficile OS: Linux et Windows (Cette salle est composée de trois machines différentes) Base Camp Base Camp est une machine Linux avec un serveur web. L&amp;rsquo;énumération initiale révèle deux sous-domaines liés à un système de ticketing, dont l&amp;rsquo;un est vulnérable au Cross-Site Scripting (XSS). En utilisant le XSS, nous dérobons un cookie de session pour accéder au tableau de bord de l&amp;rsquo;administrateur, qui lui-même est vulnérable à l&amp;rsquo;injection SQL.</description>
     </item>
     <item>
       <title>HTB: Editorial</title>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 29 Aug 2024 21:44:51 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</guid>
       <description>Ce challenge nécessite de créer des contre-mesures défensives pour différents échantillons de malware. Nous utiliserons des hachages de fichiers, des adresses IP, des règles de pare-feu, des règles DNS et des règles sigma.&#xA;Platforme: TryHackMe Lien: Summit Niveau: Facile What is the first flag you receive after successfully detecting sample1.exe? Après avoir cliqué sur le lien fourni, sélectionnez Malware Snadbox, le fichier sample1.exe est déjà présent et cliquez sur Submit for Analysis.</description>
-    </item>
-    <item>
-      <title>HTB: Runner</title>
-      <link>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</link>
-      <pubDate>Thu, 22 Aug 2024 19:24:15 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</guid>
-      <description>Platforme: Hack The Box Lien: Runner Niveau: Moyen OS: Linux Runner débute avec un site web présentant des solutions CI/CD. Grâce à l&amp;rsquo;énumération des sous-domaines, nous découvrons une instance TeamCity vulnérable (CVE-2023-42793), ce qui nous permet d&amp;rsquo;y accéder. Une archive de sauvegarde téléchargée depuis cette instance révèle une clé SSH privée et des hachages de mots de passe. En utilisant la clé SSH, nous obtenons un accès initial et récupérons le fichier user.</description>
     </item>
   </channel>
 </rss>

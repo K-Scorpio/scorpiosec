@@ -619,7 +619,7 @@ Import-Module .\SeBackupPrivilegeCmdLets.dll
 
 ![Import DLL](/images/THM-K2/Import_DLLs.png)
 
-3. We can now access and copy files from restricted directories
+3. We can now access and copy files located in restricted directories
 
 ```
 cd C:\Users\Administrator\

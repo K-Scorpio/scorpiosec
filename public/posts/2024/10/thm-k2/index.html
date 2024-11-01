@@ -39,7 +39,7 @@
 <meta itemprop="name" content="THM: K2">
 <meta itemprop="description" content="Platform: TryHackMe Link: K2 Level: Hard OS: Linux and Windows (The room has three different machines) Base Camp The Base Camp machine in the K2 challenge starts with a basic website. Initial enumeration reveals two subdomains linked to a ticketing system, one of which is vulnerable to Cross-Site Scripting (XSS). Using XSS, we steal a session cookie to access the admin dashboard, which is also susceptible to SQL injection. This flaw allows us to retrieve admin credentials, granting initial access."><meta itemprop="datePublished" content="2024-10-24T14:16:05-05:00" />
 <meta itemprop="dateModified" content="2024-10-24T14:16:05-05:00" />
-<meta itemprop="wordCount" content="3488"><meta itemprop="image" content="https://scorpiosec.com/images/THM-K2/K2.png" />
+<meta itemprop="wordCount" content="3489"><meta itemprop="image" content="https://scorpiosec.com/images/THM-K2/K2.png" />
 <meta itemprop="keywords" content="TryHackMe," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/THM-K2/K2.png" /><meta name="twitter:title" content="THM: K2"/>
@@ -600,7 +600,7 @@ upload /home/kscorpio/Machines/TryHackMe/K2/K2_Middle_Camp/SeBackupPrivilege/SeB
 Import-Module .\SeBackupPrivilegeCmdLets.dll
 </code></pre><p><img src="https://scorpiosec.com/images/THM-K2/Import_DLLs.png" alt="Import DLL"></p>
 <ol start="3">
-<li>We can now access and copy files from restricted directories</li>
+<li>We can now access and copy files located in restricted directories</li>
 </ol>
 <pre tabindex="0"><code>cd C:\Users\Administrator\
 
@@ -859,7 +859,7 @@ bloodhound --no-sandbox
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        3488 Words
+        3489 Words
       </p>
 
       <p>
@@ -980,6 +980,13 @@ bloodhound --no-sandbox
         
 
         <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="https://scorpiosec.com/posts/2024/10/thm-rabbit-hole/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">THM: Rabbit Hole</span>
+                </a>
+            </span>
             
 
             

@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 24 Oct 2024 14:16:05 -0500</lastBuildDate>
+    <lastBuildDate>Tue, 29 Oct 2024 19:25:05 -0500</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Rabbit Hole</title>
+      <link>https://scorpiosec.com/posts/2024/10/thm-rabbit-hole/</link>
+      <pubDate>Tue, 29 Oct 2024 19:25:05 -0500</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/10/thm-rabbit-hole/</guid>
+      <description>Platform: TryHackMe Link: Rabbit Hole Level: Hard OS: Linux Rabbit Hole is all about exploiting SQL injection. We discover a second-order SQL injection vulnerability after some failed Cross-Site scripting (XSS) attempts. Using this, we retrieve some password hashes, but they don’t lead to initial access. By combining a python script and a payload leveraging the PROCESSLIST command we successfully extract the query containing the admin user password which we use to login via SSH and read the flag.</description>
+    </item>
     <item>
       <title>THM: K2</title>
       <link>https://scorpiosec.com/posts/2024/10/thm-k2/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 29 Aug 2024 21:44:51 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/08/thm-summit/</guid>
       <description>This is a blue team challenge where we need to create defensive countermeasures for various malware samples. This will be achieved by using file hashes, IP addresses, firewall rules, DNS and sigma rules.&#xA;Platform: TryHackMe Link: Summit Level: Easy What is the first flag you receive after successfully detecting sample1.exe? After navigating to the link provided, go to Malware Snadbox, the file sample1.exe is already loaded and click on Submit for Analysis.</description>
-    </item>
-    <item>
-      <title>HTB: Runner</title>
-      <link>https://scorpiosec.com/posts/2024/08/htb-runner/</link>
-      <pubDate>Thu, 22 Aug 2024 19:24:15 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/08/htb-runner/</guid>
-      <description>Platform: Hack The Box Link: Runner Level: Medium OS: Linux Runner starts with a basic website offering CI/CD solutions. Through subdomain enumeration, we uncover a vulnerable TeamCity instance (CVE-2023-42793), granting us access. A backup archive downloaded from this instance reveals a private SSH key and password hashes. Using the SSH key, we gain an initial foothold and retrieve the user flag. Further exploration uncovers another subdomain hosting a Portainer.io instance, which we access using the previously recovered credentials.</description>
     </item>
   </channel>
 </rss>
