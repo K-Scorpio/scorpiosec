@@ -6,8 +6,148 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Tue, 29 Oct 2024 19:25:05 -0500</lastBuildDate>
+        <lastBuildDate>Mon, 04 Nov 2024 12:11:25 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>THM: SeeTwo</title>
+            <link>https://scorpiosec.com/posts/2024/11/thm-seetwo/</link>
+            <pubDate>Mon, 04 Nov 2024 12:11:25 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/11/thm-seetwo/</guid>
+            <description>Platform: TryHackMe Link: SeeTwo Level: Medium In this room we have to investigate a pcap file. At first we find what looks like some benign traffic, however after digging deeper we find an ELF binary containing some .pyc files. Decompiling one the file allows us to understand the tactics used by the attacker, and with a python script we find all the information we need.
+Investigation Right after loading the pcap file, we get an overview of the traffic.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: TryHackMe</li>
+<li>Link: <a href="https://tryhackme.com/r/room/seetworoom" target="_blank" >SeeTwo</a>
+
+</li>
+<li>Level: Medium</li>
+</ul>
+<hr>
+<p>In this room we have to investigate a pcap file. At first we find what looks like some benign traffic, however after digging deeper we find an ELF binary containing some <code>.pyc</code> files. Decompiling one the file allows us to understand the tactics used by the attacker, and with a python script we find all the information we need.</p>
+<h2 id="investigation">Investigation</h2>
+<p>Right after loading the pcap file, we get an overview of the traffic. Let&rsquo;s use the <code>Conversations</code> feature in Wireshark (Statistics &ndash;&gt; Conversations).</p>
+<p>Under <code>IPv4</code> we find two communications:</p>
+<ul>
+<li><code>10.0.2.64</code> sent 2152 packets to <code>10.0.2.71</code>. We also notice that 16 MB of data were transfer, that&rsquo;s definitely worth investigating.</li>
+<li><code>10.0.2.71</code> sent 2 packets to <code>10.0.2.3</code>.</li>
+</ul>
+<p><img src="/images/THM-SeeTwo/IPv4_conv.png" alt="SeeTwo - Wireshark IPv4 conversations"></p>
+<p>Under the <code>TCP</code> section, we find more information, we see that there is traffic on ports: <code>22</code> likely SSH, <code>1337</code> and <code>80</code> probably HTTP. The 16 MB of data was sent transferred via port 80.</p>
+<p><img src="/images/THM-SeeTwo/TCP_conv.png" alt="SeeTwo - Wireshark TCP conversations"></p>
+<p>As we were thinking the traffic over port 22 is indeed SSH, we can skip it since we do not have a key for decryption at this moment.</p>
+<p><img src="/images/THM-SeeTwo/SSH_traffic.png" alt="Wireshark SSH traffic"></p>
+<p>We cannot say for sure which protocol is running on port <code>1337</code>, so let&rsquo;s check that traffic. We&rsquo;ll begin by examining the conversation containing <code>60kB</code> of data.</p>
+<p>After the TCP handshake we find some data being transferred on frame <code>1810</code>.</p>
+<p><img src="/images/THM-SeeTwo/frame_1810.png" alt="Wireshark 1337 traffic"></p>
+<p>We copy the data and head to <a href="https://gchq.github.io/CyberChef/" target="_blank" >CyberChef</a>
+
+, it turns out to be a picture.</p>
+<p><img src="/images/THM-SeeTwo/pokeball_pic.png" alt="Pokeball image"></p>
+<p>After decoding some other data from that same conversation, we get another image.</p>
+<p><img src="/images/THM-SeeTwo/frame_1856.png" alt="Milk image"></p>
+<p>The traffic on port <code>1337</code> seems to be a dead end, so far we only get images. We turn our attention to the HTTP conversation, but first let&rsquo;s see if we can export files related to the protocol (File &ndash;&gt; Export Objects &ndash;&gt; HTTP).</p>
+<p>We get a file called <code>base64_client</code>.</p>
+<p><img src="/images/THM-SeeTwo/base64_client.png" alt="base64_client file"></p>
+<p><img src="/images/THM-SeeTwo/base64_client_filetype.png" alt="base64_client file type"></p>
+<p>After decoding the data we end up with a Linux binary.</p>
+<p><img src="/images/THM-SeeTwo/Linux_ELF.png" alt="Linux ELF"></p>
+<p>Running <code>strings</code> on the file we can read <code>pydata</code> at the end.</p>
+<pre tabindex="0"><code>strings decoded_base64 | tail
+</code></pre><p><img src="/images/THM-SeeTwo/pydata.png" alt="pydata"></p>
+<p>Assuming that it is related to Python, we can try to find all the <code>python</code> mentions from the output.</p>
+<pre tabindex="0"><code>strings decoded_base64 | grep &#34;python&#34;
+</code></pre><p><img src="/images/THM-SeeTwo/strings_python.png" alt="grep on python"></p>
+<p>There are a lot of mentions about <code>CPython</code> and python <code>version 3.8</code>. We can use a tool such as <a href="https://github.com/extremecoders-re/pyinstxtractor" target="_blank" >PyInstaller Extractor</a>
+
+ to extract the content of the ELF binary.</p>
+<pre tabindex="0"><code>git clone https://github.com/extremecoders-re/pyinstxtractor
+cd pyinstxtractor
+python pyinstxtractor.py ELF_binary_location
+</code></pre><p><img src="/images/THM-SeeTwo/pyinstxtractor.png" alt="pyinstextractor command"></p>
+<p>We get some <code>.pyc</code> files which are compiled python files. We need to use a decompiler for Python version <code>3.8</code>.</p>
+<p><img src="/images/THM-SeeTwo/pyc_files.png" alt="pyc files"></p>
+<p>We can use <a href="https://github.com/rocky/python-decompile3" target="_blank" >decompyle3</a>
+
+ to decompile our files. After installing it we run the command below.</p>
+<pre tabindex="0"><code>decompyle3 client.pyc_location &gt; client.py
+</code></pre><p><img src="/images/THM-SeeTwo/decompyle3_clientpyc.png" alt="decompyle3 command"></p>
+<p>We then read the content of <code>client.py</code>.</p>
+<p><img src="/images/THM-SeeTwo/client_py.png" alt="client.py code"></p>
+<p>Now we have a better picture of what is happening, this code is a command-and-control communication (C2) with the IP address <code>10.0.2.64</code> and it is using port <code>1337</code>. It also leverages some <code>XOR encryption</code>, we have the key so we can do some decrytion.</p>
+<p>The command sent by the attacker and the response he/she gets are always split into two parts <code>encoded_image</code> and <code>encoded_command</code>. These two parts are separated by <code>AAAAAAAAAA</code>.</p>
+<p>Going back to Wireshark, we use the filter <code>tcp.port == 1337</code> and follow the TCP stream.</p>
+<p><img src="/images/THM-SeeTwo/separator.png" alt="separator in Wireshark"></p>
+<blockquote>
+<p>The request data is in blue and the response is in red.</p>
+</blockquote>
+<p>When we decrypt the entire data of a request or a response we get an image and we are tricked to believe that this is a harmless communication. The command is actually whatever comes after the separator.</p>
+<p>Let&rsquo;s use <code>JB0=</code> which is the first encoded command sent by the attacker. We use the key below for the XOR decryption.</p>
+<pre tabindex="0"><code>MySup3rXoRKeYForCommandandControl
+</code></pre><p><img src="/images/THM-SeeTwo/cmd_decoded.png" alt="decoded command in CyberChef"></p>
+<p><img src="/images/THM-SeeTwo/C2_response_decoded.png" alt="decoded response in CyberChef"></p>
+<p>The command is <code>id</code> and the response was <code>uid=1000(bella) gid=1000(bella) groups=1000(bella),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev)</code>.</p>
+<p>If we keep doing this we will discover everything that was done by the attacker on the server, but this manual process is slow, so we will use a script.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> scapy.all <span style="color:#f92672">import</span> rdpcap, TCP
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> base64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PCAP_FILE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;capture.pcap&#34;</span>
+</span></span><span style="display:flex;"><span>TARGET_PORT <span style="color:#f92672">=</span> <span style="color:#ae81ff">1337</span>
+</span></span><span style="display:flex;"><span>SEPARATOR <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;AAAAAAAAAA&#34;</span>
+</span></span><span style="display:flex;"><span>XOR_KEY <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;MySup3rXoRKeYForCommandandControl&#34;</span><span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#34;utf-8&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">xor_crypt</span>(data, key):
+</span></span><span style="display:flex;"><span>    key_length <span style="color:#f92672">=</span> len(key)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> bytes([byte <span style="color:#f92672">^</span> key[i <span style="color:#f92672">%</span> key_length] <span style="color:#66d9ef">for</span> i, byte <span style="color:#f92672">in</span> enumerate(data)])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decode_and_decrypt</span>(payload):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        parts <span style="color:#f92672">=</span> payload<span style="color:#f92672">.</span>split(SEPARATOR)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> len(parts) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">2</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        encoded_part <span style="color:#f92672">=</span> parts[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>        decoded_part <span style="color:#f92672">=</span> base64<span style="color:#f92672">.</span>b64decode(encoded_part<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#34;utf-8&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        decrypted_data <span style="color:#f92672">=</span> xor_crypt(decoded_part, XOR_KEY)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> decrypted_data<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;utf-8&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error decoding payload: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>packets <span style="color:#f92672">=</span> rdpcap(PCAP_FILE)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> packet <span style="color:#f92672">in</span> packets:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> packet<span style="color:#f92672">.</span>haslayer(TCP):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> packet[TCP]<span style="color:#f92672">.</span>sport <span style="color:#f92672">==</span> TARGET_PORT:
+</span></span><span style="display:flex;"><span>            payload <span style="color:#f92672">=</span> bytes(packet[TCP]<span style="color:#f92672">.</span>payload)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;utf-8&#34;</span>, errors<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ignore&#34;</span>)
+</span></span><span style="display:flex;"><span>            decoded_command <span style="color:#f92672">=</span> decode_and_decrypt(payload)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> decoded_command:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">&#34;Decoded C2 Command:&#34;</span>, decoded_command)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> packet[TCP]<span style="color:#f92672">.</span>dport <span style="color:#f92672">==</span> TARGET_PORT:
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>            payload <span style="color:#f92672">=</span> bytes(packet[TCP]<span style="color:#f92672">.</span>payload)<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#34;utf-8&#34;</span>, errors<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ignore&#34;</span>)
+</span></span><span style="display:flex;"><span>            decoded_response <span style="color:#f92672">=</span> decode_and_decrypt(payload)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> decoded_response:
+</span></span><span style="display:flex;"><span>                print(<span style="color:#e6db74">&#34;Decoded C2 Response:&#34;</span>, decoded_response)
+</span></span></code></pre></div><p>The output of the script provides all the answers.</p>
+<h3 id="what-is-the-first-file-that-is-read-enter-the-full-path-of-the-file">What is the first file that is read? Enter the full path of the file.</h3>
+<p>Run the script and find the <code>cat</code> command.</p>
+<h3 id="what-is-the-output-of-the-file-from-question-1">What is the output of the file from question 1?</h3>
+<p>The answer is the output of the <code>cat</code> command.</p>
+<h3 id="what-is-the-user-that-the-attacker-created-as-a-backdoor-enter-the-entire-line-that-indicates-the-user">What is the user that the attacker created as a backdoor? Enter the entire line that indicates the user.</h3>
+<p>The first <code>echo</code> command gives you the annswer.</p>
+<h3 id="what-is-the-name-of-the-backdoor-executable">What is the name of the backdoor executable?</h3>
+<p>Find the command adding the <code>SUID bit</code> to the binary.</p>
+<h3 id="what-is-the-md5-hash-value-of-the-executable-from-question-4">What is the md5 hash value of the executable from question 4?</h3>
+<p>The attacker computed the md5 hash with the <code>md5sum</code> command, find it and read its output.</p>
+<h3 id="what-was-the-first-cronjob-that-was-placed-by-the-attacker">What was the first cronjob that was placed by the attacker?</h3>
+<p>Find the second <code>echo</code> command and you will get the answer.</p>
+<h3 id="what-is-the-flag">What is the flag?</h3>
+<p>With the third <code>echo</code> command, the attacker encoded a string, decode it and you will get the flag.</p>
+]]></content>
+        </item>
         
         <item>
             <title>THM: Rabbit Hole</title>

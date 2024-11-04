@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 29 Oct 2024 19:25:05 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 04 Nov 2024 12:11:25 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: SeeTwo</title>
+      <link>https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/</link>
+      <pubDate>Mon, 04 Nov 2024 12:11:25 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/</guid>
+      <description>Platforme: TryHackMe Lien: SeeTwo Niveau: Moyen Pour ce défi, nous devons examiner un fichier pcap. Initialement, nous trouvons ce qui semble être du trafic banal, mais en creusant un peu, nous découvrons un binaire ELF contenant des fichiers .pyc. La décompilation d&amp;rsquo;un de ces fichiers nous permet de comprendre les tactiques utilisées par l&amp;rsquo;attaquant, et avec un script python nous trouvons toutes les informations dont nous avons besoin.&#xA;Investigation Juste après avoir chargé le fichier pcap, nous obtenons une vision d&amp;rsquo;ensemble du trafic.</description>
+    </item>
     <item>
       <title>THM: Rabbit Hole</title>
       <link>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</guid>
       <description>Platforme: Hack The Box Lien: Mailing Niveau: Facile OS: Windows Cette machine HackTheBox est centrée sur les vulnérabilités email. Après une reconnaissance initiale, nous exploitons une LFI pour récupérer des hachages de mots de passe, dont un nous donne accès à un compte admin. En utilisant ensuite la vulnérabilité MonikerLink, nous obtenons un premier accès. L&amp;rsquo;escalade de privilèges se réalise en exploitant une configuration permettant l&amp;rsquo;exécution automatique de fichiers .</description>
-    </item>
-    <item>
-      <title>THM: Summit</title>
-      <link>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</link>
-      <pubDate>Thu, 29 Aug 2024 21:44:51 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/08/thm-summit/</guid>
-      <description>Ce challenge nécessite de créer des contre-mesures défensives pour différents échantillons de malware. Nous utiliserons des hachages de fichiers, des adresses IP, des règles de pare-feu, des règles DNS et des règles sigma.&#xA;Platforme: TryHackMe Lien: Summit Niveau: Facile What is the first flag you receive after successfully detecting sample1.exe? Après avoir cliqué sur le lien fourni, sélectionnez Malware Snadbox, le fichier sample1.exe est déjà présent et cliquez sur Submit for Analysis.</description>
     </item>
   </channel>
 </rss>

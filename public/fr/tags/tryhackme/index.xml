@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Tue, 29 Oct 2024 19:25:05 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 04 Nov 2024 12:11:25 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: SeeTwo</title>
+      <link>https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/</link>
+      <pubDate>Mon, 04 Nov 2024 12:11:25 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/</guid>
+      <description>Platforme: TryHackMe Lien: SeeTwo Niveau: Moyen Pour ce défi, nous devons examiner un fichier pcap. Initialement, nous trouvons ce qui semble être du trafic banal, mais en creusant un peu, nous découvrons un binaire ELF contenant des fichiers .pyc. La décompilation d&amp;rsquo;un de ces fichiers nous permet de comprendre les tactiques utilisées par l&amp;rsquo;attaquant, et avec un script python nous trouvons toutes les informations dont nous avons besoin.&#xA;Investigation Juste après avoir chargé le fichier pcap, nous obtenons une vision d&amp;rsquo;ensemble du trafic.</description>
+    </item>
     <item>
       <title>THM: Rabbit Hole</title>
       <link>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</link>
