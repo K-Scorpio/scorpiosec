@@ -147,7 +147,7 @@ At `http://blazorized.htb/` we find a personal website built with Blazor Web Ass
 
 ![Blazorized wappalyzer](/images/HTB-Blazorized/Blazorized_tech_stack.png)
 
-When we select the other sections such as `Interesting Digital Gardens` and `Misc. Links` I get the message `Failed fetching data from the API of Blazorized`.
+When we select the other sections such as `Interesting Digital Gardens` and `Misc. Links` we get the message `Failed fetching data from the API of Blazorized`.
 
 ![Blazorized failed data fetching](/images/HTB-Blazorized/failed_fetching.png)
 
