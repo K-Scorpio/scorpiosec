@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 04 Nov 2024 12:11:25 -0600</lastBuildDate>
+    <lastBuildDate>Thu, 07 Nov 2024 18:46:04 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Blazorized</title>
+      <link>https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/</link>
+      <pubDate>Thu, 07 Nov 2024 18:46:04 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/</guid>
+      <description>Platforme: Hack The Box Lien: Blazorized Niveau: Difficle OS: Windows Blazorized présente une variété d&amp;rsquo;attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d&amp;rsquo;une énumération, nous trouvons plusieurs fichiers DLL associés à l&amp;rsquo;application. La décompilation d&amp;rsquo;un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d&amp;rsquo;accéder à un panneau d&amp;rsquo;administration où nous identifions une vulnérabilité d&amp;rsquo;injection SQL, ce qui nous donne un accès initial.</description>
+    </item>
     <item>
       <title>THM: SeeTwo</title>
       <link>https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</guid>
       <description>Platforme: TryHackMe Lien: Friday Overtime Niveau: Moyen Après avoir lancé la VM fournie, nous nous connectons avec les identifiants ericatracy:Intel321!.&#xA;Who shared the malware samples? Immédiatement après notre identification, nous trouvons un document intitulé Urgent: Malicious Malware Artefacts Detected.&#xA;L&amp;rsquo;auteur du document est Oliver Bennett.&#xA;Réponse : Oliver Bennett&#xA;What is the SHA1 hash of the file &amp;ldquo;pRsm.dll&amp;rdquo; inside samples.zip? Cliquez sur Documents puis sur View All.&#xA;Après avoir sélectionné le document Urgent : Artefacts malveillants détectés, vous trouverez le fichier samples.</description>
-    </item>
-    <item>
-      <title>HTB: Mailing</title>
-      <link>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</link>
-      <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-mailing/</guid>
-      <description>Platforme: Hack The Box Lien: Mailing Niveau: Facile OS: Windows Cette machine HackTheBox est centrée sur les vulnérabilités email. Après une reconnaissance initiale, nous exploitons une LFI pour récupérer des hachages de mots de passe, dont un nous donne accès à un compte admin. En utilisant ensuite la vulnérabilité MonikerLink, nous obtenons un premier accès. L&amp;rsquo;escalade de privilèges se réalise en exploitant une configuration permettant l&amp;rsquo;exécution automatique de fichiers .</description>
     </item>
   </channel>
 </rss>

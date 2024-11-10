@@ -267,7 +267,7 @@ Decompile `Blazorized.Helpers.dll` and go to `Blazorized.Helpers` --> `JWT.cs`. 
 
 ![JWT info3](/images/HTB-Blazorized/JWT_info3.png)
 
-Beloe is all the information we need:
+Below is all the information we need:
 
 ```
 # For the Header (make sure to change the algorithm to 512 at the top of the page)
@@ -439,13 +439,13 @@ Set-ADUser -Identity SSA_6010 -ScriptPath 'A32FF3AEAA23\revshell.bat'
 
 On our listener we catch a shell as `SSA_6010`.
 
-## Privilege Escalation
-
 ![SSA_6010 shell](/images/HTB-Blazorized/SSA_6010_shell.png)
+
+## Privilege Escalation
 
 We switch to a meterpreter shell, upload SharpHound to the target an run it a second time.
 
-`SSA_6010` is part of the `Super_Support_Administrators`.
+`SSA_6010` is part of the `Super_Support_Administrators` group.
 
 ![SSA_6010 group memberships](/images/HTB-Blazorized/SSA_6010_group_membership.png)
 
