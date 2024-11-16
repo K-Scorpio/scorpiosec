@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 07 Nov 2024 18:46:04 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 15 Nov 2024 17:00:51 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Axlle</title>
+      <link>https://scorpiosec.com/posts/2024/11/htb-axlle/</link>
+      <pubDate>Fri, 15 Nov 2024 17:00:51 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/11/htb-axlle/</guid>
+      <description>Platform: Hack The Box Link: Axlle Level: Hard OS: Windows Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a .xll attachment to gain an initial foothold. On the compromised target, we discover an .eml file containing details about an automated task. By leveraging this information, we craft a malicious .url file, enabling lateral movement to another user account and accessing the user flag.</description>
+    </item>
     <item>
       <title>HTB: Blazorized</title>
       <link>https://scorpiosec.com/posts/2024/11/htb-blazorized/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 01 Aug 2024 17:57:29 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/08/htb-iclean/</guid>
       <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux IClean begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection (SSTI), which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes. By cracking one of these hashes, we gain SSH access and retrieve the user flag.</description>
-    </item>
-    <item>
-      <title>HTB: WifineticTwo</title>
-      <link>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</link>
-      <pubDate>Fri, 26 Jul 2024 15:04:48 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/07/htb-wifinetictwo/</guid>
-      <description>Platform: Hack The Box Link: WifineticTwo Level: Medium OS: Linux WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.</description>
     </item>
   </channel>
 </rss>

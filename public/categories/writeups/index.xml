@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 07 Nov 2024 18:46:04 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 15 Nov 2024 17:00:51 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Axlle</title>
+      <link>https://scorpiosec.com/posts/2024/11/htb-axlle/</link>
+      <pubDate>Fri, 15 Nov 2024 17:00:51 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/11/htb-axlle/</guid>
+      <description>Platform: Hack The Box Link: Axlle Level: Hard OS: Windows Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a .xll attachment to gain an initial foothold. On the compromised target, we discover an .eml file containing details about an automated task. By leveraging this information, we craft a malicious .url file, enabling lateral movement to another user account and accessing the user flag.</description>
+    </item>
     <item>
       <title>HTB: Blazorized</title>
       <link>https://scorpiosec.com/posts/2024/11/htb-blazorized/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/09/htb-solarlab/</guid>
       <description>Platform: Hack The Box Link: SolarLab Level: Medium OS: Windows SolarLab begins with a basic website that, after enumeration, offers no direct exploitation paths. Shifting focus to SMB, we discover a document in a file share containing credentials. These credentials grant access to ReportHub, accessible at a subdomain found during previous enumeration. Upon examining its functionality, we identify that it generates PDFs using the vulnerable ReportLab library (CVE-2023-33733), which allows us to exploit this and gain initial access, recovering the user flag.</description>
-    </item>
-    <item>
-      <title>THM: Friday Overtime</title>
-      <link>https://scorpiosec.com/posts/2024/09/thm-friday-overtime/</link>
-      <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/09/thm-friday-overtime/</guid>
-      <description>Platform: TryHackMe Link: Friday Overtime Level: Medium For this blue team challenge we need to conduct an investigation and provide answers to some questions.&#xA;After launching the provided VM we login with the credentials ericatracy:Intel321!.&#xA;Who shared the malware samples? Right after logging in we find a document titled Urgent: Malicious Malware Artefacts Detected.&#xA;The author of the document is Oliver Bennett.&#xA;Answer: Oliver Bennett&#xA;What is the SHA1 hash of the file &amp;ldquo;pRsm.</description>
     </item>
   </channel>
 </rss>
