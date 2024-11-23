@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Resource revolves around exploiting SSH vulnerabilities. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.
+Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.
 
 Target IP address - `10.10.11.27`
 
