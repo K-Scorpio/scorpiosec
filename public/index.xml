@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 15 Nov 2024 17:00:51 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 22 Nov 2024 18:48:22 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Resource</title>
+      <link>https://scorpiosec.com/posts/2024/11/htb-resource/</link>
+      <pubDate>Fri, 22 Nov 2024 18:48:22 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/11/htb-resource/</guid>
+      <description>Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH vulnerabilities. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.</description>
+    </item>
     <item>
       <title>HTB: Axlle</title>
       <link>https://scorpiosec.com/posts/2024/11/htb-axlle/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 27 Sep 2024 22:53:03 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/09/htb-boardlight/</guid>
       <description>Platform: Hack The Box Link: BoardLight Level: Easy OS: Linux BoardLight begins with a subdomain discovery where we find a Dolibarr instance, which we access by using default credentials. The initial foothold is obtained via a PHP reverse shell coupled with an uppercase manipulation technique. From there we discover a configuration file containing credentials, allowing us to take over another account. Finally, we gain root privileges by exploiting a vulnerability in Enlightenment.</description>
-    </item>
-    <item>
-      <title>HTB: SolarLab</title>
-      <link>https://scorpiosec.com/posts/2024/09/htb-solarlab/</link>
-      <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/09/htb-solarlab/</guid>
-      <description>Platform: Hack The Box Link: SolarLab Level: Medium OS: Windows SolarLab begins with a basic website that, after enumeration, offers no direct exploitation paths. Shifting focus to SMB, we discover a document in a file share containing credentials. These credentials grant access to ReportHub, accessible at a subdomain found during previous enumeration. Upon examining its functionality, we identify that it generates PDFs using the vulnerable ReportLab library (CVE-2023-33733), which allows us to exploit this and gain initial access, recovering the user flag.</description>
     </item>
   </channel>
 </rss>

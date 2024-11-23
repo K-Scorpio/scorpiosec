@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 15 Nov 2024 17:00:51 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 22 Nov 2024 18:48:22 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Resource</title>
+      <link>https://scorpiosec.com/posts/2024/11/htb-resource/</link>
+      <pubDate>Fri, 22 Nov 2024 18:48:22 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/11/htb-resource/</guid>
+      <description>Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH vulnerabilities. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.</description>
+    </item>
     <item>
       <title>HTB: Axlle</title>
       <link>https://scorpiosec.com/posts/2024/11/htb-axlle/</link>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 22 Aug 2024 19:24:15 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/08/htb-runner/</guid>
       <description>Platform: Hack The Box Link: Runner Level: Medium OS: Linux Runner starts with a basic website offering CI/CD solutions. Through subdomain enumeration, we uncover a vulnerable TeamCity instance (CVE-2023-42793), granting us access. A backup archive downloaded from this instance reveals a private SSH key and password hashes. Using the SSH key, we gain an initial foothold and retrieve the user flag. Further exploration uncovers another subdomain hosting a Portainer.io instance, which we access using the previously recovered credentials.</description>
-    </item>
-    <item>
-      <title>HTB: IClean</title>
-      <link>https://scorpiosec.com/posts/2024/08/htb-iclean/</link>
-      <pubDate>Thu, 01 Aug 2024 17:57:29 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/08/htb-iclean/</guid>
-      <description>Platform: Hack The Box Link: IClean Level: Medium OS: Linux IClean begins with a cleaning service website where we identify a form vulnerable to Cross-Site Scripting (XSS). Exploiting this vulnerability, we retrieve a session cookie and access the application dashboard. There, we discover an invoice generator susceptible to Server-Side Template Injection (SSTI), which provides our initial foothold. Further exploration reveals the database credentials, allowing us to recover password hashes. By cracking one of these hashes, we gain SSH access and retrieve the user flag.</description>
     </item>
   </channel>
 </rss>
