@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 07 Nov 2024 18:46:04 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 22 Nov 2024 18:48:22 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Resource</title>
+      <link>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</link>
+      <pubDate>Fri, 22 Nov 2024 18:48:22 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</guid>
+      <description>Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&amp;quot; met l&amp;rsquo;accent sur l&amp;rsquo;exploitation des fichiers SSH et des certificats d&amp;rsquo;autorité. L&amp;rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&amp;rsquo;utilisateur sont extraits d&amp;rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&amp;rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur.</description>
+    </item>
     <item>
       <title>HTB: Blazorized</title>
       <link>https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 19 Jul 2024 22:17:23 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/07/htb-headless/</guid>
       <description>Platforme: Hack The Box Lien: Headless Niveau: Facile OS: Linux Headless débute avec un site web statique. L&amp;rsquo;énumération nous permet d&amp;rsquo;identifier un formulaire de contact vulnérable au Cross-Site Scripting (XSS), mais les payloads standards s&amp;rsquo;avèrent inefficaces. En capturant la valeur du cookie de l&amp;rsquo;administrateur, nous accédons à la page du tableau de bord, puis au système cible grâce à l&amp;rsquo;injection de commandes. Pour l&amp;rsquo;escalade des privilèges, nous exploitons un script pour obtenir le contrôle du compte root.</description>
-    </item>
-    <item>
-      <title>HTB: Perfection</title>
-      <link>https://scorpiosec.com/fr/posts/2024/07/htb-perfection/</link>
-      <pubDate>Thu, 04 Jul 2024 14:05:10 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/07/htb-perfection/</guid>
-      <description>Platforme: Hack The Box Lien: Perfection Niveau: Facile OS: Linux Ce challenge débute avec un site web simple. Grâce à l&amp;rsquo;énumération, nous identifions une vulnérabilité à l&amp;rsquo;injection de modèle côté serveur (SSTI), que nous exploitons pour obtenir notre accès initial. Nous découvrons ensuite un fichier de base de données contenant des hachages de mots de passe, mais nos premières tentatives pour les craquer sont infructueuses. Après avoir lu les courriels des utilisateurs, nous apprenons que les mots de passe suivent un format spécifique.</description>
     </item>
   </channel>
 </rss>

