@@ -14,7 +14,7 @@ categories = ['Writeups']
 * OS: Linux
 ---
 
-Resource" met l'accent sur l'exploitation des fichiers SSH et des certificats d'autorité. L'accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d'utilisateur sont extraits d'un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d'autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur. Enfin, une vulnérabilité d'injection de globes dans un script bash est exploitée pour élever nos privilèges et obtenir l'accès root sur un hôte différent.
+Resource met l'accent sur l'exploitation des fichiers SSH et des certificats d'autorité. L'accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d'utilisateur sont extraits d'un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d'autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur. Enfin, une vulnérabilité d'injection de globes dans un script bash est exploitée pour élever nos privilèges et obtenir l'accès root sur un hôte différent.
 
 Adresse IP cible - `10.10.11.27`
 
