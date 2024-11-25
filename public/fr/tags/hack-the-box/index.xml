@@ -14,7 +14,14 @@
       <link>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</link>
       <pubDate>Fri, 22 Nov 2024 18:48:22 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</guid>
-      <description>Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&amp;quot; met l&amp;rsquo;accent sur l&amp;rsquo;exploitation des fichiers SSH et des certificats d&amp;rsquo;autorité. L&amp;rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&amp;rsquo;utilisateur sont extraits d&amp;rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&amp;rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur.</description>
+      <description>Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource met l&amp;rsquo;accent sur l&amp;rsquo;exploitation des fichiers SSH et des certificats d&amp;rsquo;autorité. L&amp;rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&amp;rsquo;utilisateur sont extraits d&amp;rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&amp;rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur.</description>
+    </item>
+    <item>
+      <title>HTB: Axlle</title>
+      <link>https://scorpiosec.com/fr/posts/2024/11/htb-axlle/</link>
+      <pubDate>Fri, 15 Nov 2024 17:00:51 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/11/htb-axlle/</guid>
+      <description>Platforme: Hack The Box Lien: Axlle Niveau: Difficile OS: Windows Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe .xll pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier .eml contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier .</description>
     </item>
     <item>
       <title>HTB: Blazorized</title>
@@ -71,13 +78,6 @@
       <pubDate>Thu, 22 Aug 2024 19:24:15 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/08/htb-runner/</guid>
       <description>Platforme: Hack The Box Lien: Runner Niveau: Moyen OS: Linux Runner débute avec un site web présentant des solutions CI/CD. Grâce à l&amp;rsquo;énumération des sous-domaines, nous découvrons une instance TeamCity vulnérable (CVE-2023-42793), ce qui nous permet d&amp;rsquo;y accéder. Une archive de sauvegarde téléchargée depuis cette instance révèle une clé SSH privée et des hachages de mots de passe. En utilisant la clé SSH, nous obtenons un accès initial et récupérons le fichier user.</description>
-    </item>
-    <item>
-      <title>HTB: Headless</title>
-      <link>https://scorpiosec.com/fr/posts/2024/07/htb-headless/</link>
-      <pubDate>Fri, 19 Jul 2024 22:17:23 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/07/htb-headless/</guid>
-      <description>Platforme: Hack The Box Lien: Headless Niveau: Facile OS: Linux Headless débute avec un site web statique. L&amp;rsquo;énumération nous permet d&amp;rsquo;identifier un formulaire de contact vulnérable au Cross-Site Scripting (XSS), mais les payloads standards s&amp;rsquo;avèrent inefficaces. En capturant la valeur du cookie de l&amp;rsquo;administrateur, nous accédons à la page du tableau de bord, puis au système cible grâce à l&amp;rsquo;injection de commandes. Pour l&amp;rsquo;escalade des privilèges, nous exploitons un script pour obtenir le contrôle du compte root.</description>
     </item>
   </channel>
 </rss>

