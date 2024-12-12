@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 04 Nov 2024 12:11:25 -0600</lastBuildDate>
+    <lastBuildDate>Wed, 11 Dec 2024 17:41:30 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Airplane</title>
+      <link>https://scorpiosec.com/fr/posts/2024/12/thm-airplane/</link>
+      <pubDate>Wed, 11 Dec 2024 17:41:30 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/12/thm-airplane/</guid>
+      <description>Platforme: TryHackMe Lien: Airplane Niveau: Moyen OS: Linux Airplane débute par la découverte d&amp;rsquo;une vulnérabilité de type Local File Inclusion (LFI). En l&amp;rsquo;exploitant, nous énumérons les processus en cours d&amp;rsquo;exécution sur la cible et identifions un processus lié à GdbServer. Grâce à un binaire ELF conçu avec msfvenom, nous exploitons cet outil pour obtenir un accès initial au système. Une énumération plus approfondie révèle un binaire avec le bit SUID activé, ce qui nous permet de pivoter vers un autre compte et de récupérer le drapeau utilisateur.</description>
+    </item>
+    <item>
+      <title>THM: The Sticker Shop</title>
+      <link>https://scorpiosec.com/fr/posts/2024/12/thm-the-sticker-shop/</link>
+      <pubDate>Wed, 04 Dec 2024 16:26:19 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/12/thm-the-sticker-shop/</guid>
+      <description>Platforme: TryHackMe Lien: The Sticker Shop Niveau: Facile Ce défi est assez simple. Après avoir confirmé la présence d&amp;rsquo;une vulnérabilité XSS, nous utilisons un payload modifié pour recevoir la valeur du fichier.&#xA;Balayage ./nmap_scan.sh &amp;lt;IP_PROVIDED&amp;gt; The_Sticker_Shop Le script que j&amp;rsquo;utilise pour scanner les cibles est disponible ici .&#xA;Résultats&#xA;Running detailed scan on open ports: 22,8080 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-04 16:38 CST Nmap scan report for 10.</description>
+    </item>
     <item>
       <title>THM: SeeTwo</title>
       <link>https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/</link>
@@ -64,20 +78,6 @@
       <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</guid>
       <description>Platforme: TryHackMe Lien: Clocky Niveau: Moyen OS: Linux Pour ce défi, notre objectif est de trouver six drapeaux. Notre première étape consiste à examiner le fichier robots.txt qui contient quelques extensions de fichiers. En utilisant ces extensions de fichiers, nous obtenons une archive et en l&amp;rsquo;extrayant, nous obtenons le code source d&amp;rsquo;une application. Après inspection du code, nous identifions un moyen de manipuler le mécanisme de réinitialisation de mot de passe de l&amp;rsquo;application, ce qui nous permet d&amp;rsquo;accéder au tableau de bord administratif.</description>
-    </item>
-    <item>
-      <title>THM: Hack Smarter Security</title>
-      <link>https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/</link>
-      <pubDate>Fri, 22 Mar 2024 16:28:33 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/03/thm-hack-smarter-security/</guid>
-      <description>Platforme: TryHackMe Lien: Hack Smarter Security Niveau: Moyen OS: Windows Dans Hack Smarter Security, nous devons exploiter un serveur Windows utilisant quelques services (dont SSH). Après avoir exploité un service peu courant pour accéder au système, nous devons contourner Microsoft Defender afin de prendre le contrôle d&amp;rsquo;un compte privilégié.&#xA;L&amp;rsquo;adresse IP cible est 10.10.189.226.&#xA;Reconnaissance nmap -sC -sV -oA nmap/Hack-Smarter-Security 10.10.189.226 Plusieurs ports sont ouverts :&#xA;FTP sur le port 21, avec une connexion anonyme autorisée SSH sur le port 22, qui peut potentiellement être notre point d&amp;rsquo;accès au système si des identifiants sont trouvés Un serveur Windows IIS sur le port 80 Les résultats du scan ne nous permettent pas de déterminer avec certitude quel service est sur le port 1311 Le serveur Windows WBT fonctionne sur le port 3389, il est utilisé pour les connexions de Windows Remote Desktop et de Remote Assistance Starting Nmap 7.</description>
-    </item>
-    <item>
-      <title>THM: OhSINT</title>
-      <link>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</link>
-      <pubDate>Tue, 13 Feb 2024 14:31:59 -0600</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/02/thm-ohsint/</guid>
-      <description>Platforme: TryHackMe Lien: OhSINT Niveau: Easy Type: OSINT Il s&amp;rsquo;agit d&amp;rsquo;un défi OSINT, c&amp;rsquo;est-à-dire Open-Source Intelligence. L&amp;rsquo;OSINT est essentiellement de la collecte et de l&amp;rsquo;analyse d&amp;rsquo;informations accessibles au public afin d&amp;rsquo;obtenir des renseignements. C&amp;rsquo;est un peu comme reconstituer un puzzle en utilisant les pièces que vous trouvez sur Internet, dans les bibliothèques ou dans tout autre endroit où l&amp;rsquo;information est librement accessible.&#xA;Après avoir téléchargé les fichiers de tâches à l&amp;rsquo;aide du bouton Download Task Files, vous obtenez une seule image nommée WindowsXP.</description>
     </item>
   </channel>
 </rss>

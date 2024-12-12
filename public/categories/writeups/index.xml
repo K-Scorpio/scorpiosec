@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 22 Nov 2024 18:48:22 -0600</lastBuildDate>
+    <lastBuildDate>Wed, 11 Dec 2024 17:41:30 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: Airplane</title>
+      <link>https://scorpiosec.com/posts/2024/12/thm-airplane/</link>
+      <pubDate>Wed, 11 Dec 2024 17:41:30 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/12/thm-airplane/</guid>
+      <description>Platform: TryHackMe Link: Airplane Level: Medium OS: Linux The challenge Airplane begins by uncovering a Local File Inclusion (LFI) vulnerability. By exploiting it, we enumerate the target’s running processes and identify one linked to GdbServer. Using an ELF binary crafted with msfvenom, we exploit this tool to gain an initial foothold on the system. Further enumeration reveals a binary with the SUID bit set, enabling us to pivot to another user and retrieve the user flag.</description>
+    </item>
+    <item>
+      <title>THM: The Sticker Shop</title>
+      <link>https://scorpiosec.com/posts/2024/12/thm-the-sticker-shop/</link>
+      <pubDate>Wed, 04 Dec 2024 16:26:19 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/12/thm-the-sticker-shop/</guid>
+      <description>Platform: TryHackMe Link: The Sticker Shop Level: Easy This is a pretty straightforward room where we need to leverage a Cross-Site Scripting vulnerability in order to read the flag.&#xA;Scanning ./nmap_scan.sh &amp;lt;IP_PROVIDED&amp;gt; The_Sticker_Shop You can find the script I use to scan targets here .&#xA;Results&#xA;Running detailed scan on open ports: 22,8080 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-04 16:38 CST Nmap scan report for 10.10.139.96 Host is up (0.</description>
+    </item>
     <item>
       <title>HTB: Resource</title>
       <link>https://scorpiosec.com/posts/2024/11/htb-resource/</link>
@@ -64,20 +78,6 @@
       <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/10/htb-blurry/</guid>
       <description>Platform: Hack The Box Link: Blurry Level: Medium OS: Linux The Blurry machine demonstrates how Python modules and specific Python features can be exploited to compromise systems. The challenge begins with access to a ClearML instance, containing various experiments tied to a project. Using CVE-2024-24590, we gain our initial foothold by uploading a malicious artifact through the API, allowing us to retrieve the user flag. This write-up will detail two distinct methods for privilege escalation, showcasing different approaches to fully compromise the system.</description>
-    </item>
-    <item>
-      <title>HTB: Freelancer</title>
-      <link>https://scorpiosec.com/posts/2024/09/htb-freelancer/</link>
-      <pubDate>Mon, 30 Sep 2024 13:36:12 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/09/htb-freelancer/</guid>
-      <description>Platform: Hack The Box Link: Freelancer Level: Hard OS: Windows Freelancer begins with a website that allows the creation of various types of accounts. After registering, we exploit an Insecure Direct Object Reference (IDOR) vulnerability to gain access to an admin account. On the admin page, we find a SQL terminal, which we leverage to obtain an initial foothold.&#xA;Further exploration of the system reveals passwords in a configuration file, which we run against a user list, enabling us to pivot to another account and obtain the user flag.</description>
-    </item>
-    <item>
-      <title>HTB: BoardLight</title>
-      <link>https://scorpiosec.com/posts/2024/09/htb-boardlight/</link>
-      <pubDate>Fri, 27 Sep 2024 22:53:03 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/09/htb-boardlight/</guid>
-      <description>Platform: Hack The Box Link: BoardLight Level: Easy OS: Linux BoardLight begins with a subdomain discovery where we find a Dolibarr instance, which we access by using default credentials. The initial foothold is obtained via a PHP reverse shell coupled with an uppercase manipulation technique. From there we discover a configuration file containing credentials, allowing us to take over another account. Finally, we gain root privileges by exploiting a vulnerability in Enlightenment.</description>
     </item>
   </channel>
 </rss>
