@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 11 Dec 2024 17:41:30 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 13 Dec 2024 13:44:19 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB: Compiled</title>
+      <link>https://scorpiosec.com/fr/posts/2024/12/htb-compiled/</link>
+      <pubDate>Fri, 13 Dec 2024 13:44:19 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/12/htb-compiled/</guid>
+      <description>Platforme: Hack The Box Lien: Compiled Niveau: Moyen OS: Windows Compiled débute par la découverte d&amp;rsquo;une instance Gitea sur le port 3000 et d&amp;rsquo;un service de compilation sur le port 5000. En exploitant une vulnérabilité de Git (CVE-2024-32002), nous obtenons un accès initial. En explorant le système, nous découvrons un fichier de base de données contenant des hachages d&amp;rsquo;utilisateurs et d&amp;rsquo;autres informations critiques, nous permettant de trouver un mot de passe et d&amp;rsquo;effectuer un mouvement latéral.</description>
+    </item>
     <item>
       <title>THM: Airplane</title>
       <link>https://scorpiosec.com/fr/posts/2024/12/thm-airplane/</link>
@@ -71,13 +78,6 @@
       <pubDate>Wed, 16 Oct 2024 21:00:55 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/10/htb-editorial/</guid>
       <description>Platforme: Hack The Box Lien: Editorial Niveau: Facile OS: Linux Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L&amp;rsquo;application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d&amp;rsquo;une énumération plus poussée, nous découvrons une série de commits Git, dont l&amp;rsquo;un expose les informations d&amp;rsquo;identification d&amp;rsquo;un autre utilisateur, ce qui permet un déplacement latéral.</description>
-    </item>
-    <item>
-      <title>HTB: Blurry</title>
-      <link>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</link>
-      <pubDate>Thu, 10 Oct 2024 19:31:38 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/10/htb-blurry/</guid>
-      <description>Platforme: Hack The Box Lien: Blurry Niveau: Moyen OS: Linux La machine Blurry démontre comment les modules Python et les fonctionnalités spécifiques de Python peuvent être exploités pour compromettre des systèmes. Le défi commence par l&amp;rsquo;accès à une instance ClearML, contenant diverses expériences liées à un projet. En utilisant le CVE-2024-24590, nous obtenons notre accès initial en téléchargeant un artefact malveillant via l&amp;rsquo;API sur la cible, ce qui nous permet de récupérer le drapeau utilisateur (user.</description>
     </item>
   </channel>
 </rss>
