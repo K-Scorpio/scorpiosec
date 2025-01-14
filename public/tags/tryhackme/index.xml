@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 11 Dec 2024 17:41:30 -0600</lastBuildDate>
+    <lastBuildDate>Mon, 13 Jan 2025 21:00:11 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: SilverPlatter</title>
+      <link>https://scorpiosec.com/posts/2025/01/thm-silverplatter/</link>
+      <pubDate>Mon, 13 Jan 2025 21:00:11 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2025/01/thm-silverplatter/</guid>
+      <description>Platform: TryHackMe Link: Silver Platter Level: Easy OS: Linux Silver Platter is a straightforward machine that begins with http services running on two different ports, one of which reveals a potential username. Through enumeration, we discover a Silverpeas login page and use a custom password list to identify valid credentials, granting access to the dashboard. Further research helps us find CVE-2023-47323, which we use to obtain another set of credentials and an initial foothold.</description>
+    </item>
+    <item>
+      <title>THM: Mountaineer</title>
+      <link>https://scorpiosec.com/posts/2024/12/thm-mountaineer/</link>
+      <pubDate>Sun, 22 Dec 2024 18:15:46 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2024/12/thm-mountaineer/</guid>
+      <description> Platform: TryHackMe Link: Mountaineer Level: Hard OS: Linux Scanning </description>
+    </item>
     <item>
       <title>THM: Airplane</title>
       <link>https://scorpiosec.com/posts/2024/12/thm-airplane/</link>
@@ -64,20 +78,6 @@
       <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/06/thm-cyberlens/</guid>
       <description>Platform: TryHackMe Link: CyberLens Level: Easy OS: Windows CyberLens features a website with a metadata extraction feature. After some enumeration we discover that the feature is powered by Apache Tika, an outadated version of the software vulnerable to CVE-2018-1335 is running. We get our initial foothold by exploiting the vulnerability. For privilege escalation we abuse AlwaysInstallElevated to obtain a system shell.&#xA;Scanning We will use a Bash script to automate the scanning process.</description>
-    </item>
-    <item>
-      <title>THM: Creative</title>
-      <link>https://scorpiosec.com/posts/2024/04/thm-creative/</link>
-      <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/04/thm-creative/</guid>
-      <description>Platform: TryHackMe Link: Creative Level: Easy OS: Linux The challenge begins with a static website that is unexploitable. Through subdomain enumeration, a URL testing application is uncovered, susceptible to SSRF. However, full exploitation is only possible after discovering an internally exposed port. This access allows for file reading on the server, leading to the retrieval of an SSH private key. Yet, this alone isn&amp;rsquo;t enough to establish a foothold. Success is achieved by cracking the obtained SSH key&amp;rsquo;s hash, granting access to the target system.</description>
-    </item>
-    <item>
-      <title>THM: Clocky</title>
-      <link>https://scorpiosec.com/posts/2024/04/thm-clocky/</link>
-      <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/04/thm-clocky/</guid>
-      <description>Platform: TryHackMe Link: Clocky Level: Medium OS: Linux For this challenge our objective is to locate six flags. Our inital step involves examining the robots.txt file which contains some file extensions. By fuzzing with those file extensions we obtain an archive and extracting it yields the source code of an application. Upon reviewing the code we identify a way to manipulate the application&amp;rsquo;s password reset mechanism, granting us access to the administrative dashboard.</description>
     </item>
   </channel>
 </rss>

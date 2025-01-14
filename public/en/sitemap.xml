@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://scorpiosec.com/categories/</loc>
-    <lastmod>2024-12-13T13:44:19-06:00</lastmod>
+    <lastmod>2025-01-13T21:00:11-06:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="fr"
@@ -13,6 +13,97 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/categories/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/posts/</loc>
+    <lastmod>2025-01-13T21:00:11-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/</loc>
+    <lastmod>2025-01-13T21:00:11-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/</loc>
+    <lastmod>2025-01-13T21:00:11-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/posts/2025/01/thm-silverplatter/</loc>
+    <lastmod>2025-01-13T21:00:11-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2025/01/thm-silverplatter/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/tags/tryhackme/</loc>
+    <lastmod>2025-01-13T21:00:11-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/tags/tryhackme/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/tags/tryhackme/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/categories/writeups/</loc>
+    <lastmod>2025-01-13T21:00:11-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/categories/writeups/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/categories/writeups/"
+                />
+  </url><url>
+    <loc>https://scorpiosec.com/posts/2024/12/thm-mountaineer/</loc>
+    <lastmod>2024-12-22T18:15:46-06:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="fr"
+                href="https://scorpiosec.com/fr/posts/2024/12/thm-mountaineer/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://scorpiosec.com/posts/2024/12/thm-mountaineer/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/tags/hack-the-box/</loc>
@@ -41,58 +132,6 @@
                 href="https://scorpiosec.com/posts/2024/12/htb-compiled/"
                 />
   </url><url>
-    <loc>https://scorpiosec.com/posts/</loc>
-    <lastmod>2024-12-13T13:44:19-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/posts/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/</loc>
-    <lastmod>2024-12-13T13:44:19-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/tags/</loc>
-    <lastmod>2024-12-13T13:44:19-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/categories/writeups/</loc>
-    <lastmod>2024-12-13T13:44:19-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/categories/writeups/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/categories/writeups/"
-                />
-  </url><url>
     <loc>https://scorpiosec.com/posts/2024/12/thm-airplane/</loc>
     <lastmod>2024-12-11T17:41:30-06:00</lastmod>
     <xhtml:link
@@ -104,19 +143,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://scorpiosec.com/posts/2024/12/thm-airplane/"
-                />
-  </url><url>
-    <loc>https://scorpiosec.com/tags/tryhackme/</loc>
-    <lastmod>2024-12-11T17:41:30-06:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="fr"
-                href="https://scorpiosec.com/fr/tags/tryhackme/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://scorpiosec.com/tags/tryhackme/"
                 />
   </url><url>
     <loc>https://scorpiosec.com/posts/2024/12/thm-the-sticker-shop/</loc>

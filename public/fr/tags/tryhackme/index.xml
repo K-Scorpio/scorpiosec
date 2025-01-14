@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Wed, 11 Dec 2024 17:41:30 -0600</lastBuildDate>
+    <lastBuildDate>Mon, 13 Jan 2025 21:00:11 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/tags/tryhackme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: SilverPlatter</title>
+      <link>https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/</link>
+      <pubDate>Mon, 13 Jan 2025 21:00:11 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/</guid>
+      <description>Platforme: TryHackMe Lien: Silver Platter Niveau: Facile OS: Linux Silver Platter est une machine toute simple qui commence par des services http fonctionnant sur deux ports différents, dont l&amp;rsquo;un révèle un nom d&amp;rsquo;utilisateur potentiel. Grâce à l&amp;rsquo;énumération, nous découvrons une page de connexion pour Silverpeas. Nous utilisons une liste de mots de passe personnalisée pour identifier les identifiants valides, ce qui nous permet d&amp;rsquo;accéder au tableau de bord. En poursuivant nos recherches, nous trouvons le CVE-2023-47323, que nous utilisons pour obtenir des identifiants supplémentaires et un accès initial.</description>
+    </item>
+    <item>
+      <title>THM: Mountaineer</title>
+      <link>https://scorpiosec.com/fr/posts/2024/12/thm-mountaineer/</link>
+      <pubDate>Sun, 22 Dec 2024 18:15:46 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/12/thm-mountaineer/</guid>
+      <description> Platforme: TryHackMe Lien: Mountaineer Niveau: Difficile OS: Linux Balayage </description>
+    </item>
     <item>
       <title>THM: Airplane</title>
       <link>https://scorpiosec.com/fr/posts/2024/12/thm-airplane/</link>
@@ -64,20 +78,6 @@
       <pubDate>Wed, 19 Jun 2024 14:37:09 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/06/thm-cyberlens/</guid>
       <description>Platforme: TryHackMe Lien: CyberLens Niveau: Facile OS: Windows CyberLens présente un site web avec une fonction d&amp;rsquo;extraction de métadonnées. Après notre énumération, nous découvrons que cette fonction utilise Apache Tika, une version obsolète du logiciel vulnérable au CVE-2018-1335 est installée. Nous obtenons notre accès initial en exploitant cette vulnérabilité. Pour l&amp;rsquo;escalade des privilèges, nous abusons de AlwaysInstallElevated pour obtenir un shell système.&#xA;Balayage Nous utiliserons un script Bash pour automatiser le balayage.</description>
-    </item>
-    <item>
-      <title>THM: Creative</title>
-      <link>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</link>
-      <pubDate>Wed, 17 Apr 2024 22:14:41 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/04/thm-creative/</guid>
-      <description>Platforme: TryHackMe Lien: Creative Niveau: Facile OS: Linux Ce défi commence par un site web statique qui n&amp;rsquo;est pas exploitable. L&amp;rsquo;énumération des sous-domaines permet de découvrir une application de test d&amp;rsquo;URL vulnérable au SSRF. Cependant, l&amp;rsquo;exploitation complète n&amp;rsquo;est possible qu&amp;rsquo;après la découverte d&amp;rsquo;un port exposé en interne. Cet accès permet de lire des fichiers sur le serveur, ce qui conduit à la récupération d&amp;rsquo;une clé privée SSH. Mais cela ne suffit pas pour établir un point d&amp;rsquo;ancrage.</description>
-    </item>
-    <item>
-      <title>THM: Clocky</title>
-      <link>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</link>
-      <pubDate>Wed, 10 Apr 2024 13:03:18 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/04/thm-clocky/</guid>
-      <description>Platforme: TryHackMe Lien: Clocky Niveau: Moyen OS: Linux Pour ce défi, notre objectif est de trouver six drapeaux. Notre première étape consiste à examiner le fichier robots.txt qui contient quelques extensions de fichiers. En utilisant ces extensions de fichiers, nous obtenons une archive et en l&amp;rsquo;extrayant, nous obtenons le code source d&amp;rsquo;une application. Après inspection du code, nous identifions un moyen de manipuler le mécanisme de réinitialisation de mot de passe de l&amp;rsquo;application, ce qui nous permet d&amp;rsquo;accéder au tableau de bord administratif.</description>
     </item>
   </channel>
 </rss>

@@ -7,8 +7,22 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 13 Dec 2024 13:44:19 -0600</lastBuildDate>
+    <lastBuildDate>Mon, 13 Jan 2025 21:00:11 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>THM: SilverPlatter</title>
+      <link>https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/</link>
+      <pubDate>Mon, 13 Jan 2025 21:00:11 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/</guid>
+      <description>Platforme: TryHackMe Lien: Silver Platter Niveau: Facile OS: Linux Silver Platter est une machine toute simple qui commence par des services http fonctionnant sur deux ports différents, dont l&amp;rsquo;un révèle un nom d&amp;rsquo;utilisateur potentiel. Grâce à l&amp;rsquo;énumération, nous découvrons une page de connexion pour Silverpeas. Nous utilisons une liste de mots de passe personnalisée pour identifier les identifiants valides, ce qui nous permet d&amp;rsquo;accéder au tableau de bord. En poursuivant nos recherches, nous trouvons le CVE-2023-47323, que nous utilisons pour obtenir des identifiants supplémentaires et un accès initial.</description>
+    </item>
+    <item>
+      <title>THM: Mountaineer</title>
+      <link>https://scorpiosec.com/fr/posts/2024/12/thm-mountaineer/</link>
+      <pubDate>Sun, 22 Dec 2024 18:15:46 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2024/12/thm-mountaineer/</guid>
+      <description> Platforme: TryHackMe Lien: Mountaineer Niveau: Difficile OS: Linux Balayage </description>
+    </item>
     <item>
       <title>HTB: Compiled</title>
       <link>https://scorpiosec.com/fr/posts/2024/12/htb-compiled/</link>
@@ -64,20 +78,6 @@
       <pubDate>Tue, 29 Oct 2024 19:25:05 -0500</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</guid>
       <description>Platforme: TryHackMe Lien: Rabbit Hole Niveau: Difficile OS: Linux Ce défi met l&amp;rsquo;accent sur les vulnérabilités liées aux injections SQL. Nous découvrons une vulnérabilité d&amp;rsquo;injection SQL de second ordre après plusieurs tentatives de Cross-Site Scripting (XSS) qui échouent. En utilisant cette vulnérabilité, nous récupérons des hachages de mots de passe, mais ils ne conduisent pas à un accès initial. En combinant un script python et une payload utilisant la commande PROCESSLIST, nous réussissons à extraire la requête contenant le mot de passe de l&amp;rsquo;utilisateur admin, que nous utilisons pour nous connecter via SSH et lire le drapeau.</description>
-    </item>
-    <item>
-      <title>THM: K2</title>
-      <link>https://scorpiosec.com/fr/posts/2024/10/thm-k2/</link>
-      <pubDate>Thu, 24 Oct 2024 14:16:05 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/10/thm-k2/</guid>
-      <description>Platforme: TryHackMe Lien: K2 Niveau: Difficile OS: Linux et Windows (Cette salle est composée de trois machines différentes) Base Camp Base Camp est une machine Linux avec un serveur web. L&amp;rsquo;énumération initiale révèle deux sous-domaines liés à un système de ticketing, dont l&amp;rsquo;un est vulnérable au Cross-Site Scripting (XSS). En utilisant le XSS, nous dérobons un cookie de session pour accéder au tableau de bord de l&amp;rsquo;administrateur, qui lui-même est vulnérable à l&amp;rsquo;injection SQL.</description>
-    </item>
-    <item>
-      <title>HTB: Editorial</title>
-      <link>https://scorpiosec.com/fr/posts/2024/10/htb-editorial/</link>
-      <pubDate>Wed, 16 Oct 2024 21:00:55 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/10/htb-editorial/</guid>
-      <description>Platforme: Hack The Box Lien: Editorial Niveau: Facile OS: Linux Editorial est une machine Linux assez simple, mais qui présente quelques particularités. L&amp;rsquo;application web est vulnérable au Server-Side Request Forgery (SSRF), mais elle nécessite un fuzzing des ports internes pour découvrir des données sensibles. En exploitant un point de terminaison API, nous récupérons des identifiants qui nous donnent un accès initial au système. Au cours d&amp;rsquo;une énumération plus poussée, nous découvrons une série de commits Git, dont l&amp;rsquo;un expose les informations d&amp;rsquo;identification d&amp;rsquo;un autre utilisateur, ce qui permet un déplacement latéral.</description>
     </item>
   </channel>
 </rss>

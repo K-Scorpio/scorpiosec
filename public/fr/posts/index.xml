@@ -6,8 +6,193 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>fr</language>
         <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-        <lastBuildDate>Fri, 13 Dec 2024 13:44:19 -0600</lastBuildDate>
+        <lastBuildDate>Mon, 13 Jan 2025 21:00:11 -0600</lastBuildDate>
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>THM: SilverPlatter</title>
+            <link>https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/</link>
+            <pubDate>Mon, 13 Jan 2025 21:00:11 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/</guid>
+            <description>Platforme: TryHackMe Lien: Silver Platter Niveau: Facile OS: Linux Silver Platter est une machine toute simple qui commence par des services http fonctionnant sur deux ports différents, dont l&amp;rsquo;un révèle un nom d&amp;rsquo;utilisateur potentiel. Grâce à l&amp;rsquo;énumération, nous découvrons une page de connexion pour Silverpeas. Nous utilisons une liste de mots de passe personnalisée pour identifier les identifiants valides, ce qui nous permet d&amp;rsquo;accéder au tableau de bord. En poursuivant nos recherches, nous trouvons le CVE-2023-47323, que nous utilisons pour obtenir des identifiants supplémentaires et un accès initial.</description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/silverplatter" target="_blank" >Silver Platter</a>
+
+</li>
+<li>Niveau: Facile</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<p>Silver Platter est une machine toute simple qui commence par des services <code>http</code> fonctionnant sur deux ports différents, dont l&rsquo;un révèle un nom d&rsquo;utilisateur potentiel. Grâce à l&rsquo;énumération, nous découvrons une page de connexion pour Silverpeas. Nous utilisons une liste de mots de passe personnalisée pour identifier les identifiants valides, ce qui nous permet d&rsquo;accéder au tableau de bord. En poursuivant nos recherches, nous trouvons le <code>CVE-2023-47323</code>, que nous utilisons pour obtenir des identifiants supplémentaires et un accès initial. L&rsquo;utilisateur, qui fait partie du groupe <code>adm</code>, a accès aux fichiers journaux du système où un autre mot de passe est trouvé. Ceci nous permet de changer d&rsquo;utilisateur. Avec les privilèges <code>sudo</code> sans restriction sur le nouveau compte, il est facile d&rsquo;obtenir l&rsquo;accès à l&rsquo;utilisateur root.</p>
+<h2 id="balayage">Balayage</h2>
+<pre tabindex="0"><code>nmap -sC -sV -oA nmap/SilverPlatter [IP_ADDRESS]
+</code></pre><p><strong>Résultats</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>Starting Nmap 7.94SVN <span style="color:#f92672">(</span> https://nmap.org <span style="color:#f92672">)</span> at 2025-01-13 23:13 CST
+</span></span><span style="display:flex;"><span>Nmap scan report <span style="color:#66d9ef">for</span> 10.10.49.248
+</span></span><span style="display:flex;"><span>Host is up <span style="color:#f92672">(</span>0.26s latency<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>Not shown: <span style="color:#ae81ff">997</span> closed tcp ports <span style="color:#f92672">(</span>conn-refused<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>PORT     STATE SERVICE    VERSION
+</span></span><span style="display:flex;"><span>22/tcp   open  ssh        OpenSSH 8.9p1 Ubuntu 3ubuntu0.4 <span style="color:#f92672">(</span>Ubuntu Linux; protocol 2.0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>| ssh-hostkey: 
+</span></span><span style="display:flex;"><span>|   <span style="color:#ae81ff">256</span> 1b:1c:87:8a:fe:34:16:c9:f7:82:37:2b:10:8f:8b:f1 <span style="color:#f92672">(</span>ECDSA<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_  <span style="color:#ae81ff">256</span> 26:6d:17:ed:83:9e:4f:2d:f6:cd:53:17:c8:80:3d:09 <span style="color:#f92672">(</span>ED25519<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>80/tcp   open  http       nginx 1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>|_http-title: Hack Smarter Security
+</span></span><span style="display:flex;"><span>|_http-server-header: nginx/1.18.0 <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>8080/tcp open  http-proxy
+</span></span><span style="display:flex;"><span>|_http-title: Error
+</span></span><span style="display:flex;"><span>| fingerprint-strings: 
+</span></span><span style="display:flex;"><span>|   FourOhFourRequest: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">404</span> Not Found
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">74</span>
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html
+</span></span><span style="display:flex;"><span>|     Date: Tue, <span style="color:#ae81ff">14</span> Jan <span style="color:#ae81ff">2025</span> 05:14:16 GMT
+</span></span><span style="display:flex;"><span>|     &lt;html&gt;&lt;head&gt;&lt;title&gt;Error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;404 - Not Found&lt;/body&gt;&lt;/html&gt;
+</span></span><span style="display:flex;"><span>|   GenericLines, Help, Kerberos, LDAPSearchReq, LPDString, RTSPRequest, SMBProgNeg, SSLSessionReq, Socks5, TLSSessionReq, TerminalServerCookie: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">400</span> Bad Request
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|   GetRequest, HTTPOptions: 
+</span></span><span style="display:flex;"><span>|     HTTP/1.1 <span style="color:#ae81ff">404</span> Not Found
+</span></span><span style="display:flex;"><span>|     Connection: close
+</span></span><span style="display:flex;"><span>|     Content-Length: <span style="color:#ae81ff">74</span>
+</span></span><span style="display:flex;"><span>|     Content-Type: text/html
+</span></span><span style="display:flex;"><span>|     Date: Tue, <span style="color:#ae81ff">14</span> Jan <span style="color:#ae81ff">2025</span> 05:14:14 GMT
+</span></span><span style="display:flex;"><span>|_    &lt;html&gt;&lt;head&gt;&lt;title&gt;Error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;404 - Not Found&lt;/body&gt;&lt;/html&gt;
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style="display:flex;"><span>SF-Port8080-TCP:V<span style="color:#f92672">=</span>7.94SVN%I<span style="color:#f92672">=</span>7%D<span style="color:#f92672">=</span>1/13%Time<span style="color:#f92672">=</span>6785F2A7%P<span style="color:#f92672">=</span>x86_64-pc-linux-gnu%r
+</span></span><span style="display:flex;"><span>SF:<span style="color:#f92672">(</span>GetRequest,C9,<span style="color:#e6db74">&#34;HTTP/1\.1\x20404\x20Not\x20Found\r\nConnection:\x20clos
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:e\r\nContent-Length:\x2074\r\nContent-Type:\x20text/html\r\nDate:\x20Tu
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:e,\x2014\x20Jan\x202025\x2005:14:14\x20GMT\r\n\r\n&lt;html&gt;&lt;head&gt;&lt;title&gt;Er
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:ror&lt;/title&gt;&lt;/head&gt;&lt;body&gt;404\x20-\x20Not\x20Found&lt;/body&gt;&lt;/html&gt;&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>HTTP
+</span></span><span style="display:flex;"><span>SF:Options,C9,<span style="color:#e6db74">&#34;HTTP/1\.1\x20404\x20Not\x20Found\r\nConnection:\x20close\r\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:nContent-Length:\x2074\r\nContent-Type:\x20text/html\r\nDate:\x20Tue,\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:2014\x20Jan\x202025\x2005:14:14\x20GMT\r\n\r\n&lt;html&gt;&lt;head&gt;&lt;title&gt;Error&lt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:/title&gt;&lt;/head&gt;&lt;body&gt;404\x20-\x20Not\x20Found&lt;/body&gt;&lt;/html&gt;&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>RTSPRequ
+</span></span><span style="display:flex;"><span>SF:est,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Length:\x200\r\nC
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:onnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>FourOhFourRequest,C9,<span style="color:#e6db74">&#34;HTTP/1\.1\x20404\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20Not\x20Found\r\nConnection:\x20close\r\nContent-Length:\x2074\r\nCon
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:tent-Type:\x20text/html\r\nDate:\x20Tue,\x2014\x20Jan\x202025\x2005:14:
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:16\x20GMT\r\n\r\n&lt;html&gt;&lt;head&gt;&lt;title&gt;Error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;404\x20-\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20Not\x20Found&lt;/body&gt;&lt;/html&gt;&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>Socks5,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:0Request\r\nContent-Length:\x200\r\nConnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>Ge
+</span></span><span style="display:flex;"><span>SF:nericLines,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Length:\x2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:00\r\nConnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>Help,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\x20Request\r\nContent-Length:\x200\r\nConnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r
+</span></span><span style="display:flex;"><span>SF:<span style="color:#f92672">(</span>SSLSessionReq,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Length
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF::\x200\r\nConnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>TerminalServerCookie,42,<span style="color:#e6db74">&#34;HTT
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:P/1\.1\x20400\x20Bad\x20Request\r\nContent-Length:\x200\r\nConnection:\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>TLSSessionReq,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x20Reque
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:st\r\nContent-Length:\x200\r\nConnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>Kerberos
+</span></span><span style="display:flex;"><span>SF:,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Length:\x200\r\nConn
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:ection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>SMBProgNeg,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x20
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:Request\r\nContent-Length:\x200\r\nConnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>LPD
+</span></span><span style="display:flex;"><span>SF:String,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x20Bad\x20Request\r\nContent-Length:\x200\r
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:\nConnection:\x20close\r\n\r\n&#34;</span><span style="color:#f92672">)</span>%r<span style="color:#f92672">(</span>LDAPSearchReq,42,<span style="color:#e6db74">&#34;HTTP/1\.1\x20400\x
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:20Bad\x20Request\r\nContent-Length:\x200\r\nConnection:\x20close\r\n\r\
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">SF:n&#34;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 138.59 seconds
+</span></span></code></pre></div><p>Nous avons trois ports ouverts:</p>
+<ul>
+<li>22 - SSH</li>
+<li>80 - HTTP</li>
+<li>8080 - HTTP</li>
+</ul>
+<h2 id="enumération">Enumération</h2>
+<p>À <code>http://silverplatter.thm/</code>, nous trouvons le site web d&rsquo;une entreprise offrant des services de cybersécurité.</p>
+<p><img src="/images/THM-SilverPlatter/silverplatter_website.png" alt="Silver Platter website"></p>
+<p>La page de contact à <code>http://silverplatter.thm/#contact</code> nous donne un potentiel nom d&rsquo;utilisateur, <code>scr1ptkiddy</code>. Nous apprenons également qu&rsquo;ils utilisent Silverpeas.</p>
+<p><img src="/images/THM-SilverPlatter/contact_page.png" alt="Contact page"></p>
+<p>L&rsquo;énumération des répertoires et des sous-domaines est infructueuse sur le port 80.</p>
+<pre tabindex="0"><code>gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://silverplatter.thm/
+</code></pre><p><img src="/images/THM-SilverPlatter/gobuster_80.png" alt="Gobuster on port 80"></p>
+<pre tabindex="0"><code>ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt --fc 404 -t 100 -u http://axlle.htb -H &#34;Host: FUZZ.silverplatter.thm&#34; -ic
+</code></pre><p><img src="/images/THM-SilverPlatter/ffuf_80.png" alt="Ffuf on port 80"></p>
+<p><code>http://silverplatter.thm:8080/</code> leads to a <code>404</code> error page.</p>
+<p><img src="/images/THM-SilverPlatter/404_error.png" alt="404 error page"></p>
+<p>L&rsquo;énumération pour le port 8080 révèle <code>http://silverplatter.thm:8080/website/</code>, mais nous ne pouvons pas y accéder.</p>
+<pre tabindex="0"><code>gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://silverplatter.thm:8080/
+</code></pre><p><img src="/images/THM-SilverPlatter/gobuster_8080.png" alt="gobuster on port 8080"></p>
+<p><img src="/images/THM-SilverPlatter/forbidden.png" alt="forbidden page"></p>
+<p>De même, <code>http://silverplatter.thm:8080/console</code> est également inaccessible.</p>
+<p><img src="/images/THM-SilverPlatter/8080_console.png" alt="console page"></p>
+<p>Silverpeas fonctionne généralement sur le port 8080.</p>
+<p><img src="/images/THM-SilverPlatter/silverpeas_port.png" alt="silverpeas port"></p>
+<p>Nous pouvons y accéder à l&rsquo;adresse <code>http://silverplatter.thm:8080/silverpeas</code> où nous trouvons une page de connexion.</p>
+<p><img src="/images/THM-SilverPlatter/silverpeas_login.png" alt="silverpeas login page"></p>
+<h2 id="accès-initial">Accès initial</h2>
+<p>Nous ne pouvons pas utiliser la liste <code>rockyou.txt</code>, la description du challenge nous indique que ces mots de passe sont exclus. Nous allons donc essayer de créer une liste de mots de passe avec <code>cewl</code>.</p>
+<pre tabindex="0"><code>cewl http://silverplatter.thm &gt; passwords.txt
+</code></pre><p><img src="/images/THM-SilverPlatter/pwds_list.png" alt="password list"></p>
+<p>Avec hydra, nous effectuons une attaque par force brute. Nous obtenons le nom du formulaire après avoir capturé une demande de connexion avec Burp.</p>
+<p><img src="/images/THM-SilverPlatter/login_request.png" alt="login request"></p>
+<pre tabindex="0"><code>hydra -l scr1ptkiddy -P pwds.txt silverplatter.thm -s 8080 http-post-form &#34;/silverpeas/AuthenticationServlet:Login=^USER^&amp;Password=^PASS^&amp;DomainId=0:F=Login or password incorrect&#34;
+</code></pre><p><img src="/images/THM-SilverPlatter/hydra_creds.png" alt="brute force attack with Hydra"></p>
+<p>En utilisant ces identifiants, nous arrivons à nous connecter.</p>
+<p><img src="/images/THM-SilverPlatter/silverpeas_dashboard.png" alt="silverpeas dashboard"></p>
+<p>Cliquez sur <code>1 unread notification</code> pour lire le message.</p>
+<p><img src="/images/THM-SilverPlatter/message_url.png" alt="inbox message"></p>
+<p><a href="https://rhinosecuritylabs.com/research/silverpeas-file-read-cves/" target="_blank" >Cet article</a>
+
+ de Rhino Security Labs détaille les vulnérabilités de Silverpeas.</p>
+<p>Après avoir lu attentivement les CVE, nous constatons que le <a href="https://github.com/RhinoSecurityLabs/CVEs/tree/master/CVE-2023-47323" target="_blank" >CVE-2023-47323</a>
+
+ peut être exploité pour lire tous les messages en changeant simplement la valeur <code>ID</code>.</p>
+<p><img src="/images/THM-SilverPlatter/read_message_cve.png" alt="Read messages vulnerability"></p>
+<p>En changeant la valeur en <code>6</code>, nous récupérons les informations d&rsquo;identification de l&rsquo;utilisateur <code>tim</code>.</p>
+<p><img src="/images/THM-SilverPlatter/tim_creds.png" alt="tim credentials"></p>
+<pre tabindex="0"><code>Username: tim
+
+Password: cm0nt!md0ntf0rg3tth!spa$$w0rdagainlol
+</code></pre><p>Nous nous connectons via SSH et récupérons le drapeau de utilisateur.</p>
+<p><img src="/images/THM-SilverPlatter/user_flag.png" alt="user flag"></p>
+<h3 id="shell-en-tant-que-tyler">Shell en tant que Tyler</h3>
+<p>Il existe un autre compte <code>tyler</code> sur le système.</p>
+<p><img src="/images/THM-SilverPlatter/user_list.png" alt="user list"></p>
+<p>Avec linpeas, nous apprenons que l&rsquo;utilisateur actuel fait partie du groupe <code>adm</code>. Les membres de ce groupe peuvent lire les logs du système.</p>
+<p><img src="/images/THM-SilverPlatter/adm_group.png" alt="adm group"></p>
+<p>Cherchons des mots de passe dans les fichiers journaux.</p>
+<pre tabindex="0"><code>grep -Ri &#34;password&#34; 2&gt;/dev/null
+</code></pre><p><img src="/images/THM-SilverPlatter/pwd_find.png" alt="find password in logs"></p>
+<p>Vers la fin du résultat, nous trouvons un mot de passe de base de données : <code>_Zd_zx7N823/</code>.</p>
+<p><img src="/images/THM-SilverPlatter/db_pwd.png" alt="database password"></p>
+<p>En l&rsquo;utilisant, nous pouvons passer à <code>tyler</code>.</p>
+<p><img src="/images/THM-SilverPlatter/switch_to_tyler.png" alt="tyler account"></p>
+<h2 id="elévation-de-privilèges">Elévation de Privilèges</h2>
+<p>Avec <code>sudo -l</code> nous découvrons que <code>tyler</code> a un accès <code>sudo</code> non restreint sur le système.</p>
+<p><img src="/images/THM-SilverPlatter/sudo-l_cmd.png" alt="sudo privileges command"></p>
+<p>Une simple commande <code>sudo su</code> nous permet de devenir root et de lire le drapeau root.</p>
+<p><img src="/images/THM-SilverPlatter/root_flag.png" alt="root flag"></p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>THM: Mountaineer</title>
+            <link>https://scorpiosec.com/fr/posts/2024/12/thm-mountaineer/</link>
+            <pubDate>Sun, 22 Dec 2024 18:15:46 -0600</pubDate>
+            
+            <guid>https://scorpiosec.com/fr/posts/2024/12/thm-mountaineer/</guid>
+            <description> Platforme: TryHackMe Lien: Mountaineer Niveau: Difficile OS: Linux Balayage </description>
+            <content type="html"><![CDATA[<ul>
+<li>Platforme: TryHackMe</li>
+<li>Lien: <a href="https://tryhackme.com/r/room/mountaineerlinux" target="_blank" >Mountaineer</a>
+
+</li>
+<li>Niveau: Difficile</li>
+<li>OS: Linux</li>
+</ul>
+<hr>
+<h2 id="balayage">Balayage</h2>
+]]></content>
+        </item>
         
         <item>
             <title>HTB: Compiled</title>
