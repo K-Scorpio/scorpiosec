@@ -10,7 +10,7 @@
         <atom:link href="https://scorpiosec.com/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>HTB MonitorsThree</title>
+            <title>HTB: MonitorsThree</title>
             <link>https://scorpiosec.com/posts/2025/01/htb-monitorsthree/</link>
             <pubDate>Fri, 17 Jan 2025 10:06:34 -0600</pubDate>
             
@@ -49,11 +49,10 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 </span></span><span style="display:flex;"><span>Nmap <span style="color:#66d9ef">done</span>: <span style="color:#ae81ff">1</span> IP address <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> host up<span style="color:#f92672">)</span> scanned in 13.83 seconds
-</span></span></code></pre></div><p>Our nmap scan finds three open ports:</p>
+</span></span></code></pre></div><p>Our nmap scan finds two open ports:</p>
 <ul>
 <li>22 running SSH</li>
 <li>80 running HTTP, there is a redirection to <code>monitorsthree.htb</code>.</li>
-<li>8084 running webspn (this service is used for managing and monitoring network devices using SNMP)</li>
 </ul>
 <h2 id="enumeration">Enumeration</h2>
 <p>Going to <code>http://monitorsthree.htb/</code> we find a website providing network solutions services.</p>
@@ -69,8 +68,6 @@
 </code></pre><p><img src="/images/HTB-MonitorsThree/monitorsthree_subdomain.png" alt="cacti subdomain"></p>
 <p>At <code>http://cacti.monitorsthree.htb/cacti/</code> we find another login page. We can see a version for the software, <code>1.2.26</code>.</p>
 <p><img src="/images/HTB-MonitorsThree/cacti_login_page.png" alt="cacti login page"></p>
-<p>The service running on port <code>8084</code> is inaccessible at <code>http://monitorsthree.htb:8084/</code>.</p>
-<p><img src="/images/HTB-MonitorsThree/webspn_noaccess.png" alt="webspn service no access"></p>
 <p>We get to <code>http://monitorsthree.htb/forgot_password.php</code> after selecting <code>Forgot password?</code> at <code>http://monitorsthree.htb/login.php</code>.</p>
 <p><img src="/images/HTB-MonitorsThree/forgot_pwd.png" alt="forgot password page"></p>
 <p>We can try to exploit this feature via SQL injection. We capture the request and use it with SQLmap.</p>

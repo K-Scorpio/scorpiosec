@@ -1,5 +1,5 @@
 +++
-title = "HTB MonitorsThree"
+title = "HTB: MonitorsThree"
 date = 2025-01-17T10:06:34-06:00
 draft = false
 toc = true
@@ -49,10 +49,9 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 13.83 seconds
 ```
 
-Our nmap scan finds three open ports:
+Our nmap scan finds two open ports:
 * 22 running SSH
 * 80 running HTTP, there is a redirection to `monitorsthree.htb`.
-* 8084 running webspn (this service is used for managing and monitoring network devices using SNMP)
 
 ## Enumeration
 
@@ -85,10 +84,6 @@ ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -
 At `http://cacti.monitorsthree.htb/cacti/` we find another login page. We can see a version for the software, `1.2.26`.
 
 ![cacti login page](/images/HTB-MonitorsThree/cacti_login_page.png)
-
-The service running on port `8084` is inaccessible at `http://monitorsthree.htb:8084/`.
-
-![webspn service no access](/images/HTB-MonitorsThree/webspn_noaccess.png)
 
 We get to `http://monitorsthree.htb/forgot_password.php` after selecting `Forgot password?` at `http://monitorsthree.htb/login.php`.
 

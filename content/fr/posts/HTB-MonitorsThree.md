@@ -1,5 +1,5 @@
 +++
-title = "HTB MonitorsThree"
+title = "HTB: MonitorsThree"
 date = 2025-01-17T10:06:34-06:00
 draft = false
 toc = true
@@ -51,8 +51,8 @@ Nmap done: 1 IP address (1 host up) scanned in 13.83 seconds
 
 Nous avons trois ports ouverts :
 * 22 pour SSH
-* 80 exécute HTTP, il y a une redirection vers `monitorsthree.htb`.
-* 8084 exécute webspn (ce service est utilisé pour gérer et surveiller les périphériques du réseau à l'aide de SNMP).
+* 80 exécute HTTP, avec une redirection vers `monitorsthree.htb`.
+
 
 ## Enumération
 

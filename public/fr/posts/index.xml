@@ -10,7 +10,7 @@
         <atom:link href="https://scorpiosec.com/fr/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
-            <title>HTB MonitorsThree</title>
+            <title>HTB: MonitorsThree</title>
             <link>https://scorpiosec.com/fr/posts/2025/01/htb-monitorsthree/</link>
             <pubDate>Fri, 17 Jan 2025 10:06:34 -0600</pubDate>
             
@@ -52,8 +52,7 @@
 </span></span></code></pre></div><p>Nous avons trois ports ouverts :</p>
 <ul>
 <li>22 pour SSH</li>
-<li>80 exécute HTTP, il y a une redirection vers <code>monitorsthree.htb</code>.</li>
-<li>8084 exécute webspn (ce service est utilisé pour gérer et surveiller les périphériques du réseau à l&rsquo;aide de SNMP).</li>
+<li>80 exécute HTTP, avec une redirection vers <code>monitorsthree.htb</code>.</li>
 </ul>
 <h2 id="enumération">Enumération</h2>
 <p>En allant sur <code>http://monitorsthree.htb/</code>, nous trouvons un site web offrant des services de solutions de réseau.</p>
