@@ -16,7 +16,7 @@ categories = ['Writeups']
 
 Axlle est un contrôleur de domaine hébergeant un serveur web et un serveur de courrier électronique en plus des services Active Directory standard. Après notre reconnaissance, nous utilisons une attaque de phishing avec une pièce jointe `.xll` pour obtenir un accès initial au système. Sur la cible, nous découvrons un fichier `.eml` contenant des détails sur une tâche automatisée. En exploitant ces informations, nous créons un fichier `.url` malveillant, permettant un mouvement latéral vers un autre utilisateur et l'accès au drapeau utilisateur. Avec BloodHound, nous identifions la possibilité de forcer des changements de mot de passe sur des comptes spécifiques. Grâce à ce privilège, nous effectuons un autre déplacement latéral. Enfin, l'escalade des privilèges est réalisée par une injection de commandes via un binaire Windows.
 
-Target IP address - `10.10.11.21`
+Adresse IP cible - `10.10.11.21`
 
 ## Balayage
 

@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Fri, 13 Dec 2024 13:44:19 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jan 2025 10:06:34 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/tags/hack-the-box/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB MonitorsThree</title>
+      <link>https://scorpiosec.com/posts/2025/01/htb-monitorsthree/</link>
+      <pubDate>Fri, 17 Jan 2025 10:06:34 -0600</pubDate>
+      <guid>https://scorpiosec.com/posts/2025/01/htb-monitorsthree/</guid>
+      <description>Platform: Hack The Box Link: MonitorsThree Level: Medium OS: Linux MonitorsThree begins with a website on port 80 and a Cacti instance hosted on a subdomain. The Forgot Password? feature on the main site is vulnerable to SQL injection, which we exploit to retrieve the admin user&amp;rsquo;s password. Using these credentials, we access the Cacti dashboard and leverage CVE-2024-25641 to gain an initial foothold on the system. Further exploration reveals additional password hashes, enabling us to pivot to another user via SSH.</description>
+    </item>
     <item>
       <title>HTB: Compiled</title>
       <link>https://scorpiosec.com/posts/2024/12/htb-compiled/</link>
@@ -71,13 +78,6 @@
       <pubDate>Fri, 20 Sep 2024 13:33:36 -0500</pubDate>
       <guid>https://scorpiosec.com/posts/2024/09/htb-solarlab/</guid>
       <description>Platform: Hack The Box Link: SolarLab Level: Medium OS: Windows SolarLab begins with a basic website that, after enumeration, offers no direct exploitation paths. Shifting focus to SMB, we discover a document in a file share containing credentials. These credentials grant access to ReportHub, accessible at a subdomain found during previous enumeration. Upon examining its functionality, we identify that it generates PDFs using the vulnerable ReportLab library (CVE-2023-33733), which allows us to exploit this and gain initial access, recovering the user flag.</description>
-    </item>
-    <item>
-      <title>HTB: Mailing</title>
-      <link>https://scorpiosec.com/posts/2024/09/htb-mailing/</link>
-      <pubDate>Fri, 06 Sep 2024 23:42:37 -0500</pubDate>
-      <guid>https://scorpiosec.com/posts/2024/09/htb-mailing/</guid>
-      <description>Platform: Hack The Box Link: Mailing Level: Easy OS: Windows Mailing from HackTheBox is an interesting box. After our initial scan, we discover several email-related services. By exploiting an LFI vulnerability, we find two password hashes, and successfully cracking one of them gives us the admin password. We then use the recent MonikerLink vulnerability to retrieve a user&amp;rsquo;s NTLM hash, which provides us with our initial foothold. Privilege escalation is achieved by placing a malicious file in a specific directory where all files with the .</description>
     </item>
   </channel>
 </rss>

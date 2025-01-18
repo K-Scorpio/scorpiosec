@@ -7,8 +7,15 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>fr</language>
     <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
-    <lastBuildDate>Mon, 13 Jan 2025 21:00:11 -0600</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jan 2025 10:06:34 -0600</lastBuildDate>
     <atom:link href="https://scorpiosec.com/fr/categories/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB MonitorsThree</title>
+      <link>https://scorpiosec.com/fr/posts/2025/01/htb-monitorsthree/</link>
+      <pubDate>Fri, 17 Jan 2025 10:06:34 -0600</pubDate>
+      <guid>https://scorpiosec.com/fr/posts/2025/01/htb-monitorsthree/</guid>
+      <description>Platforme: Hack The Box Lien: MonitorsThree Niveau: Moyen OS: Linux MonitorsThree héberge un site web sur le port 80 et une instance Cacti sur un sous-domaine. La fonction Forgot Password? sur le site principal est vulnérable à l&amp;rsquo;injection SQL, que nous exploitons pour récupérer le mot de passe de l&amp;rsquo;utilisateur admin. En utilisant ces informations d&amp;rsquo;identification, nous accédons au tableau de bord de Cacti et utilisons le CVE-2024-25641 pour obtenir un accès initial au système.</description>
+    </item>
     <item>
       <title>THM: SilverPlatter</title>
       <link>https://scorpiosec.com/fr/posts/2025/01/thm-silverplatter/</link>
@@ -71,13 +78,6 @@
       <pubDate>Mon, 04 Nov 2024 12:11:25 -0600</pubDate>
       <guid>https://scorpiosec.com/fr/posts/2024/11/thm-seetwo/</guid>
       <description>Platforme: TryHackMe Lien: SeeTwo Niveau: Moyen Pour ce défi, nous devons examiner un fichier pcap. Initialement, nous trouvons ce qui semble être du trafic banal, mais en creusant un peu, nous découvrons un binaire ELF contenant des fichiers .pyc. La décompilation d&amp;rsquo;un de ces fichiers nous permet de comprendre les tactiques utilisées par l&amp;rsquo;attaquant, et avec un script python nous trouvons toutes les informations dont nous avons besoin.&#xA;Investigation Juste après avoir chargé le fichier pcap, nous obtenons une vision d&amp;rsquo;ensemble du trafic.</description>
-    </item>
-    <item>
-      <title>THM: Rabbit Hole</title>
-      <link>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</link>
-      <pubDate>Tue, 29 Oct 2024 19:25:05 -0500</pubDate>
-      <guid>https://scorpiosec.com/fr/posts/2024/10/thm-rabbit-hole/</guid>
-      <description>Platforme: TryHackMe Lien: Rabbit Hole Niveau: Difficile OS: Linux Ce défi met l&amp;rsquo;accent sur les vulnérabilités liées aux injections SQL. Nous découvrons une vulnérabilité d&amp;rsquo;injection SQL de second ordre après plusieurs tentatives de Cross-Site Scripting (XSS) qui échouent. En utilisant cette vulnérabilité, nous récupérons des hachages de mots de passe, mais ils ne conduisent pas à un accès initial. En combinant un script python et une payload utilisant la commande PROCESSLIST, nous réussissons à extraire la requête contenant le mot de passe de l&amp;rsquo;utilisateur admin, que nous utilisons pour nous connecter via SSH et lire le drapeau.</description>
     </item>
   </channel>
 </rss>
