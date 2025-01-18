@@ -3,7 +3,7 @@ title = "HTB: MonitorsThree"
 date = 2025-01-17T10:06:34-06:00
 draft = false
 toc = true
-images = ['/images/HTB-Axlle/Axlle.png']
+images = ['/images/HTB-MonitorsThree/MonitorsThree.png']
 tags = ['Hack The Box']
 categories = ['Writeups']
 +++

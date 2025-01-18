@@ -3,7 +3,7 @@ title = "HTB: MonitorsThree"
 date = 2025-01-17T10:06:34-06:00
 draft = false
 toc = true
-images = ['/images/HTB-Axlle/Axlle.png']
+images = ['/images/HTB-MonitorsThree/MonitorsThree.png']
 tags = ['Hack The Box']
 categories = ['Writeups']
 +++
@@ -85,10 +85,6 @@ ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -
 A `http://cacti.monitorsthree.htb/cacti/` nous trouvons une autre page de connexion. Nous observons une version pour le logiciel, `1.2.26`.
 
 ![cacti login page](/images/HTB-MonitorsThree/cacti_login_page.png)
-
-Le service fonctionnant sur le port `8084` est inaccessible à `http://monitorsthree.htb:8084/`.
-
-![webspn service no access](/images/HTB-MonitorsThree/webspn_noaccess.png)
 
 Nous arrivons à `http://monitorsthree.htb/forgot_password.php` après avoir sélectionné `Forgot password?` à `http://monitorsthree.htb/login.php`.
 
