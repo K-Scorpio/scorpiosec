@@ -1,0 +1,122 @@
+baseURL = "https://scorpiosec.com/"
+defaultContentLanguage = "en"
+# Automatically generate robots.txt
+enableRobotsTXT = true
+pygmentsStyle = "onedark"
+languageCode = "en"
+theme = "gokarna"
+title = "Scorpiosec"
+
+[menu]
+  [[menu.main]]
+    # Display name
+    name = "Posts"
+	pre = "<span data-feather='book'></span>"
+
+    # Relative URL slug (appended to baseURL)
+    url = "/posts/"
+
+    # Lower weights are listed first in the menu (leftmost); higher weights are
+    # listed last in the menu (rightmost)
+    weight = 1
+	
+	[[menu.main]]
+  name = "Projects"
+  pre = "<span data-feather='code'></span>"
+  url = "/projects/"
+  weight = 2
+
+  [[menu.main]]
+    name = "Tags"
+	pre = "<span data-feather='tag'></span>"
+    url = "/tags/"
+    weight = 3
+
+  [[menu.main]]
+  name = "Categories"
+  pre = "<span data-feather='folder'></span>"
+  url = "/categories/"
+  weight = 4
+
+  [[menu.main]]
+    # Unique identifiers are required for menu entries without a name property,
+    # or for menu entries which re-use a name
+    identifier = "github"
+
+    # Absolute URL to external resource
+    url = "https://github.com"
+    weight = 5
+    
+    # Surround the menu entry (or name) with HTML content, such as Feather
+    # icons: https://feathericons.com
+    pre = "<span data-feather='github'></span>"
+    post = ""
+
+[params]
+	avatarURL = "/redscorpio.jpg"
+	avatarSize = "size-m" 
+	displayReadingTime = true 
+	togglePreviousAndNextButtons = true
+	footer = "K-Scorpio"
+	description = "Trying to get better 1% at a time"
+	showBackToTopButton = true
+	accentColor = "#FF4D4D"
+	fontSize = "17.5px"
+	socialIcons = [
+      {name = "x", url = "https://x.com/_KScorpio"},
+      {name = "github", url = "https://github.com/K-Scorpio"},
+	  {name = "email", url = "mailto: kscorpiosec@gmail.com"},
+    ]
+
+[markup]
+  [markup.tableOfContents]
+    startLevel = 1
+    endLevel = 4
+    ordered = false
+
+[taxonomies]
+  category = 'categories'
+  tag = 'tags'
+
+[minify]
+    minifyOutput = true
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    weight    = 1
+    contentDir = "content/en"
+  
+  [languages.fr]
+    languageName = "Français"
+    weight    = 2
+    contentDir   = "content/fr"
+
+    
+	[languages.fr.menu]
+  [[languages.fr.menu.main]]
+	  [[languages.fr.menu.main]]
+    identifier   = "posts"
+    name         = "Postes"
+    url          = "/fr/posts/"
+    pre = "<span data-feather='book'></span>"
+    weight       = 1
+	  [[languages.fr.menu.main]]
+    identifier   = "projects"
+    name         = "Projets"
+    url          = "/fr/projects/"
+    pre = "<span data-feather='code'></span>"
+    weight       = 2
+	  [[languages.fr.menu.main]]
+    identifier   = "tags"
+    name         = "Tags"
+    url          = "/fr/tags/"
+	pre = "<span data-feather='tag'></span>"
+    weight       = 3
+	  [[languages.fr.menu.main]]
+    identifier   = "categories"
+    name         = "Catégories"
+    url          = "/fr/categories/"
+	pre = "<span data-feather='folder'></span>"
+    weight       = 4
+
