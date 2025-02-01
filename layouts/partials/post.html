@@ -29,7 +29,7 @@
                   {{ .ReadingTime }} min read |
               {{ end }}
 
-              {{ dateFormat (or .Site.Params.dateFormat "January 2, 2006") .Date }}
+              <span class="post-date">{{ .Date | time.Format ":date_long" | title }}</span>
 
               {{ if lt .Date .Lastmod }}
                   | Updated {{ dateFormat (or .Site.Params.dateFormat "January 2, 2006") .Lastmod }}
