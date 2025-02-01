@@ -20,7 +20,7 @@ title = "Scorpiosec"
     # listed last in the menu (rightmost)
     weight = 1
 	
-	[[menu.main]]
+  [[menu.main]]
   name = "Projects"
   pre = "<span data-feather='code'></span>"
   url = "/projects/"
@@ -38,19 +38,19 @@ title = "Scorpiosec"
   url = "/categories/"
   weight = 4
 
-  [[menu.main]]
+  #[[menu.main]]
     # Unique identifiers are required for menu entries without a name property,
     # or for menu entries which re-use a name
-    identifier = "github"
+    #identifier = "github"
 
     # Absolute URL to external resource
-    url = "https://github.com"
-    weight = 5
+    #url = "https://github.com"
+    #weight = 5
     
     # Surround the menu entry (or name) with HTML content, such as Feather
     # icons: https://feathericons.com
-    pre = "<span data-feather='github'></span>"
-    post = ""
+    #pre = "<span data-feather='github'></span>"
+    #post = ""
 
 [params]
 	avatarURL = "/redscorpio.jpg"
@@ -58,7 +58,7 @@ title = "Scorpiosec"
 	displayReadingTime = true 
 	togglePreviousAndNextButtons = true
 	footer = "K-Scorpio"
-	description = "Trying to get better 1% at a time"
+	#description = "Trying to get better 1% at a time"
 	showBackToTopButton = true
 	accentColor = "#FF4D4D"
 	fontSize = "17.5px"

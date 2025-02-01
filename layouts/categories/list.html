@@ -1,7 +1,7 @@
 {{ define "main" }}
 <div class="container tags-list">
 
-    <h1 class="list-title">{{ i18n "categories" }}</h1>
+	<h1 class="list-title">{{ .Title }}</h1>
     {{ if eq (len $.Site.Taxonomies.categories) 0 }}
         {{ i18n "nothing" }}
     {{ else }}

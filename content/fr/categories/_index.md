@@ -1,5 +1,5 @@
 ---
-title: "Categories"
+title: "Catégories"
 type: "categories"
 ---
 
