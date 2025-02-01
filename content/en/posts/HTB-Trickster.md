@@ -17,6 +17,8 @@ type: "post"
 * OS: Linux
 ---
 
+[Read this write up in french](https://scorpiosec.com/fr/posts/htb-trickster/)
+
 Trickster is a multi-step machine beginning with the discovery of a subdomain containing a hidden `.git` directory, running an exploitable version of `PrestaShop`. Gaining initial access (with `CVE-2024-34716`) leads to the retrieval of database credentials from a configuration file, which help us find a user password. 
 
 System enumeration reveals an internal Docker interface with a host running a vulnerable instance of `changedetection.io`, which, when exploited (with `CVE-2024-32651`), provides root access within the container. Inside, we obtain backup files containing credentials which we use to pivot to another user. The final privilege escalation to root is achieved by exploiting `PrusaSlicer`.
