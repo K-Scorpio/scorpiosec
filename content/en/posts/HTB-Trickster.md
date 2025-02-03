@@ -7,7 +7,6 @@ showTableOfContents: true
 tags: ["HackTheBox"]
 categories: ["Writeups"]
 title: "HTB: Trickster"
-showTableOfContents: true
 type: "post"
 ---
 

@@ -1,7 +1,7 @@
 [Recent]
-  other = 'Posts récents'
+  other = 'Postes récents'
 [Popular]
-  other = 'Posts'
+  other = 'Postes'
 [error404]
   other = "Cette page n'existe pas, retourner à la"
 [home]
