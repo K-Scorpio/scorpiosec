@@ -3,7 +3,7 @@ date: 2025-01-27T11:31:43-06:00
 # description: ""
 image: "/images/THM-Smol/Smol.png"
 showTableOfContents: true
-tags: ["HackTheBox"]
+tags: ["TryHackMe"]
 categories: ["Writeups"]
 title: "THM: Smol"
 type: "post"

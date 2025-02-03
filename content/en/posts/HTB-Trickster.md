@@ -2,7 +2,6 @@
 date: 2025-01-31T00:00:34-06:00
 # description: ""
 image: "/images/HTB-Trickster/Trickster.png"
-lastmod: 2025-01-31
 showTableOfContents: true
 tags: ["HackTheBox"]
 categories: ["Writeups"]
