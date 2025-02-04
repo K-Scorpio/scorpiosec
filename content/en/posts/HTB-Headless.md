@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-headless/)
-
 Headless starts with a static website. Through enumeration, we identify a contact form vulnerable to Cross-Site Scripting (XSS), though basic payloads prove ineffective. By capturing the admin's cookie value, we gain access to the dashboard page and establish our foothold through command injection. For privilege escalation, we exploit a custom script to take control of the root account.
 
 Target IP address - `10.10.11.8`

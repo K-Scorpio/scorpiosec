@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-bizness/)
-
 Bizness is showcasing a web application powered by Apache OFBiz. During our investigation of vulnerabilities in the software, we identify one that allows attackers to bypass authentication. Leveraging this exploit, we gain our initial foothold. Next, we stumble upon a directory for Apache Derby that containing numerous .dat files. Our task is to sift through these files. Using some command-line magic, we manage to retrieve a password hash. Unfortunately, common cracking methods fail to break it. To escalate our privileges to root, we switch tactics. We create a script that encrypts each line of a wordlist and compare the resulting hashes to the one we have. Once we find a match, the root password is revealed.
 
 Target IP - `10.10.11.252`

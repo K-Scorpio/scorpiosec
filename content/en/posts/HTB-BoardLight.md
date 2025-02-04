@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-boardlight/)
-
 BoardLight begins with a subdomain discovery where we find a Dolibarr instance, which we access by using default credentials. The initial foothold is obtained via a PHP reverse shell coupled with an uppercase manipulation technique. From there we discover a configuration file containing credentials, allowing us to take over another account. Finally, we gain root privileges by exploiting a vulnerability in Enlightenment.
 
 Target IP address - `10.10.11.11`

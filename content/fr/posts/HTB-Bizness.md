@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Lire cet article en anglais](https://scorpiosec.com/posts/htb-bizness/)
-
 Bizness présente une application web utilisant Apache OFBiz. En recherchant les vulnérabilités du logiciel, nous en identifions une qui permet aux attaquants de contourner l'authentification. En tirant parti de cette faille, nous parvenons à accéder au système. Ensuite, nous découvrons un dossier pour Apache Derby qui contient de nombreux fichiers .dat. Notre tâche consiste à les passer au crible. Une simple commande nous permet de trouver un hash de mot de passe. Malheureusement, les méthodes de craquage courantes ne parviennent pas à le forcer. Afin d'élever nos privilèges au niveau de root, nous changeons de tactique. Nous créons un script qui chiffre chaque ligne d'une liste de mots et comparons les hashs obtenus à celui que nous avons. Une fois la correspondance trouvée, le mot de passe de root est révélé.
 
 Adresse IP cible - `10.10.11.252`

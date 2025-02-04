@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-monitorsthree/)
-
 MonitorsThree begins with a website on port 80 and a Cacti instance hosted on a subdomain. The `Forgot Password?` feature on the main site is vulnerable to SQL injection, which we exploit to retrieve the admin user's password. Using these credentials, we access the Cacti dashboard and leverage `CVE-2024-25641` to gain an initial foothold on the system. Further exploration reveals additional password hashes, enabling us to pivot to another user via SSH. Through system enumeration, we discover an internally accessible Duplicati instance. With some tunneling we are able to access it and an authentication bypass exploit allows us to log into Duplicati and recover the root flag.
 
 Target IP address - `10.10.11.30`

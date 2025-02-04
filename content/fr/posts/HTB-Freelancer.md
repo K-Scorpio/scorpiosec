@@ -15,8 +15,6 @@ type: "post"
 * OS: Windows
 ---
 
-[Lire cet article en anglais](https://scorpiosec.com/posts/htb-freelancer/)
-
 Freelancer consiste à exploiter une application web et, plus tard, un contrôleur de domaine. Le site web permet la création de deux types de comptes. Après l'enregistrement, nous exploitons une vulnérabilité IDOR (Insecure Direct Object Reference) pour accéder à un compte administrateur. Sur la page d'administration, nous trouvons un terminal SQL, que nous utilisons pour obtenir notre accès initial.
 
 Une exploration plus poussée du système révèle des mots de passe dans un fichier de configuration, que nous comparons à une liste d'utilisateurs, ce qui nous permet de pivoter vers un autre compte et d'obtenir le drapeau utilisateur. Nous extrayons ensuite une archive 7z contenant un vidage de mémoire complet. En utilisant MemProcFS, nous analysons le dump et récupérons un autre mot de passe, nous permettant de prendre le contrôle d'un autre compte. 

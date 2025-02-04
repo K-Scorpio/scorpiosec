@@ -15,8 +15,6 @@ type: "post"
 * OS: Windows
 ---
 
-[Lire cet article en anglais](https://scorpiosec.com/posts/htb-blazorized/)
-
 Blazorized présente une variété d'attaques Active Directory. Nous commençons par examiner un serveur web hébergeant une application Blazor WebAssembly avec un accès restreint au contenu. Par le biais d'une énumération, nous trouvons plusieurs fichiers DLL associés à l'application. La décompilation d'un de ces fichiers révèle des informations sensibles, que nous utilisons pour forger un jeton Web JSON (JWT). Cela nous permet d'accéder à un panneau d'administration où nous identifions une vulnérabilité d'injection SQL, ce qui nous donne un accès initial.
 
 En exécutant Bloodhound, nous découvrons que l'utilisateur actuel a le privilège `WriteSPN`, permettant une attaque Kerberoast ciblée pour un déplacement latéral vers un autre utilisateur. Ce second utilisateur a le droit de modifier le `Script-Path` d'un autre utilisateur, droit que nous utilisons pour effectuer un autre déplacement latéral. Après une deuxième exécution de Bloodhound, nous découvrons que le dernier utilisateur fait partie d'un groupe disposant du privilège `DCSync` sur le contrôleur de domaine, ouvrant ainsi la voie à une attaque DCSync pour obtenir le hachage de l'administrateur.

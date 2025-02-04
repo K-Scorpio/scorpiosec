@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-editorial/)
-
 Editorial is an easy Linux machine with a few interesting challenges. The web application is vulnerable to Server-Side Request Forgery (SSRF), but it requires fuzzing internal ports to uncover sensitive data. By exploiting an API endpoint, we retrieve credentials that grant initial access to the system. During further enumeration, we discover a series of Git commits, one of which exposes credentials for another user, enabling lateral movement. Privilege escalation is achieved by exploiting CVE-2022-24439 in combination with a root-executable script, leading to root access.
 
 Target IP Address - `10.10.11.20`

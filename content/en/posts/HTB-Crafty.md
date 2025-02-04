@@ -15,8 +15,6 @@ type: "post"
 * OS: Windows
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-crafty/)
-
 Crafty is a Windows Server 2019 running Minecraft 1.16.5, this version is vulnerable to Log4Shell (`CVE-2021-44228`) and after using a PoC of the exploit we gain our initial foothold. On the target system, we find an archive containing some credential that we use to obtain an administrative shell.
 
 Target IP - `10.10.11.249`

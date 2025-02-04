@@ -15,8 +15,6 @@ type: "post"
 * OS: Windows
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-freelancer/)
-
 Freelancer begins with a website that allows the creation of various types of accounts. After registering, we exploit an Insecure Direct Object Reference (IDOR) vulnerability to gain access to an admin account. On the admin page, we find a SQL terminal, which we leverage to obtain an initial foothold. 
 
 Further exploration of the system reveals passwords in a configuration file, which we run against a user list, enabling us to pivot to another account and obtain the user flag. We then extract a 7z archive containing a full memory dump. Using MemProcFS, we analyze the dump and recover another password, allowing us to take over another account. 

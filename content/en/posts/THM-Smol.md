@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/thm-smol/)
-
 Smol focuses on exploiting vulnerabilities in WordPress plugins. The challenge begins with enumerating a WordPress site using WPScan, where we discover a plugin vulnerable to Local File Inclusion (LFI). This allows us to extract credentials and log into the WordPress dashboard. Within the dashboard, a private note directs us to the source code of the Hello Dolly plugin, which contains a backdoor. Leveraging this backdoor, we gain an initial foothold. Through a series of privilege escalation techniques, we eventually gain access to a user with unrestricted sudo privileges, granting full root access to the system.
 
 ## Scanning 

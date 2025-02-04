@@ -15,8 +15,6 @@ type: "post"
 * OS: Windows
 ---
 
-[Read this write up in french](https://scorpiosec.com/fr/posts/htb-axlle/)
-
 Axlle is a domain controller hosting a web server and an email server alongside standard Active Directory services. After conducting reconnaissance, we launch a phishing attack using a `.xll` attachment to gain an initial foothold. On the compromised target, we discover an `.eml` file containing details about an automated task. By leveraging this information, we craft a malicious `.url` file, enabling lateral movement to another user account and accessing the user flag. Using BloodHound, we identify the ability to force password changes on specific accounts. Exploiting this privilege, we perform another lateral movement. Finally, privilege escalation is achieved through command injection via a Windows utility.
 
 Target IP address - `10.10.11.21`

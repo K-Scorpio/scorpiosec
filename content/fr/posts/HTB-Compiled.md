@@ -15,8 +15,6 @@ type: "post"
 * OS: Windows
 ---
 
-[Lire cet article en anglais](https://scorpiosec.com/posts/htb-compiled/)
-
 Compiled débute par la découverte d'une instance Gitea sur le port 3000 et d'un service de compilation sur le port 5000. En exploitant une vulnérabilité de Git (`CVE-2024-32002`), nous obtenons un accès initial. En explorant le système, nous découvrons un fichier de base de données contenant des hachages d'utilisateurs et d'autres informations critiques, nous permettant de trouver un mot de passe et d'effectuer un mouvement latéral. L'énumération du système mène à des fichiers liés à Visual Studio 2019, conduisant à la découverte du `CVE-2024-20656`. En personnalisant et en compilant une preuve de concept (PoC), nous exploitons un service s'exécutant en tant que `LocalSystem` pour accéder au compte root.
 
 Adresse IP cible - `10.10.11.26`

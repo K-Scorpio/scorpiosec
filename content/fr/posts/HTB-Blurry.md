@@ -15,8 +15,6 @@ type: "post"
 * OS: Linux
 ---
 
-[Lire cet article en anglais](https://scorpiosec.com/posts/htb-blurry/)
-
 La machine Blurry démontre comment les modules Python et les fonctionnalités spécifiques de Python peuvent être exploités pour compromettre des systèmes. Le défi commence par l'accès à une instance ClearML, contenant diverses expériences liées à un projet. En utilisant le `CVE-2024-24590`, nous obtenons notre accès initial en téléchargeant un artefact malveillant via l'API sur la cible, ce qui nous permet de récupérer le drapeau utilisateur (user.txt). Cet article présentera deux méthodes distinctes d'escalade des privilèges, illustrant différentes approches pour compromettre complètement le système.
 
 Addresse IP cible - `10.10.11.19`

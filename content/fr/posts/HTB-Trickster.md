@@ -284,7 +284,7 @@ Le fichier contient les identifiants `adam:adam_admin992`.
 
 Nous les utilisons pour nous connecter en tant que `adam` via SSH. Cet utilisateur peut exécuter `/opt/PrusaSlicer/prusaslicer` en tant que root.
 
-### Shell en tant que root
+## Elévation de Privilèges - shell en tant que root
 
 ![Adam SSH login](/images/HTB-Trickster/adam_SSH_login.png)
 
