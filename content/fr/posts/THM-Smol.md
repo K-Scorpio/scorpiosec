@@ -9,13 +9,13 @@ title: "THM: Smol"
 type: "post"
 ---
 
-[Lire cet article en anglais](https://scorpiosec.com/posts/thm-smol/)
-
 * Platforme: TryHackMe
 * Lien: [Smol](https://tryhackme.com/r/room/smol)
 * Niveau: Moyen
 * OS: Linux
 ---
+
+[Lire cet article en anglais](https://scorpiosec.com/posts/thm-smol/)
 
 Smol est axé sur l'exploitation des plugins WordPress. Le défi commence par l'énumération d'un site WordPress à l'aide de WPScan, où nous découvrons un plugin vulnérable à l'inclusion de fichier local (LFI). Cette vulnérabilité nous permet d'extraire des identifiants et de nous connecter au tableau de bord de WordPress. Sur le tableau de bord, une note privée nous dirige vers le code source du plugin Hello Dolly, qui contient un backdoor (porte dérobée). En exploitant ce backdoor, nous obtenons un accès initial. Grâce à une série de techniques d'escalade des privilèges, nous parvenons finalement à accéder à un utilisateur disposant de privilèges sudo illimités, ce qui lui confère un accès complet au système en tant que root.
 

@@ -212,6 +212,8 @@ In `C:\Users\sql_svc\Downloads\SQLEXPR-2019_x64_ENU\sql-Configuration.INI` we fi
 
 ![passwords list](/images/HTB-Freelancer/passwords_list.png)
 
+### Shell as mikasaackerman
+
 At this point we have a list of users and passwords, we can use netexec to do some brute-forcing.
 
 ```
@@ -299,6 +301,8 @@ impacket-secretsdump -sam 0xffffd3067d935000-SAM-MACHINE_SAM.reghive -system 0xf
 ```
 
 ![registry hive files dump](/images/HTB-Freelancer/reghive_dump.png)
+
+### Shell as lorra199
 
 We recover another password `PWN3D#l0rr@Armessa199`, let's run it against our users list.
 

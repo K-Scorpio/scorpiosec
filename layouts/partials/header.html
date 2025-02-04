@@ -22,6 +22,15 @@
             </div>
             {{ end }}
 
+            <!-- Language Switcher -->
+            {{ if .IsTranslated }}
+            <div class="nav-link language-switcher">
+                {{ range .Translations }}
+                <a href="{{ .RelPermalink }}">{{ .Language.LanguageName }}</a>
+                {{ end }}
+            </div>
+            {{ end }}
+
             <span class="nav-icons-divider"></span>
             <div class="nav-link dark-theme-toggle">
                 <span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
@@ -57,3 +66,4 @@
         </div>
     </nav>
 </header>
+
