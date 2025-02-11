@@ -96,7 +96,7 @@ We can try to exploit this feature via SQL injection. We capture the request and
 We start by targeting the `username` parameter and SQLmap is able to identify the injection.
 
 ```
-sqlmap -r reset.txt --level 5 --risk 3 -p username --batch --threads=10 --batch
+sqlmap -r reset.txt --level 5 --risk 3 -p username --batch --threads=10
 ```
 
 ![SQL injection on username parameter](/images/HTB-MonitorsThree/sqlmap1.png)
