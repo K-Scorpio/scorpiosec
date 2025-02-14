@@ -9,13 +9,13 @@ title: "HTB: Cicada"
 type: "post"
 ---
 
-* Platform: Hack The Box
+* Platform: HackTheBox
 * Link: [Cicada](https://app.hackthebox.com/machines/Cicada)
 * Level: Easy
 * OS: Windows
 ---
 
-Cicada is an Active Directory domain controller. Initial access is gained through SMB using the guest account, allowing us to retrieve a note containing a password. By performing RID brute forcing, we enumerate the domain usernames and discover valid credentials, which we use to authenticate via LDAP. Further enumeration reveals a password stored in a user’s description field, granting access to another SMB share containing a PowerShell script with hardcoded credentials. This enables us to gain an initial foothold on the system. The compromised user possesses the `SeBackupPrivilege` and is a member of the `Backup Operators` group, providing two distinct ways to exploit the target.
+Cicada is an Active Directory domain controller. We are able to login through SMB using the guest account, allowing us to retrieve a note containing a password. By performing a RID brute force attack, we enumerate the domain users and discover valid credentials, which we use to authenticate via LDAP. Further enumeration reveals a password stored in a user’s description field, granting access to another SMB share containing a PowerShell script with hardcoded credentials. This enables us to gain an initial foothold on the system. The compromised user possesses the `SeBackupPrivilege` and is a member of the `Backup Operators` group, providing two distinct ways to exploit the target.
 
 Target IP address - `10.10.11.35`
 
@@ -338,7 +338,7 @@ evil-winrm -i cicada.htb -u Administrator -H '2b87e7c93a3e8a0ea4a581937016f341'
 
 ### Local Attack
 
-You can also use the method available [here](https://book.hacktricks.wiki/en/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges.html#backup-operators). You will need to go to [this](https://github.com/giuliano108/SeBackupPrivilege) Github repo to get `SeBackupPrivilegeUtils.dll` and `SeBackupPrivilegeCmdLets.dll`.
+You can also use the method described [here](https://book.hacktricks.wiki/en/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges.html#backup-operators). You will need to go to [this](https://github.com/giuliano108/SeBackupPrivilege) Github repo to get `SeBackupPrivilegeUtils.dll` and `SeBackupPrivilegeCmdLets.dll`.
 
 1. After cloning the repo we send the files to the target via our evil-winrm shell.
 

