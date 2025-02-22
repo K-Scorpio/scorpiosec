@@ -15,6 +15,12 @@ type: "post"
 * OS: Linux
 ---
 
+Yummy presents a relatively small attack surface. A Local File Inclusion (LFI) vulnerability, allows access to the application's source code. The review of the code reveals weak RSA key generation for JWT authentication, enabling the creation of higher-privilege tokens.
+
+Further enumeration of the admin dashboard leads to the discovery of an SQL injection vulnerability in the search function. Combined with the `FILE` privilege, this allows us to write some content into files on the system, leading to remote code execution.
+
+Privilege escalation is achieved through multiple pivots: leveraging a cron job, extracting credentials from a binary file, and exploiting Mercurial (`hg pull`) via hooks. Finally, root access is obtained by abusing sudo privileges on `rsync`, allowing unrestricted file synchronization with elevated privileges.
+
 ## Scanning
 
 ```
