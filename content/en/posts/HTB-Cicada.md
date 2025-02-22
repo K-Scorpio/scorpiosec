@@ -338,7 +338,7 @@ evil-winrm -i cicada.htb -u Administrator -H '2b87e7c93a3e8a0ea4a581937016f341'
 
 ### Local Attack
 
-You can also use the method described [here](https://book.hacktricks.wiki/en/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges.html#backup-operators). You will need to go to [this](https://github.com/giuliano108/SeBackupPrivilege) Github repo to get `SeBackupPrivilegeUtils.dll` and `SeBackupPrivilegeCmdLets.dll`.
+We can also use the method described [here](https://book.hacktricks.wiki/en/windows-hardening/active-directory-methodology/privileged-groups-and-token-privileges.html#backup-operators). You will need to go to [this](https://github.com/giuliano108/SeBackupPrivilege) Github repo to get `SeBackupPrivilegeUtils.dll` and `SeBackupPrivilegeCmdLets.dll`.
 
 1. After cloning the repo we send the files to the target via our evil-winrm shell.
 
