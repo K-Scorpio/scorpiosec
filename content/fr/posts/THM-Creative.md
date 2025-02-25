@@ -85,6 +85,8 @@ Une tentative avec l'url `http://creative.thm/etc/passwd` ne fonctionne pas et r
 
 ![File read attempt failed](/images/THM-Creative/file-read-fail.png)
 
+### Balayage des ports internes via SSRF
+
 Essayons de découvrir les ports internes ouverts sur la cible.
 
 ```

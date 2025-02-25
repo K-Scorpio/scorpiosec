@@ -79,6 +79,8 @@ Trying `http://creative.thm/etc/passwd` does not work. and returns `Dead`.
 
 ![File read attempt failed](/images/THM-Creative/file-read-fail.png)
 
+### SSRF Internal Port Scanning
+
 Let's try to discover the internal open ports on the target.
 
 ```
