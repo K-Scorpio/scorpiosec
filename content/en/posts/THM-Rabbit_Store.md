@@ -70,7 +70,7 @@ We find four open ports with Nmap:
 - 4369 running epmd
 - 25672 (this is the Erlang Distribution port, used for RabbitMQ clustering)
 
-> the `epmd` service (Erlang Port Mapper Daemon) is used by Erlang applications to discover each other on a network. 
+> The `epmd` service (Erlang Port Mapper Daemon) is used by Erlang applications to discover each other on a network. 
 > _Read more about the service [here](https://www.erlang.org/docs/26/man/epmd)._
 
 ## Enumeration
@@ -96,7 +96,7 @@ We create an account and try logging in, but we receive a message telling us tha
 
 ![account activation](/images/THM-RabbitStore/account_activation.png)
 
-Noticing the `inactive` at the end of the url, we change it to active and get the message: `Your subscription is inactive. You cannot use our services.`. This seems to be an API endpoint.
+Noticing the `inactive` at the end of the url, we change it to `active` and get the message: `Your subscription is inactive. You cannot use our services.`. This seems to be an API endpoint.
 
 ![API inactive](/images/THM-RabbitStore/api_inactive_.png)
 
@@ -159,7 +159,7 @@ python3 -m http.server
 
 ![SSRF vulnerability test](/images/THM-RabbitStore/SSRF_vuln_test.png)
 
-On the website we enter the url for our web server
+On the website we enter the url for our web server.
 
 
 ```
@@ -320,7 +320,7 @@ rabbitmqctl list_users
 
 ![failed rabbitmq list_users command](/images/THM-RabbitStore/list_users.png)
 
-We can correct the file permissions and run the command again.
+We correct the file permissions and run the command again.
 
 ```
 chmod 400 /var/lib/rabbitmq/.erlang.cookie
@@ -351,7 +351,7 @@ Inside the file we find the root password hash.
 
 ![root password hash in json file](/images/THM-RabbitStore/rabbitmq_pwd_hash.png)
 
-To crack a RabbitMQ hash with a tool like hashcat we need to format it first. On [this Github issue page](https://github.com/QKaiser/cottontail/issues/27) we learn how to do it. 
+To crack a RabbitMQ hash with a tool like hashcat we need to format it first. On [this Github issue page](https://github.com/QKaiser/cottontail/issues/27), we learn how to do it. 
 
 ```
 echo "RABBITMQ_HASH" | base64 -d | xxd -pr -c128 | perl -pe 's/^(.{8})(.*)/$2:$1/' > hash.txt

