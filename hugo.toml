@@ -6,6 +6,7 @@ pygmentsStyle = "onedark"
 languageCode = "en"
 theme = "gokarna"
 title = "Scorpiosec"
+enableEmoji = true
 
 [menu]
   [[menu.main]]
@@ -52,6 +53,7 @@ title = "Scorpiosec"
     #pre = "<span data-feather='github'></span>"
     #post = ""
 
+
 [params]
 	avatarURL = "/redscorpio.jpg"
 	avatarSize = "size-m" 
@@ -64,7 +66,6 @@ title = "Scorpiosec"
 	showBackToTopButton = true
 	accentColor = "#FF4D4D"
 	fontSize = "17.5px"
-	enableEmoji = true
 	socialIcons = [
       {name = "x", url = "https://x.com/_KScorpio"},
       {name = "github", url = "https://github.com/K-Scorpio"},
