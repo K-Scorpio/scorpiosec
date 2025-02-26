@@ -64,6 +64,7 @@ title = "Scorpiosec"
 	showBackToTopButton = true
 	accentColor = "#FF4D4D"
 	fontSize = "17.5px"
+	enableEmoji = true
 	socialIcons = [
       {name = "x", url = "https://x.com/_KScorpio"},
       {name = "github", url = "https://github.com/K-Scorpio"},
