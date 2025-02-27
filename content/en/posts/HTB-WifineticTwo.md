@@ -15,7 +15,7 @@ type: "post"
 * OS: Linux
 ---
 
-WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.
+WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing `CVE-2021-31630`, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.
 
 Target IP address - `10.10.11.7`
 
@@ -182,6 +182,8 @@ The name of this box obviously points at WiFi so let's check the network interfa
 
 ![WifineticTwo ifconfig command](/images/HTB-WifineticTwo/ifconfig-cmd.png)
 
+### WPS Key Recovery
+
 We find a wireless network interface `wlan0`, we know that HTB machines are VMs and do not have internet access so this network interface probably is leveraging some WiFi virtualization.
 
 We can retrieve information about the wireless interface with `iw dev wlan0 scan`. In our case the scan reveals a WiFi network called `plcrouter` with a BSSID of `02:00:00:00:01:00`, it is also running `WPS: Version: 1.0`.
@@ -207,6 +209,8 @@ python3 ./oneshot.py -i wlan0 -b 02:00:00:00:01:00 -K
 ```
 
 ![One-shot attack](/images/HTB-WifineticTwo/oneshot-attack.png)
+
+### Wireless Interface Configuration
 
 Now we need to learn how to connect to WiFi from the command line. We learn from [this thread](https://askubuntu.com/questions/138472/how-do-i-connect-to-a-wpa-wifi-network-using-the-command-line) and [that one](https://unix.stackexchange.com/questions/283722/how-to-connect-to-wifi-from-command-line) that we need a configuration file.
 
@@ -266,9 +270,9 @@ We find a page with a title of `ap - LuCI`, which is referring to the [Lua Confi
 
 ![LuCI page](/images/HTB-WifineticTwo/LuCI.png)
 
-For the authentication `root` will work for the password and we are asked to configure a new one.
+For the authentication `root` will work for the password and we are asked to configure a new one after logging in.
 
-Under `System` --> `Administration` we notice that we have the option to login with a password. 
+Under `System` --> `Administration` we notice that we have the option to login with a password via SSH. 
 
 ![LuCI SSH access](/images/HTB-WifineticTwo/LuCI-SSH-access.png)
 

