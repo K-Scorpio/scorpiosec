@@ -51,7 +51,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 13.83 seconds
 ```
 
-Nous avons trois ports ouverts :
+Nous avons deux ports ouverts:
 * 22 pour SSH
 * 80 exécute HTTP, avec une redirection vers `monitorsthree.htb`.
 

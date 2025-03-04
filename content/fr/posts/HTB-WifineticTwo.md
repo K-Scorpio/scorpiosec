@@ -190,7 +190,7 @@ Nous pouvons récupérer des informations sur l'interface sans fil avec `iw dev 
 
 ![WifineticTwo iw scan](/images/HTB-WifineticTwo/iw-scan.png)
 
-Après avoir lu la page [Pentesting Wifi](https://book.hacktricks.xyz/generic-methodologies-and-resources/pentesting-wifi#wps) on HackTricks, nous apprenons qu'il est possible de faire du brute-force avec les clés WPS. Le problème est que pour utiliser des outils tels que `reaver` et `bully`, nous avons besoin d'un adaptateur sans fil (que je n'ai pas). Heureusement, nous pouvons aussi utiliser [OneShot-C](https://github.com/nikita-yfh/OneShot-C) pour effectuer l'attaque.
+Après avoir lu la page [Pentesting Wifi](https://book.hacktricks.xyz/generic-methodologies-and-resources/pentesting-wifi#wps) on HackTricks, nous apprenons qu'il est possible de faire du brute-force pour obtenir les clés WPS. Le problème est que pour utiliser des outils tels que `reaver` et `bully`, nous avons besoin d'un adaptateur sans fil (que je n'ai pas). Heureusement, nous pouvons aussi utiliser [OneShot-C](https://github.com/nikita-yfh/OneShot-C) pour effectuer l'attaque.
 
 > J'ai finalement utilisé la [version Python](https://github.com/kimocoder/OneShot) de OneShot en raison de problèmes de compilation avec la version C.
 
@@ -212,7 +212,7 @@ python3 ./oneshot.py -i wlan0 -b 02:00:00:00:01:00 -K
 
 ### Configuration de l'interface sans fil
 
-Nous devons apprendre comment nous connecter au WiFi à partir de la ligne de commande. En combinant les informations de [cette page](https://askubuntu.com/questions/138472/how-do-i-connect-to-a-wpa-wifi-network-using-the-command-line) and [celle-ci](https://unix.stackexchange.com/questions/283722/how-to-connect-to-wifi-from-command-line) nous comprenons maintenant que nous avons besoin d'un fichier de configuration.
+Nous devons apprendre comment nous connecter au WiFi à partir de la ligne de commande. En combinant les informations de [cette page](https://askubuntu.com/questions/138472/how-do-i-connect-to-a-wpa-wifi-network-using-the-command-line) et de [celle-ci](https://unix.stackexchange.com/questions/283722/how-to-connect-to-wifi-from-command-line) nous comprenons maintenant que nous avons besoin d'un fichier de configuration.
 
 Nous le créons avec `wpa_passphrase`.
 
