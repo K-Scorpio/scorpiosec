@@ -106,7 +106,7 @@ ffuf -c -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt -
 
 ![subdomain enumeration attempt](/images/HTB-Axlle/ffuf_axlle.png)
 
-## Accès initial
+## Accès Initial
 
 Nous avons appris précédemment que les pièces jointes que nous envoyons à `accounts@axlle.htb` doivent être en format excel, mais nous ne pouvons pas utiliser les macros puisqu'elles sont désactivées. Une autre façon de créer des e-mails de phishing est d'utiliser des fichiers `xll`.
 

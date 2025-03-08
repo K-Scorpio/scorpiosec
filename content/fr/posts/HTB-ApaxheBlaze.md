@@ -5,7 +5,7 @@ date: 2025-03-01T21:11:49-06:00
 showTableOfContents: true
 tags: ["HackTheBox"]
 categories: ["Writeups", "Challenge"]
-title: "HTB: ApacheBlaze"
+title: "HTB Challenge: ApacheBlaze"
 type: "post"
 ---
 
