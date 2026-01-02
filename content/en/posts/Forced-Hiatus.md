@@ -3,8 +3,7 @@ date: 2025-12-31T08:16:54-06:00
 # description: ""
 # image: ""
 showTableOfContents: true
-# tags: ["Personal"]
-categories: ["Personal"]
+tags: ["Personal"]
 title: "A Forced Hiatus, a Quiet Faith, and the Resolve to Continue"
 type: "post"
 ---
