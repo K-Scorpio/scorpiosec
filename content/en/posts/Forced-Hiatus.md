@@ -38,7 +38,7 @@ I remember randomly finding [a video](https://www.youtube.com/watch?v=Vi8GPxKZC9
 
 Even if life keeps getting worse, you still have to fight. 
 
-Not because you’re guaranteed to win — but because that’s what humans are built to do. 
+Not because you’re guaranteed to win but because that’s what humans are built to do. 
 
 We are built to contend.
 
@@ -46,9 +46,9 @@ We are built to contend.
 
 This period of my life really forced me to turn to God and talk to Him. A tale as old as the world: life becomes overwhelming, unmanageable, and man turns to the Creator.
 
-So I prayed and read my Bible as faithfully as I could at the time, and guess what — nothing happened. No divine peace, no emotional breakthrough, no sudden feeling of a weight being lifted off my shoulders. **NOTHING**.
+So I prayed and read my Bible as faithfully as I could at the time, and guess what, nothing happened. No divine peace, no emotional breakthrough, no sudden feeling of a weight being lifted off my shoulders. **NOTHING**.
 
-Whatever solace I was looking for did not come — at least not in the way I expected. However, over time, one verse became incredibly real and meaningful to me:
+Whatever solace I was looking for did not come, at least not in the way I expected. However, over time, one verse became incredibly real and meaningful to me:
 ```
 And surely I am with you always, to the very end of the age.
 — Matthew 28:20
@@ -56,7 +56,7 @@ And surely I am with you always, to the very end of the age.
 
 And that was it.
 
-Something as simple as that became enough for me — not because I wasn’t feeling crushed by the weight of all those challenges, but because I actually started to believe that no matter what, God was in my corner.
+Something as simple as that became enough for me, not because I wasn’t feeling crushed by the weight of all those challenges, but because I actually started to believe that no matter what, God was in my corner.
 ```
 If God got me, I'm good.
 ```
@@ -72,9 +72,9 @@ During this time, I read [The Hiding Place](https://www.amazon.com/Hiding-Place-
 
 How crazy that while I was going through the worst time of my life, I found Casper ten Boom (the father of the family) going through unfathomable suffering and reacting in an odd way, to say the least.
 
-Casper didn’t live an easy life. He didn’t escape suffering. Yet in the book, he is joyful, unshaken, and gentle despite the tragedy happening to him and his family. He wasn’t just optimistic — he remained steadfast in faith even under extreme hardship, a man so deeply anchored in his beliefs that no amount of ill fate could discourage him.
+Casper didn’t live an easy life. He didn’t escape suffering. Yet in the book, he is joyful, unshaken, and gentle despite the tragedy happening to him and his family. He wasn’t just optimistic, he remained steadfast in faith even under extreme hardship, a man so deeply anchored in his beliefs that no amount of ill fate could discourage him.
 
-What I needed wasn’t the assurance that everything would go alright, but the resolve to fight for my dreams and stay grounded in my faith — even in the event that things would continually worsen.
+What I needed wasn’t the assurance that everything would go alright, but the resolve to fight for my dreams and stay grounded in my faith even in the event that things would continually worsen.
 
 Casper’s faith wasn’t loud. It wasn’t performative. It was a quiet, stubborn goodness that refused to dissolve under pressure. And in my own much smaller struggles, that example mattered.
 
@@ -86,7 +86,7 @@ Writing weekly on this blog was never just about visibility. It’s about discip
 
 ![Dan KOe tweet](/images/Forced-Hiatus/dan_koe.jpeg)
 
-I also want to engage more meaningfully with the cyber and tech community — not just chatting about CVEs, certifications, and exploits, but building real relationships with people.
+I also want to engage more meaningfully with the cyber and tech community, not just chatting about CVEs, certifications, and exploits, but building real relationships with people.
 
 My immediate short-term goals are to pass the CPTS from Hack The Box and the PSAA from TCM Security. 
 
