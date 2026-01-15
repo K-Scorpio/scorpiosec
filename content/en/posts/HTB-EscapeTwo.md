@@ -19,7 +19,7 @@ type: "post"
 
 EscapeTwo is an assumed-breach Active Directory scenario. Using the initial credentials, we identify a file containing database access credentials. These are leveraged to enable and abuse `xp_cmdshell`, providing remote command execution and an initial foothold on the system.
 
-Post-exploitation enumeration reveals additional credentials stored within an application configuration file, allowing lateral movement to a second domain user. Utilizing BloodHound for privilege path analysis, we identified that this account possess the `WriteOwner` rights over a service account. By abusing this misconfiguration, we take over the service account which we use to exploit the ESC4 attack path, resulting in full administrative access.
+Post-exploitation enumeration reveals additional credentials stored within an application configuration file, allowing lateral movement to a domain user. Utilizing BloodHound for privilege path analysis, we observe that this account possess the `WriteOwner` rights over a service account. By abusing this misconfiguration, we take over the service account which we use to exploit the ESC4 attack path, resulting in full administrative access.
 
 ## Scanning
 
@@ -144,7 +144,7 @@ Inside `accounts.xlsx` we find some files.
 
 We can read the file `sharedStrings.xml` where we find the credentials for the `sa` account.
 
-> The sa account, or system administrator account, is a built-in account in SQL Server that gives the user full administrative access to the SQL Server instance
+> The `sa` account, or system administrator account, is a built-in account in SQL Server that gives the user full administrative access to the SQL Server instance.
 
 ![sa account credentials](/images/HTB-EscapeTwo/sa_creds.png)
 
@@ -260,7 +260,7 @@ python3 dacledit.py -action 'write' -rights 'FullControl' -principal 'ryan' -tar
 ![dacledit](/images/HTB-EscapeTwo/dacledit.png)
 
 
-3. Exploit `ca_svc` Using ADCS Shadow Credentials.
+3. Exploit `ca_svc` using ADCS Shadow Credentials.
 
 ```
 certipy-ad shadow auto -u ryan@sequel.htb -p 'WqSZAF6CysDQbGb3' -dc-ip {ip} -ns {ip} -target dc01.sequel.htb -account ca_svc
@@ -297,7 +297,7 @@ certipy-ad req -u ca_svc -hashes {ca_svc_hash} -ca sequel-DC01-CA -target DC01.s
 
 ![certificate request](/images/HTB-EscapeTwo/certificate_request.png)
 
-7. Authenticate as Administrator Using the Certificate.
+7. Authenticate as Administrator using the Certificate.
 
 ```
 certipy-ad auth -pfx ./administrator.pfx -dc-ip {ip}
