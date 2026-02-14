@@ -9,7 +9,7 @@ title: "HTB: EscapeTwo"
 type: "post"
 ---
 
-* Platforme: Hack The Box
+* Platforme: HackTheBox
 * Lien: [EscapeTwo](https://app.hackthebox.com/machines/EscapeTwo)
 * Niveau: Facile
 * OS: Windows

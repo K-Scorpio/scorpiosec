@@ -1,7 +1,7 @@
 ---
 date: 2025-05-25T10:56:05-05:00
 # description: ""
-image: "/images/HTB-Administrator/EscapeTwo.png"
+image: "/images/HTB-EscapeTwo/EscapeTwo.png"
 showTableOfContents: true
 tags: ["HackTheBox"]
 categories: ["Writeups"]
@@ -9,7 +9,7 @@ title: "HTB: EscapeTwo"
 type: "post"
 ---
 
-* Platform: Hack The Box
+* Platform: HackTheBox
 * Link: [EscapeTwo](https://app.hackthebox.com/machines/EscapeTwo)
 * Level: Easy
 * OS: Windows
