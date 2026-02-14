@@ -130,7 +130,7 @@ As the picture below shows, Burp automatically adds our custom header to all the
 
 ![Previous auth bypass](/images/HTB-Previous/customreq_header_previous.png)
 
-Now we automatically login just by clicking on either of the buttons at `http://previous.htb/`.
+Now we automatically bypass the login feature just by clicking on either of the buttons at `http://previous.htb/`.
 
 ![Previous logged in](/images/HTB-Previous/previous_logged_in.png)
 
@@ -171,7 +171,7 @@ We read `package.json` and see `NextAuth` being mentionned once more, this time 
 
 ![Previous package.json](/images/HTB-Previous/previous_pckg_json.png)
 
-Now we try to read`NextAuth.js` config file. [Here](https://next-auth.js.org/configuration/initialization), we learn that its location can be `/pages/api/auth/[...nextauth].js` or `/app/api/auth/[...nextauth]/route.js`
+Now we try to read`NextAuth.js` config file. [Here](https://next-auth.js.org/configuration/initialization), we learn that its location can be `/pages/api/auth/[...nextauth].js` or `/app/api/auth/[...nextauth]/route.js`.
 
 ```
 /pages/api/auth/[...nextauth].js
@@ -182,7 +182,7 @@ After trying both options we get a `File not found` error meaning that the file 
 
 ![Previous nextauth 404](/images/HTB-Previous/nextauth_404.png)
 
-As an example let's try to `root/root.txt`. We know this file exists because this is a HackTheBox machine. We get a `Read error` error meaning the file does exists but we do not have the permission to read it.
+As an example let's try to read `root/root.txt`. We know this file exists because this is a HackTheBox machine. We get a `Read error` error meaning the file does exists but we do not have the permission to read it.
 
 ![Previous read error](/images/HTB-Previous/read_err_previous.png)
 
@@ -192,7 +192,7 @@ Below is the structure of my project.
 
 ![Previous sample app](/images/HTB-Previous/nextjs_sample.png)
 
-Inside `nextjsapp` I ran 
+Inside `nextjsapp` I ran:
 
 ```
 npm install
@@ -200,7 +200,7 @@ npm install
 npm run build
 ```
 
-After listing the content of `nextjsapp` I see a `.next` directory. This directory is automatically generated and is used for both development and production. It contains everything needed to run the application. So sensitive files are surely there.
+After listing the content of `nextjsapp` we see a `.next` directory. This directory is automatically generated and is used for both development and production. It contains everything needed to run the application. So sensitive files are surely there.
 
 ![next directory](/images/HTB-Previous/next_dir.png)
 
@@ -227,7 +227,7 @@ The request's response includes some minified javascript, we throw it in a [beau
 jeremy:MyNameIsJeremyAndILovePancakes
 ```
 
-We use then and login via SSH.
+We use them and login via SSH.
 
 # Privilege Escalation
 
@@ -241,7 +241,7 @@ In `/opt/examples/main.tf` the `source_path` variable is defined with `default =
 
 Terraform is configured to use a custom provider `previous.htb/terraform/examples`.
 
->A provider is a plugin to help Terraform interact with some external system.
+> A provider is a plugin to help Terraform interact with some external system.
 
 ![Terraform provider](/images/HTB-Previous/tf_provider.png)
 
@@ -282,7 +282,7 @@ Enter `yes` when prompted to `Enter a value`.
 ![Terraform script run](/images/HTB-Previous/tf_id_rsa.png)
 
 
-4. The provider copied the referenced file into the `examples` directory accessible to `jeremy` which allows the disclosure of `root` SSH key.
+4. The provider copies the referenced file into the `examples` directory accessible to `jeremy` which allows the disclosure of `root` SSH key.
 ```
 cat /home/jeremy/docker/previous/public/examples/id_rsa
 ```
