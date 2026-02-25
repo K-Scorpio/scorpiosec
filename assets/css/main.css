@@ -699,3 +699,40 @@ table td {
     color: #FF4D4D;
 }
 
+/* ===============================
+   Post Tags Spacing Fix
+================================= */
+
+.post-tags,
+.tags,
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.post-tags a,
+.tags a,
+.tag-list a {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Tag chip polish */
+.post-tags a,
+.tags a,
+.tag-list a {
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.post-tags a:hover,
+.tags a:hover,
+.tag-list a:hover {
+  transform: translateY(-1px);
+  opacity: 0.85;
+}
+
+
+
