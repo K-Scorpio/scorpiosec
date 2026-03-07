@@ -112,7 +112,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 92.32 seconds
 ```
 
-The target is running Active Directory with the usual services such as LDAP, SMB, in additional to Microsoft SQL.
+The target is running Active Directory with the usual services such as LDAP, SMB, in additiona to Microsoft SQL.
 
 We also have some domain names that we add to the `/etc/hosts` file.
 
