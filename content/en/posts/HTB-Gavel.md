@@ -4,8 +4,8 @@ date: 2026-03-14T04:27:01-05:00
 # image: "/images/HTB-Gavel/gavel.png"
 lastmod: 2026-03-14
 showTableOfContents: true
-# tags: ["Hackthebox", "SQLi", "PDO-SQLi", "YAML-injection", "git-exposed", "source-code-review"]
-# categories: ["Writeups"]
+tags: ["Hackthebox", "SQLi", "PDO-SQLi", "YAML-injection", "git-exposed", "source-code-review"]
+categories: ["Writeups"]
 title: "HTB: Gavel"
 type: "post"
 ---
