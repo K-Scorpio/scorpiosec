@@ -3,8 +3,8 @@ date: 2026-04-11T02:30:27-05:00
 # description: ""
 image: "/images/HTB-Eighteen/Eigtheen.png"
 showTableOfContents: true
-tags: ["HackTheBox", "Active Directory", "MSSQL", "PBKDF2", "Password Spraying", "RID Brute Force", "BadSuccessor", "CVE-2025-53779", "dMSA", "Delegation Abuse", "Kerberos Delegation"]
-categories: ["Writeups"]
+tags: ["HackTheBox", "Labs", "Active Directory", "MSSQL", "PBKDF2", "Password Spraying", "RID Brute Force", "BadSuccessor", "CVE-2025-53779", "dMSA", "Delegation Abuse", "Kerberos Delegation"]
+categories: ["Red Teaming"]
 title: "HTB: Eighteen"
 type: "post"
 ---
@@ -22,7 +22,7 @@ System enumeration identifies Windows Server 2025 and the BadSuccessor vulnerabi
 # Scanning
 
 ```
-nmap -p- --open -T4 -sCV -oA nmap/Garfield {TARGET_IP}
+nmap -p- --open -T4 -sCV -oA nmap/Eighteen {TARGET_IP}
 ```
 
 **Results**
