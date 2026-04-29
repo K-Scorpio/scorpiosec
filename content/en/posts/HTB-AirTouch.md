@@ -8,6 +8,7 @@ tags: ["HackTheBox", "Labs", "WiFi-exploitation"]
 categories: ["Red Teaming"]
 title: "HTB: AirTouch"
 type: "post"
+draft: true
 ---
 
 * Platform: Hack The Box
