@@ -3,7 +3,7 @@ date: 2026-04-25T06:07:35-05:00
 # description: ""
 image: "/images/HTB-PacketPuzzle/Packet_Puzzle.png"
 showTableOfContents: true
-tags: ["HackTheBox", "Sherlock", "SOC", "wireshark", "pcap-analysis", "mitre-attck", "T1190", "cve-2024-4577", "php", "php-cgi"]
+tags: ["HackTheBox", "Sherlock", "SOC", "wireshark", "TCP-SYN-scan", "pcap-analysis", "mitre-attck", "T1190", "cve-2024-4577", "php", "php-cgi"]
 categories: ["Blue Teaming"]
 title: "HTB: Packet Puzzle"
 type: "post"
