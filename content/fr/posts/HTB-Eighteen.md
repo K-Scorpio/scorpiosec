@@ -3,8 +3,8 @@ date: 2026-04-11T02:30:27-05:00
 # description: ""
 image: "/images/HTB-Eighteen/Eigtheen.png"
 showTableOfContents: true
-tags: ["HackTheBox", "Active Directory", "MSSQL", "PBKDF2", "Password Spraying", "RID Brute Force", "BadSuccessor", "CVE-2025-53779", "dMSA", "Delegation Abuse", "Kerberos Delegation"]
-categories: ["Writeups"]
+tags: ["HackTheBox", "Labs", "Active Directory", "MSSQL", "PBKDF2", "Password Spraying", "RID Brute Force", "BadSuccessor", "CVE-2025-53779", "dMSA", "Delegation Abuse", "Kerberos Delegation"]
+categories: ["Red Teaming"]
 title: "HTB: Eighteen"
 type: "post"
 ---
@@ -19,13 +19,13 @@ L'attaque commence par la découverte de privilèges d'usurpation d'identité da
 
 L'énumération du système identifie Windows Server 2025 et la vulnérabilité BadSuccessor. En exploitant les autorisations d'unité d'organisation (OU), un compte dMSA malveillant est créé et utilisé pour la délégation Kerberos, permettant finalement l'usurpation d'identité de l'administrateur et la compromission totale du domaine.
 
-# Scanning
+# Balayage
 
 ```
 nmap -p- --open -T4 -sCV -oA nmap/Eighteen {TARGET_IP}
 ```
 
-**Results**
+**Résultats**
 ```shell
 Starting Nmap 7.95 ( https://nmap.org ) at 2026-04-11 11:37 EDT
 Nmap scan report for 10.129.26.3 (10.129.26.3)

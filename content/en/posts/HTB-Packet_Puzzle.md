@@ -249,7 +249,7 @@ Key observations:
 - This confirms successful exploitation and establishment of an interactive foothold
 
 To determine the exact time of this event, the packet details were inspected in the `Frame section`. The `Arrival Time` field shows:
-`Jan 22, 2025 04:47:32.295911000 EST`
+`Jan 22, 2025 04:47:32.295911000 EST`.
 
 Converted to UTC, this corresponds to: 2025-01-22 09:47:32.
 
@@ -283,7 +283,7 @@ This technique describes scenarios where attackers exploit vulnerabilities in ex
 
 ## Conclusion
 
-The attacker gained initial foothold using: `T1190 — Exploit Public-Facing Application`.
+The attacker gained initial foothold using: `T1190 - Exploit Public-Facing Application`.
 
 # Task 9 - What is the name of the malicious executable the attacker downloaded and executed in memory to facilitate privilege escalation on the endpoint?
 
