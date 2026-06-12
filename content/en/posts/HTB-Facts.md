@@ -16,6 +16,10 @@ type: "post"
 * OS: Linux
 ---
 
+Facts begins with the discovery of a vulnerable Camaleon CMS instance affected by `CVE-2025-2304`, where a mass assignment flaw allows privilege escalation to administrator. Access to the CMS dashboard reveals AWS-compatible MinIO credentials, which are used to enumerate internal S3 buckets and recover an SSH private key.
+
+After cracking the SSH key passphrase with John the Ripper, access is obtained as the user `trivia` via SSH. System enumeration then identifies that the `facter` binary can be executed with sudo privileges, allowing arbitrary Ruby code execution through the `--custom-dir` argument and ultimately leading to full root compromise.
+
 # Scanning
 
 ```
@@ -145,7 +149,7 @@ gobuster dir -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-med
 
 ![admin page](/images/HTB-Facts/admin_page.png)
 
-We are able to create an account an login. Camaleon CMS is used here specifically version `2.9.0`.
+We create an account an login. Camaleon CMS is used here specifically version `2.9.0`.
 
 ![camaleonCMS dashboard](/images/HTB-Facts/camaleonCMS_dashboard.png)
 
@@ -215,7 +219,7 @@ aws --profile facts \
 
 ![SSH key S3](/images/HTB-Facts/S3_ssh_key.png)
 
-We copy the key and use it to login via SSH.
+We copy the key.
 
 ```
 aws --profile facts \
@@ -284,7 +288,7 @@ nano priv.rb
 sudo /usr/bin/facter --custom-dir /tmp/kscorpio
 ```
 
-We then gain root privileges
+We then gain root privileges.
 
 ![root access](/images/HTB-Facts/root_access.png)
 
